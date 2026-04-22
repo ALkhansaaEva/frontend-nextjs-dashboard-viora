@@ -8,8 +8,6 @@ import {
   Users,
   Shield,
   Settings,
-  Mic,
-  Crown,
   ShoppingBag,
   User,
   X,

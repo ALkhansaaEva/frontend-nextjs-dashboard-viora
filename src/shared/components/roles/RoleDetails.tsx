@@ -122,10 +122,10 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
 
   const revokeUserMutation = useMutation({
     mutationFn: (userId: string) => adminService.revokeRoleFromUser(userId, roleCode),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.setQueryData(['role-users', roleCode], (old: { data: User[]; total: number } | undefined) => {
         if (!old) return old;
-        const newData = old.data.filter(u => u.id !== userId);
+        const newData = old.data.filter(u => u.id !== variables);
         return { data: newData, total: newData.length };
       });
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
