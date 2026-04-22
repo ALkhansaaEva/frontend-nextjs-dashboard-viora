@@ -1,0 +1,234 @@
+{
+  "common": {
+    "appName": "لوحة فيورا",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "success": "نجاح",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "search": "بحث",
+    "filter": "تصفية",
+    "export": "تصدير",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "submit": "إرسال",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "yes": "نعم",
+    "no": "لا",
+    "actions": "الإجراءات",
+    "status": "الحالة",
+    "createdAt": "تاريخ الإنشاء",
+    "updatedAt": "تاريخ التحديث",
+    "noData": "لا توجد بيانات",
+    "retry": "إعادة المحاولة"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "rememberMe": "تذكرني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "loginTitle": "مرحباً بعودتك",
+    "loginSubtitle": "أدخل بيانات الاعتماد للوصول إلى لوحة التحكم",
+    "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صحيحة"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "users": "المستخدمون",
+    "roles": "الأدوار والصلاحيات",
+    "reports": "التقارير",
+    "support": "تذاكر الدعم",
+    "moderation": "الإشراف",
+    "settings": "الإعدادات"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "welcome": "مرحباً بعودتك",
+    "overview": "نظرة عامة على النظام",
+    "uptime": "وقت تشغيل الخادم",
+    "memory": "استخدام الذاكرة",
+    "connections": "الاتصالات النشطة",
+    "redis": "حالة ريليس",
+    "enabled": "مفعّل",
+    "disabled": "معطّل",
+    "totalUsers": "إجمالي المستخدمين",
+    "activeReports": "التقارير النشطة",
+    "openTickets": "التذاكر المفتوحة",
+    "activeSanctions": "العقوبات النشطة"
+  },
+  "users": {
+    "title": "إدارة المستخدمين",
+    "list": "قائمة المستخدمين",
+    "details": "تفاصيل المستخدم",
+    "search": "البحث عن مستخدمين...",
+    "filters": {
+      "status": "الحالة",
+      "role": "الدور",
+      "dateRange": "نطاق التاريخ"
+    },
+    "status": {
+      "active": "نشط",
+      "suspended": "موقوف",
+      "banned": "محظور"
+    },
+    "fields": {
+      "id": "المعرف",
+      "email": "البريد الإلكتروني",
+      "nickname": "اللقب",
+      "role": "الدور",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "lastLogin": "آخر تسجيل دخول",
+      "gold": "الذهب",
+      "gems": "الأحجار الكريمة"
+    },
+    "actions": {
+      "edit": "تعديل المستخدم",
+      "assignRole": "تعيين الدور",
+      "adjustBalance": "تعديل الرصيد",
+      "ban": "حظر المستخدم",
+      "suspend": "إيقاف المستخدم"
+    }
+  },
+  "roles": {
+    "title": "الأدوار والصلاحيات",
+    "roles": "الأدوار",
+    "permissions": "الصلاحيات",
+    "createRole": "إنشاء دور",
+    "assignPermissions": "تعيين الصلاحيات",
+    "edit": "تعديل الدور",
+    "editRole": "تعديل الدور",
+    "deleteRole": "حذف الدور",
+    "viewRole": "عرض الدور",
+    "managePermissions": "إدارة الصلاحيات",
+    "manageUsers": "إدارة المستخدمين",
+    "assignedPermissions": "الصلاحيات المعينة",
+    "assignPermission": "تعيين صلاحية",
+    "noPermissions": "لا توجد صلاحيات معينة",
+    "noRolesMatch": "لا توجد أدوار مطابقة للبحث",
+    "manage": "إدارة",
+    "back": "رجوع",
+    "save": "حفظ",
+    "saveChanges": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "confirm": "تأكيد",
+    "search": "بحث",
+    "filter": "تصفية",
+    "all": "الكل",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "noData": "لا توجد بيانات",
+    "fields": {
+      "name": "اسم الدور",
+      "code": "كود الدور",
+      "description": "الوصف",
+      "level": "المستوى",
+      "priority": "الأولوية"
+    },
+    "types": {
+      "super_admin": "مدير عام",
+      "admin": "مدير",
+      "moderator": "مشرف",
+      "support": "دعم فني",
+      "manager": "مدير قسم",
+      "user": "مستخدم"
+    },
+    "messages": {
+      "createSuccess": "تم إنشاء الدور بنجاح",
+      "updateSuccess": "تم تحديث الدور بنجاح",
+      "deleteSuccess": "تم حذف الدور بنجاح",
+      "assignSuccess": "تم تعيين الصلاحية بنجاح",
+      "revokeSuccess": "تم إلغاء الصلاحية بنجاح",
+      "confirmDelete": "هل أنت متأكد من حذف هذا الدور؟"
+    },
+    "search": "بحث",
+    "choose": "اختيار...",
+    "assigning": "جاري التعيين...",
+    "revoking": "جاري الإلغاء...",
+    "assignUser": "تعيين مستخدم",
+    "revokeUser": "إزالة مستخدم",
+    "selectPermission": "اختيار الصلاحية",
+    "currentPermissions": "الصلاحيات الحالية",
+    "rolesDescription": "إدارة الأدوار والصلاحيات لشبكتك الإدارية."
+  },
+  "reports": {
+    "title": "التقارير",
+    "create": "إنشاء تقرير",
+    "fields": {
+      "reporter": "المُبلّغ",
+      "reported": "المُبلَّغ عنه",
+      "reason": "السبب",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "status": {
+      "pending": "معلق",
+      "investigating": "قيد التحقيق",
+      "resolved": "محلول",
+      "dismissed": "مرفوض"
+    },
+    "actions": {
+      "addEvidence": "إضافة دليل",
+      "takeAction": "اتخاذ إجراء",
+      "updateStatus": "تحديث الحالة"
+    }
+  },
+  "support": {
+    "title": "تذاكر الدعم",
+    "create": "إنشاء تذكرة",
+    "fields": {
+      "subject": "الموضوع",
+      "description": "الوصف",
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "status": {
+      "open": "مفتوحة",
+      "in_progress": "قيد التنفيذ",
+      "resolved": "محلول",
+      "closed": "مغلقة"
+    },
+    "priority": {
+      "low": "منخفضة",
+      "medium": "متوسطة",
+      "high": "عالية",
+      "urgent": "عاجلة"
+    },
+    "actions": {
+      "reply": "الرد",
+      "addNote": "إضافة ملاحظة",
+      "assign": "تعيين"
+    }
+  },
+  "moderation": {
+    "title": "الإشراف",
+    "sanctions": "العقوبات النشطة",
+    "strike": "إضافة إنذار",
+    "ban": "حظر المستخدم",
+    "mute": "كتم المستخدم",
+    "type": {
+      "ban": "حظر",
+      "mute": "كتم"
+    },
+    "actions": {
+      "apply": "تطبيق عقوبة",
+      "viewHistory": "عرض السجل"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "theme": "المظهر",
+    "language": "اللغة",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  }
+}

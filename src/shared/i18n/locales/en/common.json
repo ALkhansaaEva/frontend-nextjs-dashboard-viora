@@ -1,0 +1,234 @@
+{
+  "common": {
+    "appName": "Viora Admin",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "actions": "Actions",
+    "status": "Status",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "noData": "No data available",
+    "retry": "Retry"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Enter your credentials to access the dashboard",
+    "invalidCredentials": "Invalid email or password"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "roles": "Roles & Permissions",
+    "reports": "Reports",
+    "support": "Support Tickets",
+    "moderation": "Moderation",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "overview": "System Overview",
+    "uptime": "Server Uptime",
+    "memory": "Memory Usage",
+    "connections": "Active Connections",
+    "redis": "Redis Status",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "totalUsers": "Total Users",
+    "activeReports": "Active Reports",
+    "openTickets": "Open Tickets",
+    "activeSanctions": "Active Sanctions"
+  },
+  "users": {
+    "title": "User Management",
+    "list": "User List",
+    "details": "User Details",
+    "search": "Search users...",
+    "filters": {
+      "status": "Status",
+      "role": "Role",
+      "dateRange": "Date Range"
+    },
+    "status": {
+      "active": "Active",
+      "suspended": "Suspended",
+      "banned": "Banned"
+    },
+    "fields": {
+      "id": "ID",
+      "email": "Email",
+      "nickname": "Nickname",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created At",
+      "lastLogin": "Last Login",
+      "gold": "Gold",
+      "gems": "Gems"
+    },
+    "actions": {
+      "edit": "Edit User",
+      "assignRole": "Assign Role",
+      "adjustBalance": "Adjust Balance",
+      "ban": "Ban User",
+      "suspend": "Suspend User"
+    }
+  },
+  "roles": {
+    "title": "Roles & Permissions",
+    "roles": "Roles",
+    "permissions": "Permissions",
+    "createRole": "Create Role",
+    "assignPermissions": "Assign Permissions",
+    "edit": "Edit Role",
+    "editRole": "Edit Role",
+    "deleteRole": "Delete Role",
+    "viewRole": "View Role",
+    "managePermissions": "Manage Permissions",
+    "manageUsers": "Manage Users",
+    "assignedPermissions": "Assigned Permissions",
+    "assignPermission": "Assign Permission",
+    "noPermissions": "No permissions assigned",
+    "noRolesMatch": "No roles match your search",
+    "manage": "Manage",
+    "back": "Back",
+    "save": "Save",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "create": "Create",
+    "update": "Update",
+    "noData": "No data available",
+    "fields": {
+      "name": "Role Name",
+      "code": "Role Code",
+      "description": "Description",
+      "level": "Level",
+      "priority": "Priority"
+    },
+    "types": {
+      "super_admin": "Super Admin",
+      "admin": "Administrator",
+      "moderator": "Moderator",
+      "support": "Support",
+      "manager": "Manager",
+      "user": "User"
+    },
+    "messages": {
+      "createSuccess": "Role created successfully",
+      "updateSuccess": "Role updated successfully",
+      "deleteSuccess": "Role deleted successfully",
+      "assignSuccess": "Permission assigned successfully",
+      "revokeSuccess": "Permission revoked successfully",
+      "confirmDelete": "Are you sure you want to delete this role?"
+    },
+    "search": "Search",
+    "choose": "Choose...",
+    "assigning": "Assigning...",
+    "revoking": "Revoking...",
+    "assignUser": "Assign User",
+    "revokeUser": "Remove User",
+    "selectPermission": "Select Permission",
+    "currentPermissions": "Current Permissions",
+    "rolesDescription": "Manage roles and permissions for your administrative network."
+  },
+  "reports": {
+    "title": "Reports",
+    "create": "Create Report",
+    "fields": {
+      "reporter": "Reporter",
+      "reported": "Reported User",
+      "reason": "Reason",
+      "status": "Status",
+      "createdAt": "Created At"
+    },
+    "status": {
+      "pending": "Pending",
+      "investigating": "Investigating",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
+    },
+    "actions": {
+      "addEvidence": "Add Evidence",
+      "takeAction": "Take Action",
+      "updateStatus": "Update Status"
+    }
+  },
+  "support": {
+    "title": "Support Tickets",
+    "create": "Create Ticket",
+    "fields": {
+      "subject": "Subject",
+      "description": "Description",
+      "status": "Status",
+      "priority": "Priority",
+      "createdAt": "Created At"
+    },
+    "status": {
+      "open": "Open",
+      "in_progress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "actions": {
+      "reply": "Reply",
+      "addNote": "Add Note",
+      "assign": "Assign"
+    }
+  },
+  "moderation": {
+    "title": "Moderation",
+    "sanctions": "Active Sanctions",
+    "strike": "Add Strike",
+    "ban": "Ban User",
+    "mute": "Mute User",
+    "type": {
+      "ban": "Ban",
+      "mute": "Mute"
+    },
+    "actions": {
+      "apply": "Apply Sanction",
+      "viewHistory": "View History"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "language": "Language",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}

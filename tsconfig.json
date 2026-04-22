@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@shared/*": [
+        "./src/shared/*"
+      ],
+      "@components/*": [
+        "./src/shared/components/*"
+      ],
+      "@hooks/*": [
+        "./src/shared/hooks/*"
+      ],
+      "@stores/*": [
+        "./src/shared/stores/*"
+      ],
+      "@api/*": [
+        "./src/shared/api/*"
+      ],
+      "@lib/*": [
+        "./src/shared/lib/*"
+      ]
+    },
+    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules",
+    "viora-api-collection.json"
+  ]
+}

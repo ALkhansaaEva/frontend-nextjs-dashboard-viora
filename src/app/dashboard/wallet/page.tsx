@@ -1,0 +1,183 @@
+'use client';
+
+import { useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Coins, Gem, ArrowUpRight, ArrowDownLeft, History } from 'lucide-react';
+import { useWallet, useWalletTransactions } from '@/hooks';
+import { useLanguage } from '@/components/language-context';
+import { TableSkeleton } from '@/components/skeletons';
+import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui/Card';
+import { Badge } from '@/shared/components/ui/Badge';
+import { DataTable, type Column } from '@/shared/components/ui/DataTable';
+
+interface WalletTransaction {
+  id: string;
+  userId: string;
+  type: 'credit' | 'debit';
+  currency: 'gold' | 'gems';
+  amount: string;
+  balanceAfter: string;
+  reason: string;
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+}
+
+export default function WalletPage() {
+  const searchParams = useSearchParams();
+  const { t } = useLanguage();
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
+  const { data: wallet, isLoading: walletLoading } = useWallet();
+  const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions({
+    page,
+    limit: 20,
+  });
+
+  const handlePageChange = useCallback((newPage: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', newPage.toString());
+    window.history.pushState({}, '', url);
+  }, []);
+
+  const isLoading = walletLoading || transactionsLoading;
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('wallet')}</h1>
+        <TableSkeleton rows={5} />
+      </div>
+    );
+  }
+
+  const columns: Column<WalletTransaction>[] = [
+    {
+      key: 'type',
+      header: t('type'),
+      render: (txn) => (
+        <div className="flex items-center gap-2">
+          {txn.type === 'credit' ? (
+            <ArrowUpRight className="w-4 h-4 text-green-500" />
+          ) : (
+            <ArrowDownLeft className="w-4 h-4 text-red-500" />
+          )}
+          <Badge variant={txn.type === 'credit' ? 'success' : 'danger'}>
+            {txn.type === 'credit' ? t('credit') : t('debit')}
+          </Badge>
+        </div>
+      ),
+    },
+    {
+      key: 'currency',
+      header: t('currency'),
+      render: (txn) => (
+        <div className="flex items-center gap-1.5">
+          {txn.currency === 'gems' ? (
+            <Gem className="w-4 h-4 text-purple-500" />
+          ) : (
+            <Coins className="w-4 h-4 text-yellow-500" />
+          )}
+          <span className="font-medium">{txn.currency}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'amount',
+      header: t('amount'),
+      render: (txn) => (
+        <span className={`font-semibold ${txn.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+          {txn.type === 'credit' ? '+' : '-'}{txn.amount}
+        </span>
+      ),
+    },
+    {
+      key: 'reason',
+      header: t('reason'),
+      render: (txn) => (
+        <span className="text-gray-600 dark:text-gray-400">{txn.reason || '-'}</span>
+      ),
+    },
+    {
+      key: 'balanceAfter',
+      header: t('balanceAfter'),
+      render: (txn) => (
+        <span className="text-gray-600 dark:text-gray-400">{txn.balanceAfter}</span>
+      ),
+    },
+    {
+      key: 'createdAt',
+      header: t('date'),
+      render: (txn) => (
+        <span className="text-gray-600 dark:text-gray-400">
+          {new Date(txn.createdAt).toLocaleDateString()}
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('wallet')}</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="p-4 bg-yellow-100 dark:bg-yellow-900/30 rounded-2xl">
+                <Coins className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-yellow-700 dark:text-yellow-400">{t('gold')}</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {wallet?.gold?.toLocaleString() ?? '-'}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="p-4 bg-purple-100 dark:bg-purple-900/30 rounded-2xl">
+                <Gem className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-purple-700 dark:text-purple-400">{t('gems')}</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {wallet?.gems?.toLocaleString() ?? '-'}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <History className="w-5 h-5" />
+            {t('transactions')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DataTable
+            data={transactions?.data || []}
+            columns={columns}
+            pagination={
+              transactions && {
+                page: transactions.page,
+                limit: transactions.limit,
+                total: transactions.total,
+                totalPages: transactions.totalPages,
+                onPageChange: handlePageChange,
+              }
+            }
+            emptyMessage={t('noTransactions')}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
