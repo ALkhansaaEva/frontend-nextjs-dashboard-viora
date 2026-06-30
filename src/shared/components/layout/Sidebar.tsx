@@ -16,10 +16,18 @@ import {
   Lock,
   Wallet,
   Bell,
+  Trophy,
+  Gift,
+  FileText,
+  Skull,
+  Mic,
+  LifeBuoy,
+  Crown,
 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { useSidebarStore } from '@/store/sidebar.store';
 import { useAuthStore } from '@/store/auth.store';
+import { can } from '@/lib/auth/permissions';
 
 interface NavItem {
   href: string;
@@ -57,7 +65,7 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
     items: [
       { href: '/dashboard/roles', Icon: Shield, label: 'Roles', labelAr: 'الأدوار', permission: 'manage_roles' },
       { href: '/dashboard/permissions', Icon: Lock, label: 'Permissions', labelAr: 'الصلاحيات', permission: 'manage_permissions' },
-      // { href: '/dashboard/settings', Icon: Settings, label: 'Settings', labelAr: 'الإعدادات', permission: 'manage_config' },
+      { href: '/dashboard/settings', Icon: Settings, label: 'Configs', labelAr: 'الإعدادات', permission: 'manage_config' },
     ]
   },
   {
@@ -70,37 +78,37 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
       { href: '/dashboard/users', Icon: Users, label: 'Users', labelAr: 'المستخدمون', permission: 'view_users' },
     ]
   },
-  // {
-  //   id: 'moderation',
-  //   label: 'Moderation',
-  //   labelAr: 'الإشراف',
-  //   icon: Skull,
-  //   sectionPermission: 'manage_reports',
-  //   items: [
-  //     { href: '/dashboard/reports', Icon: FileText, label: 'Reports', labelAr: 'التقارير', permission: 'manage_reports' },
-  //     { href: '/dashboard/moderation', Icon: Skull, label: 'Sanctions', labelAr: 'العقوبات', permission: 'global_ban' },
-  //   ]
-  // },
-  // {
-  //   id: 'rooms',
-  //   label: 'Rooms',
-  //   labelAr: 'الغرف',
-  //   icon: Mic,
-  //   sectionPermission: 'manage_all_rooms',
-  //   items: [
-  //     { href: '/dashboard/rooms', Icon: Mic, label: 'Rooms', labelAr: 'الغرف', permission: 'manage_all_rooms' },
-  //   ]
-  // },
-  // {
-  //   id: 'support',
-  //   label: 'Support',
-  //   labelAr: 'الدعم',
-  //   icon: LifeBuoy,
-  //   sectionPermission: 'manage_tickets',
-  //   items: [
-  //     { href: '/dashboard/support', Icon: LifeBuoy, label: 'Tickets', labelAr: 'التذاكر', permission: 'manage_tickets' },
-  //   ]
-  // },
+  {
+    id: 'moderation',
+    label: 'Moderation',
+    labelAr: 'الإشراف',
+    icon: Skull,
+    sectionPermission: 'manage_reports',
+    items: [
+      { href: '/dashboard/reports', Icon: FileText, label: 'Reports', labelAr: 'التقارير', permission: 'manage_reports' },
+      { href: '/dashboard/moderation', Icon: Skull, label: 'Sanctions', labelAr: 'العقوبات', permission: 'global_ban' },
+    ]
+  },
+  {
+    id: 'rooms',
+    label: 'Rooms',
+    labelAr: 'الغرف',
+    icon: Mic,
+    sectionPermission: 'manage_all_rooms',
+    items: [
+      { href: '/dashboard/rooms', Icon: Mic, label: 'Rooms', labelAr: 'الغرف', permission: 'manage_all_rooms' },
+    ]
+  },
+  {
+    id: 'support',
+    label: 'Support',
+    labelAr: 'الدعم',
+    icon: LifeBuoy,
+    sectionPermission: 'manage_tickets',
+    items: [
+      { href: '/dashboard/support', Icon: LifeBuoy, label: 'Tickets', labelAr: 'التذاكر', permission: 'manage_tickets' },
+    ]
+  },
   {
     id: 'store',
     label: 'Store',
@@ -111,16 +119,36 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
       { href: '/dashboard/store', Icon: ShoppingBag, label: 'Store', labelAr: 'المتجر', permission: 'view_transactions' },
     ]
   },
-  // {
-  //   id: 'rank',
-  //   label: 'Ranks',
-  //   labelAr: 'الترتيب',
-  //   icon: Crown,
-  //   sectionPermission: 'manage_games',
-  //   items: [
-  //     { href: '/dashboard/ranks', Icon: Crown, label: 'Ranks', labelAr: 'الترتيب', permission: 'manage_games' },
-  //   ]
-  // },
+  {
+    id: 'gifts',
+    label: 'Gifts',
+    labelAr: 'الهدايا',
+    icon: Gift,
+    sectionPermission: 'manage_store',
+    items: [
+      { href: '/dashboard/gifts', Icon: Gift, label: 'Gifts Catalog', labelAr: 'الهدايا', permission: 'manage_store' },
+    ]
+  },
+  {
+    id: 'achievements',
+    label: 'Achievements',
+    labelAr: 'الإنجازات',
+    icon: Trophy,
+    sectionPermission: 'manage_games',
+    items: [
+      { href: '/dashboard/achievements', Icon: Trophy, label: 'Achievements', labelAr: 'الإنجازات', permission: 'manage_games' },
+    ]
+  },
+  {
+    id: 'rank',
+    label: 'Ranks',
+    labelAr: 'الترتيب',
+    icon: Crown,
+    sectionPermission: 'manage_games',
+    items: [
+      { href: '/dashboard/ranks', Icon: Crown, label: 'Ranks', labelAr: 'الترتيب', permission: 'manage_games' },
+    ]
+  },
   {
     id: 'profile',
     label: 'Profile',
@@ -153,7 +181,7 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
 function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
   const pathname = usePathname();
   const { isCollapsed, isMobileOpen, closeMobile, toggleSidebar } = useSidebarStore();
-  const { permissions: userPermissions, isAuthenticated, roles } = useAuthStore();
+  const { permissions: userPermissions, isAuthenticated } = useAuthStore();
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -175,18 +203,7 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
   const hasPermission = (permission?: string) => {
     if (!permission) return true;
     if (!isAuthenticated) return false;
-    
-    // If permissions array is empty but user is authenticated, check roles
-    if (userPermissions.length === 0) {
-      // Check if user has any admin role
-      if (roles.includes('super_admin') || roles.includes('admin')) {
-        return true;
-      }
-      return false;
-    }
-    
-    if (userPermissions.includes('*')) return true;
-    return userPermissions.includes(permission);
+    return can(userPermissions, permission);
   };
 
   const hasSectionAccess = (sectionPermission?: string) => {

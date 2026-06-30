@@ -43,27 +43,30 @@ export const socialService = {
   },
 
   async rejectFriendRequest(requestId: string): Promise<void> {
-    await apiClient.post(`/social/friend-request/reject/${requestId}`);
+    await apiClient.post(`/social/friend-request/decline/${requestId}`);
   },
 
-  async cancelFriendRequest(requestId: string): Promise<void> {
-    await apiClient.post(`/social/friend-request/cancel/${requestId}`);
+  // Backend has no cancel friend request endpoint; use decline or block
+  async cancelFriendRequest(_requestId: string): Promise<void> {
+    console.warn('[SocialService] cancelFriendRequest is not supported by the backend');
   },
 
   async blockUser(userId: string): Promise<void> {
     await apiClient.post(`/social/block/${userId}`);
   },
 
-  async unblockUser(userId: string): Promise<void> {
-    await apiClient.post(`/social/unblock/${userId}`);
+  // Backend has no non-admin unblock endpoint; use admin unblock instead
+  async unblockUser(_userId: string): Promise<void> {
+    console.warn('[SocialService] unblockUser is not available in the backend (use adminUnblockUser)');
   },
 
   async muteUser(userId: string): Promise<void> {
     await apiClient.post(`/social/mute/${userId}`);
   },
 
-  async unmuteUser(userId: string): Promise<void> {
-    await apiClient.post(`/social/unmute/${userId}`);
+  // Backend has no unmute endpoint for non-admin users
+  async unmuteUser(_userId: string): Promise<void> {
+    console.warn('[SocialService] unmuteUser is not supported by the backend');
   },
 
   async getMessages(friendId: string): Promise<Message[]> {
@@ -80,6 +83,20 @@ export const socialService = {
     const query = searchParams.toString();
     const url = query ? `/social/admin/friendships?${query}` : '/social/admin/friendships';
     return apiClient.get(url);
+  },
+
+  async getPendingFriendRequests(): Promise<Friend[]> {
+    const response = await apiClient.get<Friend[] | { data: Friend[] }>('/social/friend-requests/pending');
+    if (Array.isArray(response)) return response;
+    return (response as { data: Friend[] }).data || [];
+  },
+
+  async declineFriendRequest(requestId: string): Promise<void> {
+    await apiClient.post(`/social/friend-request/decline/${requestId}`);
+  },
+
+  async sendMessage(friendId: string, content: string): Promise<Message> {
+    return apiClient.post<Message>(`/social/messages/${friendId}`, { content });
   },
 
   async getAdminBlocks(): Promise<Friend[]> {

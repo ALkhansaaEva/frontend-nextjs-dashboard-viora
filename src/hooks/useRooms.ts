@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { roomsService } from '@/services';
-import type { ListParams, PaginatedResponse } from '@/types';
+import type { PaginatedResponse } from '@/types';
 
 interface Room {
   id: string;
@@ -11,18 +11,25 @@ interface Room {
   memberCount?: number;
 }
 
-export const useRooms = (params?: ListParams) => {
+interface RoomQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  admin?: boolean;
+}
+
+export const useRooms = (params?: RoomQuery) => {
   return useQuery<PaginatedResponse<Room>>({
     queryKey: ['rooms', params],
-    queryFn: () => roomsService.getRooms(params),
+    queryFn: () => params?.admin ? roomsService.getAdminRooms(params) : roomsService.getRooms(params),
     staleTime: 30000,
   });
 };
 
-export const useRoom = (roomId: string) => {
+export const useRoom = (roomId: string, admin?: boolean) => {
   return useQuery({
-    queryKey: ['room', roomId],
-    queryFn: () => roomsService.getRoomById(roomId),
+    queryKey: ['room', roomId, admin],
+    queryFn: () => admin ? roomsService.getAdminRoomById(roomId) : roomsService.getRoomById(roomId),
     enabled: !!roomId,
     staleTime: 30000,
   });

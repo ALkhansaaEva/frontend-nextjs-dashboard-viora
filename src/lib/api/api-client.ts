@@ -23,20 +23,8 @@ interface ApiResponse<T> {
 }
 
 interface CustomAxiosConfig extends InternalAxiosRequestConfig {
-  _requestId?: string;
   _retryCount?: number;
   _startTime?: number;
-}
-
-interface RetryConfig {
-  _retryCount?: number;
-}
-
-const pendingRequests = new Map<string, AbortController>();
-
-function generateRequestKey(config: AxiosRequestConfig): string {
-  const { method, url, params, data } = config;
-  return `${method}:${url}:${JSON.stringify(params)}:${JSON.stringify(data)}`;
 }
 
 function isValidEmail(email: string): boolean {
@@ -89,25 +77,19 @@ export class ApiClient {
         config._startTime = Date.now();
         
         if (typeof window !== 'undefined') {
-          // Check if token is expired before request
           const tokenExpiry = localStorage.getItem('tokenExpiry');
           const refreshToken = localStorage.getItem('refreshToken');
           
           if (tokenExpiry && refreshToken) {
             const expiryTime = parseInt(tokenExpiry);
-            const now = Date.now();
-            const timeUntilExpiry = expiryTime - now;
+            const timeUntilExpiry = expiryTime - Date.now();
             
-            // If token expires in less than 5 minutes, refresh proactively
             if (timeUntilExpiry < 5 * 60 * 1000 && timeUntilExpiry > 0) {
-              console.log('[API] Token expiring soon, refreshing proactively...');
-              this.refreshToken().catch(console.error);
+              this.refreshToken().catch(() => {});
             }
             
-            // If token is expired, try to refresh
             if (timeUntilExpiry <= 0) {
-              console.log('[API] Token expired, refreshing...');
-              this.refreshToken().catch(console.error);
+              this.refreshToken().catch(() => {});
             }
           }
           
@@ -115,14 +97,11 @@ export class ApiClient {
           if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
           }
-          // Send refresh token in header for proxy to use if needed
-          if (refreshToken && config.headers) {
-            config.headers['x-refresh-token'] = refreshToken;
+          const storedRefreshToken = localStorage.getItem('refreshToken');
+          if (storedRefreshToken && config.headers) {
+            config.headers['x-refresh-token'] = storedRefreshToken;
           }
         }
-        
-        const requestKey = generateRequestKey(config);
-        config._requestId = requestKey;
         
         return config;
       },
@@ -132,11 +111,6 @@ export class ApiClient {
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
         const config = response.config as CustomAxiosConfig;
-        const requestKey = config?._requestId;
-        if (requestKey) {
-          pendingRequests.delete(requestKey);
-        }
-
         const duration = Date.now() - (config._startTime || 0);
         if (duration > SLOW_REQUEST_THRESHOLD) {
           console.warn(`[Slow Request] ${config.method?.toUpperCase()} ${config.url} took ${duration}ms`);
@@ -146,15 +120,11 @@ export class ApiClient {
       },
       async (error: AxiosError<ApiError>) => {
         const originalRequest = error.config as CustomAxiosConfig;
-        const requestKey = originalRequest?._requestId;
-        
-        if (requestKey) {
-          pendingRequests.delete(requestKey);
-        }
-        
-        const retryCount = (originalRequest as RetryConfig)?._retryCount || 0;
+        const retryCount = originalRequest?._retryCount || 0;
 
-        if (error.response?.status === 401 && originalRequest && retryCount < MAX_RETRIES) {
+        const isAuthRequest = originalRequest?.url?.includes('/auth/') ?? false;
+
+        if (error.response?.status === 401 && originalRequest && retryCount < MAX_RETRIES && !isAuthRequest) {
           originalRequest._retryCount = retryCount + 1;
 
           try {
@@ -163,12 +133,12 @@ export class ApiClient {
               originalRequest.headers.Authorization = `Bearer ${newToken}`;
             }
             return this.client(originalRequest);
-          } catch (refreshError) {
+          } catch {
             this.clearTokens();
             if (typeof window !== 'undefined') {
               window.location.href = '/login';
             }
-            return Promise.reject(refreshError);
+            return Promise.reject(error);
           }
         }
 
@@ -212,7 +182,7 @@ export class ApiClient {
           { timeout: 10000 }
         );
 
-        const { accessToken, refreshToken: newRefreshToken, expiresIn } = response.data.data;
+        const { accessToken, refreshToken: newRefreshToken, expiresIn } = response.data.data || response.data;
         
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', newRefreshToken);
@@ -248,24 +218,43 @@ export class ApiClient {
   }
 
   private normalizeError(error: AxiosError<ApiError>): ApiError {
+    if (axios.isCancel(error)) {
+      return { message: 'Request cancelled', statusCode: 0, code: 'CANCELLED' };
+    }
     if (error.response) {
+      const data: any = error.response.data;
+      const errPayload = data && typeof data === 'object' && 'error' in data
+        ? data.error
+        : data;
+      const statusMessages: Record<number, string> = {
+        400: 'Invalid request. Please check your input.',
+        403: 'You do not have permission to perform this action.',
+        404: 'The requested resource was not found.',
+        409: 'Conflict. The resource already exists or is in an invalid state.',
+        422: errPayload?.message || 'Validation failed. Please check your input.',
+        429: 'Too many requests. Please wait and try again.',
+        500: 'Server error. Please try again later.',
+        502: 'Service temporarily unavailable. Please try again.',
+        503: 'Service is under maintenance. Please try again later.',
+      };
       return {
-        message: error.response.data?.message || 'An error occurred',
+        message: errPayload?.message || data?.message || statusMessages[error.response.status] || error.message || 'An error occurred',
         statusCode: error.response.status,
-        code: error.response.data?.code,
+        code: errPayload?.code || data?.code,
       };
     }
     if (error.request) {
+      const isTimeout = error.code === 'ECONNABORTED' || error.message?.toLowerCase().includes('timeout');
       return {
-        message: 'Network error. Please check your connection.',
+        message: isTimeout ? 'Request timed out. Please try again.' : 'Network error. Please check your connection.',
         statusCode: 0,
-        code: 'NETWORK_ERROR',
+        code: isTimeout ? 'TIMEOUT' : 'NETWORK_ERROR',
       };
     }
     return {
-      message: error.message || 'Unknown error',
+      message: error.message || 'An unexpected error occurred',
       statusCode: 0,
-      code: 'UNKNOWN_ERROR',
+      code: error.code || 'UNEXPECTED_ERROR',
     };
   }
 
@@ -300,25 +289,16 @@ export class ApiClient {
     return true;
   }
 
+  private unwrap<T>(data: unknown): T {
+    if (data && typeof data === 'object' && 'success' in data && 'data' in data) {
+      return (data as any).data as T;
+    }
+    return data as T;
+  }
+
   public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const requestKey = generateRequestKey({ method: 'GET', url, ...config });
-    
-    if (pendingRequests.has(requestKey)) {
-      throw new Error('Duplicate request in progress');
-    }
-
-    const controller = new AbortController();
-    pendingRequests.set(requestKey, controller);
-
-    try {
-      const response = await this.client.get<T>(url, {
-        ...config,
-        signal: controller.signal,
-      });
-      return response.data;
-    } finally {
-      pendingRequests.delete(requestKey);
-    }
+    const response = await this.client.get<T>(url, config);
+    return this.unwrap<T>(response.data);
   }
 
   public async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
@@ -326,24 +306,8 @@ export class ApiClient {
       throw new Error('Invalid request parameters');
     }
 
-    const requestKey = generateRequestKey({ method: 'POST', url, data, ...config });
-    
-    if (pendingRequests.has(requestKey)) {
-      throw new Error('Duplicate request in progress');
-    }
-
-    const controller = new AbortController();
-    pendingRequests.set(requestKey, controller);
-
-    try {
-      const response = await this.client.post<T>(url, data, {
-        ...config,
-        signal: controller.signal,
-      });
-      return response.data;
-    } finally {
-      pendingRequests.delete(requestKey);
-    }
+    const response = await this.client.post<T>(url, data, config);
+    return this.unwrap<T>(response.data);
   }
 
   public async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
@@ -351,24 +315,8 @@ export class ApiClient {
       throw new Error('Invalid request parameters');
     }
 
-    const requestKey = generateRequestKey({ method: 'PUT', url, data, ...config });
-    
-    if (pendingRequests.has(requestKey)) {
-      throw new Error('Duplicate request in progress');
-    }
-
-    const controller = new AbortController();
-    pendingRequests.set(requestKey, controller);
-
-    try {
-      const response = await this.client.put<T>(url, data, {
-        ...config,
-        signal: controller.signal,
-      });
-      return response.data;
-    } finally {
-      pendingRequests.delete(requestKey);
-    }
+    const response = await this.client.put<T>(url, data, config);
+    return this.unwrap<T>(response.data);
   }
 
   public async patch<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
@@ -376,45 +324,13 @@ export class ApiClient {
       throw new Error('Invalid request parameters');
     }
 
-    const requestKey = generateRequestKey({ method: 'PATCH', url, data, ...config });
-    
-    if (pendingRequests.has(requestKey)) {
-      throw new Error('Duplicate request in progress');
-    }
-
-    const controller = new AbortController();
-    pendingRequests.set(requestKey, controller);
-
-    try {
-      const response = await this.client.patch<T>(url, data, {
-        ...config,
-        signal: controller.signal,
-      });
-      return response.data;
-    } finally {
-      pendingRequests.delete(requestKey);
-    }
+    const response = await this.client.patch<T>(url, data, config);
+    return this.unwrap<T>(response.data);
   }
 
   public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const requestKey = generateRequestKey({ method: 'DELETE', url, ...config });
-    
-    if (pendingRequests.has(requestKey)) {
-      throw new Error('Duplicate request in progress');
-    }
-
-    const controller = new AbortController();
-    pendingRequests.set(requestKey, controller);
-
-    try {
-      const response = await this.client.delete<T>(url, {
-        ...config,
-        signal: controller.signal,
-      });
-      return response.data;
-    } finally {
-      pendingRequests.delete(requestKey);
-    }
+    const response = await this.client.delete<T>(url, config);
+    return this.unwrap<T>(response.data);
   }
 
   public setToken(token: string): void {

@@ -96,6 +96,25 @@ export const ranksService = {
     if (Array.isArray(response)) return response;
     return (response as { data: RoomRank[] }).data || [];
   },
+
+  async getRoomRanksList(): Promise<{ id: string; code: string; titleI18n: Record<string, string> }[]> {
+    const response = await apiClient.get<unknown>('/ranks/rooms');
+    if (Array.isArray(response)) return response as { id: string; code: string; titleI18n: Record<string, string> }[];
+    const r = response as { data?: { id: string; code: string; titleI18n: Record<string, string> }[] };
+    return r.data || [];
+  },
+
+  async getMyRoomRank(roomId: string): Promise<RoomRank | null> {
+    try {
+      return await apiClient.get<RoomRank>(`/ranks/room/${roomId}/me`);
+    } catch {
+      return null;
+    }
+  },
+
+  async revokeSystemRankByPath(userId: string, rankId: string): Promise<void> {
+    await apiClient.post(`/ranks/system/revoke/${userId}/${rankId}`);
+  },
 };
 
 export default ranksService;

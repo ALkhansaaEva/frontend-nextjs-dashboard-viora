@@ -2,7 +2,7 @@ import apiClient from './api.client';
 import type { Sanction, Strike, PaginatedResponse } from '@/types';
 
 interface SanctionRequest {
-  type: 'ban' | 'mute' | 'warning';
+  sanctionType: 'ban' | 'mute' | 'warning';
   reason: string;
   durationHours?: number;
 }
@@ -34,12 +34,10 @@ export const moderationService = {
     return normalizeArrayResponse<Sanction>(response);
   },
 
-  async getAllActiveSanctions(params?: { limit?: number; page?: number }): Promise<PaginatedResponse<Sanction>> {
-    try {
-      return await apiClient.get<PaginatedResponse<Sanction>>('/moderation/sanctions', { params: { ...params, active: true } });
-    } catch {
-      return { data: [], total: 0, page: 1, limit: 20, totalPages: 0 };
-    }
+  // Backend has no global sanctions listing endpoint; only per-user sanctions available
+  async getAllActiveSanctions(_params?: { limit?: number; page?: number }): Promise<PaginatedResponse<Sanction>> {
+    console.warn('[ModerationService] getAllActiveSanctions is not supported by the backend (no GET /moderation/sanctions)');
+    return { data: [], total: 0, page: 1, limit: 20, totalPages: 0 };
   },
 };
 

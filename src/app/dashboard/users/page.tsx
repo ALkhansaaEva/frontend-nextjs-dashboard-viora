@@ -32,7 +32,7 @@ function UserRolesCell({ userId }: { userId: string }) {
   }
 
   if (roles.length === 0) {
-    return <Badge variant="default">User</Badge>;
+    return <Badge variant="default">No Role</Badge>;
   }
 
   return (
@@ -129,11 +129,15 @@ export default function UsersPage() {
     {
       key: 'createdAt',
       header: t('createdAt'),
-      render: (user) => (
-        <span className="text-gray-600 dark:text-gray-400">
-          {new Date(user.createdAt).toLocaleDateString()}
-        </span>
-      ),
+      render: (user) => {
+        const date = user.createdAt ? new Date(user.createdAt) : null;
+        const validDate = date && !isNaN(date.getTime());
+        return (
+          <span className="text-gray-600 dark:text-gray-400">
+            {validDate ? date.toLocaleDateString() : '—'}
+          </span>
+        );
+      },
     },
     {
       key: 'actions',

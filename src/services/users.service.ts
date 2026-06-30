@@ -16,32 +16,62 @@ function normalizeUsersResponse(response: unknown): PaginatedResponse<UserRespon
   const raw = response as BackendUsersResponse;
   const data = raw.users || raw.data || [];
   
+  const mapped = data.map((user: Record<string, unknown>) => {
+    const normalized = {
+      id: user.id,
+      email: user.email ?? '',
+      nickname: user.nickname || user.global_nickname || (user.email as string || '').split('@')[0] || '',
+      avatar: user.avatar_url || user.avatar,
+      status: user.status || 'active',
+      createdAt: user.created_at || user.createdAt || new Date().toISOString(),
+      wallet: user.wallet || undefined,
+      roles: user.roles || undefined,
+    };
+    try {
+      return UserResponseSchema.parse(normalized);
+    } catch {
+      return normalized as UserResponse;
+    }
+  });
+  
   return {
-    data: data.map((user: UserResponse) => {
-      try {
-        return UserResponseSchema.parse(user);
-      } catch {
-        return user;
-      }
-    }),
+    data: mapped,
     total: raw.total || data.length,
     page: raw.page || 1,
-    limit: raw.limit || data.length,
-    totalPages: raw.totalPages || 1,
+    limit: raw.limit || data.length || 20,
+    totalPages: raw.totalPages || (raw.total > 0 ? Math.ceil(raw.total / (raw.limit || data.length || 20)) : 1),
   };
 }
 
 export const usersService = {
   async getUsers(params?: ListParams): Promise<PaginatedResponse<UserResponse>> {
-    const response = await apiClient.get<BackendUsersResponse>('/admin/users', { params });
+    const backendParams: Record<string, unknown> = {};
+    if (params?.limit) backendParams.limit = params.limit;
+    if (params?.page) backendParams.offset = (params.page - 1) * (params.limit || 20);
+    if (params?.search) backendParams.search = params.search;
+    const response = await apiClient.get<BackendUsersResponse>('/admin/users', { params: backendParams });
     return normalizeUsersResponse(response);
   },
 
   async getUserById(id: string): Promise<UserResponse> {
-    const response = await apiClient.get<BackendUsersResponse>(`/admin/users/${id}`);
-    const data = response.users || response.data?.[0];
-    if (!data) throw new Error('User not found');
-    return UserResponseSchema.parse(data);
+    const response = await apiClient.get<any>(`/admin/users/${id}`);
+    const userRecord = response?.user;
+    if (!userRecord?.id) throw new Error('User not found');
+    const mapped = UserResponseSchema.parse({
+      id: userRecord.id,
+      email: userRecord.email ?? '',
+      nickname: userRecord.nickname ?? userRecord.global_nickname ?? userRecord.email?.split('@')[0],
+      avatar: userRecord.avatar_url ?? userRecord.avatar,
+      status: userRecord.status ?? 'active',
+      createdAt: userRecord.created_at ?? userRecord.createdAt ?? new Date().toISOString(),
+      wallet: response.wallet ? {
+        userId: response.wallet.userId ?? id,
+        gold: response.wallet.gold ?? 0,
+        gems: response.wallet.gems ?? 0,
+      } : undefined,
+      roles: (response.roles ?? []).map((code: string) => ({ id: code, code })),
+    });
+    return mapped;
   },
 
   async getUserRoles(id: string): Promise<string[]> {
@@ -71,10 +101,15 @@ export const usersService = {
 
   async getUserWallet(id: string): Promise<Wallet> {
     const userResponse = await apiClient.get<any>(`/admin/users/${id}`);
-    if (!userResponse.wallet) {
+    const w = userResponse?.wallet;
+    if (!w) {
       return { userId: id, gold: 0, gems: 0 };
     }
-    return userResponse.wallet;
+    return {
+      userId: w.userId ?? id,
+      gold: typeof w.gold === 'number' ? w.gold : parseInt(String(w.gold ?? '0')),
+      gems: typeof w.gems === 'number' ? w.gems : parseInt(String(w.gems ?? '0')),
+    };
   },
 };
 

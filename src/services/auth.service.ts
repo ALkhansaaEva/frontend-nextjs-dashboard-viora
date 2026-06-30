@@ -14,7 +14,9 @@ export interface MFAEnrollResponse {
 export const authService = {
   async login(credentials: LoginRequest): Promise<AuthLoginResponse> {
     const validated = LoginSchema.parse(credentials);
-    return apiClient.post<AuthLoginResponse>('/auth/email/login', validated);
+    const raw = await apiClient.post<any>('/auth/email/login', validated);
+    const data = (raw && typeof raw === 'object' && 'success' in raw && 'data' in raw) ? raw.data : raw;
+    return data as AuthLoginResponse;
   },
 
   async register(credentials: RegisterRequest): Promise<AuthLoginResponse> {

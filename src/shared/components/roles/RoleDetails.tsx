@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { ArrowLeft, Edit2, Shield, Settings, Info, X, Plus, Check, Loader2, Users, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Edit2, Shield, Settings, Info, Star, X, Plus, Check, Loader2, Users, Search, ChevronLeft, ChevronRight, XCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
 import { Badge } from '@/shared/components/ui/Badge';
@@ -12,7 +12,7 @@ import { Input } from '@/shared/components/ui/Input';
 import { adminService } from '@/services';
 import { useLanguage } from '@/components/language-context';
 import { PageSkeleton } from '@/components/skeletons';
-import { useHasPermission, useAdminUsers } from '@/hooks';
+import { useHasPermission, useAdminUsers, useSetRoleAsDefault } from '@/hooks';
 
 import type { Role, Permission, UpdateRoleRequest, User } from '@/types';
 
@@ -49,7 +49,7 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
     staleTime: 60000,
   });
 
-  const { data: allUsersData, isLoading: allUsersLoading } = useAdminUsers({ limit: 100 });
+  const { data: allUsersData, isLoading: allUsersLoading } = useAdminUsers({ limit: 500 });
   const allUsers: User[] = allUsersData?.data || [];
 
   const { data: roleUsersData, isLoading: roleUsersLoading } = useQuery<{ data: User[]; total: number }>({
@@ -132,6 +132,8 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
     },
   });
 
+  const setDefaultMutation = useSetRoleAsDefault();
+
   const openEditModal = () => {
     if (role) {
       setEditRole({
@@ -182,7 +184,7 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white truncate">{role.name}</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{role.code}</p>
         </div>
-        {canManageRoles && !role.isSystem && (
+        {(canManageRoles || hasPermission('*')) && (
           <Button onClick={openEditModal} variant="outline" size="sm">
             <Edit2 className="w-4 h-4 mr-1" />
             {t('edit')}
@@ -209,6 +211,30 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
                 {role.priority ?? 'N/A'}
               </Badge>
             </div>
+            <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
+              <span className="text-sm text-gray-500 dark:text-gray-400">{t('isDefault') || 'Default'}</span>
+              <div className="flex items-center gap-2">
+                <Badge variant={role.isDefault ? 'info' : 'default'}>{role.isDefault ? 'Yes' : 'No'}</Badge>
+                {(canManageRoles || hasPermission('*')) && (
+                  <Button
+                    variant={role.isDefault ? 'danger' : 'outline'}
+                    size="sm"
+                    className="h-6 text-[10px] px-2"
+                    onClick={() => setDefaultMutation.mutate(role.code)}
+                    disabled={setDefaultMutation.isPending}
+                  >
+                    {setDefaultMutation.isPending ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : role.isDefault ? (
+                      <XCircle className="w-3 h-3 mr-1" />
+                    ) : (
+                      <Star className="w-3 h-3 mr-1" />
+                    )}
+                    {role.isDefault ? (t('removeDefault') || 'Remove Default') : (t('setAsDefault') || 'Set Default')}
+                  </Button>
+                )}
+              </div>
+            </div>
             {role.description && (
               <div className="py-2">
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{t('description')}</p>
@@ -217,6 +243,18 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
             )}
             {role.isSystem && (
               <Badge variant="warning" className="w-full justify-center">{t('systemRole')}</Badge>
+            )}
+            {role.createdAt && (
+              <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
+                <span className="text-sm text-gray-500 dark:text-gray-400">{t('createdAt') || 'Created'}</span>
+                <span className="text-xs text-gray-700 dark:text-gray-300">{new Date(role.createdAt).toLocaleDateString()}</span>
+              </div>
+            )}
+            {role.updatedAt && (
+              <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
+                <span className="text-sm text-gray-500 dark:text-gray-400">{t('updatedAt') || 'Updated'}</span>
+                <span className="text-xs text-gray-700 dark:text-gray-300">{new Date(role.updatedAt).toLocaleDateString()}</span>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -309,7 +347,7 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
                         className="flex items-center gap-2 p-2 rounded-lg border dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 max-w-full"
                       >
                         <Badge 
-                          variant={perm.code === '*' ? 'warning' : 'success'}
+                          variant={perm.code === "admin.full_access" ? 'warning' : 'success'}
                           className="cursor-pointer truncate max-w-[120px]"
                           onClick={() => handleCopyCode(perm.code)}
                         >
@@ -317,7 +355,7 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
                           {perm.code}
                         </Badge>
                         <span className="text-sm truncate hidden sm:inline">{perm.name}</span>
-                        {canManageRoles && !role.isSystem && perm.code !== '*' && (
+                          {(canManageRoles && !role.isSystem || hasPermission('*')) && perm.code !== "admin.full_access" && (
                           <Button
                             variant="ghost"
                             size="sm"
@@ -337,12 +375,12 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
             </CardContent>
           </Card>
 
-          {!role.isSystem && (
+          {(!role.isSystem || hasPermission('*')) && (
             <Card className="flex-1 min-w-0">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">
                   {t('assignPermission')}
-                  {!canManageRoles && <span className="text-xs font-normal text-gray-400 ml-2">({t('restricted')})</span>}
+                  {!canManageRoles && !hasPermission('*') && <span className="text-xs font-normal text-gray-400 ml-2">({t('restricted')})</span>}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -358,7 +396,7 @@ export function RoleDetails({ roleCode }: RoleDetailsProps) {
                           <p className="text-sm font-mono text-primary font-medium truncate">{perm.code}</p>
                           {perm.name && <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{perm.name}</p>}
                         </div>
-                        {canManageRoles ? (
+                        {(canManageRoles || hasPermission('*')) ? (
                           <Button
                             variant="outline"
                             size="sm"

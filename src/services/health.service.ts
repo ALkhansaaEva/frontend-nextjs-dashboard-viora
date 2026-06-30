@@ -2,33 +2,19 @@ import apiClient from './api.client';
 import adminService from './admin.service';
 import reportsService from './reports.service';
 import supportService from './support.service';
-import moderationService from './moderation.service';
+import roomsService from './rooms.service';
+import { matchesService } from './matches.service';
+import { achievementsService } from './achievements.service';
 import type { HealthMetrics, DashboardStats } from '@/types';
 
-async function fetchWithFallback<T>(
+async function fetchCount<T>(
   fetchFn: () => Promise<{ total?: number; data?: T[] }>,
-  fallbackFn?: () => Promise<{ total?: number; data?: T[] }>
 ): Promise<number> {
   try {
     const result = await fetchFn();
-    if (result && result.total !== undefined && result.total > 0) {
-      return result.total;
-    }
-    if (result && result.data && result.data.length > 0) {
-      return result.data.length;
-    }
-  } catch {
-    console.warn('[Stats] Primary fetch failed, trying fallback');
-  }
-  
-  if (fallbackFn) {
-    try {
-      const fallbackResult = await fallbackFn();
-      return fallbackResult.total ?? fallbackResult.data?.length ?? 0;
-    } catch {
-      console.warn('[Stats] Fallback also failed');
-    }
-  }
+    if (result?.total != null) return result.total;
+    if (result?.data?.length) return result.data.length;
+  } catch { /* ignore */ }
   return 0;
 }
 
@@ -46,30 +32,33 @@ export const healthService = {
   },
 
   async getDashboardStats(): Promise<DashboardStats> {
-    const [totalUsers, activeReports, openTickets, activeSanctions] = await Promise.all([
-      fetchWithFallback(
-        () => adminService.getUsers({ limit: 1 }),
-        () => adminService.getUsers({ limit: 1000 })
-      ),
-      fetchWithFallback(
-        () => reportsService.getReports({ limit: 1, status: 'pending' }),
-        () => reportsService.getReports({ limit: 1000 })
-      ),
-      fetchWithFallback(
-        () => supportService.getTickets({ limit: 1, status: 'open' }),
-        () => supportService.getTickets({ limit: 1000 })
-      ),
-      fetchWithFallback(
-        () => moderationService.getAllActiveSanctions({ limit: 1 }),
-        () => moderationService.getAllActiveSanctions({ limit: 1000 })
-      ),
-    ]);
+    const [totalUsers, activeReports, openTickets, activeRooms, achievementsCount, matchResult, metrics] =
+      await Promise.all([
+        fetchCount(() => adminService.getUsers({ limit: 1 })),
+        fetchCount(() => reportsService.getReports({ limit: 1, status: 'open' })),
+        fetchCount(() => supportService.getTickets({ limit: 1, status: 'open' })),
+        fetchCount(() => roomsService.getRooms({ limit: 1 })),
+        achievementsService.getAchievements().then((a) => a.length).catch(() => 0),
+        fetchCount(() => matchesService.getHistory({ limit: 1 })),
+        apiClient.get<HealthMetrics>('/health/metrics').catch(() => null),
+      ]);
+
+    const heapUsed = metrics?.memory?.heapUsed ?? 0;
+    const heapTotal = metrics?.memory?.heapTotal ?? 1;
+    const systemLoad = Math.round((heapUsed / heapTotal) * 100);
 
     return {
       totalUsers,
       activeReports,
       openTickets,
-      activeSanctions,
+      activeSanctions: 0,
+      activeRooms,
+      totalAchievements: achievementsCount,
+      totalMatches: matchResult,
+      dailyActiveUsers: 0,
+      systemLoad,
+      avgResponseTime: 0,
+      onlineUsers: metrics?.activeConnections ?? 0,
     };
   },
 };

@@ -9,10 +9,8 @@ interface BarChartProps {
   className?: string;
 }
 
-function BarChartComponent({ data, height: _height = 200, className }: BarChartProps) {
+function BarChartComponent({ data, height = 200, className }: BarChartProps) {
   const maxValue = Math.max(...data.map(d => d.value), 1);
-  const hasAnyValue = data.some(d => d.value > 0);
-  const minHeightPercent = 15;
 
   const colorClasses: Record<string, string> = {
     'bg-indigo-500': 'bg-gradient-to-t from-indigo-600 to-indigo-400',
@@ -22,40 +20,39 @@ function BarChartComponent({ data, height: _height = 200, className }: BarChartP
   };
 
   return (
-    <div className={cn('w-full', className)}>
-      <div className="flex items-end justify-between h-full gap-4 md:gap-6 px-2 md:px-4">
+    <div className={cn('w-full', className)} style={{ height }}>
+      <div className="flex items-end justify-between gap-1 md:gap-3 h-full px-2 md:px-4">
         {data.map((item, index) => {
           const hasValue = item.value > 0;
-          const barHeight = hasValue ? Math.max((item.value / maxValue) * 100, minHeightPercent) : 4;
+          const barHeightPct = hasValue ? Math.max((item.value / maxValue) * 100, 4) : 0;
           const colorClass = colorClasses[item.color || 'bg-indigo-500'] || 'bg-gradient-to-t from-indigo-600 to-indigo-400';
 
           return (
-            <div key={index} className="flex-1 flex flex-col items-center gap-2 md:gap-3">
-              <div className="w-full flex items-end justify-center h-full min-h-[100px] md:min-h-[120px]">
-                <div
-                  className={cn(
-                    'w-full max-w-16 md:max-w-20 rounded-t-2xl shadow-md transition-all duration-500 ease-out hover:shadow-lg hover:-translate-y-1 cursor-pointer relative overflow-hidden group',
-                    colorClass,
-                    !hasValue && 'bg-gray-200 dark:bg-gray-700'
-                  )}
-                  style={{ height: `${hasAnyValue ? barHeight : minHeightPercent}%` }}
-                  title={item.value.toLocaleString()}
-                >
-                  {hasValue && (
+            <div key={index} className="flex-1 flex flex-col items-center h-full">
+              <div className="flex-1 w-full flex items-end justify-center min-h-[0]">
+                {hasValue && (
+                  <div
+                    className={cn(
+                      'w-full max-w-14 md:max-w-18 rounded-t-2xl shadow-md transition-all duration-500 ease-out hover:shadow-lg hover:-translate-y-1 overflow-hidden group',
+                      colorClass,
+                    )}
+                    style={{ height: `${barHeightPct}%` }}
+                    title={item.value.toLocaleString()}
+                  >
                     <div className="absolute -top-6 md:-top-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-extrabold text-gray-800 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       {item.value}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-              <div className="text-center space-y-0.5 md:space-y-1 w-full">
+              <div className="text-center space-y-0.5 md:space-y-1 w-full shrink-0">
                 <span className={cn(
                   'block leading-tight font-bold',
-                  hasValue ? 'text-base md:text-lg text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'
+                  hasValue ? 'text-sm md:text-base text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'
                 )}>
                   {item.value}
                 </span>
-                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 leading-tight block">
+                <span className="text-[10px] md:text-xs font-medium text-gray-500 dark:text-gray-400 leading-tight block">
                   {item.label}
                 </span>
               </div>
@@ -186,6 +183,7 @@ function DonutChartComponent({
     indigo: 'text-indigo-500',
     blue: 'text-blue-500',
     green: 'text-green-500',
+    emerald: 'text-emerald-500',
     red: 'text-red-500',
     amber: 'text-amber-500',
   };

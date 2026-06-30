@@ -163,3 +163,14 @@ export const useRevokeRoleFromUser = () => {
     },
   });
 };
+
+export const useSetRoleAsDefault = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (code: string) => adminService.setRoleAsDefault(code),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] });
+      queryClient.invalidateQueries({ queryKey: ['role'] });
+    },
+  });
+};

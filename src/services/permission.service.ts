@@ -4,30 +4,26 @@ import { PERMISSIONS } from '@/types/permissions';
 
 export async function resolveUserPermissions(userId: string): Promise<Permission[]> {
   try {
-    const userResponse = await apiClient.get<{ roles: { code: string; permissions?: string[] }[] }>(`/users/${userId}`);
-    const userRoles = userResponse.roles || [];
-    
-    if (userRoles.length === 0) {
-      return [];
-    }
+    const roleCodes = await apiClient.get<string[]>(`/admin/users/${userId}/roles`);
+    const roleList = Array.isArray(roleCodes) ? roleCodes : [];
+
+    if (roleList.length === 0) return [];
 
     const allPermissionsSet = new Set<Permission>();
 
-    for (const role of userRoles) {
+    for (const roleCode of roleList) {
       try {
-        const rolePermsResponse = await apiClient.get<{ permissions?: string[] }>(`/admin/roles/${role.code}/permissions`);
-        const rolePerms = rolePermsResponse.permissions || [];
-        
+        const rolePermsResponse = await apiClient.get<string[]>(`/admin/roles/${roleCode}/permissions`);
+        const rolePerms = Array.isArray(rolePermsResponse) ? rolePermsResponse : [];
+
         for (const perm of rolePerms) {
-          if (perm === '*') {
-            return ['*'] as Permission[];
-          }
+          if (perm === '*') return ['*'] as Permission[];
           if (PERMISSIONS.includes(perm as Permission)) {
             allPermissionsSet.add(perm as Permission);
           }
         }
       } catch {
-        console.warn(`Failed to fetch permissions for role: ${role.code}`);
+        console.warn(`Failed to fetch permissions for role: ${roleCode}`);
       }
     }
 
@@ -36,18 +32,4 @@ export async function resolveUserPermissions(userId: string): Promise<Permission
     console.error('Failed to resolve user permissions:', error);
     return [];
   }
-}
-
-export function hasWildcardAccess(permissions: Permission[]): boolean {
-  return permissions.includes('*');
-}
-
-export function canAccessDashboard(permissions: Permission[]): boolean {
-  if (permissions.includes('*')) return true;
-  if (permissions.includes('manage_config')) return true;
-  return permissions.includes('dashboard.view');
-}
-
-export function isPermissionDenied(permissions: Permission[]): boolean {
-  return permissions.length === 0;
 }

@@ -1,78 +1,31 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
 import { Input } from '@/shared/components/ui/Input';
-import { authService } from '@/services';
-import { useAuthStore, type UserRole } from '@/store';
-
-const ROLE_PERMISSIONS: Record<string, string[]> = {
-  super_admin: [
-    '*', 'manage_users', 'view_users', 'manage_roles', 'manage_permissions',
-    'adjust_balance', 'view_transactions', 'global_ban', 'global_mute',
-    'view_audit_logs', 'manage_reports', 'manage_tickets', 'manage_all_rooms',
-    'manage_games', 'manage_config', 'dashboard.view',
-    'room_kick_user', 'room_mute_user', 'room_ban_user', 'room_manage_mic',
-    'room_assign_role', 'room_edit_settings', 'room_manage_members',
-    'room_edit_name', 'room_edit_slogan', 'room_invite_user'
-  ],
-  admin: [
-    'manage_users', 'view_users', 'manage_roles', 'manage_permissions',
-    'adjust_balance', 'view_transactions', 'global_ban', 'global_mute',
-    'view_audit_logs', 'manage_reports', 'manage_tickets', 'manage_all_rooms',
-    'manage_games', 'manage_config', 'dashboard.view',
-    'room_kick_user', 'room_mute_user', 'room_ban_user', 'room_manage_mic',
-    'room_assign_role', 'room_edit_settings', 'room_manage_members',
-    'room_edit_name', 'room_edit_slogan', 'room_invite_user'
-  ],
-  moderator: [
-    'view_users', 'global_ban', 'global_mute', 'view_audit_logs',
-    'manage_reports', 'manage_tickets', 'dashboard.view',
-    'room_kick_user', 'room_mute_user', 'room_ban_user', 'room_manage_mic'
-  ],
-  support: [
-    'view_users', 'manage_tickets', 'view_transactions', 'dashboard.view'
-  ],
-  manager: [
-    'view_users', 'adjust_balance', 'view_transactions', 'dashboard.view',
-    'room_manage_members', 'room_edit_name', 'room_edit_slogan', 'room_invite_user'
-  ],
-  user: ['dashboard.view']
-};
-
-const VALID_ROLES = ['super_admin', 'admin', 'moderator', 'support', 'manager', 'user'];
+import { useAuthStore } from '@/store';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setAuth, isAuthenticated: authState } = useAuthStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const { login, isAuthenticated, clearAuth, error: storeError, isLoading: storeLoading } = useAuthStore();
   const [error, setError] = useState('');
-  const [navigated, setNavigated] = useState(false);
 
-  useEffect(() => {
-    if (authState && !navigated) {
-      setNavigated(true);
-      router.push('/dashboard');
+  const checkAuth = useCallback(() => {
+    if (!isAuthenticated) return;
+    const expiry = typeof window !== 'undefined' ? localStorage.getItem('tokenExpiry') : null;
+    if (expiry && Date.now() < parseInt(expiry)) {
+      router.replace('/dashboard');
+    } else {
+      clearAuth();
     }
-  }, [authState, router, navigated]);
+  }, [isAuthenticated, router, clearAuth]);
 
-  const DEFAULT_PERMISSIONS = ['dashboard.view'];
-const resolvePermissions = (roleCodes: string[]): string[] => {
-    const permissions = new Set<string>();
-    
-    for (const role of roleCodes) {
-      const perms = ROLE_PERMISSIONS[role] ?? DEFAULT_PERMISSIONS;
-      perms.forEach(p => permissions.add(p));
-    }
-    
-    return Array.from(permissions);
-  };
+  useEffect(() => { checkAuth(); }, [checkAuth]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
 
     const formData = new FormData(e.currentTarget);
@@ -80,46 +33,20 @@ const resolvePermissions = (roleCodes: string[]): string[] => {
     const password = formData.get('password') as string;
 
     try {
-      const response = await authService.login({ email, password });
-      console.log('Login response:', response);
-      
-      if (!response.accessToken) {
-        throw new Error('No access token in response');
-      }
-      
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', response.accessToken);
-        localStorage.setItem('refreshToken', response.refreshToken);
-      }
-      
-      const roleCodes = response.roles || [];
-      const permissions = resolvePermissions(roleCodes);
-      
-      const roles: UserRole[] = roleCodes.map((r: string) => {
-        if (VALID_ROLES.includes(r)) return r as UserRole;
-        return 'user' as UserRole;
-      });
-      
-      const user = {
-        id: response.user.id,
-        immutableUserId: response.user.id,
-        email: response.user.email,
-        nickname: response.user.email?.split('@')[0] || 'User',
-        status: 'active' as const,
-        roles: [],
-        createdAt: new Date().toISOString(),
-      };
-      
-      setAuth(user, response.accessToken, response.refreshToken, roles, permissions);
-      router.push('/dashboard');
+      await login(email, password);
+      router.replace('/dashboard');
     } catch (err: unknown) {
-      console.error('Login error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+      const message =
+        err instanceof Error
+          ? err.message
+          : err && typeof err === 'object' && 'message' in err
+            ? String((err as { message: string }).message)
+            : 'Login failed';
+      setError(message);
     }
   };
+
+  const displayError = error || storeError;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
@@ -132,43 +59,25 @@ const resolvePermissions = (roleCodes: string[]): string[] => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  name="email"
-                  type="email"
-                  placeholder="admin@example.com"
-                  className="pl-10"
-                  required
-                />
+                <Input name="email" type="email" placeholder="admin@example.com" className="pl-10" required />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  name="password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="pl-10"
-                  required
-                />
+                <Input name="password" type="password" placeholder="••••••••" className="pl-10" required />
               </div>
             </div>
 
-            {error && (
-              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-            )}
+            {displayError && <p className="text-sm text-red-600 dark:text-red-400">{displayError}</p>}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
+            <Button type="submit" className="w-full" disabled={storeLoading}>
+              {storeLoading ? (
                 <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
               ) : (
                 <>

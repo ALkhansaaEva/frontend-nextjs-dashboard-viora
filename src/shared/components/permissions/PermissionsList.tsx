@@ -2,16 +2,16 @@
 
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Copy, Check, Plus, Shield, Filter, LayoutGrid, Key, Eye, Globe, DoorOpen, Wallet, Settings } from 'lucide-react';
+import { Plus, Search, Copy, Check, Shield, Filter, LayoutGrid, Key, Eye, Globe, DoorOpen, Wallet, Settings, Info } from 'lucide-react';
 import { Card, CardContent } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
 import { Input } from '@/shared/components/ui/Input';
 import { Modal } from '@/shared/components/ui/Modal';
-import { ConfirmDialog } from '@/shared/components/ui/ConfirmDialog';
 import { useLanguage } from '@/components/language-context';
 import { PageSkeleton } from '@/components/skeletons';
 import { usePermissions as useFetchPermissions, useCreatePermission, useDeletePermission, useHasPermission } from '@/hooks';
 import { PermissionCard } from './PermissionCard';
+import { ConfirmDialog } from '@/shared/components/ui/ConfirmDialog';
 import type { Permission } from '@/types';
 
 const PERMISSION_TYPE_CONFIG: Record<string, { icon: React.ElementType; color: string; bgGradient: string; label: string; labelAr: string }> = {
@@ -39,29 +39,24 @@ const getPermissionTypeConfig = (code: string) => {
 interface PermissionsListProps {
   permissions?: Permission[];
   isLoading?: boolean;
-  refetch?: () => void;
 }
 
-export function PermissionsList({ permissions: initialPermissions, isLoading: initialLoading, refetch: initialRefetch }: PermissionsListProps) {
+export function PermissionsList({ permissions: initialPermissions, isLoading: initialLoading }: PermissionsListProps) {
   const { t } = useLanguage();
-  const hasPermission = useHasPermission();
-  const canManagePermissions = hasPermission('manage_permissions');
   
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [selectedPermission, setSelectedPermission] = useState<Permission | null>(null);
-  const [newPermission, setNewPermission] = useState({ code: '', name: '', description: '', type: 'other' });
   const [copiedAll, setCopiedAll] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Permission | null>(null);
+  const [newPermission, setNewPermission] = useState({ code: '', name: '', description: '' });
 
-  const { data: permissionsData, isLoading, refetch } = useFetchPermissions();
-  const permissions = initialPermissions ?? permissionsData;
-  const loading = initialLoading ?? isLoading;
-  const doRefetch = initialRefetch ?? refetch;
-
+  const { data: permissionsData, isLoading } = useFetchPermissions();
+  const canManage = useHasPermission()('manage_permissions');
   const createPermissionMutation = useCreatePermission();
   const deletePermissionMutation = useDeletePermission();
+  const permissions = initialPermissions ?? permissionsData;
+  const loading = initialLoading ?? isLoading;
 
   const filteredPermissions = useMemo(() => {
     let result: Permission[] = permissions ?? [];
@@ -102,39 +97,6 @@ export function PermissionsList({ permissions: initialPermissions, isLoading: in
     setTimeout(() => setCopiedAll(false), 2000);
   };
 
-  const handleCreatePermission = () => {
-    if (newPermission.code && newPermission.name) {
-      createPermissionMutation.mutate(newPermission, {
-        onSuccess: () => {
-          setShowCreateModal(false);
-          setNewPermission({ code: '', name: '', description: '', type: 'other' });
-          doRefetch?.();
-        },
-      });
-    }
-  };
-
-  const handleDeletePermission = (permission: Permission) => {
-    setSelectedPermission(permission);
-    setShowDeleteConfirm(true);
-  };
-
-  const confirmDelete = () => {
-    if (selectedPermission?.id) {
-      deletePermissionMutation.mutate(selectedPermission.id, {
-        onSuccess: () => {
-          setShowDeleteConfirm(false);
-          setSelectedPermission(null);
-          doRefetch?.();
-        },
-        onError: () => {
-          setShowDeleteConfirm(false);
-          setSelectedPermission(null);
-        },
-      });
-    }
-  };
-
   if (loading) {
     return <PageSkeleton />;
   }
@@ -151,6 +113,14 @@ export function PermissionsList({ permissions: initialPermissions, isLoading: in
           </p>
         </div>
         <div className="flex gap-2">
+          {canManage && (
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button onClick={() => setShowCreateModal(true)} className="shadow-lg shadow-primary/20">
+                <Plus className="w-5 h-5 mr-2" />
+                {t('createPermission') || 'Create Permission'}
+              </Button>
+            </motion.div>
+          )}
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button variant="outline" onClick={handleCopyAllCodes} className="shadow-sm">
               {copiedAll ? (
@@ -166,14 +136,6 @@ export function PermissionsList({ permissions: initialPermissions, isLoading: in
               )}
             </Button>
           </motion.div>
-          {canManagePermissions && (
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button onClick={() => setShowCreateModal(true)} className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
-                <Plus className="w-5 h-5 mr-2" />
-                {t('createPermission') || 'Create Permission'}
-              </Button>
-            </motion.div>
-          )}
         </div>
       </div>
 
@@ -246,8 +208,8 @@ export function PermissionsList({ permissions: initialPermissions, isLoading: in
               >
                 <PermissionCard
                   permission={permission}
-                  canManage={canManagePermissions}
-                  onDelete={handleDeletePermission}
+                  canManage={canManage}
+                  onDelete={(p) => setDeleteTarget(p)}
                 />
               </motion.div>
           ))}
@@ -274,71 +236,75 @@ export function PermissionsList({ permissions: initialPermissions, isLoading: in
         </span>
       </div>
 
-      <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title={t('createPermission') || 'Create Permission'} size="lg">
+      <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+        <p className="text-xs text-amber-700 dark:text-amber-300">
+          {t('permissionsManagedOnServer') || 'Permissions are defined on the server. To add or modify permissions, update the backend permission definitions.'}
+        </p>
+      </div>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        title={t('deletePermission') || 'Delete Permission'}
+        message={`${t('deletePermissionConfirm') || 'Are you sure you want to delete the permission'}: "${deleteTarget?.code}"?`}
+        confirmText={t('delete') || 'Delete'}
+        cancelText={t('cancel') || 'Cancel'}
+        variant="danger"
+        onConfirm={() => {
+          if (deleteTarget) {
+            deletePermissionMutation.mutate(deleteTarget.code);
+            setDeleteTarget(null);
+          }
+        }}
+      />
+
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title={t('createPermission') || 'Create Permission'}
+        size="lg"
+      >
         <div className="space-y-6">
           <Input
-            label={t('permissionCode') || 'Permission Code'}
+            label="Permission Code"
             value={newPermission.code}
-            onChange={(e) => setNewPermission({ ...newPermission, code: e.target.value.toUpperCase().replace(/\s/g, '_') })}
-            placeholder="e.g., CUSTOM_PERMISSION"
+            onChange={(e) => setNewPermission({ ...newPermission, code: e.target.value })}
+            placeholder="e.g., manage_bans"
           />
           <Input
             label={t('name') || 'Display Name'}
             value={newPermission.name}
             onChange={(e) => setNewPermission({ ...newPermission, name: e.target.value })}
-            placeholder="e.g., Custom Permission"
+            placeholder="e.g., Manage Bans"
           />
           <Input
             label={t('description') || 'Description'}
             value={newPermission.description}
             onChange={(e) => setNewPermission({ ...newPermission, description: e.target.value })}
-            placeholder="Permission description..."
+            placeholder="Optional description"
           />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('permissionType') || 'Permission Type'}
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {['manage', 'view', 'global', 'room', 'adjust', 'other'].map((type) => (
-                <Button
-                  key={type}
-                  variant={newPermission.type === type ? 'primary' : 'outline'}
-                  size="sm"
-                  onClick={() => setNewPermission({ ...newPermission, type })}
-                >
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </Button>
-              ))}
-            </div>
-          </div>
           <div className="flex gap-3 pt-4">
             <Button
               className="w-full"
-              onClick={handleCreatePermission}
+              onClick={() => {
+                createPermissionMutation.mutate(newPermission, {
+                  onSuccess: () => {
+                    setShowCreateModal(false);
+                    setNewPermission({ code: '', name: '', description: '' });
+                  },
+                });
+              }}
               disabled={!newPermission.code || !newPermission.name || createPermissionMutation.isPending}
             >
-              {createPermissionMutation.isPending ? t('creating') : t('createPermission') || 'Create Permission'}
+              {createPermissionMutation.isPending ? 'Creating...' : 'Create Permission'}
             </Button>
             <Button variant="outline" onClick={() => setShowCreateModal(false)} className="w-32">
-              {t('cancel') || 'Cancel'}
+              {t('cancel')}
             </Button>
           </div>
         </div>
       </Modal>
-
-      <ConfirmDialog
-        open={showDeleteConfirm}
-        onOpenChange={(open) => {
-          setShowDeleteConfirm(open);
-          if (!open) setSelectedPermission(null);
-        }}
-        onConfirm={confirmDelete}
-        title={t('deletePermission') || 'Delete Permission'}
-        message={`${t('deletePermissionConfirm') || 'Are you sure you want to delete'} "${selectedPermission?.name || selectedPermission?.code}"?`}
-        confirmText={t('delete') || 'Delete'}
-        cancelText={t('cancel') || 'Cancel'}
-        variant="danger"
-      />
     </div>
   );
 }

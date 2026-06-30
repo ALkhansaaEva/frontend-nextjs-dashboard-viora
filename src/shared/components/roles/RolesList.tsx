@@ -42,13 +42,14 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
   const router = useRouter();
   const { t } = useLanguage();
   const hasPermission = useHasPermission();
-  const canManageRoles = hasPermission('manage_roles');
+  const canManageRoles = hasPermission('manage_roles') || hasPermission('*');
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showManageModal, setShowManageModal] = useState(false);
   const [showAssignUserModal, setShowAssignUserModal] = useState(false);
+  const [assignUserPage, setAssignUserPage] = useState(1);
   const [userSearch, setUserSearch] = useState('');
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('all');
@@ -66,7 +67,7 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
   const doRefetch = initialRefetch ?? refetch;
 
   const { data: permissionsData } = useFetchPermissions();
-  const { data: adminUsersData, isLoading: adminUsersLoading, refetch: refetchAdminUsers } = useFetchAdminUsers({ limit: 100 });
+  const { data: adminUsersData, isLoading: adminUsersLoading, refetch: refetchAdminUsers } = useFetchAdminUsers({ page: assignUserPage, limit: 20 });
 
   const { data: roleUserCounts } = useQuery<Record<string, number>>({
     queryKey: ['role-user-counts'],
@@ -202,6 +203,7 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
       setSelectedRoleCode(role.code);
       setSelectedUser('');
       setUserSearch('');
+      setAssignUserPage(1);
       setShowAssignUserModal(true);
       refetchAdminUsers();
     } else if (selectedRoleCode) {
@@ -484,7 +486,7 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
               {(permissionsData ?? [])
                 .filter(p => {
                   const rolePerms = selectedRole?.permissions ?? [];
-                  if (rolePerms.includes('*')) return false;
+                  if (rolePerms.includes("admin.full_access")) return false;
                   return !rolePerms.includes(p.code);
                 })
                 .map((perm) => (
@@ -498,7 +500,7 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
           <div className="grid grid-cols-2 gap-3">
             <Button
               onClick={handleAssignPermission}
-              disabled={!selectedPermission || assignPermissionMutation.isPending || (selectedRole?.permissions ?? []).includes('*') || (selectedRole?.permissions ?? []).includes(selectedPermission)}
+              disabled={!selectedPermission || assignPermissionMutation.isPending || (selectedRole?.permissions ?? []).includes("admin.full_access") || (selectedRole?.permissions ?? []).includes(selectedPermission)}
               className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
             >
               {assignPermissionMutation.isPending ? (
@@ -508,7 +510,7 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
               )}
               {assignPermissionMutation.isPending ? t('assigning') : t('assignPermission') || 'Assign'}
             </Button>
-            {(selectedRole?.permissions ?? []).includes('*') ? (
+            {(selectedRole?.permissions ?? []).includes("admin.full_access") ? (
                 <span className="text-xs text-green-600 font-bold">All Permissions</span>
               ) : selectedRole?.permissions?.includes(selectedPermission) ? (
                 <Button
@@ -533,7 +535,7 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
                 {t('currentPermissions') || 'Current Permissions'}
               </h4>
               <div className="flex flex-wrap gap-2">
-                {selectedRole?.permissions?.includes('*') ? (
+                {selectedRole?.permissions?.includes("admin.full_access") ? (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-100 text-green-700 font-bold">
                     All Permissions (*)
                   </span>
@@ -652,8 +654,29 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
             </Button>
           </div>
 
-          <div className="text-xs text-gray-400 text-center pt-2">
-            {adminUsersData?.total ? `${adminUsersData.total} users total` : ''}
+          <div className="flex items-center justify-between text-xs text-gray-400 pt-2">
+            <span>{adminUsersData?.total ? `${adminUsersData.total} users total` : ''}</span>
+            {adminUsersData && adminUsersData.totalPages > 1 && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={assignUserPage <= 1}
+                  onClick={() => setAssignUserPage(p => Math.max(1, p - 1))}
+                >
+                  Prev
+                </Button>
+                <span>Page {assignUserPage} of {adminUsersData.totalPages}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={assignUserPage >= (adminUsersData.totalPages || 1)}
+                  onClick={() => setAssignUserPage(p => p + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </Modal>

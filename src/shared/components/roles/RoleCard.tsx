@@ -80,6 +80,11 @@ function RoleCardComponent({ role, canManage, onEdit, onDelete, onClick, onAssig
             <IconComponent className="w-5 h-5" />
           </div>
           <div className="flex flex-col items-end gap-1">
+            {role.isDefault && (
+              <Badge variant="info" className="px-2 py-0.5 text-[10px]">
+                Default
+              </Badge>
+            )}
             <Badge variant={getPriorityBadgeVariant(typeof role.priority === 'number' ? role.priority : undefined)} className="px-2 py-0.5 text-[10px]">
               Lvl {role.priority ?? 10}
             </Badge>
@@ -101,7 +106,7 @@ function RoleCardComponent({ role, canManage, onEdit, onDelete, onClick, onAssig
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <span className="text-[9px] uppercase tracking-wider text-gray-400 font-semibold">Permissions</span>
-              <span className="text-xs font-bold text-gray-700 dark:text-gray-200">{role.permissions?.includes('*') ? '*' : role.permissions?.length || 0}</span>
+              <span className="text-xs font-bold text-gray-700 dark:text-gray-200">{role.permissions?.includes("admin.full_access") ? "admin.full_access" : role.permissions?.length || 0}</span>
             </div>
             {userCount !== undefined && (
               <div className="flex flex-col">
@@ -116,7 +121,7 @@ function RoleCardComponent({ role, canManage, onEdit, onDelete, onClick, onAssig
           </div>
 
           <div className="flex gap-1" onClick={e => e.stopPropagation()}>
-            {canManage && !role.isSystem && onAssignPermission && (
+            {canManage && onAssignPermission && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -142,19 +147,21 @@ function RoleCardComponent({ role, canManage, onEdit, onDelete, onClick, onAssig
                 <UserCheck className="w-4 h-4" />
               </Button>
             )}
-            {canManage && !role.isSystem && (
+            {canManage && (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-full w-9 h-9 p-0 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(role);
-                  }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                {!role.isSystem && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-full w-9 h-9 p-0 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(role);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"

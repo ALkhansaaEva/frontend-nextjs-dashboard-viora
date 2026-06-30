@@ -187,10 +187,7 @@ export const roomsService = {
 
   async getAdminRooms(params?: ListParams): Promise<PaginatedResponse<Room>> {
     const searchParams = new URLSearchParams();
-    if (params?.page) {
-      const offset = (params.page - 1) * (params.limit || 20);
-      searchParams.set('offset', offset.toString());
-    }
+    if (params?.page) searchParams.set('offset', ((params.page - 1) * (params.limit || 20)).toString());
     if (params?.limit) searchParams.set('limit', params.limit.toString());
     if (params?.search) searchParams.set('search', params.search);
     const query = searchParams.toString();
@@ -223,6 +220,86 @@ export const roomsService = {
 
   async getRoomStats(): Promise<{ totalRooms: number; activeRooms: number; totalMembers: number }> {
     return apiClient.get('/rooms/admin/rooms/stats');
+  },
+
+  async getMyRooms(): Promise<Room[]> {
+    const response = await apiClient.get<Room[] | { data: Room[] }>('/rooms/me');
+    if (Array.isArray(response)) return response;
+    return (response as { data: Room[] }).data || [];
+  },
+
+  async sendChatMessage(roomId: string, message: string): Promise<RoomMessage> {
+    return apiClient.post<RoomMessage>(`/rooms/${roomId}/chat`, { message });
+  },
+
+  async kickUserWithDuration(roomId: string, targetUserId: string, durationType: '2h' | '12m', reason?: string): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/kick/${targetUserId}`, { durationType, reason });
+  },
+
+  async banUserWithReason(roomId: string, targetUserId: string, reason?: string): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/ban/${targetUserId}`, { reason });
+  },
+
+  async unbanUserById(roomId: string, targetUserId: string): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/unban/${targetUserId}`);
+  },
+
+  async muteUserWithDetails(roomId: string, targetUserId: string, muteType: 'chat' | 'mic' | 'all', durationMinutes?: number, reason?: string): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/mute/${targetUserId}`, { muteType, durationMinutes, reason });
+  },
+
+  async unmuteUserByType(roomId: string, targetUserId: string, muteType?: 'chat' | 'mic' | 'all'): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/unmute/${targetUserId}`, { muteType });
+  },
+
+  async assignRoomRole(roomId: string, targetUserId: string, role: 'moderator' | 'member' | 'speaker'): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/assign-role/${targetUserId}`, { role });
+  },
+
+  async removeRoomRole(roomId: string, targetUserId: string): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/remove-role/${targetUserId}`);
+  },
+
+  async transferOwnership(roomId: string, newOwnerId: string): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/transfer-ownership/${newOwnerId}`);
+  },
+
+  async leaveMicSlot(roomId: string): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/mic-slots/leave`);
+  },
+
+  async setMicSlotState(roomId: string, index: number, state: { isMuted?: boolean; isDeafened?: boolean }): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/mic-slots/${index}/state`, state);
+  },
+
+  async takeMicSlot(roomId: string, index: number): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/mic-slots/${index}/take`);
+  },
+
+  async updateRoomTheme(roomId: string, theme: string): Promise<void> {
+    await apiClient.patch(`/rooms/${roomId}/theme`, { theme });
+  },
+
+  async updateRoomWallpaper(roomId: string, wallpaper: string): Promise<void> {
+    await apiClient.patch(`/rooms/${roomId}/wallpaper`, { wallpaper });
+  },
+
+  async updateRoomSlogan(roomId: string, slogan: string): Promise<void> {
+    await apiClient.patch(`/rooms/${roomId}/slogan`, { slogan });
+  },
+
+  async getPins(roomId: string): Promise<RoomMessage[]> {
+    const response = await apiClient.get<RoomMessage[] | { data: RoomMessage[] }>(`/rooms/${roomId}/pins`);
+    if (Array.isArray(response)) return response;
+    return (response as { data: RoomMessage[] }).data || [];
+  },
+
+  async createPin(roomId: string, message: string): Promise<void> {
+    await apiClient.post(`/rooms/${roomId}/pins`, { message });
+  },
+
+  async getDeleteRoom(roomId: string): Promise<void> {
+    await apiClient.delete(`/rooms/${roomId}`);
   },
 };
 

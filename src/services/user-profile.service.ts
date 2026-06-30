@@ -24,28 +24,27 @@ interface UserBootstrap {
 
 export const userProfileService = {
   async getProfile(): Promise<User> {
-    const response = await apiClient.get<{ data: User }>('/users/me');
-    return response.data;
+    const response = await apiClient.get<{ user: User }>('/users/me');
+    return response.user;
   },
 
   async getBootstrap(): Promise<UserBootstrap> {
-    const response = await apiClient.get<{ data: UserBootstrap }>('/users/me/bootstrap');
-    return response.data;
+    return apiClient.get<UserBootstrap>('/users/me/bootstrap');
   },
 
   async updateProfile(data: UserProfile): Promise<User> {
-    const response = await apiClient.patch<{ data: User }>('/users/me/profile', data);
-    return response.data;
+    const response = await apiClient.patch<{ user: User }>('/users/me/profile', data);
+    return response.user;
   },
 
   async updateAvatar(avatar: string): Promise<User> {
-    const response = await apiClient.patch<{ data: User }>('/users/me/avatar', { avatar });
-    return response.data;
+    const response = await apiClient.patch<{ user: User }>('/users/me/avatar', { avatar });
+    return response.user;
   },
 
   async updateProfileCosmetics(cosmetics: Record<string, unknown>): Promise<User> {
-    const response = await apiClient.patch<{ data: User }>('/users/me/profile-cosmetics', cosmetics);
-    return response.data;
+    const response = await apiClient.patch<{ user: User }>('/users/me/profile-cosmetics', cosmetics);
+    return response.user;
   },
 
   async updatePresence(presence: string): Promise<void> {
@@ -57,8 +56,8 @@ export const userProfileService = {
   },
 
   async getUserById(immutableUserId: string): Promise<User> {
-    const response = await apiClient.get<{ data: User }>(`/users/${immutableUserId}`);
-    return response.data;
+    const response = await apiClient.get<{ user: User }>(`/users/${immutableUserId}`);
+    return response.user;
   },
 };
 

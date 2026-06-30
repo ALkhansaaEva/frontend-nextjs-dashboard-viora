@@ -23,15 +23,16 @@ export interface Role {
   code: string;
   name?: string | null;
   isSystem?: boolean | null;
-  scope?: string;
+  isDefault?: boolean | null;
+  scope?: string | null;
   priority?: number | string | null;
   level?: number | string | null;
   description?: string | null;
   permissions?: string[] | null;
-  permissionsMask?: string;
+  permissionsMask?: string | null;
   inheritsFrom?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: string | null;
+  updatedAt?: string | null;
 }
 
 export interface Permission {
@@ -93,7 +94,7 @@ export interface TicketMessage {
 export interface Sanction {
   id: string;
   userId: string;
-  type: 'ban' | 'mute';
+  sanctionType: 'ban' | 'mute';
   reason: string;
   expiresAt?: string;
   createdAt: string;
@@ -132,8 +133,12 @@ export interface AuthLoginResponse {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
-  user: User;
+  user: {
+    id: string;
+    email: string;
+  };
   roles: string[];
+  permissions?: string[];
 }
 
 export interface PaginatedResponse<T> {
@@ -280,4 +285,16 @@ export interface DashboardStats {
   activeReports: number;
   openTickets: number;
   activeSanctions: number;
+  totalMatches?: number;
+  activeRooms?: number;
+  totalGifts?: number;
+  totalAchievements?: number;
+  storeItems?: number;
+  dailyActiveUsers?: number;
+  newUsersToday?: number;
+  revenueToday?: number;
+  totalRevenue?: number;
+  avgResponseTime?: number;
+  systemLoad?: number;
+  onlineUsers?: number;
 }

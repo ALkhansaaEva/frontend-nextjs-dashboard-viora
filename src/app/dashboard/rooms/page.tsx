@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Eye } from 'lucide-react';
-import { useRooms, useRoom, useRoomMembers, useRoomBans, useRoomMutes, useRoomKicks, useKickUser, useBanUser, useUnbanUser, useMuteUser, useUnmuteUser } from '@/hooks';
+import { useRooms, useRoom, useRoomMembers, useRoomBans, useRoomMutes, useRoomKicks, useKickUser, useBanUser, useUnbanUser, useMuteUser, useUnmuteUser, useHasPermission } from '@/hooks';
 import { useLanguage } from '@/components/language-context';
 import { TableSkeleton } from '@/components/skeletons';
 import { DataTable, type Column } from '@/shared/components/ui/DataTable';
@@ -34,9 +34,10 @@ export default function RoomsPage() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'members' | 'moderation'>('members');
 
-  const { data, isLoading, error, refetch } = useRooms({ page, limit: 20 });
+  const canManageRooms = useHasPermission()('manage_all_rooms');
+  const { data, isLoading, error, refetch } = useRooms({ page, limit: 20, admin: canManageRooms });
 
-  const { data: roomDetail } = useRoom(selectedRoomId || '');
+  const { data: roomDetail } = useRoom(selectedRoomId || '', canManageRooms);
   const { data: members = [] } = useRoomMembers(selectedRoomId || '');
   const { data: bans = [] } = useRoomBans(selectedRoomId || '');
   const { data: mutes = [] } = useRoomMutes(selectedRoomId || '');

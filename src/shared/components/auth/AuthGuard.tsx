@@ -3,156 +3,74 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store';
-import type { Permission } from '@/types/permissions';
-import { hasPermission, canAccessDashboard, hasWildcardAccess } from '@/types/permissions';
+import { can } from '@/lib/auth/permissions';
 
 interface AuthGuardProps {
   children: ReactNode;
-  permissions?: Permission[];
   loadingComponent?: ReactNode;
   fallback?: ReactNode;
 }
 
-export function AuthGuard({
-  children,
-  permissions = [],
-  loadingComponent,
-  fallback
-}: AuthGuardProps) {
-  const { isAuthenticated, isLoading, permissions: userPermissions } = useAuthStore();
+export function AuthGuard({ children, loadingComponent }: AuthGuardProps) {
+  const { isAuthenticated, isLoading } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     if (isLoading) return;
-
-    setChecked(true);
-
     if (!isAuthenticated) {
-      const loginUrl = `/login?redirect=${encodeURIComponent(pathname)}`;
-      router.push(loginUrl);
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
-
-    const perms = userPermissions as Permission[] | undefined;
-
-    if (permissions.length > 0 && perms) {
-      const hasAccess = perms.includes('*') || 
-        permissions.some(perm => hasPermission(perms, perm));
-      
-      if (!hasAccess && fallback) {
-        return;
-      }
-      
-      if (!hasAccess) {
-        router.push('/dashboard?unauthorized=true');
-      }
-    }
-  }, [isAuthenticated, isLoading, permissions, userPermissions, pathname, router, fallback]);
+    setChecked(true);
+  }, [isAuthenticated, isLoading, pathname, router]);
 
   if (isLoading || !checked) {
-    return loadingComponent || (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-      </div>
+    return (
+      loadingComponent ?? (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      )
     );
   }
 
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  const perms = userPermissions as Permission[] | undefined;
-
-  if (permissions.length > 0 && perms) {
-    const hasAccess = perms.includes('*') || 
-      permissions.some(perm => hasPermission(perms, perm));
-    
-    if (!hasAccess) {
-      return fallback || null;
-    }
-  }
+  if (!isAuthenticated) return null;
 
   return <>{children}</>;
 }
 
-export function useDashboardAccess() {
-  const { permissions: userPermissions, isAuthenticated, isLoading } = useAuthStore();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const perms = userPermissions as Permission[] | undefined;
-  
-  const canAccess = isAuthenticated && !isLoading && canAccessDashboard(perms || []);
-  const hasWildcard = isAuthenticated && !isLoading && hasWildcardAccess(perms || []);
-  const isDenied = isAuthenticated && !isLoading && (perms || []).length === 0;
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      if (!canAccessDashboard(perms || [])) {
-        router.push(`/login?redirect=${encodeURIComponent(pathname)}&denied=true`);
-      }
-    }
-  }, [isAuthenticated, isLoading, perms, pathname, router, canAccess]);
-
-  return {
-    canAccess,
-    hasWildcard,
-    isDenied,
-    isLoading,
-  };
+interface PermissionProps {
+  permission?: string;
+  anyOf?: string[];
+  allOf?: string[];
+  fallback?: ReactNode;
+  loading?: ReactNode;
+  children: ReactNode;
 }
 
-export function PermissionGate({
+export function Permission({
   permission,
+  anyOf,
+  allOf,
+  fallback = null,
+  loading = null,
   children,
-  fallback = null
-}: {
-  permission: Permission;
-  children: ReactNode;
-  fallback?: ReactNode;
-}) {
-  const { permissions: userPermissions, isLoading } = useAuthStore();
-  const perms = userPermissions as Permission[] | undefined;
+}: PermissionProps) {
+  const { permissions: userPerms, isLoading } = useAuthStore();
 
-  if (isLoading) {
-    return null;
-  }
+  if (isLoading) return <>{loading}</>;
 
-  const hasAccess = perms?.includes('*') || 
-    perms?.includes(permission) ||
-    perms?.includes('manage_config');
+  const hasAccess = permission
+    ? can(userPerms, permission)
+    : anyOf
+      ? anyOf.some((p) => can(userPerms, p))
+      : allOf
+        ? allOf.every((p) => can(userPerms, p))
+        : true;
 
-  if (!hasAccess) {
-    return <>{fallback}</>;
-  }
-
-  return <>{children}</>;
-}
-
-export function AnyPermissionGate({
-  permissions: requiredPerms,
-  children,
-  fallback = null
-}: {
-  permissions: Permission[];
-  children: ReactNode;
-  fallback?: ReactNode;
-}) {
-  const { permissions: userPermissions, isLoading } = useAuthStore();
-  const perms = userPermissions as Permission[] | undefined;
-
-  if (isLoading) {
-    return null;
-  }
-
-  const hasAccess = perms?.includes('*') || 
-    requiredPerms.some(p => perms?.includes(p));
-
-  if (!hasAccess) {
-    return <>{fallback}</>;
-  }
+  if (!hasAccess) return <>{fallback}</>;
 
   return <>{children}</>;
 }

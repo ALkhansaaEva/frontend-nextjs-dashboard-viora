@@ -183,7 +183,7 @@ async getSentGifts(): Promise<unknown[]> {
 
   async createItem(data: CreateStoreItemRequest): Promise<StoreItem> {
     const validated = CreateStoreItemSchema.parse(data);
-    return apiClient.post<StoreItem>('/store/items', validated);
+    return apiClient.post<StoreItem>('/store/admin/items', validated);
   },
 
   async createBundle(data: CreateStoreBundleRequest): Promise<StoreBundle> {
@@ -230,14 +230,14 @@ async getSentGifts(): Promise<unknown[]> {
   },
 
   async getPurchaseHistory(): Promise<unknown[]> {
-    const response = await apiClient.get<unknown[] | { data: unknown[] }>('/store/purchases');
+    const response = await apiClient.get<unknown[] | { data: unknown[] }>('/store/admin/purchases');
     if (Array.isArray(response)) return response;
     return (response as { data: unknown[] }).data || [];
   },
 
   async getAdminItems(params?: ListParams): Promise<PaginatedResponse<StoreItem>> {
     const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set('page', params.page.toString());
+    if (params?.page) searchParams.set('offset', ((params.page - 1) * (params.limit || 20)).toString());
     if (params?.limit) searchParams.set('limit', params.limit.toString());
     if (params?.search) searchParams.set('search', params.search);
     const query = searchParams.toString();
@@ -268,7 +268,7 @@ async getSentGifts(): Promise<unknown[]> {
 
   async getAdminBundles(params?: ListParams): Promise<PaginatedResponse<StoreBundle>> {
     const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set('page', params.page.toString());
+    if (params?.page) searchParams.set('offset', ((params.page - 1) * (params.limit || 20)).toString());
     if (params?.limit) searchParams.set('limit', params.limit.toString());
     if (params?.search) searchParams.set('search', params.search);
     const query = searchParams.toString();
@@ -299,7 +299,7 @@ async getSentGifts(): Promise<unknown[]> {
 
   async getAdminPurchases(params?: ListParams): Promise<PaginatedResponse<unknown>> {
     const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set('page', params.page.toString());
+    if (params?.page) searchParams.set('offset', ((params.page - 1) * (params.limit || 20)).toString());
     if (params?.limit) searchParams.set('limit', params.limit.toString());
     if (params?.search) searchParams.set('search', params.search);
     const query = searchParams.toString();
@@ -320,6 +320,22 @@ async getSentGifts(): Promise<unknown[]> {
     const response = await apiClient.get<InventoryItem[] | { data: InventoryItem[] }>(`/store/admin/user/${userId}/inventory`);
     if (Array.isArray(response)) return response;
     return (response as { data: InventoryItem[] }).data || [];
+  },
+
+  async addItemAssets(itemId: string, assets: { url: string; type: string; metadata?: Record<string, unknown> }[]): Promise<void> {
+    await apiClient.post(`/store/admin/items/${itemId}/assets`, { assets });
+  },
+
+  async bulkAddItemAssets(itemId: string, assets: { url: string; type: string; metadata?: Record<string, unknown> }[]): Promise<void> {
+    await apiClient.post(`/store/admin/items/${itemId}/assets/bulk`, { assets });
+  },
+
+  async updateItemAssets(itemId: string, assets: { id: string; url?: string; type?: string; metadata?: Record<string, unknown> }[]): Promise<void> {
+    await apiClient.patch(`/store/admin/items/${itemId}/assets`, { assets });
+  },
+
+  async deleteItemAsset(itemId: string, assetId: string): Promise<void> {
+    await apiClient.delete(`/store/admin/items/${itemId}/assets/${assetId}`);
   },
 
   async grantItemToUser(userId: string, data: { itemId: string; quantity: number; reason?: string }): Promise<void> {

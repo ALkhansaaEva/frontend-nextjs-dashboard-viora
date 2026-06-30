@@ -47,12 +47,13 @@ async function refreshAuthToken(request: NextRequest): Promise<{ accessToken: st
     }
 
     const refreshData = await refreshResponse.json();
+    const tokens = refreshData.data || refreshData;
     
-    if (refreshData.accessToken) {
+    if (tokens.accessToken) {
       console.log('[AUTH] Token refreshed successfully');
       return {
-        accessToken: refreshData.accessToken,
-        refreshToken: refreshData.refreshToken || refreshToken,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken || refreshToken,
       };
     }
 
@@ -101,6 +102,11 @@ export async function proxyRequest(
   let attempts = 0;
   const MAX_ATTEMPTS = 2;
 
+  let bodyString: string | null = null;
+  if (!['GET', 'HEAD', 'DELETE', 'OPTIONS'].includes(request.method)) {
+    bodyString = await request.text();
+  }
+
   while (attempts < MAX_ATTEMPTS) {
     attempts++;
     targetUrl = '';
@@ -119,7 +125,7 @@ export async function proxyRequest(
       // Clone headers and filter out restricted ones
       const headers = new Headers();
       request.headers.forEach((value, key) => {
-        if (!['host', 'connection', 'content-length', 'cookie'].includes(key.toLowerCase())) {
+        if (!['host', 'connection', 'content-length', 'cookie', 'accept-encoding'].includes(key.toLowerCase())) {
           headers.set(key, value);
         }
       });
@@ -142,11 +148,8 @@ export async function proxyRequest(
       };
 
       // Forward body
-      if (!['GET', 'HEAD', 'DELETE', 'OPTIONS'].includes(request.method)) {
-        const body = await request.arrayBuffer();
-        if (body.byteLength > 0) {
-          fetchOptions.body = body;
-        }
+      if (bodyString) {
+        fetchOptions.body = bodyString;
       }
 
       response = await fetch(targetUrl, fetchOptions);
@@ -163,7 +166,7 @@ export async function proxyRequest(
           // Create new request with new token
           const newHeaders = new Headers();
           request.headers.forEach((value, key) => {
-            if (!['host', 'connection', 'content-length', 'cookie'].includes(key.toLowerCase())) {
+            if (!['host', 'connection', 'content-length', 'cookie', 'accept-encoding'].includes(key.toLowerCase())) {
               newHeaders.set(key, value);
             }
           });
@@ -175,11 +178,8 @@ export async function proxyRequest(
             cache: 'no-store',
           };
 
-          if (!['GET', 'HEAD', 'DELETE', 'OPTIONS'].includes(request.method)) {
-            const body = await request.clone().arrayBuffer();
-            if (body.byteLength > 0) {
-              retryOptions.body = body;
-            }
+          if (bodyString) {
+            retryOptions.body = bodyString;
           }
 
           response = await fetch(targetUrl, retryOptions);
@@ -203,32 +203,24 @@ export async function proxyRequest(
         }
       }
 
-      // Extract response headers
-      const responseHeaders = new Headers();
+      const bodyText = await response.text();
+      const proxyHeaders = new Headers();
       response.headers.forEach((value, key) => {
-        if (!['content-encoding', 'transfer-encoding', 'connection'].includes(key.toLowerCase())) {
-          responseHeaders.set(key, value);
+        if (!['content-encoding', 'transfer-encoding', 'content-type', 'connection', 'vary'].includes(key.toLowerCase())) {
+          proxyHeaders.set(key, value);
         }
       });
 
-      if (response.status === 204) {
-        return new NextResponse(null, {
-          status: response.status,
-          headers: responseHeaders,
-        });
-      }
-
       try {
-        const data = await response.json();
-        return NextResponse.json(data, {
+        const json = JSON.parse(bodyText);
+        return NextResponse.json(json, {
           status: response.status,
-          headers: responseHeaders,
+          headers: proxyHeaders,
         });
-      } catch (e) {
-        const text = await response.text();
-        return new NextResponse(text, {
+      } catch {
+        return new NextResponse(bodyText, {
           status: response.status,
-          headers: responseHeaders,
+          headers: { 'Content-Type': response.headers.get('Content-Type') || 'text/plain', ...Object.fromEntries(proxyHeaders) },
         });
       }
     } catch (error: any) {

@@ -55,6 +55,10 @@ export const adminService = {
     return apiClient.put(`/admin/roles/${code}`, data) as Promise<Role>;
   },
 
+  async setRoleAsDefault(code: string): Promise<{ status: string; roleCode: string }> {
+    return apiClient.post(`/admin/roles/${code}/set-default`, {}) as Promise<{ status: string; roleCode: string }>;
+  },
+
   async getRolePermissions(roleCode: string): Promise<string[]> {
     const response = await apiClient.get<string[] | { data: string[] }>(`/admin/roles/${roleCode}/permissions`);
     return normalizeArrayResponse<string>(response);
@@ -79,21 +83,40 @@ export const adminService = {
     return apiClient.post<Permission>('/admin/permissions', data);
   },
 
-  async deletePermission(id: string): Promise<void> {
-    await apiClient.delete(`/admin/permissions/${id}`);
+  // Backend has no DELETE endpoint for permissions; manage via enable/disable
+  async deletePermission(_id: string): Promise<void> {
+    console.warn('[AdminService] deletePermission is not supported by the backend (no DELETE /admin/permissions/:id)');
   },
 
   async getUsers(params?: ListParams): Promise<PaginatedResponse<User>> {
-    const response = await apiClient.get<{ users: User[]; total: number } | PaginatedResponse<User>>('/admin/users', { params });
+    const backendParams: Record<string, unknown> = {};
+    if (params?.limit) backendParams.limit = params.limit;
+    if (params?.page) backendParams.offset = (params.page - 1) * (params.limit || 20);
+    if (params?.search) backendParams.search = params.search;
+    const response = await apiClient.get<{ users: User[]; total: number } | PaginatedResponse<User>>('/admin/users', { params: backendParams });
     if (response && 'users' in response) {
       const limit = params?.limit || 20;
       const page = params?.page || 1;
+      const total = response.total || 0;
+      const data = (response.users as any[]).map(u => ({
+        id: u.id,
+        immutableUserId: u.immutable_user_id || u.immutableUserId || '',
+        email: u.email || '',
+        nickname: u.nickname || u.global_nickname || u.email?.split('@')[0] || '',
+        title: u.title,
+        status: u.status || 'active',
+        roles: u.roles || [],
+        createdAt: u.created_at || u.createdAt || u.createdAt || new Date().toISOString(),
+        lastLogin: u.last_login || u.lastLogin,
+        wallet: u.wallet,
+        avatar: u.avatar_url || u.avatar,
+      }));
       return { 
-        data: response.users, 
-        total: response.total,
+        data, 
+        total,
         page,
         limit,
-        totalPages: Math.ceil(response.total / limit)
+        totalPages: Math.ceil(total / limit)
       };
     }
     if (response && 'data' in response) {
@@ -103,30 +126,34 @@ export const adminService = {
   },
 
   async getUsersByRole(roleCode: string, params?: ListParams): Promise<PaginatedResponse<User>> {
+    const backendParams: Record<string, unknown> = {};
+    if (params?.limit) backendParams.limit = params.limit;
+    if (params?.page) backendParams.offset = (params.page - 1) * (params.limit || 20);
     const response = await apiClient.get<{ users: { userId: string; immutableUserId: string; email: string; nickname: string | null; username: string; assignedAt: string }[]; total: number }>(
       `/admin/roles/${roleCode}/users`,
-      { params }
+      { params: backendParams }
     );
     
     if (response && 'users' in response) {
-      const users = response.users.map(u => ({
-        id: u.userId,
-        immutableUserId: u.immutableUserId,
-        email: u.email,
-        nickname: u.nickname || '',
+      const users = response.users.map((u: any) => ({
+        id: u.userId || u.id,
+        immutableUserId: u.immutableUserId || u.immutable_user_id || '',
+        email: u.email || '',
+        nickname: u.nickname || u.global_nickname || (u.email || '').split('@')[0] || '',
         title: undefined,
         status: 'active' as const,
         roles: [] as Role[],
-        createdAt: u.assignedAt,
+        createdAt: u.assignedAt || u.created_at || u.createdAt || new Date().toISOString(),
       })) as User[];
       const limit = params?.limit || 20;
       const page = params?.page || 1;
+      const total = response.total || 0;
       return { 
         data: users, 
-        total: response.total,
+        total,
         page,
         limit,
-        totalPages: Math.ceil(response.total / limit)
+        totalPages: Math.ceil(total / limit)
       };
     }
     
@@ -176,12 +203,48 @@ export const adminService = {
     return (response as { data: unknown[] }).data || [];
   },
 
-  async searchUsers(params: { search?: string; limit?: number; offset?: number }): Promise<PaginatedResponse<User>> {
-    return apiClient.get<PaginatedResponse<User>>('/admin/users/search', { params });
+  async searchUsers(params: { search?: string; query?: string; email?: string; immutableUserId?: string; limit?: number; offset?: number }): Promise<PaginatedResponse<User>> {
+    const backendParams: Record<string, unknown> = {};
+    if (params?.query) backendParams.query = params.query;
+    if (params?.email) backendParams.email = params.email;
+    if (params?.immutableUserId) backendParams.immutableUserId = params.immutableUserId;
+    if (params?.limit) backendParams.limit = params.limit;
+    if (params?.offset !== undefined) backendParams.offset = params.offset;
+    return apiClient.get<PaginatedResponse<User>>('/admin/users/search', { params: backendParams });
   },
 
   async updateUserStatus(userId: string, status: string): Promise<void> {
     await apiClient.patch(`/admin/users/${userId}/status`, { status });
+  },
+
+  async getUserEffectivePermissions(userId: string): Promise<string[]> {
+    const response = await apiClient.get<string[] | { data: string[]; permissions?: string[] }>(`/admin/users/${userId}/permissions`);
+    if (Array.isArray(response)) return response;
+    const r = response as { data: string[]; permissions?: string[] };
+    if (r.permissions) return r.permissions;
+    if (r.data) return r.data;
+    return [];
+  },
+
+  async getUserPermissionOverrides(userId: string): Promise<Array<{ permissionCode: string; type: 'grant' | 'revoke'; reason?: string; createdAt: string; createdBy: string }>> {
+    const response = await apiClient.get<unknown[] | { data: unknown[]; overrides?: unknown[] }>(`/admin/users/${userId}/permissions/overrides`);
+    if (Array.isArray(response)) return response as Array<{ permissionCode: string; type: 'grant' | 'revoke'; reason?: string; createdAt: string; createdBy: string }>;
+    const r = response as { data: unknown[]; overrides?: unknown[] };
+    if (r.overrides) return r.overrides as Array<{ permissionCode: string; type: 'grant' | 'revoke'; reason?: string; createdAt: string; createdBy: string }>;
+    if (r.data) return r.data as Array<{ permissionCode: string; type: 'grant' | 'revoke'; reason?: string; createdAt: string; createdBy: string }>;
+    return [];
+  },
+
+  async grantPermissionOverride(userId: string, permissionCode: string, reason?: string): Promise<void> {
+    await apiClient.post(`/admin/users/${userId}/permissions/grant`, { permissionCode, reason });
+  },
+
+  async revokePermissionOverride(userId: string, permissionCode: string, reason?: string): Promise<void> {
+    await apiClient.post(`/admin/users/${userId}/permissions/revoke`, { permissionCode, reason });
+  },
+
+  async removePermissionOverride(userId: string, permissionCode: string): Promise<void> {
+    await apiClient.delete(`/admin/users/${userId}/permissions/overrides/${permissionCode}`);
   },
 };
 

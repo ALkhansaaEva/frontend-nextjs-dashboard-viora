@@ -16,4 +16,7 @@ export { notificationsService } from './notifications.service';
 export { matchesService } from './matches.service';
 export { socialService } from './social.service';
 export { metaGameService } from './meta-game.service';
-export { resolveUserPermissions, hasWildcardAccess, canAccessDashboard, isPermissionDenied } from './permission.service';
+export { resolveUserPermissions } from './permission.service';
+export { achievementsService } from './achievements.service';
+export { giftsService } from './gifts.service';
+export { voiceService } from './voice.service';
