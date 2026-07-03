@@ -1,0 +1,29 @@
+# =============================================================================
+# Docker build context — only exclude dev/docs files.
+# Keep .next, node_modules, server.js — needed by the pre-built Dockerfile.
+# =============================================================================
+
+# Git
+.git
+.gitignore
+
+# Environment — never bake secrets into images
+.env
+.env.local
+.env.*.local
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+*.pem
+
+# Logs
+*.log
+
+# Docs
+README.md
+GAP_ANALYSIS.md
+API_ENDPOINTS.md
+backend-full-api-contract.md
+viora-api-collection.json
