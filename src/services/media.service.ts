@@ -6,9 +6,16 @@ export interface MediaFile {
   uploaderUserId: string;
   bucket: string;
   path: string;
+  originalName?: string;
   mimeType: string;
+  fileKind?: string;
+  filePurpose?: string;
+  width?: number;
+  height?: number;
   sizeBytes: string;
   altText?: string;
+  thumbnailUrl?: string;
+  meta?: Record<string, unknown>;
   createdAt: string;
 }
 
@@ -33,12 +40,42 @@ function normalizePaginatedResponse<T>(response: unknown): PaginatedResponse<T> 
 }
 
 export const mediaService = {
-  async uploadFile(file: File, bucket: string, altText?: string): Promise<MediaFile> {
+  async uploadFile(
+    file: File,
+    bucket: string,
+    options?: {
+      altText?: string;
+      fileKind?: string;
+      filePurpose?: string;
+      width?: number;
+      height?: number;
+    },
+  ): Promise<MediaFile> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('bucket', bucket);
-    if (altText) formData.append('altText', altText);
-    return apiClient.post<MediaFile>('/media/admin/upload', formData);
+    if (options?.altText) formData.append('altText', options.altText);
+    if (options?.fileKind) formData.append('fileKind', options.fileKind);
+    if (options?.filePurpose) formData.append('filePurpose', options.filePurpose);
+    return apiClient.post<MediaFile>('/media/admin/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+
+  async uploadOwnFile(
+    file: File,
+    bucket: string,
+    options?: { altText?: string; fileKind?: string; filePurpose?: string },
+  ): Promise<MediaFile> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('bucket', bucket);
+    if (options?.altText) formData.append('altText', options.altText);
+    if (options?.fileKind) formData.append('fileKind', options.fileKind);
+    if (options?.filePurpose) formData.append('filePurpose', options.filePurpose);
+    return apiClient.post<MediaFile>('/media/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   },
 
   async getAdminFiles(params?: ListParams): Promise<PaginatedResponse<MediaFile>> {
@@ -56,7 +93,7 @@ export const mediaService = {
     return apiClient.get<MediaFile>(`/media/admin/files/${id}`);
   },
 
-  async updateAdminFile(id: string, data: { altText?: string }): Promise<MediaFile> {
+  async updateAdminFile(id: string, data: { altText?: string; fileKind?: string; filePurpose?: string }): Promise<MediaFile> {
     return apiClient.patch<MediaFile>(`/media/admin/files/${id}`, data);
   },
 
@@ -68,7 +105,7 @@ export const mediaService = {
     await apiClient.post('/media/admin/files/bulk-delete', { ids });
   },
 
-  async getMediaStats(): Promise<{ totalFiles: number; totalSize: number; byBucket: Record<string, number> }> {
+  async getMediaStats(): Promise<{ totalFiles: number; totalSizeBytes: string; byBucket: Array<{ bucket: string; count: string; totalSize: string }> }> {
     return apiClient.get('/media/admin/stats');
   },
 };

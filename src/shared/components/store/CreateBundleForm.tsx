@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Input } from '@/shared/components/ui/Input';
 import { Button } from '@/shared/components/ui/Button';
+import { FileUpload } from '@/shared/components/upload/FileUpload';
 
 interface CreateBundleFormProps {
   onSubmit: (data: {
@@ -12,6 +13,7 @@ interface CreateBundleFormProps {
     priceGems?: number;
     priceCoins?: number;
     isActive: boolean;
+    iconUrl?: string;
   }) => void;
   isPending: boolean;
 }
@@ -24,6 +26,7 @@ export function CreateBundleForm({ onSubmit, isPending }: CreateBundleFormProps)
     priceGems: 0,
     priceCoins: 0,
     isActive: true,
+    iconUrl: '',
   });
 
   const handleSubmit = () => {
@@ -33,6 +36,7 @@ export function CreateBundleForm({ onSubmit, isPending }: CreateBundleFormProps)
       priceGems: newBundle.priceGems || undefined,
       priceCoins: newBundle.priceCoins || undefined,
       isActive: newBundle.isActive,
+      iconUrl: newBundle.iconUrl || undefined,
     });
   };
 
@@ -69,6 +73,13 @@ export function CreateBundleForm({ onSubmit, isPending }: CreateBundleFormProps)
         type="number"
         value={newBundle.priceCoins}
         onChange={(e) => setNewBundle({ ...newBundle, priceCoins: parseInt(e.target.value) || 0 })}
+      />
+      <FileUpload
+        profile="store"
+        label="Bundle Icon"
+        placeholder="icon URL or upload"
+        value={newBundle.iconUrl}
+        onChange={(v) => setNewBundle({ ...newBundle, iconUrl: v })}
       />
       <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
         <input

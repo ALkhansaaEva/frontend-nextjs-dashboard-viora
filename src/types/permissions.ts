@@ -10,7 +10,6 @@ export const PERMISSIONS: Permission[] = [
   'room_manage_mic', 'room_assign_role', 'room_create_role',
   'room_transfer_ownership', 'room_edit_settings', 'room_manage_members',
   'room_edit_name', 'room_edit_slogan', 'room_invite_user',
-  'dashboard.view',
   // Canonical permission codes
   'users.read', 'users.write', 'users.delete',
   'roles.read', 'roles.write', 'roles.execute', 'roles.delete',
@@ -28,4 +27,7 @@ export const PERMISSIONS: Permission[] = [
   'configs.write',
   'voice.read', 'voice.execute',
   'store.catalog_read', 'store.catalog_manage',
+  'achievements.read', 'achievements.write', 'achievements.delete',
+  'gifts.read', 'gifts.write', 'gifts.delete',
+  'manage_gift',
 ];

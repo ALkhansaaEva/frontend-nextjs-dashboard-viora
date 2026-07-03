@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Eye } from 'lucide-react';
+import { Eye, Users, Shield, MicOff, UserX, Inbox } from 'lucide-react';
 import { useRooms, useRoom, useRoomMembers, useRoomBans, useRoomMutes, useRoomKicks, useKickUser, useBanUser, useUnbanUser, useMuteUser, useUnmuteUser, useHasPermission } from '@/hooks';
 import { useLanguage } from '@/components/language-context';
 import { TableSkeleton } from '@/components/skeletons';
@@ -11,7 +11,10 @@ import { Badge } from '@/shared/components/ui/Badge';
 import { Button } from '@/shared/components/ui/Button';
 import { Card, CardContent } from '@/shared/components/ui/Card';
 import { Modal } from '@/shared/components/ui/Modal';
-import { Users, Shield, MicOff, UserX } from 'lucide-react';
+import { PageHeader } from '@/shared/components/ui/PageHeader';
+import { EmptyState } from '@/shared/components/ui/EmptyState';
+import { ViewToggle } from '@/shared/components/ui/ViewToggle';
+import { RoomCard } from '@/shared/components/rooms/RoomCard';
 
 interface Room {
   id: string;
@@ -33,6 +36,7 @@ export default function RoomsPage() {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'members' | 'moderation'>('members');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
 
   const canManageRooms = useHasPermission()('manage_all_rooms');
   const { data, isLoading, error, refetch } = useRooms({ page, limit: 20, admin: canManageRooms });
@@ -82,11 +86,7 @@ export default function RoomsPage() {
     async (action: 'kick' | 'ban' | 'unban' | 'mute' | 'unmute', targetUserId: string) => {
       if (!selectedRoomId) return;
       const mutationMap = {
-        kick: kickMutation,
-        ban: banMutation,
-        unban: unbanMutation,
-        mute: muteMutation,
-        unmute: unmuteMutation,
+        kick: kickMutation, ban: banMutation, unban: unbanMutation, mute: muteMutation, unmute: unmuteMutation,
       };
       try {
         await mutationMap[action].mutateAsync({ roomId: selectedRoomId, userId: targetUserId });
@@ -100,7 +100,7 @@ export default function RoomsPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Voice Rooms</h1>
+        <PageHeader title="Voice Rooms" />
         <TableSkeleton rows={8} />
       </div>
     );
@@ -169,33 +169,46 @@ export default function RoomsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Voice Rooms</h1>
+      <PageHeader title="Voice Rooms" />
 
-      <DataTable
-        data={filteredRooms}
-        columns={columns}
-        searchable
-        searchPlaceholder="Search rooms..."
-        onSearch={handleSearch}
-        pagination={
-          data && {
-            page: data.page,
-            limit: data.limit,
-            total: data.total,
-            totalPages: data.totalPages,
-            onPageChange: handlePageChange,
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-sm border border-gray-100 dark:border-gray-700">
+        <ViewToggle value={viewMode} onChange={setViewMode} />
+        {data && (
+          <p className="text-sm text-gray-500">
+            {filteredRooms.length} / {data.total} {t('items') || 'rooms'}
+          </p>
+        )}
+      </div>
+
+      {viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredRooms.map((room) => (
+            <RoomCard key={room.id} room={room} onView={() => handleViewRoom(room)} />
+          ))}
+          {filteredRooms.length === 0 && (
+            <EmptyState message="No rooms found" icon={<Inbox className="w-10 h-10" />} />
+          )}
+        </div>
+      ) : (
+        <DataTable
+          data={filteredRooms}
+          columns={columns}
+          searchable
+          searchPlaceholder="Search rooms..."
+          onSearch={handleSearch}
+          pagination={
+            data && {
+              page: data.page, limit: data.limit, total: data.total, totalPages: data.totalPages,
+              onPageChange: handlePageChange,
+            }
           }
-        }
-        emptyMessage="No rooms found"
-      />
+          emptyMessage="No rooms found"
+        />
+      )}
 
       <Modal
         isOpen={showDetailsModal}
-        onClose={() => {
-          setShowDetailsModal(false);
-          setSelectedRoomId(null);
-          setActiveTab('members');
-        }}
+        onClose={() => { setShowDetailsModal(false); setSelectedRoomId(null); setActiveTab('members'); }}
         title={roomDetail?.name?.en || roomDetail?.name?.ar || 'Room Details'}
         size="xl"
       >
@@ -211,18 +224,12 @@ export default function RoomsPage() {
             </div>
 
             <div className="flex gap-2">
-              <Button
-                variant={activeTab === 'members' ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => setActiveTab('members')}
-              >
+              <Button variant={activeTab === 'members' ? 'primary' : 'outline'} size="sm"
+                onClick={() => setActiveTab('members')}>
                 Members ({members.length})
               </Button>
-              <Button
-                variant={activeTab === 'moderation' ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => setActiveTab('moderation')}
-              >
+              <Button variant={activeTab === 'moderation' ? 'primary' : 'outline'} size="sm"
+                onClick={() => setActiveTab('moderation')}>
                 Moderation
               </Button>
             </div>
@@ -230,10 +237,7 @@ export default function RoomsPage() {
             {activeTab === 'members' && (
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {members.map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                  >
+                  <div key={member.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold">
                         {member.user?.nickname?.[0]?.toUpperCase() || 'U'}
@@ -243,63 +247,37 @@ export default function RoomsPage() {
                           {member.user?.nickname || 'Unknown User'}
                         </p>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <Badge
-                            variant={
-                              member.role === 'owner'
-                                ? 'success'
-                                : member.role === 'moderator'
-                                  ? 'info'
-                                  : 'default'
-                            }
-                          >
+                          <Badge variant={member.role === 'owner' ? 'success' : member.role === 'moderator' ? 'info' : 'default'}>
                             {member.role}
                           </Badge>
                           {member.isMuted && (
-                            <Badge variant="warning">
-                              <MicOff className="w-3 h-3 mr-1" />
-                              Muted
-                            </Badge>
+                            <Badge variant="warning"><MicOff className="w-3 h-3 mr-1" />Muted</Badge>
                           )}
                         </div>
                       </div>
                     </div>
                     {member.role !== 'owner' && (
                       <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            handleModerationAction(member.isMuted ? 'unmute' : 'mute', member.userId)
-                          }
-                          disabled={
-                            muteMutation.isPending || unmuteMutation.isPending
-                          }
-                        >
+                        <Button variant="ghost" size="sm"
+                          onClick={() => handleModerationAction(member.isMuted ? 'unmute' : 'mute', member.userId)}
+                          disabled={muteMutation.isPending || unmuteMutation.isPending}>
                           {member.isMuted ? 'Unmute' : 'Mute'}
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        <Button variant="ghost" size="sm"
                           onClick={() => handleModerationAction('kick', member.userId)}
-                          disabled={kickMutation.isPending}
-                        >
+                          disabled={kickMutation.isPending}>
                           Kick
                         </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
+                        <Button variant="danger" size="sm"
                           onClick={() => handleModerationAction('ban', member.userId)}
-                          disabled={banMutation.isPending}
-                        >
+                          disabled={banMutation.isPending}>
                           Ban
                         </Button>
                       </div>
                     )}
                   </div>
                 ))}
-                {members.length === 0 && (
-                  <p className="text-center text-gray-500 py-8">No members found</p>
-                )}
+                {members.length === 0 && <p className="text-center text-gray-500 py-8">No members found</p>}
               </div>
             )}
 
@@ -332,64 +310,36 @@ export default function RoomsPage() {
                 <div className="space-y-4">
                   {bans.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Active Bans ({bans.length})
-                      </h4>
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Active Bans ({bans.length})</h4>
                       <div className="space-y-2 max-h-40 overflow-y-auto">
                         {bans.map((ban) => (
-                          <div
-                            key={ban.id}
-                            className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm"
-                          >
-                            <span className="font-mono text-gray-600 dark:text-gray-400">
-                              {ban.userId.slice(0, 8)}...
-                            </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
+                          <div key={ban.id} className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm">
+                            <span className="font-mono text-gray-600 dark:text-gray-400">{ban.userId.slice(0, 8)}...</span>
+                            <Button variant="ghost" size="sm"
                               onClick={() => handleModerationAction('unban', ban.userId)}
-                              disabled={unbanMutation.isPending}
-                            >
-                              Unban
-                            </Button>
+                              disabled={unbanMutation.isPending}>Unban</Button>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
-
                   {mutes.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Active Mutes ({mutes.length})
-                      </h4>
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Active Mutes ({mutes.length})</h4>
                       <div className="space-y-2 max-h-40 overflow-y-auto">
                         {mutes.map((mute) => (
-                          <div
-                            key={mute.id}
-                            className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-sm"
-                          >
-                            <span className="font-mono text-gray-600 dark:text-gray-400">
-                              {mute.userId.slice(0, 8)}...
-                            </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
+                          <div key={mute.id} className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-sm">
+                            <span className="font-mono text-gray-600 dark:text-gray-400">{mute.userId.slice(0, 8)}...</span>
+                            <Button variant="ghost" size="sm"
                               onClick={() => handleModerationAction('unmute', mute.userId)}
-                              disabled={unmuteMutation.isPending}
-                            >
-                              Unmute
-                            </Button>
+                              disabled={unmuteMutation.isPending}>Unmute</Button>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
-
                   {bans.length === 0 && mutes.length === 0 && kicks.length === 0 && (
-                    <p className="text-center text-gray-500 py-8">
-                      No moderation actions recorded
-                    </p>
+                    <p className="text-center text-gray-500 py-8">No moderation actions recorded</p>
                   )}
                 </div>
               </div>

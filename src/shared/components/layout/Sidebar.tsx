@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/preserve-manual-memoization */
 'use client';
 
 import { useEffect, useMemo, memo, useState } from 'react';
@@ -23,6 +25,8 @@ import {
   Mic,
   LifeBuoy,
   Crown,
+  CreditCard,
+  Landmark,
 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { useSidebarStore } from '@/store/sidebar.store';
@@ -124,9 +128,9 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
     label: 'Gifts',
     labelAr: 'الهدايا',
     icon: Gift,
-    sectionPermission: 'manage_store',
+    sectionPermission: 'manage_gift',
     items: [
-      { href: '/dashboard/gifts', Icon: Gift, label: 'Gifts Catalog', labelAr: 'الهدايا', permission: 'manage_store' },
+      { href: '/dashboard/gifts', Icon: Gift, label: 'Gifts Catalog', labelAr: 'الهدايا', permission: 'manage_gift' },
     ]
   },
   {
@@ -159,12 +163,15 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
     ]
   },
   {
-    id: 'wallet',
-    label: 'Wallet',
-    labelAr: 'المحفظة',
-    icon: Wallet,
+    id: 'finance',
+    label: 'Finance',
+    labelAr: 'المالية',
+    icon: Landmark,
+    sectionPermission: 'adjust_balance',
     items: [
-      { href: '/dashboard/wallet', Icon: Wallet, label: 'Wallet', labelAr: 'المحفظة' },
+      { href: '/dashboard/wallets', Icon: Wallet, label: 'Wallets', labelAr: 'المحافظ', permission: 'adjust_balance' },
+      { href: '/dashboard/payments', Icon: CreditCard, label: 'Payments', labelAr: 'المدفوعات', permission: 'view_transactions' },
+      { href: '/dashboard/wallet', Icon: Wallet, label: 'My Wallet', labelAr: 'محفظتي' },
     ]
   },
   {
@@ -203,6 +210,7 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
   const hasPermission = (permission?: string) => {
     if (!permission) return true;
     if (!isAuthenticated) return false;
+    if (userPermissions.some((p) => p === 'admin.full_access' || p === 'admin.all')) return true;
     return can(userPermissions, permission);
   };
 

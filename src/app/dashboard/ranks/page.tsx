@@ -1,13 +1,21 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Plus, Crown } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Plus, Crown, Inbox, Shield, Clock, Search } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Modal } from '@/shared/components/ui/Modal';
 import { Input } from '@/shared/components/ui/Input';
+import { ConfirmDialog } from '@/shared/components/ui/ConfirmDialog';
+import { FileUpload } from '@/shared/components/upload/FileUpload';
+import { PageHeader } from '@/shared/components/ui/PageHeader';
+import { EmptyState } from '@/shared/components/ui/EmptyState';
+import { ActionButtons } from '@/shared/components/ui/ActionButtons';
 import { ranksService } from '@/services';
+import { useLanguage } from '@/components/language-context';
+import { useHasPermission } from '@/hooks';
 
 interface SystemRank {
   id: string;
@@ -15,84 +23,73 @@ interface SystemRank {
   titleI18n: Record<string, string>;
   descriptionI18n: Record<string, string>;
   badgeItemId?: string;
+  badgeIconUrl?: string;
   priority: number;
+  createdAt?: string;
 }
 
 export default function RanksPage() {
-  const [ranks, setRanks] = useState<SystemRank[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { t } = useLanguage();
+  const queryClient = useQueryClient();
+  const hasPermission = useHasPermission();
+  const canManage = hasPermission('manage_roles');
+
+  const [showModal, setShowModal] = useState(false);
+  const [editingRank, setEditingRank] = useState<SystemRank | null>(null);
   const [selectedRank, setSelectedRank] = useState<SystemRank | null>(null);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newRank, setNewRank] = useState({
-    code: '',
-    titleEn: '',
-    titleAr: '',
-    descriptionEn: '',
-    descriptionAr: '',
-    priority: 0,
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [form, setForm] = useState({
+    code: '', titleEn: '', titleAr: '', descriptionEn: '', descriptionAr: '', priority: 0, badgeIconUrl: '',
   });
-  const fetchingRef = useRef(false);
 
-  useEffect(() => {
-    fetchRanks();
-  }, []);
+  const { data: ranks = [], isLoading, error } = useQuery({
+    queryKey: ['system-ranks'],
+    queryFn: () => ranksService.getSystemRanks(),
+  });
 
-  useEffect(() => {
-    if (error && error.includes('403')) {
-      setError('You do not have permission to view ranks. Admin role required.');
-    } else if (error && error.includes('401')) {
-      setError('Authentication required. Please login again.');
-    }
-  }, [error]);
+  const filteredRanks = useMemo(() => {
+    if (!searchQuery) return ranks;
+    const q = searchQuery.toLowerCase();
+    return ranks.filter(r =>
+      r.code.toLowerCase().includes(q) ||
+      r.titleI18n?.en?.toLowerCase().includes(q) ||
+      r.titleI18n?.ar?.includes(q)
+    );
+  }, [ranks, searchQuery]);
 
-  const fetchRanks = async () => {
-    if (fetchingRef.current) {
-      return;
-    }
-    fetchingRef.current = true;
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = await ranksService.getSystemRanks();
-      setRanks(data || []);
-    } catch (err: unknown) {
-      const error = err as { message?: string; statusCode?: number };
-      if (error.statusCode === 409 || error.message?.includes('Duplicate')) {
-        console.warn('Duplicate request, skipping fetch');
-        return;
-      }
-      console.error('Failed to fetch ranks:', err);
-      setError(error.message || 'Failed to load ranks');
-      setRanks([]);
-    } finally {
-      setIsLoading(false);
-      fetchingRef.current = false;
-    }
+  const createMutation = useMutation({
+    mutationFn: (data: { code: string; titleI18n: Record<string, string>; descriptionI18n: Record<string, string>; priority: number; badgeIconUrl?: string }) =>
+      ranksService.createSystemRank(data),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'] }); closeModal(); },
+  });
+
+  const openCreate = () => {
+    setEditingRank(null);
+    setForm({ code: '', titleEn: '', titleAr: '', descriptionEn: '', descriptionAr: '', priority: 0, badgeIconUrl: '' });
+    setShowModal(true);
   };
 
-  const handleCreateRank = async () => {
-    try {
-      await ranksService.createSystemRank({
-        code: newRank.code,
-        titleI18n: { en: newRank.titleEn, ar: newRank.titleAr },
-        descriptionI18n: { en: newRank.descriptionEn, ar: newRank.descriptionAr },
-        priority: newRank.priority,
-      });
-      setShowCreateModal(false);
-      setNewRank({
-        code: '',
-        titleEn: '',
-        titleAr: '',
-        descriptionEn: '',
-        descriptionAr: '',
-        priority: 0,
-      });
-      await fetchRanks();
-    } catch (err) {
-      console.error('Failed to create rank:', err);
-      setError('Failed to create rank');
-    }
+  const openEdit = (rank: SystemRank) => {
+    setEditingRank(rank);
+    setForm({
+      code: rank.code, titleEn: rank.titleI18n?.en || '', titleAr: rank.titleI18n?.ar || '',
+      descriptionEn: rank.descriptionI18n?.en || '', descriptionAr: rank.descriptionI18n?.ar || '',
+      priority: rank.priority, badgeIconUrl: rank.badgeIconUrl || '',
+    });
+    setShowModal(true);
+  };
+
+  const closeModal = () => { setShowModal(false); setEditingRank(null); };
+
+  const handleSubmit = () => {
+    createMutation.mutate({
+      code: form.code,
+      titleI18n: { en: form.titleEn, ar: form.titleAr },
+      descriptionI18n: { en: form.descriptionEn, ar: form.descriptionAr },
+      priority: form.priority,
+      badgeIconUrl: form.badgeIconUrl || undefined,
+    });
   };
 
   if (isLoading) {
@@ -105,128 +102,205 @@ export default function RanksPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">System Ranks</h1>
-        <Button onClick={() => setShowCreateModal(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Create Rank
-        </Button>
-      </div>
+      <PageHeader
+        icon={<Crown className="w-6 h-6 text-yellow-500" />}
+        title={t('ranks') || 'System Ranks'}
+        action={canManage ? { label: t('create') || 'Create Rank', onClick: openCreate, icon: <Plus className="w-4 h-4" /> } : undefined}
+      />
 
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          <p className="text-sm text-red-600 dark:text-red-400">{error.message}</p>
         </div>
       )}
 
+      <div className="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search ranks..."
+            className="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400"
+          />
+        </div>
+        <p className="text-sm text-gray-500 shrink-0">
+          {filteredRanks.length} / {ranks.length} ranks
+        </p>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {ranks.map((rank) => (
-          <div
-            key={rank.id}
-            className="cursor-pointer"
-            onClick={() => setSelectedRank(rank)}
-          >
-            <Card>
+        {filteredRanks.map((rank) => (
+          <div key={rank.id} className="cursor-pointer" onClick={() => setSelectedRank(rank)}>
+            <Card hover>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <Crown className="w-5 h-5 text-yellow-500" />
+                    {rank.badgeIconUrl ? (
+                      <img src={rank.badgeIconUrl} alt="" className="w-6 h-6 object-contain" />
+                    ) : (
+                      <Crown className="w-5 h-5 text-yellow-500" />
+                    )}
                     {rank.titleI18n?.en || rank.code}
                   </CardTitle>
-                  <Badge variant="outline">Priority: {rank.priority}</Badge>
+                  <Badge variant="outline">#{rank.priority}</Badge>
                 </div>
               </CardHeader>
               <CardContent>
-<p className="text-sm text-gray-500 dark:text-gray-400">
-                {rank.descriptionI18n?.en || 'No description'}
-              </p>
-              <p className="text-xs text-gray-400 mt-2">Code: {rank.code}</p>
-            </CardContent>
+                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                  {rank.descriptionI18n?.en || 'No description'}
+                </p>
+                <div className="flex items-center justify-between mt-3">
+                  <p className="text-xs text-gray-400 font-mono">{rank.code}</p>
+                  <div className="flex items-center gap-1">
+                    {rank.titleI18n?.ar && (
+                      <span className="text-xs text-gray-400" dir="rtl">{rank.titleI18n.ar}</span>
+                    )}
+                  </div>
+                </div>
+                {canManage && (
+                  <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
+                    <ActionButtons
+                      onEdit={() => openEdit(rank)}
+                      onDelete={() => setDeleteTarget(rank.id)}
+                      canManage={canManage}
+                    />
+                  </div>
+                )}
+              </CardContent>
             </Card>
           </div>
         ))}
-        {ranks.length === 0 && !error && (
-          <div className="col-span-full text-center py-8 text-gray-500">
-            No ranks found
-          </div>
+        {filteredRanks.length === 0 && !error && (
+          <EmptyState message={searchQuery ? 'No ranks match your search' : 'No ranks found'} icon={<Inbox className="w-10 h-10" />} />
         )}
       </div>
 
-      <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title="Create System Rank">
+      {/* Detail Modal */}
+      <Modal isOpen={!!selectedRank} onClose={() => setSelectedRank(null)} title={selectedRank?.titleI18n?.en || selectedRank?.code || 'Rank Details'} size="lg">
+        {selectedRank && (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
+                {selectedRank.badgeIconUrl ? (
+                  <img src={selectedRank.badgeIconUrl} alt="" className="w-12 h-12 object-contain" />
+                ) : (
+                  <Crown className="w-8 h-8 text-yellow-500" />
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge variant="outline">Priority: {selectedRank.priority}</Badge>
+                  {selectedRank.createdAt && (
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> {new Date(selectedRank.createdAt).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-xl font-bold">{selectedRank.titleI18n?.en || selectedRank.code}</h3>
+                <p className="text-sm text-gray-500 font-mono">{selectedRank.code}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <Shield className="w-4 h-4 text-indigo-500" />
+                  <span className="text-sm font-medium text-gray-500">Title (EN)</span>
+                </div>
+                <p className="text-gray-900 dark:text-white font-medium">{selectedRank.titleI18n?.en || '—'}</p>
+              </div>
+              <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <Shield className="w-4 h-4 text-indigo-500" />
+                  <span className="text-sm font-medium text-gray-500">Title (AR)</span>
+                </div>
+                <p className="text-gray-900 dark:text-white font-medium" dir="rtl">{selectedRank.titleI18n?.ar || '—'}</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-500 mb-2 block">Description (EN)</label>
+              <p className="text-gray-900 dark:text-white">{selectedRank.descriptionI18n?.en || 'No description'}</p>
+            </div>
+
+            {selectedRank.descriptionI18n?.ar && (
+              <div>
+                <label className="text-sm font-medium text-gray-500 mb-2 block">Description (AR)</label>
+                <p className="text-gray-900 dark:text-white" dir="rtl">{selectedRank.descriptionI18n.ar}</p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Priority</p>
+                <p className="font-medium text-lg">{selectedRank.priority}</p>
+              </div>
+              {selectedRank.badgeItemId && (
+                <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                  <p className="text-xs text-gray-500 mb-1">Badge Item ID</p>
+                  <p className="font-medium text-sm font-mono">{selectedRank.badgeItemId}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+              {canManage && (
+                <>
+                  <Button variant="outline" onClick={() => { setSelectedRank(null); openEdit(selectedRank); }}>Edit</Button>
+                  <Button variant="danger" onClick={() => { setSelectedRank(null); setDeleteTarget(selectedRank.id); }}>Delete</Button>
+                </>
+              )}
+              <Button variant="ghost" onClick={() => setSelectedRank(null)}>Close</Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Create/Edit Modal */}
+      <Modal isOpen={showModal} onClose={closeModal} title={editingRank ? (t('edit') || 'Edit Rank') : (t('create') || 'Create Rank')}>
         <div className="space-y-4">
-          <Input
-            label="Rank Code"
-            placeholder="e.g., vip, moderator"
-            value={newRank.code}
-            onChange={(e) => setNewRank({ ...newRank, code: e.target.value })}
-          />
-          <Input
-            label="Title (English)"
-            placeholder="VIP User"
-            value={newRank.titleEn}
-            onChange={(e) => setNewRank({ ...newRank, titleEn: e.target.value })}
-          />
-          <Input
-            label="Title (Arabic)"
-            placeholder="مستخدم VIP"
-            value={newRank.titleAr}
-            onChange={(e) => setNewRank({ ...newRank, titleAr: e.target.value })}
-          />
-          <Input
-            label="Description (English)"
-            placeholder="VIP description"
-            value={newRank.descriptionEn}
-            onChange={(e) => setNewRank({ ...newRank, descriptionEn: e.target.value })}
-          />
-          <Input
-            label="Description (Arabic)"
-            placeholder="وصف VIP"
-            value={newRank.descriptionAr}
-            onChange={(e) => setNewRank({ ...newRank, descriptionAr: e.target.value })}
-          />
-          <Input
-            label="Priority"
-            type="number"
-            placeholder="0"
-            value={newRank.priority}
-            onChange={(e) => setNewRank({ ...newRank, priority: parseInt(e.target.value) || 0 })}
-          />
+          <Input label="Code" placeholder="e.g., vip, moderator" value={form.code}
+            onChange={(e) => setForm({ ...form, code: e.target.value })} disabled={!!editingRank} />
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="Title (English)" placeholder="VIP" value={form.titleEn}
+              onChange={(e) => setForm({ ...form, titleEn: e.target.value })} />
+            <Input label="Title (Arabic)" placeholder="مستخدم VIP" value={form.titleAr}
+              onChange={(e) => setForm({ ...form, titleAr: e.target.value })} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="Description (English)" placeholder="VIP description" value={form.descriptionEn}
+              onChange={(e) => setForm({ ...form, descriptionEn: e.target.value })} />
+            <Input label="Description (Arabic)" placeholder="وصف VIP" value={form.descriptionAr}
+              onChange={(e) => setForm({ ...form, descriptionAr: e.target.value })} />
+          </div>
+          <FileUpload profile="store" label="Badge Icon" placeholder="icon URL or upload" value={form.badgeIconUrl}
+            onChange={(v) => setForm({ ...form, badgeIconUrl: v })} />
+          <Input label="Priority" type="number" placeholder="0" value={form.priority}
+            onChange={(e) => setForm({ ...form, priority: parseInt(e.target.value) || 0 })} />
           <div className="flex gap-2 pt-4">
-            <Button onClick={handleCreateRank}>Create</Button>
-            <Button variant="outline" onClick={() => setShowCreateModal(false)}>Cancel</Button>
+            <Button onClick={handleSubmit} disabled={!form.code}>{t('save') || 'Save'}</Button>
+            <Button variant="outline" onClick={closeModal}>{t('cancel') || 'Cancel'}</Button>
           </div>
         </div>
       </Modal>
 
-      <Modal isOpen={!!selectedRank} onClose={() => setSelectedRank(null)} title="Rank Details">
-        {selectedRank && (
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-gray-500">Code</label>
-              <p className="text-gray-900 dark:text-white">{selectedRank.code}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Title (EN)</label>
-              <p className="text-gray-900 dark:text-white">{selectedRank.titleI18n?.en}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Title (AR)</label>
-              <p className="text-gray-900 dark:text-white">{selectedRank.titleI18n?.ar}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Priority</label>
-              <p className="text-gray-900 dark:text-white">{selectedRank.priority}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Description</label>
-              <p className="text-gray-900 dark:text-white">{selectedRank.descriptionI18n?.en}</p>
-            </div>
-            <div className="flex gap-2 pt-4">
-              <Button variant="outline" onClick={() => setSelectedRank(null)}>Close</Button>
-            </div>
-          </div>
-        )}
-      </Modal>
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title={t('delete') || 'Delete Rank'}
+        message={t('deleteConfirm') || 'Are you sure you want to delete this rank?'}
+        confirmText={t('confirm')}
+        cancelText={t('cancel')}
+        variant="danger"
+        onConfirm={() => {
+          if (deleteTarget) {
+            queryClient.invalidateQueries({ queryKey: ['system-ranks'] });
+            setDeleteTarget(null);
+          }
+        }}
+      />
     </div>
   );
 }

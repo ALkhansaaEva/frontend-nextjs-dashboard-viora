@@ -65,7 +65,7 @@ export type BundleItem = z.infer<typeof BundleItemSchema>;
 export const CreateStoreBundleSchema = z.object({
   sku: z.string().min(1),
   title: z.union([z.record(z.string(), z.string()), z.string()]),
-  // description: z.union([z.record(z.string(), z.string()), z.string()]).optional(),
+  iconUrl: z.string().optional(),
   priceGems: z.number().optional(),
   priceCoins: z.number().optional(),
   isActive: z.boolean().optional(),

@@ -1,6 +1,6 @@
 'use client';
 
-import { ShoppingCart, Gem, Coins } from 'lucide-react';
+import { Gem, Coins } from 'lucide-react';
 import { Card, CardContent } from '@/shared/components/ui/Card';
 import { Badge } from '@/shared/components/ui/Badge';
 import type { StoreBundle } from '@/services/store.service';
@@ -13,8 +13,12 @@ interface BundleCardProps {
 export function BundleCard({ bundle, isRTL }: BundleCardProps) {
   return (
     <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden">
-      <div className="h-24 bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 flex items-center justify-center">
-        <ShoppingCart className="w-10 h-10 text-white/80" />
+      <div className="h-24 bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
+        {bundle.iconUrl ? (
+          <img src={bundle.iconUrl} alt="" className="w-full h-full object-contain p-2" />
+        ) : (
+          <span className="text-4xl">📦</span>
+        )}
       </div>
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">

@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ShoppingCart, Package, Gem, Coins, Plus, LayoutGrid, List, Loader2, Filter, X } from 'lucide-react';
+import { ShoppingCart, Package, Gem, Coins, Plus, LayoutGrid, List, Filter, X } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
 import { Modal } from '@/shared/components/ui/Modal';
 import { Badge } from '@/shared/components/ui/Badge';
-import { Input } from '@/shared/components/ui/Input';
 import { Select } from '@/shared/components/ui/Select';
 import { storeService } from '@/services';
 import { useHasPermission } from '@/hooks';
@@ -352,35 +351,34 @@ export default function StorePage() {
 
       <Modal isOpen={!!editingItem} onClose={() => setEditingItem(null)} title={t('editItem') || 'Edit Item'} size="lg">
         {editingItem && (
-          <div className="grid sm:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto pr-2">
-            <Input label="Code" value={editingItem.code} disabled className="bg-gray-100" />
-            <Input label="Title (EN)" value={editingItem.title?.en || ''} onChange={(e) => setEditingItem({ ...editingItem, title: { ...editingItem.title, en: e.target.value } })} />
-            <Input label="Title (AR)" value={editingItem.title?.ar || ''} onChange={(e) => setEditingItem({ ...editingItem, title: { ...editingItem.title, ar: e.target.value } })} />
-            <Input label="Price (Gems)" type="number" value={editingItem.priceGems} onChange={(e) => setEditingItem({ ...editingItem, priceGems: parseInt(e.target.value) || 0 })} />
-            <Input label="Price (Coins)" type="number" value={editingItem.priceCoins} onChange={(e) => setEditingItem({ ...editingItem, priceCoins: parseInt(e.target.value) || 0 })} />
-            <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-              <input
-                type="checkbox"
-                id="editIsActive"
-                checked={editingItem.isActive}
-                onChange={(e) => setEditingItem({ ...editingItem, isActive: e.target.checked })}
-                className="w-4 h-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
-              />
-              <label htmlFor="editIsActive" className="text-sm font-medium">Active</label>
-            </div>
-            <Button className="sm:col-span-2 mt-2 bg-violet-600 hover:bg-violet-700" onClick={() => updateItemMutation.mutate({ 
-              id: editingItem.id, 
-              data: { 
-                title: editingItem.title, 
-                priceGems: editingItem.priceGems, 
-                priceCoins: editingItem.priceCoins, 
-                isActive: editingItem.isActive,
-              } 
-            })} disabled={updateItemMutation.isPending}>
-              {updateItemMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              {updateItemMutation.isPending ? 'Saving...' : 'Save Changes'}
-            </Button>
-          </div>
+          <CreateItemForm
+            initialData={{
+              code: editingItem.code,
+              type: editingItem.type,
+              slot: editingItem.slot,
+              scope: editingItem.scope as 'profile' | 'room' | 'game',
+              gameType: editingItem.gameType,
+              title: editingItem.title as { en: string; ar: string },
+              description: editingItem.description as { en: string; ar: string } | undefined,
+              priceGems: editingItem.priceGems,
+              priceCoins: editingItem.priceCoins,
+              rarity: editingItem.rarity as 'common' | 'rare' | 'epic' | 'legendary',
+              isStackable: editingItem.isStackable,
+              defaultExpiryHours: editingItem.defaultExpiryHours ?? undefined,
+              isActive: editingItem.isActive,
+              assets: (editingItem.assets || []).map(a => ({
+                kind: a.kind,
+                purpose: a.purpose,
+                url: a.url,
+                platform: a.platform,
+                version: a.version,
+              })),
+              styleConfig: editingItem.styleConfig,
+            }}
+            onSubmit={(data) => updateItemMutation.mutate({ id: editingItem.id, data })}
+            isPending={updateItemMutation.isPending}
+            onCancel={() => setEditingItem(null)}
+          />
         )}
       </Modal>
 

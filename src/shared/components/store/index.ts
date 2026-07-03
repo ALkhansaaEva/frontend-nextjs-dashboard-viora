@@ -4,3 +4,5 @@ export { CreateBundleForm } from './CreateBundleForm';
 export { StoreItemCard } from './StoreItemCard';
 export { StoreItemTable } from './StoreItemTable';
 export { BundleCard } from './BundleCard';
+export { GiftCard } from './GiftCard';
+export { GiftTable } from './GiftTable';

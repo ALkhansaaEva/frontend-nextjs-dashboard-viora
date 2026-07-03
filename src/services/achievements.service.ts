@@ -39,7 +39,20 @@ export interface CreateAchievementRequest {
   code: string;
   titleI18n: Record<string, string>;
   descriptionI18n?: Record<string, string>;
-  maxProgress?: number;
+  rarity?: 'common' | 'rare' | 'epic' | 'legendary';
+  criteria: {
+    type: string;
+    target: number;
+    gameType?: string;
+    metadata?: Record<string, unknown>;
+  };
+  rewards?: {
+    gold?: number;
+    gems?: number;
+    xp?: number;
+    itemCode?: string;
+  };
+  iconUrl?: string;
   isHidden?: boolean;
   isActive?: boolean;
 }
@@ -47,7 +60,20 @@ export interface CreateAchievementRequest {
 export interface UpdateAchievementRequest {
   titleI18n?: Record<string, string>;
   descriptionI18n?: Record<string, string>;
-  maxProgress?: number;
+  rarity?: 'common' | 'rare' | 'epic' | 'legendary';
+  criteria?: {
+    type: string;
+    target: number;
+    gameType?: string;
+    metadata?: Record<string, unknown>;
+  };
+  rewards?: {
+    gold?: number;
+    gems?: number;
+    xp?: number;
+    itemCode?: string;
+  };
+  iconUrl?: string;
   isHidden?: boolean;
   isActive?: boolean;
 }

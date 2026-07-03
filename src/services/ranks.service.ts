@@ -6,6 +6,7 @@ interface SystemRank {
   titleI18n: Record<string, string>;
   descriptionI18n: Record<string, string>;
   badgeItemId?: string;
+  badgeIconUrl?: string;
   priority: number;
   createdAt?: string;
 }
@@ -43,6 +44,7 @@ export const ranksService = {
     titleI18n: Record<string, string>;
     descriptionI18n: Record<string, string>;
     badgeItemId?: string;
+    badgeIconUrl?: string;
     priority: number;
   }): Promise<SystemRank> {
     return apiClient.post<SystemRank>('/ranks/system', data);

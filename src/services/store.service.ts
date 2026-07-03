@@ -54,6 +54,7 @@ export interface StoreBundle {
   sku: string;
   title: Record<string, string>;
   description?: Record<string, string>;
+  iconUrl?: string;
   priceGems?: number;
   priceCoins?: number;
   isActive: boolean;
@@ -183,38 +184,38 @@ async getSentGifts(): Promise<unknown[]> {
 
   async createItem(data: CreateStoreItemRequest): Promise<StoreItem> {
     const validated = CreateStoreItemSchema.parse(data);
-    return apiClient.post<StoreItem>('/store/admin/items', validated);
+    return apiClient.post<StoreItem>('/store/items', validated);
   },
 
   async createBundle(data: CreateStoreBundleRequest): Promise<StoreBundle> {
     const validated = CreateStoreBundleSchema.parse(data);
-    return apiClient.post<StoreBundle>('/store/admin/bundles', validated);
+    return apiClient.post<StoreBundle>('/store/bundles', validated);
   },
 
   async updateItem(id: string, data: Partial<CreateStoreItemRequest>): Promise<StoreItem> {
     const validated = data.title ? UpdateStoreItemSchema.parse(data) : data;
-    return apiClient.patch<StoreItem>(`/store/admin/items/${id}`, validated);
+    return apiClient.patch<StoreItem>(`/store/items/${id}`, validated);
   },
 
   async deleteItem(id: string): Promise<void> {
-    await apiClient.delete(`/store/admin/items/${id}`);
+    await apiClient.delete(`/store/items/${id}`);
   },
 
   async updateBundle(id: string, data: Partial<CreateStoreBundleRequest>): Promise<StoreBundle> {
     const validated = data.title ? UpdateStoreBundleSchema.parse(data) : data;
-    return apiClient.patch<StoreBundle>(`/store/admin/bundles/${id}`, validated);
+    return apiClient.patch<StoreBundle>(`/store/bundles/${id}`, validated);
   },
 
   async deleteBundle(id: string): Promise<void> {
-    await apiClient.delete(`/store/admin/bundles/${id}`);
+    await apiClient.delete(`/store/bundles/${id}`);
   },
 
   async getItemById(id: string): Promise<StoreItem> {
-    return apiClient.get<StoreItem>(`/store/admin/items/${id}`);
+    return apiClient.get<StoreItem>(`/store/items/${id}`);
   },
 
   async getBundleById(bundleId: string): Promise<StoreBundle> {
-    return apiClient.get<StoreBundle>(`/store/admin/bundles/${bundleId}`);
+    return apiClient.get<StoreBundle>(`/store/bundles/${bundleId}`);
   },
 
   async addBulkAssetsToItem(itemId: string, assets: Array<{
@@ -226,11 +227,11 @@ async getSentGifts(): Promise<unknown[]> {
     version?: number;
     sizeBytes?: number;
   }>): Promise<{ success: boolean; message: string; assets: Asset[] }> {
-    return apiClient.post<{ success: boolean; message: string; assets: Asset[] }>(`/store/admin/items/${itemId}/assets/bulk`, { assets });
+    return apiClient.post<{ success: boolean; message: string; assets: Asset[] }>(`/store/items/${itemId}/assets/bulk`, { assets });
   },
 
   async getPurchaseHistory(): Promise<unknown[]> {
-    const response = await apiClient.get<unknown[] | { data: unknown[] }>('/store/admin/purchases');
+    const response = await apiClient.get<unknown[] | { data: unknown[] }>('/store/purchases');
     if (Array.isArray(response)) return response;
     return (response as { data: unknown[] }).data || [];
   },
@@ -241,29 +242,29 @@ async getSentGifts(): Promise<unknown[]> {
     if (params?.limit) searchParams.set('limit', params.limit.toString());
     if (params?.search) searchParams.set('search', params.search);
     const query = searchParams.toString();
-    const url = query ? `/store/admin/items?${query}` : '/store/admin/items';
+    const url = query ? `/store/items?${query}` : '/store/items';
     const response = await apiClient.get<RawPaginatedResponse<StoreItem>>(url);
     return normalizePaginatedResponse(response);
   },
 
   async getAdminItemById(id: string): Promise<StoreItem> {
-    return apiClient.get<StoreItem>(`/store/admin/items/${id}`);
+    return apiClient.get<StoreItem>(`/store/items/${id}`);
   },
 
   async updateAdminItem(id: string, data: Partial<CreateStoreItemRequest>): Promise<StoreItem> {
-    return apiClient.patch<StoreItem>(`/store/admin/items/${id}`, data);
+    return apiClient.patch<StoreItem>(`/store/items/${id}`, data);
   },
 
   async deleteAdminItem(id: string): Promise<void> {
-    await apiClient.delete(`/store/admin/items/${id}`);
+    await apiClient.delete(`/store/items/${id}`);
   },
 
   async addAssetToItem(itemId: string, asset: Asset): Promise<StoreItem> {
-    return apiClient.post<StoreItem>(`/store/admin/items/${itemId}/assets`, asset);
+    return apiClient.post<StoreItem>(`/store/items/${itemId}/assets`, asset);
   },
 
   async deleteAssetFromItem(itemId: string, assetId: string): Promise<void> {
-    await apiClient.delete(`/store/admin/items/${itemId}/assets/${assetId}`);
+    await apiClient.delete(`/store/items/${itemId}/assets/${assetId}`);
   },
 
   async getAdminBundles(params?: ListParams): Promise<PaginatedResponse<StoreBundle>> {
@@ -272,29 +273,29 @@ async getSentGifts(): Promise<unknown[]> {
     if (params?.limit) searchParams.set('limit', params.limit.toString());
     if (params?.search) searchParams.set('search', params.search);
     const query = searchParams.toString();
-    const url = query ? `/store/admin/bundles?${query}` : '/store/admin/bundles';
+    const url = query ? `/store/bundles?${query}` : '/store/bundles';
     const response = await apiClient.get<RawPaginatedResponse<StoreBundle>>(url);
     return normalizePaginatedResponse(response);
   },
 
   async getAdminBundleById(id: string): Promise<StoreBundle> {
-    return apiClient.get<StoreBundle>(`/store/admin/bundles/${id}`);
+    return apiClient.get<StoreBundle>(`/store/bundles/${id}`);
   },
 
   async updateAdminBundle(id: string, data: Partial<CreateStoreBundleRequest>): Promise<StoreBundle> {
-    return apiClient.patch<StoreBundle>(`/store/admin/bundles/${id}`, data);
+    return apiClient.patch<StoreBundle>(`/store/bundles/${id}`, data);
   },
 
   async deleteAdminBundle(id: string): Promise<void> {
-    await apiClient.delete(`/store/admin/bundles/${id}`);
+    await apiClient.delete(`/store/bundles/${id}`);
   },
 
   async addItemToBundle(bundleId: string, item: { itemId: string; quantity: number }): Promise<StoreBundle> {
-    return apiClient.post<StoreBundle>(`/store/admin/bundles/${bundleId}/items`, item);
+    return apiClient.post<StoreBundle>(`/store/bundles/${bundleId}/items`, item);
   },
 
   async removeItemFromBundle(bundleId: string, itemId: string): Promise<void> {
-    await apiClient.delete(`/store/admin/bundles/${bundleId}/items/${itemId}`);
+    await apiClient.delete(`/store/bundles/${bundleId}/items/${itemId}`);
   },
 
   async getAdminPurchases(params?: ListParams): Promise<PaginatedResponse<unknown>> {
@@ -303,47 +304,47 @@ async getSentGifts(): Promise<unknown[]> {
     if (params?.limit) searchParams.set('limit', params.limit.toString());
     if (params?.search) searchParams.set('search', params.search);
     const query = searchParams.toString();
-    const url = query ? `/store/admin/purchases?${query}` : '/store/admin/purchases';
+    const url = query ? `/store/purchases?${query}` : '/store/purchases';
     const response = await apiClient.get<RawPaginatedResponse<unknown>>(url);
     return normalizePaginatedResponse(response);
   },
 
   async getAdminPurchaseById(id: string): Promise<unknown> {
-    return apiClient.get(`/store/admin/purchases/${id}`);
+    return apiClient.get(`/store/purchases/${id}`);
   },
 
   async getStoreStats(): Promise<{ totalItems: number; totalBundles: number; totalPurchases: number; revenue: Record<string, number> }> {
-    return apiClient.get('/store/admin/stats');
+    return apiClient.get('/store/stats');
   },
 
   async getUserInventoryByAdmin(userId: string): Promise<InventoryItem[]> {
-    const response = await apiClient.get<InventoryItem[] | { data: InventoryItem[] }>(`/store/admin/user/${userId}/inventory`);
+    const response = await apiClient.get<InventoryItem[] | { data: InventoryItem[] }>(`/store/user/${userId}/inventory`);
     if (Array.isArray(response)) return response;
     return (response as { data: InventoryItem[] }).data || [];
   },
 
   async addItemAssets(itemId: string, assets: { url: string; type: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.post(`/store/admin/items/${itemId}/assets`, { assets });
+    await apiClient.post(`/store/items/${itemId}/assets`, { assets });
   },
 
   async bulkAddItemAssets(itemId: string, assets: { url: string; type: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.post(`/store/admin/items/${itemId}/assets/bulk`, { assets });
+    await apiClient.post(`/store/items/${itemId}/assets/bulk`, { assets });
   },
 
   async updateItemAssets(itemId: string, assets: { id: string; url?: string; type?: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.patch(`/store/admin/items/${itemId}/assets`, { assets });
+    await apiClient.patch(`/store/items/${itemId}/assets`, { assets });
   },
 
   async deleteItemAsset(itemId: string, assetId: string): Promise<void> {
-    await apiClient.delete(`/store/admin/items/${itemId}/assets/${assetId}`);
+    await apiClient.delete(`/store/items/${itemId}/assets/${assetId}`);
   },
 
   async grantItemToUser(userId: string, data: { itemId: string; quantity: number; reason?: string }): Promise<void> {
-    await apiClient.post(`/store/admin/user/${userId}/grant-item`, data);
+    await apiClient.post(`/store/user/${userId}/grant-item`, data);
   },
 
   async getUserLoadoutByAdmin(userId: string): Promise<LoadoutItem[]> {
-    const response = await apiClient.get<LoadoutItem[] | { data: LoadoutItem[] }>(`/store/admin/user/${userId}/loadout`);
+    const response = await apiClient.get<LoadoutItem[] | { data: LoadoutItem[] }>(`/store/user/${userId}/loadout`);
     if (Array.isArray(response)) return response;
     return (response as { data: LoadoutItem[] }).data || [];
   },

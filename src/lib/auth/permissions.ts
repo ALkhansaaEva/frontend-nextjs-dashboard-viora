@@ -21,7 +21,6 @@ function normalize(perm: string): string {
 
 function matchWildcard(pattern: string, target: string): boolean {
   if (pattern === target) return true;
-  if (pattern === '*' || pattern === 'admin.full_access' || pattern === 'full_access') return true;
   if (!pattern.endsWith('.*')) return false;
   const prefix = pattern.slice(0, -2);
   return target === prefix || target.startsWith(prefix + '.');
