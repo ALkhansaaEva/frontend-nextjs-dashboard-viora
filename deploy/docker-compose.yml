@@ -1,0 +1,45 @@
+# =============================================================================
+# Viora Dashboard — Docker Compose
+# =============================================================================
+#
+# Prerequisites (run ON HOST before `docker compose up`):
+#   pnpm build && pnpm install --prod
+#
+# Then:
+#   docker compose -f deploy/docker-compose.yml up -d --build
+#
+# Traffic flow: dev.evaka.store:443 → Host nginx → 127.0.0.1:4179 → Container
+# =============================================================================
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: viora-dashboard:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4179:4179"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+    env_file:
+      - ../.env
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:4179/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: "0.75"
+        reservations:
+          memory: 256m
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

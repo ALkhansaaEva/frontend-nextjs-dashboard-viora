@@ -194,20 +194,20 @@ async getSentGifts(): Promise<unknown[]> {
 
   async updateItem(id: string, data: Partial<CreateStoreItemRequest>): Promise<StoreItem> {
     const validated = data.title ? UpdateStoreItemSchema.parse(data) : data;
-    return apiClient.patch<StoreItem>(`/store/items/${id}`, validated);
+    return apiClient.patch<StoreItem>(`/store/admin/items/${id}`, validated);
   },
 
   async deleteItem(id: string): Promise<void> {
-    await apiClient.delete(`/store/items/${id}`);
+    await apiClient.delete(`/store/admin/items/${id}`);
   },
 
   async updateBundle(id: string, data: Partial<CreateStoreBundleRequest>): Promise<StoreBundle> {
     const validated = data.title ? UpdateStoreBundleSchema.parse(data) : data;
-    return apiClient.patch<StoreBundle>(`/store/bundles/${id}`, validated);
+    return apiClient.patch<StoreBundle>(`/store/admin/bundles/${id}`, validated);
   },
 
   async deleteBundle(id: string): Promise<void> {
-    await apiClient.delete(`/store/bundles/${id}`);
+    await apiClient.delete(`/store/admin/bundles/${id}`);
   },
 
   async getItemById(id: string): Promise<StoreItem> {
@@ -227,7 +227,7 @@ async getSentGifts(): Promise<unknown[]> {
     version?: number;
     sizeBytes?: number;
   }>): Promise<{ success: boolean; message: string; assets: Asset[] }> {
-    return apiClient.post<{ success: boolean; message: string; assets: Asset[] }>(`/store/items/${itemId}/assets/bulk`, { assets });
+    return apiClient.post<{ success: boolean; message: string; assets: Asset[] }>(`/store/admin/items/${itemId}/assets/bulk`, { assets });
   },
 
   async getPurchaseHistory(): Promise<unknown[]> {
@@ -252,19 +252,19 @@ async getSentGifts(): Promise<unknown[]> {
   },
 
   async updateAdminItem(id: string, data: Partial<CreateStoreItemRequest>): Promise<StoreItem> {
-    return apiClient.patch<StoreItem>(`/store/items/${id}`, data);
+    return apiClient.patch<StoreItem>(`/store/admin/items/${id}`, data);
   },
 
   async deleteAdminItem(id: string): Promise<void> {
-    await apiClient.delete(`/store/items/${id}`);
+    await apiClient.delete(`/store/admin/items/${id}`);
   },
 
   async addAssetToItem(itemId: string, asset: Asset): Promise<StoreItem> {
-    return apiClient.post<StoreItem>(`/store/items/${itemId}/assets`, asset);
+    return apiClient.post<StoreItem>(`/store/admin/items/${itemId}/assets`, asset);
   },
 
   async deleteAssetFromItem(itemId: string, assetId: string): Promise<void> {
-    await apiClient.delete(`/store/items/${itemId}/assets/${assetId}`);
+    await apiClient.delete(`/store/admin/items/${itemId}/assets/${assetId}`);
   },
 
   async getAdminBundles(params?: ListParams): Promise<PaginatedResponse<StoreBundle>> {
@@ -283,19 +283,19 @@ async getSentGifts(): Promise<unknown[]> {
   },
 
   async updateAdminBundle(id: string, data: Partial<CreateStoreBundleRequest>): Promise<StoreBundle> {
-    return apiClient.patch<StoreBundle>(`/store/bundles/${id}`, data);
+    return apiClient.patch<StoreBundle>(`/store/admin/bundles/${id}`, data);
   },
 
   async deleteAdminBundle(id: string): Promise<void> {
-    await apiClient.delete(`/store/bundles/${id}`);
+    await apiClient.delete(`/store/admin/bundles/${id}`);
   },
 
   async addItemToBundle(bundleId: string, item: { itemId: string; quantity: number }): Promise<StoreBundle> {
-    return apiClient.post<StoreBundle>(`/store/bundles/${bundleId}/items`, item);
+    return apiClient.post<StoreBundle>(`/store/admin/bundles/${bundleId}/items`, item);
   },
 
   async removeItemFromBundle(bundleId: string, itemId: string): Promise<void> {
-    await apiClient.delete(`/store/bundles/${bundleId}/items/${itemId}`);
+    await apiClient.delete(`/store/admin/bundles/${bundleId}/items/${itemId}`);
   },
 
   async getAdminPurchases(params?: ListParams): Promise<PaginatedResponse<unknown>> {
@@ -324,19 +324,19 @@ async getSentGifts(): Promise<unknown[]> {
   },
 
   async addItemAssets(itemId: string, assets: { url: string; type: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.post(`/store/items/${itemId}/assets`, { assets });
+    await apiClient.post(`/store/admin/items/${itemId}/assets`, { assets });
   },
 
   async bulkAddItemAssets(itemId: string, assets: { url: string; type: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.post(`/store/items/${itemId}/assets/bulk`, { assets });
+    await apiClient.post(`/store/admin/items/${itemId}/assets/bulk`, { assets });
   },
 
   async updateItemAssets(itemId: string, assets: { id: string; url?: string; type?: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.patch(`/store/items/${itemId}/assets`, { assets });
+    await apiClient.patch(`/store/admin/items/${itemId}/assets`, { assets });
   },
 
   async deleteItemAsset(itemId: string, assetId: string): Promise<void> {
-    await apiClient.delete(`/store/items/${itemId}/assets/${assetId}`);
+    await apiClient.delete(`/store/admin/items/${itemId}/assets/${assetId}`);
   },
 
   async grantItemToUser(userId: string, data: { itemId: string; quantity: number; reason?: string }): Promise<void> {

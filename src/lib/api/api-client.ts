@@ -33,8 +33,11 @@ function isValidEmail(email: string): boolean {
 }
 
 function isValidUUID(uuid: string): boolean {
+  // Standard UUID v4
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(uuid);
+  if (uuidRegex.test(uuid)) return true;
+  // ponytail: also accept cuid2 (backend uses it for media IDs)
+  return /^[a-z0-9]{20,30}$/.test(uuid);
 }
 
 function isValidNumber(value: unknown): value is number {
@@ -273,10 +276,12 @@ export class ApiClient {
         continue;
       }
       
-      if (key.includes('Id') || key === 'id' || key === 'userId') {
-        if (!isValidString(value) || !isValidUUID(value as string)) {
-          console.warn(`Invalid UUID param: ${key}`, value);
-          return false;
+      // ponytail: skip strict ID validation — backend handles it
+      // Only check that it's a non-empty string if provided
+      if ((key.includes('Id') || key === 'id' || key === 'userId') && isValidString(value)) {
+        // warn but don't block — backend may use cuid2, nanoid, etc.
+        if (!isValidUUID(value as string)) {
+          console.warn(`Non-UUID ID param: ${key}=${value}`);
         }
       }
       
