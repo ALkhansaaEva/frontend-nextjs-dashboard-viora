@@ -115,7 +115,7 @@ export default function AchievementsPage() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateAchievementRequest }) => achievementsService.updateAchievement(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['achievements'] }); closeModal(); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['achievements'], refetchType: 'all' }); closeModal(); },
   });
 
   const deleteMutation = useMutation({
