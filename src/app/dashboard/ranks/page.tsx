@@ -148,32 +148,24 @@ export default function RanksPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {filteredRanks.map((rank) => (
           <div key={rank.id} className="cursor-pointer" onClick={() => setSelectedRank(rank)}>
             <Card hover className="overflow-hidden">
-              <div className="h-28 bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center relative">
+              <div className="aspect-square bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center relative">
                 {rank.badgeIconUrl ? (
-                  <img src={rank.badgeIconUrl} alt="" className="w-14 h-14 object-contain"
+                  <img src={rank.badgeIconUrl} alt="" className="w-12 h-12 object-contain"
                     onError={(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden'); }} />
                 ) : null}
                 <Crown className={`w-10 h-10 text-yellow-500 ${rank.badgeIconUrl ? 'hidden' : ''}`} />
-                <Badge variant="outline" className="absolute top-2 right-2 text-xs bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm">
-                  #{rank.priority}
-                </Badge>
               </div>
-              <CardContent className="p-3">
-                <h3 className="font-bold text-sm truncate">{rank.titleI18n?.en || rank.code}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-mono mt-0.5">{rank.code}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mt-1.5">
-                  {rank.descriptionI18n?.en || 'No description'}
+              <CardContent className="p-2.5">
+                <h3 className="font-semibold text-xs truncate">{rank.titleI18n?.en || rank.code}</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mt-1">
+                  {rank.descriptionI18n?.en || rank.code}
                 </p>
-                <div className="flex items-center justify-between mt-2">
-                  {rank.titleI18n?.ar ? (
-                    <span className="text-xs text-gray-400" dir="rtl">{rank.titleI18n.ar}</span>
-                  ) : (
-                    <span />
-                  )}
+                <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-gray-100 dark:border-gray-700">
+                  <Badge variant="outline" className="text-xs">#{rank.priority}</Badge>
                   {canManage && (
                     <div onClick={(e) => e.stopPropagation()}>
                       <ActionButtons
