@@ -37,7 +37,16 @@ export function StoreItemCard({ item, isRTL, canManage, onClick, onEdit, onDelet
             src={itemImage.url} 
             alt={item.title?.en || item.code}
             className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).className = 'hidden';
+              const parent = (e.target as HTMLImageElement).parentElement;
+              if (parent) {
+                const fallback = parent.querySelector('.card-img-fallback');
+                if (fallback) fallback.classList.remove('hidden');
+              }
+            }}
           />
+          <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 group-hover:scale-110 transition-transform hidden card-img-fallback" />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 group-hover:scale-110 transition-transform" />

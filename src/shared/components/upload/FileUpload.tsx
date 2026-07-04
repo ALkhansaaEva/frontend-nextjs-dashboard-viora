@@ -85,11 +85,16 @@ export function FileUpload({
       {value && (
         <div className="mt-2 flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
           <div className={`${sizeMap[previewSize]} shrink-0 rounded overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center`}>
-            {value.match(/\.(png|gif|webp|svg|jpg|jpeg|avif)/i) ? (
-              <img src={value} alt="" className="w-full h-full object-contain" />
-            ) : (
-              <Image className="w-4 h-4 text-gray-400" />
-            )}
+            <img
+              src={value}
+              alt=""
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '';
+                (e.target as HTMLImageElement).className = 'hidden';
+              }}
+            />
+            <Image className="w-4 h-4 text-gray-400 hidden-img-fallback" />
           </div>
           <span className="text-xs text-gray-500 truncate flex-1">{value}</span>
           <button
