@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ShoppingCart, Package, Gem, Coins, Plus, LayoutGrid, List, Filter, X } from 'lucide-react';
+import { ShoppingCart, Package, Plus, LayoutGrid, List, Filter, X } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
 import { Modal } from '@/shared/components/ui/Modal';
-import { Badge } from '@/shared/components/ui/Badge';
+
 import { Select } from '@/shared/components/ui/Select';
 import { storeService } from '@/services';
 import { useHasPermission } from '@/hooks';
@@ -14,7 +14,7 @@ import { useLanguage } from '@/components/language-context';
 import type { StoreItem } from '@/services/store.service';
 import type { CreateStoreItemRequest, CreateStoreBundleRequest } from '@/dto/store';
 import { ITEM_TYPES } from '@/dto/store';
-import { CreateItemForm, CreateBundleForm, StoreItemCard, StoreItemTable, BundleCard } from '@/shared/components/store';
+import { CreateItemForm, CreateBundleForm, StoreItemCard, StoreItemTable, BundleCard, ItemDetailContent } from '@/shared/components/store';
 
 const typeLabels: Record<string, string> = {
   ludo_cover: 'Ludo Cover', dice: 'Dice', chess_piece: 'Chess Piece', room_theme: 'Room Theme',
@@ -22,13 +22,6 @@ const typeLabels: Record<string, string> = {
   domino_tile_face: 'Tile Face', domino_tile_back: 'Tile Back', avatar_frame: 'Avatar Frame',
   profile_background: 'Profile BG', profile_frame: 'Profile Frame', profile_avatar: 'Profile Avatar',
   ludo_board: 'Ludo Board', ludo_dice: 'Ludo Dice', ludo_tokens: 'Ludo Tokens', badge: 'Badge', avatar: 'Avatar'
-};
-
-const rarityColors: Record<string, string> = {
-  common: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
-  rare: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-  epic: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
-  legendary: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300'
 };
 
 export default function StorePage() {
@@ -280,73 +273,7 @@ export default function StorePage() {
       )}
 
       <Modal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} title={selectedItem?.title?.en || 'Item Details'} size="lg">
-        {selectedItem && (
-          <div className="space-y-5">
-            <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-              <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-xl flex items-center justify-center">
-                <Package className="w-10 h-10 text-gray-400" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${rarityColors[selectedItem.rarity]}`}>{selectedItem.rarity}</span>
-                  {selectedItem.isStackable && <Badge variant="outline" className="text-xs">Stackable</Badge>}
-                </div>
-                <h3 className="text-xl font-bold">{selectedItem.title?.en}</h3>
-                <p className="text-sm text-gray-500 font-mono">{selectedItem.code}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Type</p>
-                <p className="font-medium">{typeLabels[selectedItem.type] || selectedItem.type}</p>
-              </div>
-              <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Slot</p>
-                <p className="font-medium">{typeLabels[selectedItem.slot] || selectedItem.slot}</p>
-              </div>
-              <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Scope</p>
-                <p className="font-medium capitalize">{selectedItem.scope}</p>
-              </div>
-              <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Expiry</p>
-                <p className="font-medium">{(selectedItem.defaultExpiryHours ?? 0) > 0 ? `${selectedItem.defaultExpiryHours}h` : 'Permanent'}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              {selectedItem.priceGems > 0 && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <Gem className="w-5 h-5 text-purple-500" />
-                  <span className="font-bold text-purple-700 dark:text-purple-300">{selectedItem.priceGems}</span>
-                  <span className="text-sm text-purple-600 dark:text-purple-400">Gems</span>
-                </div>
-              )}
-              {selectedItem.priceCoins > 0 && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                  <Coins className="w-5 h-5 text-yellow-500" />
-                  <span className="font-bold text-yellow-700 dark:text-yellow-300">{selectedItem.priceCoins}</span>
-                  <span className="text-sm text-yellow-600 dark:text-yellow-400">Coins</span>
-                </div>
-              )}
-              {selectedItem.priceGems === 0 && selectedItem.priceCoins === 0 && (
-                <Badge variant="success">Free</Badge>
-              )}
-              <Badge variant={selectedItem.isActive ? 'success' : 'default'} className="ml-auto">
-                {selectedItem.isActive ? 'Active' : 'Inactive'}
-              </Badge>
-            </div>
-            {canManageStore && (
-              <div className="flex gap-2 pt-3 border-t">
-                <Button variant="outline" onClick={() => { setSelectedItem(null); setEditingItem(selectedItem); }} className="flex-1">
-                  Edit
-                </Button>
-                <Button variant="outline" onClick={() => deleteItemMutation.mutate(selectedItem.id)} className="flex-1 text-red-500 border-red-200 hover:bg-red-50">
-                  Delete
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
+        {selectedItem && <ItemDetailContent item={selectedItem} canManage={canManageStore} onEdit={() => { setSelectedItem(null); setEditingItem(selectedItem); }} onDelete={() => deleteItemMutation.mutate(selectedItem.id)} />}
       </Modal>
 
       <Modal isOpen={!!editingItem} onClose={() => setEditingItem(null)} title={t('editItem') || 'Edit Item'} size="lg">
