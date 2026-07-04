@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Crown, Inbox, Shield, Clock, Search } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui/Card';
+import { Card, CardContent } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Modal } from '@/shared/components/ui/Modal';
@@ -151,41 +151,39 @@ export default function RanksPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredRanks.map((rank) => (
           <div key={rank.id} className="cursor-pointer" onClick={() => setSelectedRank(rank)}>
-            <Card hover>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    {rank.badgeIconUrl ? (
-                      <img src={rank.badgeIconUrl} alt="" className="w-6 h-6 object-contain" />
-                    ) : (
-                      <Crown className="w-5 h-5 text-yellow-500" />
-                    )}
-                    {rank.titleI18n?.en || rank.code}
-                  </CardTitle>
-                  <Badge variant="outline">#{rank.priority}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+            <Card hover className="overflow-hidden">
+              <div className="h-28 bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center relative">
+                {rank.badgeIconUrl ? (
+                  <img src={rank.badgeIconUrl} alt="" className="w-14 h-14 object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden'); }} />
+                ) : null}
+                <Crown className={`w-10 h-10 text-yellow-500 ${rank.badgeIconUrl ? 'hidden' : ''}`} />
+                <Badge variant="outline" className="absolute top-2 right-2 text-xs bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm">
+                  #{rank.priority}
+                </Badge>
+              </div>
+              <CardContent className="p-3">
+                <h3 className="font-bold text-sm truncate">{rank.titleI18n?.en || rank.code}</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-mono mt-0.5">{rank.code}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mt-1.5">
                   {rank.descriptionI18n?.en || 'No description'}
                 </p>
-                <div className="flex items-center justify-between mt-3">
-                  <p className="text-xs text-gray-400 font-mono">{rank.code}</p>
-                  <div className="flex items-center gap-1">
-                    {rank.titleI18n?.ar && (
-                      <span className="text-xs text-gray-400" dir="rtl">{rank.titleI18n.ar}</span>
-                    )}
-                  </div>
+                <div className="flex items-center justify-between mt-2">
+                  {rank.titleI18n?.ar ? (
+                    <span className="text-xs text-gray-400" dir="rtl">{rank.titleI18n.ar}</span>
+                  ) : (
+                    <span />
+                  )}
+                  {canManage && (
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <ActionButtons
+                        onEdit={() => openEdit(rank)}
+                        onDelete={() => setDeleteTarget(rank.id)}
+                        canManage={canManage}
+                      />
+                    </div>
+                  )}
                 </div>
-                {canManage && (
-                  <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
-                    <ActionButtons
-                      onEdit={() => openEdit(rank)}
-                      onDelete={() => setDeleteTarget(rank.id)}
-                      canManage={canManage}
-                    />
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>
