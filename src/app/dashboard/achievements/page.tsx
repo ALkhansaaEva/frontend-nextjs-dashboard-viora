@@ -260,10 +260,18 @@ export default function AchievementsPage() {
             <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
               <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-amber-100 to-amber-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
                 {viewingAchievement.iconUrl ? (
-                  <img src={viewingAchievement.iconUrl} alt="" className="w-16 h-16 object-contain" />
-                ) : (
-                  <Trophy className="w-10 h-10 text-amber-500" />
-                )}
+                  <img src={viewingAchievement.iconUrl} alt="" className="w-16 h-16 object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).className = 'hidden';
+                      const parent = (e.target as HTMLImageElement).parentElement;
+                      if (parent) {
+                        const fallback = parent.querySelector('.ach-detail-fallback');
+                        if (fallback) fallback.classList.remove('hidden');
+                      }
+                    }}
+                  />
+                ) : null}
+                <Trophy className={`w-10 h-10 text-amber-500 ach-detail-fallback ${viewingAchievement.iconUrl ? 'hidden' : ''}`} />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">

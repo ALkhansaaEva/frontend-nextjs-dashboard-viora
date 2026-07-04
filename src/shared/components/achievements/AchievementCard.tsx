@@ -27,10 +27,18 @@ export function AchievementCard({ achievement, canManage, onEdit, onDelete }: Ac
     <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden group">
       <div className={`aspect-square bg-gradient-to-br ${style.gradient} relative overflow-hidden flex items-center justify-center`}>
         {achievement.iconUrl ? (
-          <img src={achievement.iconUrl} alt="" className="w-full h-full object-contain p-4" />
-        ) : (
-          <Trophy className={`w-16 h-16 ${achievement.rarity === 'legendary' ? 'text-amber-500' : achievement.rarity === 'epic' ? 'text-purple-500' : achievement.rarity === 'rare' ? 'text-blue-500' : 'text-gray-400'} group-hover:scale-110 transition-transform`} />
-        )}
+          <img src={achievement.iconUrl} alt="" className="w-full h-full object-contain p-4"
+            onError={(e) => {
+              (e.target as HTMLImageElement).className = 'hidden';
+              const parent = (e.target as HTMLImageElement).parentElement;
+              if (parent) {
+                const fallback = parent.querySelector('.ach-icon-fallback');
+                if (fallback) fallback.classList.remove('hidden');
+              }
+            }}
+          />
+        ) : null}
+        <Trophy className={`w-16 h-16 ach-icon-fallback ${achievement.iconUrl ? 'hidden' : ''} ${achievement.rarity === 'legendary' ? 'text-amber-500' : achievement.rarity === 'epic' ? 'text-purple-500' : achievement.rarity === 'rare' ? 'text-blue-500' : 'text-gray-400'} group-hover:scale-110 transition-transform`} />
         {achievement.isHidden && (
           <div className="absolute top-2 right-2">
             <EyeOff className="w-4 h-4 text-gray-400" />

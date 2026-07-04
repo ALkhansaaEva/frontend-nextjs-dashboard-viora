@@ -48,11 +48,21 @@ export function AchievementTable({ achievements, canManage, onEdit, onDelete, on
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
-                      {a.iconUrl ? (
-                        <img src={a.iconUrl} alt="" className="w-8 h-8 object-contain" />
-                      ) : (
-                        <Trophy className="w-5 h-5 text-amber-500" />
-                      )}
+                      <div className="w-8 h-8 flex items-center justify-center">
+                        {a.iconUrl ? (
+                          <img src={a.iconUrl} alt="" className="w-8 h-8 object-contain"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).className = 'hidden';
+                              const parent = (e.target as HTMLImageElement).parentElement;
+                              if (parent) {
+                                const fallback = parent.querySelector('.ach-tbl-fallback');
+                                if (fallback) fallback.classList.remove('hidden');
+                              }
+                            }}
+                          />
+                        ) : null}
+                        <Trophy className={`w-5 h-5 text-amber-500 ach-tbl-fallback ${a.iconUrl ? 'hidden' : ''}`} />
+                      </div>
                     </div>
                     <div>
                       <p className="font-medium">{a.title?.en || a.title?.ar || a.code}</p>
