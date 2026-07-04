@@ -45,6 +45,9 @@ export default function WalletsPage() {
       setShowAdjust(false);
       setAdjustForm({ currency: 'gold', amount: '', action: 'add', reason: '' });
     },
+    onError: (err: any) => {
+      alert(err?.response?.data?.message || err?.message || 'Failed to adjust balance');
+    },
   });
 
   const { data: walletDetail } = useQuery({
