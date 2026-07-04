@@ -149,37 +149,64 @@ export default function RanksPage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        {filteredRanks.map((rank) => (
-          <div key={rank.id} className="cursor-pointer" onClick={() => setSelectedRank(rank)}>
-            <Card hover className="overflow-hidden">
-              <div className="aspect-square bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center relative">
-                {rank.badgeIconUrl ? (
-                  <img src={rank.badgeIconUrl} alt="" className="w-12 h-12 object-contain"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden'); }} />
-                ) : null}
-                <Crown className={`w-10 h-10 text-yellow-500 ${rank.badgeIconUrl ? 'hidden' : ''}`} />
-              </div>
-              <CardContent className="p-2.5">
-                <h3 className="font-semibold text-xs truncate">{rank.titleI18n?.en || rank.code}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mt-1">
-                  {rank.descriptionI18n?.en || rank.code}
-                </p>
-                <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-gray-100 dark:border-gray-700">
-                  <Badge variant="outline" className="text-xs">#{rank.priority}</Badge>
-                  {canManage && (
-                    <div onClick={(e) => e.stopPropagation()}>
-                      <ActionButtons
-                        onEdit={() => openEdit(rank)}
-                        onDelete={() => setDeleteTarget(rank.id)}
-                        canManage={canManage}
-                      />
+        {filteredRanks.map((rank, i) => {
+          const gradients = [
+            'from-amber-400/20 via-amber-300/10 to-yellow-200/20 dark:from-amber-900/40 dark:via-amber-800/20 dark:to-yellow-900/30',
+            'from-indigo-400/20 via-purple-300/10 to-blue-200/20 dark:from-indigo-900/40 dark:via-purple-800/20 dark:to-blue-900/30',
+            'from-emerald-400/20 via-teal-300/10 to-green-200/20 dark:from-emerald-900/40 dark:via-teal-800/20 dark:to-green-900/30',
+            'from-rose-400/20 via-pink-300/10 to-red-200/20 dark:from-rose-900/40 dark:via-pink-800/20 dark:to-red-900/30',
+            'from-sky-400/20 via-cyan-300/10 to-blue-200/20 dark:from-sky-900/40 dark:via-cyan-800/20 dark:to-blue-900/30',
+            'from-orange-400/20 via-amber-300/10 to-yellow-200/20 dark:from-orange-900/40 dark:via-amber-800/20 dark:to-yellow-900/30',
+          ];
+          const theme = gradients[i % gradients.length];
+          return (
+            <div key={rank.id} className="cursor-pointer group" onClick={() => setSelectedRank(rank)}>
+              <Card hover className="overflow-hidden h-full">
+                <div className={`aspect-square bg-gradient-to-br ${theme} flex items-center justify-center relative transition-all group-hover:scale-105`}>
+                  {rank.badgeIconUrl ? (
+                    <div className="relative">
+                      <img src={rank.badgeIconUrl} alt="" className="w-14 h-14 object-contain drop-shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+                      <div className="absolute -inset-3 bg-gradient-to-tr from-white/30 to-transparent rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <Crown className="w-12 h-12 text-amber-500 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12 drop-shadow" />
+                      <div className="absolute -inset-2 bg-amber-400/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  )}
+                  <div className="absolute top-2 right-2">
+                    <div className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-600 dark:text-gray-300 shadow-sm border border-gray-200/50 dark:border-gray-700/50">
+                      #{rank.priority}
+                    </div>
+                  </div>
+                  {rank.titleI18n?.ar && (
+                    <div className="absolute bottom-2 left-2">
+                      <span className="text-[10px] text-gray-500/70 dark:text-gray-400/70 font-medium" dir="rtl">{rank.titleI18n.ar}</span>
                     </div>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        ))}
+                <CardContent className="p-2.5">
+                  <h3 className="font-bold text-xs truncate text-gray-900 dark:text-white">{rank.titleI18n?.en || rank.code}</h3>
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">
+                    {rank.descriptionI18n?.en || rank.code}
+                  </p>
+                  <div className="flex items-center justify-end mt-2 pt-1.5 border-t border-gray-100 dark:border-gray-700">
+                    {canManage && (
+                      <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <ActionButtons
+                          onEdit={() => openEdit(rank)}
+                          onDelete={() => setDeleteTarget(rank.id)}
+                          canManage={canManage}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
         {filteredRanks.length === 0 && !error && (
           <EmptyState message={searchQuery ? 'No ranks match your search' : 'No ranks found'} icon={<Inbox className="w-10 h-10" />} />
         )}
