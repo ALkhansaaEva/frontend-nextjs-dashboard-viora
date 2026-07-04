@@ -50,6 +50,16 @@ export const ranksService = {
     return apiClient.post<SystemRank>('/ranks/system', data);
   },
 
+  async updateSystemRank(id: string, data: {
+    titleI18n: Record<string, string>;
+    descriptionI18n: Record<string, string>;
+    badgeItemId?: string;
+    badgeIconUrl?: string;
+    priority: number;
+  }): Promise<SystemRank> {
+    return apiClient.put<SystemRank>(`/ranks/system/${id}`, data);
+  },
+
   async assignSystemRank(userId: string, rankId: string, note?: string): Promise<void> {
     await apiClient.post('/ranks/system/assign', { userId, rankId, note });
   },

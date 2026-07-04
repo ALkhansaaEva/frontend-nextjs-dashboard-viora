@@ -61,7 +61,13 @@ export default function RanksPage() {
   const createMutation = useMutation({
     mutationFn: (data: { code: string; titleI18n: Record<string, string>; descriptionI18n: Record<string, string>; priority: number; badgeIconUrl?: string }) =>
       ranksService.createSystemRank(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'] }); closeModal(); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'], refetchType: 'all' }); closeModal(); },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { titleI18n: Record<string, string>; descriptionI18n: Record<string, string>; badgeIconUrl?: string; priority: number } }) =>
+      ranksService.updateSystemRank(id, data),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'], refetchType: 'all' }); closeModal(); },
   });
 
   const openCreate = () => {
@@ -83,13 +89,25 @@ export default function RanksPage() {
   const closeModal = () => { setShowModal(false); setEditingRank(null); };
 
   const handleSubmit = () => {
-    createMutation.mutate({
-      code: form.code,
-      titleI18n: { en: form.titleEn, ar: form.titleAr },
-      descriptionI18n: { en: form.descriptionEn, ar: form.descriptionAr },
-      priority: form.priority,
-      badgeIconUrl: form.badgeIconUrl || undefined,
-    });
+    if (editingRank) {
+      updateMutation.mutate({
+        id: editingRank.id,
+        data: {
+          titleI18n: { en: form.titleEn, ar: form.titleAr },
+          descriptionI18n: { en: form.descriptionEn, ar: form.descriptionAr },
+          priority: form.priority,
+          badgeIconUrl: form.badgeIconUrl || undefined,
+        },
+      });
+    } else {
+      createMutation.mutate({
+        code: form.code,
+        titleI18n: { en: form.titleEn, ar: form.titleAr },
+        descriptionI18n: { en: form.descriptionEn, ar: form.descriptionAr },
+        priority: form.priority,
+        badgeIconUrl: form.badgeIconUrl || undefined,
+      });
+    }
   };
 
   if (isLoading) {
@@ -280,7 +298,8 @@ export default function RanksPage() {
           <Input label="Priority" type="number" placeholder="0" value={form.priority}
             onChange={(e) => setForm({ ...form, priority: parseInt(e.target.value) || 0 })} />
           <div className="flex gap-2 pt-4">
-            <Button onClick={handleSubmit} disabled={!form.code}>{t('save') || 'Save'}</Button>
+            <Button onClick={handleSubmit} disabled={!form.code || createMutation.isPending || updateMutation.isPending}>
+              {createMutation.isPending || updateMutation.isPending ? 'Saving...' : (editingRank ? (t('save') || 'Save Changes') : (t('create') || 'Create Rank'))}</Button>
             <Button variant="outline" onClick={closeModal}>{t('cancel') || 'Cancel'}</Button>
           </div>
         </div>
