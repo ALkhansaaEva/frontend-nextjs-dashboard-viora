@@ -52,6 +52,17 @@ export default function StorePage() {
     staleTime: 30000,
   });
 
+  const updateItemMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<CreateStoreItemRequest> }) => storeService.updateItem(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['store', 'items'], refetchType: 'all' });
+      setEditingItem(null);
+    },
+    onError: () => {
+      queryClient.invalidateQueries({ queryKey: ['store', 'items'], refetchType: 'all' });
+    },
+  });
+
   const createItemMutation = useMutation({
     mutationFn: (data: CreateStoreItemRequest) => storeService.createItem(data),
     onSuccess: () => {
@@ -71,17 +82,6 @@ export default function StorePage() {
     },
     onError: () => {
       queryClient.invalidateQueries({ queryKey: ['store', 'bundles'] });
-    },
-  });
-
-  const updateItemMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<CreateStoreItemRequest> }) => storeService.updateItem(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['store', 'items'] });
-      setEditingItem(null);
-    },
-    onError: () => {
-      queryClient.invalidateQueries({ queryKey: ['store', 'items'] });
     },
   });
 

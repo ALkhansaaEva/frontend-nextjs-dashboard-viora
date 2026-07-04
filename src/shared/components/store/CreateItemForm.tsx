@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Loader2, Package, Coins, Gem, Image, Palette } from 'lucide-react';
 import { Select } from '@/shared/components/ui/Select';
 import { Input } from '@/shared/components/ui/Input';
@@ -155,6 +155,7 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
 
   const [newItem, setNewItem] = useState<NewStoreItemData>(getInitialItem);
   const [newAssets, setNewAssets] = useState<StoreAssetData[]>(getInitialAssets);
+  const initialAssetsJson = useRef(JSON.stringify(getInitialAssets()));
   const [newStyleConfig, setNewStyleConfig] = useState<Record<string, string>>(getInitialStyleConfig);
   const [pendingAsset, setPendingAsset] = useState<StoreAssetData>(defaultAssetData);
 
@@ -169,7 +170,7 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
     if (newStyleConfig.borderRadius) styleConfigObj.borderRadius = parseInt(newStyleConfig.borderRadius) || 8;
     if (newStyleConfig.glowEffect) styleConfigObj.hasGlow = newStyleConfig.glowEffect === 'true';
 
-    onSubmit({
+    const payload: any = {
       code: newItem.code,
       type: newItem.type,
       slot: newItem.slot,
@@ -185,9 +186,15 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
       isStackable: newItem.isStackable || undefined,
       defaultExpiryHours: newItem.defaultExpiryHours || undefined,
       isActive: newItem.isActive,
-      assets: finalAssets,
       styleConfig: Object.keys(styleConfigObj).length > 0 ? styleConfigObj : undefined
-    });
+    };
+
+    // Only send assets if modified (avoids backend deleting+recreating unchanged ones)
+    if (JSON.stringify(finalAssets) !== initialAssetsJson.current) {
+      payload.assets = finalAssets;
+    }
+
+    onSubmit(payload);
   };
 
   const isValid = newItem.code && newItem.titleEn && !isPending;
