@@ -152,71 +152,54 @@ export default function RanksPage() {
         {filteredRanks.map((rank) => {
           const tier = Math.min(rank.priority, 5);
           const TIERS = [
-            { gradient: 'from-gray-300/40 to-gray-200/20 dark:from-gray-700/40 dark:to-gray-600/20', color: 'text-gray-400' },
-            { gradient: 'from-amber-400/30 via-amber-300/20 to-yellow-200/20 dark:from-amber-800/40 dark:via-amber-700/20 dark:to-yellow-800/30', color: 'text-amber-500' },
-            { gradient: 'from-indigo-400/30 via-purple-300/20 to-blue-200/20 dark:from-indigo-800/40 dark:via-purple-700/20 dark:to-blue-800/30', color: 'text-indigo-500' },
-            { gradient: 'from-rose-400/30 via-pink-300/20 to-red-200/20 dark:from-rose-800/40 dark:via-pink-700/20 dark:to-red-800/30', color: 'text-rose-500' },
-            { gradient: 'from-emerald-400/30 via-teal-300/20 to-green-200/20 dark:from-emerald-800/40 dark:via-teal-700/20 dark:to-green-800/30', color: 'text-emerald-500' },
-            { gradient: 'from-yellow-400/30 via-amber-300/20 to-orange-200/20 dark:from-yellow-800/40 dark:via-amber-700/20 dark:to-orange-800/30', color: 'text-yellow-500' },
+            { gradient: 'from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600', color: 'text-gray-400 dark:text-gray-500' },
+            { gradient: 'from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30', color: 'text-amber-500' },
+            { gradient: 'from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/30', color: 'text-indigo-500' },
+            { gradient: 'from-rose-50 to-rose-100 dark:from-rose-900/30 dark:to-rose-800/30', color: 'text-rose-500' },
+            { gradient: 'from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/30', color: 'text-emerald-500' },
+            { gradient: 'from-yellow-50 to-amber-100 dark:from-yellow-900/30 dark:to-amber-800/30', color: 'text-yellow-500' },
           ];
           const t = TIERS[tier] ?? TIERS[0]!;
           return (
-            <div key={rank.id} className="cursor-pointer group" onClick={() => setSelectedRank(rank)}>
-              <Card hover className="overflow-hidden h-full">
+            <div key={rank.id} className="cursor-pointer" onClick={() => setSelectedRank(rank)}>
+              <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden group h-full">
                 <div className={`aspect-square bg-gradient-to-br ${t.gradient} flex items-center justify-center relative`}>
-                  {/* Badge icon */}
                   {rank.badgeIconUrl ? (
-                    <div className="relative">
-                      <img src={rank.badgeIconUrl} alt="" className="w-14 h-14 object-contain drop-shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:-rotate-6"
-                        onError={(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).parentElement!.querySelector('.rank-fallback')?.classList.remove('hidden'); }} />
-                      <Crown className={`w-12 h-12 hidden rank-fallback ${t.color} transition-all duration-300 group-hover:scale-110`} />
-                    </div>
+                    <img src={rank.badgeIconUrl} alt="" className="w-full h-full object-contain p-4 transition-transform duration-200 group-hover:scale-110"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
                   ) : (
-                    <Crown className={`w-12 h-12 ${t.color} transition-all duration-300 group-hover:scale-110 group-hover:-rotate-12 drop-shadow`} />
+                    <Crown className={`w-16 h-16 ${t.color}`} />
                   )}
-                  {/* Glow on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent dark:from-white/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-                  {/* Priority badge top-right */}
-                  <div className="absolute top-2 right-2">
-                    <div className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-600 dark:text-gray-300 shadow-sm border">
+                  <div className="absolute top-2 left-2">
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-white/70 dark:bg-gray-800/70 text-gray-500 dark:text-gray-400">
                       #{rank.priority}
-                    </div>
+                    </span>
                   </div>
-                  {/* Trophy indicator bottom-right */}
-                  <div className="absolute bottom-2 right-2">
-                    {tier >= 3 ? (
-                      <Trophy className={`w-4 h-4 ${t.color}`} />
-                    ) : tier >= 1 ? (
-                      <Award className="w-4 h-4 text-gray-400" />
-                    ) : null}
-                  </div>
-                  {/* Arabic title bottom-left */}
-                  {rank.titleI18n?.ar && (
-                    <div className="absolute bottom-2 left-2">
-                      <span className="text-[10px] text-gray-500/70 dark:text-gray-400/70 font-medium" dir="rtl">{rank.titleI18n.ar}</span>
-                    </div>
-                  )}
                 </div>
-                <CardContent className="p-2.5">
-                  <h3 className="font-bold text-xs truncate text-gray-900 dark:text-white">{rank.titleI18n?.en || rank.code}</h3>
-                  {rank.descriptionI18n?.en ? (
-                    <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">{rank.descriptionI18n.en}</p>
-                  ) : (
-                    <p className="text-[11px] text-gray-300 dark:text-gray-600 italic mt-0.5">No description</p>
+                <CardContent className="p-3">
+                  <p className="font-semibold text-sm truncate text-gray-900 dark:text-white">{rank.titleI18n?.en || rank.code}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{rank.code}</p>
+                  {rank.descriptionI18n?.en && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">{rank.descriptionI18n.en}</p>
                   )}
-                  <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-1">
-                      <span className="text-[10px] text-gray-400 font-mono">{rank.code}</span>
+                      {tier >= 3 ? <Trophy className={`w-3 h-3 ${t.color}`} /> : tier >= 1 ? <Award className="w-3 h-3 text-gray-400" /> : null}
                     </div>
-                    {canManage && (
-                      <div onClick={(e) => e.stopPropagation()} className="opacity-0 group-hover:opacity-100 transition-opacity">
-                        <ActionButtons
-                          onEdit={() => openEdit(rank)}
-                          onDelete={() => setDeleteTarget(rank.id)}
-                          canManage={canManage}
-                        />
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {rank.titleI18n?.ar && (
+                        <span className="text-[11px] text-gray-400" dir="rtl">{rank.titleI18n.ar}</span>
+                      )}
+                      {canManage && (
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <ActionButtons
+                            onEdit={() => openEdit(rank)}
+                            onDelete={() => setDeleteTarget(rank.id)}
+                            canManage={canManage}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
