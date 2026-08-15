@@ -40,10 +40,20 @@ export default function WalletsPage() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'], refetchType: 'all' });
+      queryClient.invalidateQueries({ queryKey: ['user-detail', selectedUser?.id] });
       setShowAdjust(false);
       setAdjustForm({ currency: 'gold', amount: '', action: 'add', reason: '' });
     },
+    onError: (err: any) => {
+      alert(err?.response?.data?.message || err?.message || 'Failed to adjust balance');
+    },
+  });
+
+  const { data: walletDetail } = useQuery({
+    queryKey: ['user-detail', selectedUser?.id],
+    queryFn: () => selectedUser ? adminService.getUserById(selectedUser.id) : Promise.resolve(null as any),
+    enabled: !!selectedUser && showAdjust,
   });
 
   const columns: Column<User>[] = [
@@ -128,12 +138,12 @@ export default function WalletsPage() {
           <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
             <div className="flex items-center gap-1.5">
               <Coins className="w-4 h-4 text-yellow-500" />
-              <span className="font-semibold">{selectedUser?.wallet?.gold?.toLocaleString() ?? '0'}</span>
+              <span className="font-semibold">{walletDetail?.wallet?.gold?.toLocaleString() ?? selectedUser?.wallet?.gold?.toLocaleString() ?? '?'}</span>
             </div>
             <span className="text-gray-400">|</span>
             <div className="flex items-center gap-1.5">
               <Gem className="w-4 h-4 text-purple-500" />
-              <span className="font-semibold">{selectedUser?.wallet?.gems?.toLocaleString() ?? '0'}</span>
+              <span className="font-semibold">{walletDetail?.wallet?.gems?.toLocaleString() ?? selectedUser?.wallet?.gems?.toLocaleString() ?? '?'}</span>
             </div>
           </div>
 

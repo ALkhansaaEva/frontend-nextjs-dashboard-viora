@@ -129,6 +129,35 @@ export interface HealthMetrics {
   };
 }
 
+/** GET /health/ready — verbatim shape from src/modules/common/controllers/health.controller.ts */
+export interface HealthReadyResponse {
+  status: 'ok' | 'degraded';
+  checks: {
+    database: 'up' | 'down';
+    redis: 'up' | 'down';
+  };
+}
+
+/** GET /health/system — verbatim shape from health.controller.ts#getSystemMetrics */
+export interface SystemHealthMetrics {
+  generatedAt: string;
+  uptime: number;
+  memory: { rss: number; heapTotal: number; heapUsed: number; external: number };
+  redis: {
+    connected: boolean;
+    enabled: boolean;
+    memory?: unknown;
+    keyspace?: unknown;
+    consecutiveFailures: number;
+    lastPingMs: number | null;
+  };
+  rbac: { cacheHitRate: number; cacheMissRate: number; totalHits: number; totalMisses: number };
+  pubsub: { registeredUsers: number; registeredGames: number; registeredRooms: number; isRedisEnabled: boolean };
+  capacity: Record<string, unknown>;
+  queues?: unknown;
+  system?: unknown;
+}
+
 export interface AuthLoginResponse {
   accessToken: string;
   refreshToken: string;
@@ -284,17 +313,21 @@ export interface DashboardStats {
   totalUsers: number;
   activeReports: number;
   openTickets: number;
-  activeSanctions: number;
+  /** No backend endpoint aggregates active sanctions across all users — always null until one exists. */
+  activeSanctions: number | null;
   totalMatches?: number;
   activeRooms?: number;
   totalGifts?: number;
   totalAchievements?: number;
   storeItems?: number;
-  dailyActiveUsers?: number;
+  /** No backend DAU endpoint exists — always null until one exists. Render as N/A, never 0. */
+  dailyActiveUsers?: number | null;
   newUsersToday?: number;
   revenueToday?: number;
   totalRevenue?: number;
-  avgResponseTime?: number;
-  systemLoad?: number;
+  /** No backend endpoint reports average response time — always null until one exists. */
+  avgResponseTime?: number | null;
+  /** Derived from real heap memory usage (heapUsed/heapTotal) when /health/metrics succeeds, else null. */
+  systemLoad?: number | null;
   onlineUsers?: number;
 }

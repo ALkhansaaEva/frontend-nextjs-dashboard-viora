@@ -1,243 +1,111 @@
-# Viora Admin Dashboard - GAP ANALYSIS REPORT
+# Viora Admin Dashboard — Gap Analysis (v2, reconciled against live backend source)
 
-## Executive Summary
-This report analyzes the current state of the Viora Admin Dashboard against the available 154 API endpoints and identifies gaps in functionality, CRUD operations, and UI/UX improvements needed.
-
----
-
-## PHASE 1: CURRENT STATE ANALYSIS
-
-### ✅ EXISTING FEATURES (Implemented)
-
-#### Pages (12 pages)
-1. `/dashboard` - Main dashboard
-2. `/dashboard/users` - User management (list + search)
-3. `/dashboard/users/[id]` - User details
-4. `/dashboard/roles` - Role management
-5. `/dashboard/ranks` - Rank system management
-6. `/dashboard/rooms` - Room management (list)
-7. `/dashboard/store` - Store management (items + bundles)
-8. `/dashboard/reports` - Reports list
-9. `/dashboard/support` - Support tickets list
-10. `/dashboard/moderation` - Moderation actions
-11. `/dashboard/profile` - User profile (NEW)
-12. `/dashboard/settings` - Settings
-
-#### Services (16 services)
-- api.client.ts
-- auth.service.ts
-- users.service.ts
-- admin.service.ts
-- reports.service.ts
-- support.service.ts
-- moderation.service.ts
-- health.service.ts
-- wallet.service.ts
-- store.service.ts
-- rooms.service.ts
-- configs.service.ts
-- ranks.service.ts
-- notifications.service.ts
-- matches.service.ts
-- user-profile.service.ts (NEW)
-
-#### UI Components
-- Card, Input, Button, Badge, Modal, Select, Loader
-
-#### Layout Components
-- Header (Glassmorphism - UPDATED)
-- Sidebar (with Zustand - UPDATED)
+> Supersedes the previous version of this file, which predated the current frontend page set and did not account for Agents/Distribution/Rules/Progression/Reward-Bundle-V2 at all. Backend facts below are sourced from [`BACKEND_CAPABILITY_REGISTRY.md`](BACKEND_CAPABILITY_REGISTRY.md), built from a live read of the backend source, not from `backend-full-api-contract.md`/`API_ENDPOINTS.md` (both stale — zero mentions of Agents, Distribution, Commissions, Rules, Reward Bundle V2, Progression, Campaigns, Reconciliation).
+>
+> Status legend: **CONNECTED** (wired to a real, correct backend endpoint) · **PARTIAL** (some operations wired, others missing/wrong) · **BROKEN** (calls an endpoint that does not exist on the backend) · **LEGACY** (works but targets a deprecated schema/endpoint) · **MISSING** (backend exists, no frontend at all) · **UNSUPPORTED_BY_BACKEND** (frontend concept has no backend counterpart, don't build it as first-class).
 
 ---
 
-## ⚠️ GAP ANALYSIS
+## Phase 2 implementation status (updated 2026-08-16)
 
-### 1. MISSING PAGES
+**Done and build-verified (typecheck + lint + `next build` all pass, zero new issues — confirmed via git-stash diff against baseline for every pre-existing lint finding):**
+- **Phase 2A** — `src/lib/admin/admin-routes.ts` central registry now drives Sidebar + route-level authorization; `RouteAuthorization.tsx` wired into `dashboard/layout.tsx` (previously `PermissionGuard`/`AuthGuard` were dead code); both hardcoded `canManage = true` removed (achievements/gifts now check real `achievements.write`/`store.catalog_manage`); `ActionButtons` default flipped to `false`; dashboard KPI fabrication removed (`activeSanctions`, `dailyActiveUsers`, `avgResponseTime` now `null` → renders `N/A`, no more hardcoded `85` fallback or fake `0`); added real DB/Redis/Nakama/API status badges from `/health/ready`; `src/lib/api/routes.ts` expanded with Rules/Nodes/RewardBundles/Campaigns/Agents/Distribution/Reconciliation/Progression endpoints; added `pnpm typecheck` script; added a central `Toaster`/`useToast()` (previously no toast system existed at all — some pages used `alert()`).
+- **Phase 2B** — Full Rule Engine admin at [`/dashboard/gameplay/rules`](src/app/dashboard/gameplay/rules/page.tsx): backend-driven Node Registry browser, typed graph composer (Trigger→Conditions(AND)→Counter→Window→Actions), shared `RewardBundleV2Editor` (XP/GAME_CURRENCY/ITEM/BADGE/NOTIFICATION/INTERNAL_EVENT, with real Store-catalog item/badge search instead of raw UUID entry), full DRAFT→VALIDATED→PUBLISHED→DISABLED/ROLLED_BACK lifecycle wired to real endpoints. **New confirmed backend gap**: `RuleAdminController` has no `GET` list or detail endpoint at all — only create/validate/preview/publish/disable/rollback — verified by direct source read, not assumed. The UI is honest about this (visible banner) rather than fabricating a list.
+- **Phase 2C** — Achievements and Tasks rebuilt as domain-specific views over the Rule Engine (`kind='ACHIEVEMENT'`/`kind='TASK'`). **Critical correction**: the *entire* achievements domain — not just admin CRUD — was confirmed fictional (`grep -r "@Controller('achievements'" backend/src` → zero matches anywhere). `achievements.service.ts` was rewritten to stop calling `/admin/achievements` and `/achievements*` entirely; the old `AchievementCard`/`AchievementTable` components (built for data that was never real) were deleted as dead code. **Also newly confirmed**: `meta-game.controller.ts` (direct source read) exposes only ranking/leaderboard routes — `/meta-game/tasks`, `/meta-game/task-definitions`, `/meta-game/daily-login*` referenced by `meta-game.service.ts` do not exist either. New Task admin built at [`/dashboard/meta/tasks`](src/app/dashboard/meta/tasks/page.tsx).
 
-| Page | API Endpoints | Priority |
-|------|---------------|----------|
-| `/dashboard/wallet` | GET /wallet, GET /wallet/transactions | HIGH |
-| `/dashboard/notifications` | GET /notifications, POST /notifications/:id/read | MEDIUM |
-| `/dashboard/matches` | GET /matches/history, GET /matches/:matchId/chat | MEDIUM |
-| `/dashboard/social` | GET /social/friends, GET /social/messages/:friendId | LOW |
-| `/dashboard/meta-game` | GET /meta-game/tasks, GET /meta-game/ranking/* | LOW |
-| `/dashboard/rooms/[id]` | GET /rooms/:roomId, GET /rooms/:roomId/members | HIGH |
-| `/dashboard/roles/[code]` | GET /admin/roles/:code/permissions | HIGH |
-| `/dashboard/store/items/create` | POST /store/items | HIGH |
-| `/dashboard/reports/[id]` | GET /reports/:id, POST /reports/:id/action | HIGH |
-| `/dashboard/support/[id]` | GET /support/tickets/:id, POST /support/tickets/:id/reply | HIGH |
+- **Phase 2D** — [`/dashboard/agents`](src/app/dashboard/agents/page.tsx): real list (`GET /admin/agents` genuinely exists, unlike Rules), create, status transitions, fund/sale/redemption/reversal (each with a fresh `Idempotency-Key`, explicit confirmation dialog showing amount+action+target before executing), commission policy draft+publish. [`/dashboard/distributors`](src/app/dashboard/distributors/page.tsx): create, status, agent assignment, funding, exchange-rate policy draft+approve. **New confirmed backend gap**: `DistributionAdminController` has no list endpoint at all (verified by direct source read) — the page tracks distributors created in the current session and is explicit about this limitation in its UI banner, same pattern as Rules. Not yet built: dedicated Agent Topup review queue UI and Agent Governance (cases/sanctions/appeals) UI — the service methods exist (`agents.service.ts`) but have no page wired to them yet.
 
-### 2. INCOMPLETE CRUD OPERATIONS
-
-| Module | Create | Read | Update | Delete |
-|--------|--------|------|--------|--------|
-| **Users** | ❌ | ✅ | ❌ (profile) | ❌ |
-| **Rooms** | ✅ | Partial | Partial | ✅ (close) |
-| **Reports** | ❌ | Partial | ✅ (status) | ❌ |
-| **Support** | ❌ | Partial | ✅ (status) | ❌ |
-| **Store Items** | ✅ | ✅ | ❌ | ❌ |
-| **Roles** | ✅ | ✅ | ❌ | ❌ |
-| **Ranks** | ✅ | ✅ | ❌ | ❌ |
-| **Wallet** | ❌ | ✅ | ❌ | ❌ |
-
-### 3. MISSING REACT QUERY HOOKS
-
-- useWallet, useWalletTransactions
-- useNotifications, useMarkNotificationRead, useMarkAllNotificationsRead
-- useStoreItems, useCreateStoreItem, useUpdateStoreItem, useDeleteStoreItem
-- useStoreBundles, usePurchaseBundle
-- useInventory, useEquipItem, useUnequipItem
-- useLoadout
-- useMatches, useMatchHistory, useMatchChat
-- useDailyLogin, useClaimDailyLogin
-- useTasks, useClaimTaskReward
-- useLeaderboard, useUserRank
-- useFriends, useFriendRequests, useBlockUser, useMuteUser
-- useConfigs
-- useRoles, useCreateRole, useUpdateRole, useDeleteRole
-- usePermissions, useAssignPermission, useRevokePermission
-
-### 4. MISSING UI COMPONENTS
-
-| Component | Purpose | Priority |
-|-----------|---------|----------|
-| DataTable | Reusable table with pagination | ✅ DONE |
-| ConfirmDialog | Delete confirmations | ✅ DONE |
-| StatCard | Dashboard stats display | MEDIUM |
-| EmptyState | No data placeholder | MEDIUM |
-| Tabs | Tabbed content | MEDIUM |
-| DropdownMenu | Desktop actions (NOT mobile) | HIGH |
-| Toast | Notifications | HIGH |
-
-### 5. UI/UX ISSUES
-
-- ❌ No loading skeletons for some pages
-- ❌ No empty states
-- ❌ No error boundaries per page
-- ❌ Mobile responsiveness needs testing
-- ❌ No touch-friendly interactions on mobile
-
-### 6. SECURITY ISSUES
-
-- ❌ No route protection based on roles
-- ❌ No permission-based UI hiding
-- ❌ No API-level permission checks
-
-### 7. PERFORMANCE ISSUES
-
-- ❌ No lazy loading for heavy components
-- ❌ No code splitting per route
-- ❌ No request deduplication
+**Not started yet**: Finance/Reconciliation (2E), Progression/Campaigns (2F), System Health page (2G), full legacy-pattern sweep + final report (2H). See BACKEND_CAPABILITY_REGISTRY.md for the exact endpoints each will use.
 
 ---
 
-## PHASE 2: RECOMMENDED IMPLEMENTATION
+## Critical findings (read this first)
 
-### Priority 1 (Critical)
-1. Complete Users CRUD - View details, assign/revoke roles, adjust balance
-2. Complete Rooms CRUD - View details, manage members (ban/mute/kick)
-3. Complete Reports CRUD - View details, take action, assign
-4. Complete Support CRUD - View details, reply, assign
-
-### Priority 2 (High)
-5. Add Wallet page - View balance, transactions
-6. Add Notifications page - View, mark read
-7. Add Store Item CRUD - Create, edit, delete items
-8. Add Roles CRUD - Create, edit, delete roles
-
-### Priority 3 (Medium)
-9. Add Matches page - View history, chat
-10. Add Social page - Friends, messages
-11. Add Meta-Game page - Tasks, leaderboard
-
-### Priority 4 (Low)
-12. Add RBAC - Route protection, UI hiding
-13. Add lazy loading
-14. Add error boundaries
+1. **Achievements Admin is BROKEN.** [`achievements.service.ts`](src/services/achievements.service.ts) calls `GET/POST /admin/achievements`, `GET/PUT/DELETE /admin/achievements/:id`, `GET /admin/catalog/achievements`. **None of these routes exist on the backend** — `modules/achievements` is empty scaffolding (confirmed: zero controller/entity/DTO files). Any create/edit/delete done through the current Achievements page silently fails or 404s. Real achievement authoring must go through `POST /admin/rules` with `kind:'ACHIEVEMENT'` (the Rule engine), using the Node Registry + Reward Bundle V2 editor — a different API shape entirely.
+2. **Achievements reward shape is the legacy schema the project explicitly wants gone**: `rewards: { gold?, gems?, xp?, itemCode? }` in [`achievements.service.ts:15-20`](src/services/achievements.service.ts:15) is exactly `rewardGold/rewardGems/rewardXp/rewardItemCode` — must become `RewardBundleV2` component list.
+3. **No route-level authorization exists anywhere.** `PermissionGuard`/`AuthGuard`/`RoleRouteGuard` ([`PermissionGuard.tsx`](src/shared/components/auth/PermissionGuard.tsx), [`AuthGuard.tsx`](src/shared/components/auth/AuthGuard.tsx)) are fully implemented but **imported nowhere in the app** — confirmed by grep. No `middleware.ts` either. A logged-in user with insufficient permissions can open any `/dashboard/*` route today; only the Sidebar hides the link, and each page does its own inconsistent ad-hoc `isAuthenticated` check (not a permission check).
+4. **Two hardcoded `canManage = true`** in [`achievements/page.tsx:85`](src/app/dashboard/achievements/page.tsx:85) and [`gifts/page.tsx:87`](src/app/dashboard/gifts/page.tsx:87), plus [`ActionButtons.tsx`](src/shared/components/ui/ActionButtons.tsx:12) defaults `canManage=true` for any caller that omits the prop.
+5. **Dashboard home fabricates two KPI values**: `activeSanctions: 0` and `dailyActiveUsers: 0` are hardcoded literals in [`health.service.ts:54,58`](src/services/health.service.ts:54) (no real endpoint backs them), and `systemHealthPct` falls back to a hardcoded `85` when metrics are unavailable ([`dashboard/page.tsx:102`](src/app/dashboard/page.tsx:102)) — all should render `N/A`.
+6. **9 major backend domains have zero frontend**: Agents, Distributors, Commissions, Financial Reconciliation, Rules/Rule-Nodes/Reward-Bundle-V2 admin, Campaigns, Player/Room/Track Progression admin, System Health page, Audit (though Audit has no backend read API either — see below).
+7. **Audit cannot be built yet regardless of frontend effort** — the backend's `AuditService` has working query methods (`findRecent`, `findByActor`, `findByTarget`, `findByActionType`) but **zero HTTP controller exposes them**. This is a backend gap, not a frontend one — flag for the backend team; do not fake an audit trail client-side.
+8. **"Distributor" is real** — contrary to the common assumption that it might not exist, the backend has a genuine two-tier `MasterDistributorProfile → DistributorAgentAssignment → AgentProfile` hierarchy with its own `FinancialAccount.ownerType='distributor'`. Build it as first-class, not a variant of Agents.
 
 ---
 
-## SUGGESTED FOLDER STRUCTURE
+## Domain-by-domain reconciliation
 
-```
-src/
-├── app/
-│   └── dashboard/
-│       ├── page.tsx (Dashboard)
-│       ├── layout.tsx
-│       ├── profile/
-│       ├── users/
-│       │   ├── page.tsx (list)
-│       │   └── [id]/page.tsx (details)
-│       ├── rooms/
-│       │   ├── page.tsx (list)
-│       │   └── [id]/page.tsx (details)
-│       ├── reports/
-│       │   ├── page.tsx (list)
-│       │   └── [id]/page.tsx (details)
-│       ├── support/
-│       │   ├── page.tsx (list)
-│       │   └── [id]/page.tsx (details)
-│       ├── store/
-│       ├── wallet/
-│       ├── notifications/
-│       ├── matches/
-│       ├── social/
-│       ├── meta-game/
-│       └── settings/
-├── components/
-│   ├── providers/
-│   │   ├── query-provider.tsx
-│   │   └── theme-provider.tsx
-│   └── ui/
-│       ├── Button.tsx
-│       ├── Card.tsx
-│       ├── Input.tsx
-│       ├── Modal.tsx
-│       ├── Badge.tsx
-│       ├── DataTable.tsx (NEW)
-│       └── ConfirmDialog.tsx (NEW)
-├── hooks/
-│   ├── useApi.ts
-│   ├── useUsers.ts (NEW)
-│   ├── useRooms.ts (NEW)
-│   ├── useReports.ts (NEW)
-│   ├── useTickets.ts (NEW)
-│   └── index.ts (NEW)
-├── services/
-│   ├── api.client.ts
-│   ├── auth.service.ts
-│   ├── user-profile.service.ts
-│   ├── users.service.ts
-│   ├── rooms.service.ts
-│   ├── reports.service.ts
-│   ├── support.service.ts
-│   ├── store.service.ts
-│   └── ... (existing)
-├── store/
-│   ├── auth.store.ts
-│   ├── ui.store.ts
-│   └── sidebar.store.ts
-└── types/
-    └── api.types.ts
-```
+| Backend domain | Backend status | Frontend page(s) | Frontend service | Status | Notes |
+|---|---|---|---|---|---|
+| Users | Full | `/dashboard/users`, `/[id]`, `/[id]/permissions` | `admin.service.ts`, `users.service.ts` | **CONNECTED** | Endpoints match `admin.controller.ts` almost exactly incl. permission overrides, inventory, purchases, loadout |
+| Roles | Full | `/dashboard/roles`, `/[code]` | `admin.service.ts` | **CONNECTED** | `deletePermission` correctly stubbed as unsupported rather than faked — good pattern to replicate elsewhere |
+| Permissions | Full | `/dashboard/permissions` | `admin.service.ts` | **CONNECTED** | |
+| Agents | Full | *(none)* | *(none)* | **MISSING** | Full lifecycle (create/status/fund/sales/redemptions/reverse), topup review workflow, governance/sanctions — nothing built |
+| Distributors | Full | *(none)* | *(none)* | **MISSING** | Two-tier hierarchy, rate policies, cashout settlement — nothing built |
+| Commissions | Full | *(none)* | *(none)* | **MISSING** | `AgentCommissionPolicy` draft/publish — nothing built |
+| Financial overview | Full (ledger) | `/dashboard/payments`, `/dashboard/wallets`, `/dashboard/wallet` | `wallet.service.ts`, `admin.service.ts` | **PARTIAL** | Balance adjust via `/admin/users/:id/balance` is wired (recent commit history shows this); no dedicated `/dashboard/finance` overview, no financial-accounts list by owner type, no reconciliation UI |
+| Reconciliation | Full | *(none)* | *(none)* | **MISSING** | `GET findings` / `POST run` — nothing built |
+| IAP | Partial (no admin backend) | *(none)* | *(none)* | **UNSUPPORTED_BY_BACKEND** | No admin read endpoint exists server-side; don't build a page against nothing |
+| Tasks | Not first-class (`RuleDefinition.kind='TASK'`) | `/dashboard/meta-game` (user-facing `/meta-game/tasks`) | `meta-game.service.ts` | **NEEDS VERIFICATION** | `meta-game.service.ts` hits `/meta-game/tasks`/`/meta-game/task-definitions` — these routes were **not** in the audited controller set for `meta-game.controller.ts`; must confirm they still exist before relying on them. Admin task **authoring** has no dedicated page today and must target `POST /admin/rules {kind:'TASK'}`, not meta-game |
+| Achievements | Not first-class (`RuleDefinition.kind='ACHIEVEMENT'`) | `/dashboard/achievements` | `achievements.service.ts` | **BROKEN** | Calls `/admin/achievements/*` which does not exist (see finding #1). Read-only public routes (`/achievements`, `/achievements/me/*`) are fine; the CRUD is not |
+| Rules / Rule Nodes | Full | *(none)* | *(none)* | **MISSING** | The single richest backend admin surface (draft/validate/preview/publish/disable/rollback, 60-node registry) has zero frontend |
+| Reward Bundle V2 editor | Full | *(none — achievements page uses ad-hoc legacy `rewards` object instead)* | *(none)* | **MISSING** | Spec requires ONE shared editor reused across Rules/Tasks/Achievements/Campaigns/Levels/Tracks — none exists |
+| Campaigns | Full | *(none)* | *(none)* | **MISSING** | |
+| Player Levels | Full (legacy+V2 dual shape) | *(none)* | *(none)* | **MISSING** | Must handle `LevelConfig.rewardGameCurrency` (legacy, read-only display) alongside `rewardBundle` (V2, canonical for new writes) |
+| Room Levels | Full (V2-only) | *(none)* | *(none)* | **MISSING** | |
+| Progression Tracks | Full (V2-only) | *(none)* | *(none)* | **MISSING** | |
+| Store items/bundles | Full | `/dashboard/store` | `store.service.ts` | **CONNECTED** | Recent commits show active alignment work (asset upload, CSP, purchase display) |
+| Gifts catalog | Full | `/dashboard/gifts` | `gifts.service.ts` | **PARTIAL** | Catalog CRUD connected; `canManage=true` hardcoded (finding #4); gift revenue-split policy engine (`admin/gift-policies`) has no frontend |
+| Rooms (global admin) | Full | `/dashboard/rooms` | `rooms.service.ts` | **PARTIAL** | List exists per `GAP_ANALYSIS` v1; no room detail page confirmed in current tree despite backend supporting `GET/PATCH/DELETE rooms/admin/rooms/:id` — needs a detail-page pass |
+| Matches | Minimal (1 support-lookup route) | `/dashboard/matches` | `matches.service.ts` | **PARTIAL** | `matches.service.ts`/`routes.ts` reference full self-service match-history endpoints for admin display, which is reasonable since the backend genuinely has no richer admin surface — do not promise admin match management the backend can't do |
+| Moderation | Full | `/dashboard/moderation` | `moderation.service.ts` | **CONNECTED** | |
+| Reports | Full | `/dashboard/reports` | `reports.service.ts` | **CONNECTED** | |
+| Notifications | No admin surface (self-service only) | `/dashboard/notifications` | `notifications.service.ts` | **UNSUPPORTED_BY_BACKEND (for broadcast)** | Current page can only be a self-service inbox; an admin "compose/broadcast" feature has no backend to call |
+| Configs | Full | `/dashboard/settings` (gated on `manage_config`) | `configs.service.ts` | **CONNECTED** | |
+| System Health | Full | *(none — only surfaced as widgets on `/dashboard` home)* | `health.service.ts` | **PARTIAL** | `/health/metrics` wired; `/health/redis`, `/health/system`, `/health/ready`, `POST /health/reset-circuits` unused; no dedicated `/dashboard/system/health` page |
+| Audit | Backend gap — no read API | *(none)* | *(none)* | **UNSUPPORTED_BY_BACKEND** | Cannot build until backend adds a controller over the existing `AuditService` query methods — call this out to the backend owner explicitly |
+| Ranks | Full (own module, not part of "economy") | `/dashboard/ranks` | `ranks.service.ts` | **CONNECTED** | Recently redesigned per commit history |
+| Support/Tickets | Full | `/dashboard/support` | `support.service.ts` | **CONNECTED** | |
+| Social | Full (admin sub-routes: friendships/blocks/mutes) | `/dashboard/social` | `social.service.ts` | **NEEDS VERIFICATION** | Confirm `social/admin/*` routes are wired, not just self-service ones |
+| Voice | Full (self-service + admin mic override) | *(none dedicated)* | `voice.service.ts` | **PARTIAL** | Low priority per spec (no explicit admin page requested) |
 
 ---
 
-## SUMMARY
+## RBAC / architecture gaps (apply across every domain)
 
-| Category | Status |
-|----------|--------|
-| Pages Created | 12/17 (70%) |
-| Services Created | 16/16 (100%) |
-| CRUD Operations | 45% Complete |
-| React Query Hooks | 20% Complete |
-| UI Components | 70% Complete |
-| RBAC Implementation | 0% Complete |
+- **No central admin route registry** (spec target: `src/lib/admin/admin-routes.ts`). Today, permission-gated navigation lives only in [`Sidebar.tsx`](src/shared/components/layout/Sidebar.tsx:70), and it mixes legacy bitmask codes (`manage_roles`, `adjust_balance`, `global_ban`) with canonical dot-notation codes (`store.catalog_read`) inconsistently. New domains (Agents, Distributors, Finance, Rules, Progression) have canonical codes already minted server-side (`agents.read/write/execute`, `financial.execute`, `commissions.write`) — new nav entries should use these directly, not invent legacy-style names.
+- **`PermissionGuard`/`AuthGuard`/`RoleRouteGuard` are dead code** — wire them into `dashboard/layout.tsx` (or per high-risk page) so unauthorized direct-URL access actually redirects to `/dashboard/unauthorized` (which exists at [`(auth)/unauthorized`](src/app/(auth)/unauthorized) but nothing currently routes to it from a permission failure).
+- Permissions themselves ARE real (`/users/me/permissions` fetched from backend in [`auth.store.ts:144`](src/store/auth.store.ts:144)) — this part just needs to be *enforced*, not re-architected.
+- `src/lib/api/routes.ts` is a decent API-contract map for the domains it covers, but has **zero entries** for Agents/Distribution/Reconciliation/Rules/Reward-Bundles/Progression/Campaigns/Commissions — needs a matching expansion alongside new services.
 
-**Action Items:**
-1. Complete missing CRUD operations (Priority 1)
-2. Create React Query hooks for all services (Priority 2)
-3. Add missing pages (Priority 2)
-4. Implement RBAC (Priority 3)
-5. Add performance optimizations (Priority 4)
+---
+
+## Recommended Phase 2 priority order
+
+**P0 — fix what's actively broken/unsafe (small, high-value, no new domains):**
+1. Fix or gate off Achievements Admin (either rebuild against `/admin/rules kind=ACHIEVEMENT`, or clearly mark read-only until rebuilt) — currently silently broken.
+2. Remove the two hardcoded `canManage=true` and the `ActionButtons` default; wire to real permission checks (`achievements.write`, `gifts.write`).
+3. Wire `PermissionGuard`/route-level enforcement into the dashboard layout; verify direct-URL access is actually blocked for at least one under-permissioned role.
+4. Replace the 3 fabricated dashboard KPI values with `N/A` when data is unavailable, and add the Redis/Nakama/DB status widgets that `/health/system` already returns but the frontend doesn't render.
+
+**P1 — highest-value missing domains (backend fully ready):**
+5. Rules / Rule Nodes / Reward Bundle V2 shared editor — this unlocks correct Achievements + Tasks + Campaigns + Levels admin all at once, so build it before rebuilding Achievements fully.
+6. Agents admin (list/create/status/fund/sales/redemptions/topup review).
+7. Distributors admin (list/create/status/rates/cashout settlement) + Commissions (policy draft/publish).
+8. Finance overview page (`/dashboard/finance`) consolidating financial accounts by owner type, ledger explorer, reconciliation findings/run.
+
+**P2 — progression & remaining domains:**
+9. Player Levels, Room Levels, Progression Tracks admin (share the Reward Bundle V2 editor from step 5).
+10. Campaigns admin.
+11. System Health dedicated page (`/dashboard/system/health`) using the already-fetched-but-unused `/health/system`, `/health/redis` data.
+
+**Flag to backend owner, not frontend work:**
+12. Audit has no read endpoint — needs a backend controller before any frontend Audit page is possible.
+13. IAP has no admin surface — needs a backend controller if IAP visibility is required in the admin panel.
+14. Confirm whether `/meta-game/tasks` and `/meta-game/task-definitions` (used by `meta-game.service.ts`) still exist server-side — not verified in this audit pass.
+
+---
+
+## Pre-flight for implementation
+
+- This worktree has **no `node_modules` installed** — `pnpm install` needed before any lint/build/test can run.
+- No dedicated test runner beyond `eslint` in `package.json` (`dev`, `build`, `build:vps`, `start`, `lint` only) — no `tsc --noEmit`/jest/Playwright script exists yet; will need to add at least a typecheck script per spec §75-76.

@@ -117,10 +117,25 @@ export function AssetCard({ asset, onRemove, onEdit }: AssetCardProps) {
 
   return (
     <div className="flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded-lg border">
-      {asset.url.match(/\.(png|gif|webp|svg|jpg|jpeg|avif)/i) ? (
-        <img src={asset.url} alt="" className="w-8 h-8 object-contain rounded shrink-0" />
-      ) : (
+      {asset.kind === 'audio' ? (
         <Image className="w-4 h-4 text-blue-500 shrink-0" />
+      ) : (
+        <>
+          <img
+            src={asset.url}
+            alt=""
+            className="w-8 h-8 object-contain rounded shrink-0"
+            onError={(e) => {
+              (e.target as HTMLImageElement).className = 'hidden';
+              const parent = (e.target as HTMLImageElement).parentElement;
+              if (parent) {
+                const fallback = parent.querySelector('.asset-img-fallback');
+                if (fallback) fallback.classList.remove('hidden');
+              }
+            }}
+          />
+          <Image className="w-4 h-4 text-blue-500 shrink-0 hidden asset-img-fallback" />
+        </>
       )}
       <span className="text-sm font-medium">{asset.kind}</span>
       <span className="text-xs text-gray-500">• {asset.purpose}</span>

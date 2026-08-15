@@ -33,11 +33,22 @@ export function StoreItemCard({ item, isRTL, canManage, onClick, onEdit, onDelet
     <Card className="cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden group" onClick={onClick}>
       <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 relative overflow-hidden">
         {itemImage?.url ? (
-          <img 
-            src={itemImage.url} 
-            alt={item.title?.en || item.code}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          <>
+            <img 
+              src={itemImage.url} 
+              alt={item.title?.en || item.code}
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).className = 'hidden';
+                const parent = (e.target as HTMLImageElement).parentElement;
+                if (parent) {
+                  const fallback = parent.querySelector('.card-img-fallback');
+                  if (fallback) fallback.classList.remove('hidden');
+                }
+              }}
+            />
+            <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 group-hover:scale-110 transition-transform hidden card-img-fallback" />
+          </>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 group-hover:scale-110 transition-transform" />

@@ -62,6 +62,21 @@ export const mediaService = {
     });
   },
 
+  async uploadFiles(files: File[], bucket: string, options?: {
+    fileKind?: string;
+    filePurpose?: string;
+  }): Promise<MediaFile[]> {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('files', file);
+    }
+    formData.append('bucket', bucket);
+    if (options?.fileKind) formData.append('fileKind', options.fileKind);
+    if (options?.filePurpose) formData.append('filePurpose', options.filePurpose);
+    const result = await apiClient.post<{ success: boolean; files: MediaFile[] }>('/media/admin/upload-bulk', formData);
+    return result.files;
+  },
+
   async uploadOwnFile(
     file: File,
     bucket: string,

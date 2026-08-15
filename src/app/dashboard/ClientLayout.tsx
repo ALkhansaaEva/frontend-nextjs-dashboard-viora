@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useLanguage } from '@/components/language-context';
 import { useSidebarStore } from '@/store/sidebar.store';
 import { cn } from '@/shared/lib/utils';
+import { RouteAuthorization } from '@/shared/components/auth/RouteAuthorization';
 
 const Sidebar = dynamic(
   () => import('@/shared/components/layout/Sidebar').then(m => ({ default: m.Sidebar })),
@@ -101,7 +102,7 @@ function ClientLayoutComponent({ children }: { children: ReactNode }) {
         style={mainStyle}
       >
         <div className="p-4 sm:p-6 min-h-[calc(100vh-4rem)]">
-          {children}
+          <RouteAuthorization>{children}</RouteAuthorization>
         </div>
       </main>
     </div>

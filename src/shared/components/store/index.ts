@@ -5,4 +5,5 @@ export { StoreItemCard } from './StoreItemCard';
 export { StoreItemTable } from './StoreItemTable';
 export { BundleCard } from './BundleCard';
 export { GiftCard } from './GiftCard';
+export { ItemDetailContent } from './ItemDetailContent';
 export { GiftTable } from './GiftTable';

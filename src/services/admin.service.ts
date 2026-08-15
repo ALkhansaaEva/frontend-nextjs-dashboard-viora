@@ -108,7 +108,7 @@ export const adminService = {
         roles: u.roles || [],
         createdAt: u.created_at || u.createdAt || u.createdAt || new Date().toISOString(),
         lastLogin: u.last_login || u.lastLogin,
-        wallet: u.wallet,
+        wallet: u.wallet || (u.gold !== undefined ? { gold: Number(u.gold), gems: Number(u.gems) } : undefined),
         avatar: u.avatar_url || u.avatar,
       }));
       return { 

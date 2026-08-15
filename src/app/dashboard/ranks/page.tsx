@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Crown, Inbox, Shield, Clock, Search } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui/Card';
+import { Plus, Crown, Inbox, Shield, Clock, Search, Trophy, Award } from 'lucide-react';
+import { Card, CardContent } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Modal } from '@/shared/components/ui/Modal';
@@ -61,7 +61,13 @@ export default function RanksPage() {
   const createMutation = useMutation({
     mutationFn: (data: { code: string; titleI18n: Record<string, string>; descriptionI18n: Record<string, string>; priority: number; badgeIconUrl?: string }) =>
       ranksService.createSystemRank(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'] }); closeModal(); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'], refetchType: 'all' }); closeModal(); },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { titleI18n: Record<string, string>; descriptionI18n: Record<string, string>; badgeIconUrl?: string; priority: number } }) =>
+      ranksService.updateSystemRank(id, data),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'], refetchType: 'all' }); closeModal(); },
   });
 
   const openCreate = () => {
@@ -83,13 +89,25 @@ export default function RanksPage() {
   const closeModal = () => { setShowModal(false); setEditingRank(null); };
 
   const handleSubmit = () => {
-    createMutation.mutate({
-      code: form.code,
-      titleI18n: { en: form.titleEn, ar: form.titleAr },
-      descriptionI18n: { en: form.descriptionEn, ar: form.descriptionAr },
-      priority: form.priority,
-      badgeIconUrl: form.badgeIconUrl || undefined,
-    });
+    if (editingRank) {
+      updateMutation.mutate({
+        id: editingRank.id,
+        data: {
+          titleI18n: { en: form.titleEn, ar: form.titleAr },
+          descriptionI18n: { en: form.descriptionEn, ar: form.descriptionAr },
+          priority: form.priority,
+          badgeIconUrl: form.badgeIconUrl || undefined,
+        },
+      });
+    } else {
+      createMutation.mutate({
+        code: form.code,
+        titleI18n: { en: form.titleEn, ar: form.titleAr },
+        descriptionI18n: { en: form.descriptionEn, ar: form.descriptionAr },
+        priority: form.priority,
+        badgeIconUrl: form.badgeIconUrl || undefined,
+      });
+    }
   };
 
   if (isLoading) {
@@ -130,48 +148,64 @@ export default function RanksPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredRanks.map((rank) => (
-          <div key={rank.id} className="cursor-pointer" onClick={() => setSelectedRank(rank)}>
-            <Card hover>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    {rank.badgeIconUrl ? (
-                      <img src={rank.badgeIconUrl} alt="" className="w-6 h-6 object-contain" />
-                    ) : (
-                      <Crown className="w-5 h-5 text-yellow-500" />
-                    )}
-                    {rank.titleI18n?.en || rank.code}
-                  </CardTitle>
-                  <Badge variant="outline">#{rank.priority}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                  {rank.descriptionI18n?.en || 'No description'}
-                </p>
-                <div className="flex items-center justify-between mt-3">
-                  <p className="text-xs text-gray-400 font-mono">{rank.code}</p>
-                  <div className="flex items-center gap-1">
-                    {rank.titleI18n?.ar && (
-                      <span className="text-xs text-gray-400" dir="rtl">{rank.titleI18n.ar}</span>
-                    )}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        {filteredRanks.map((rank) => {
+          const tier = Math.min(rank.priority, 5);
+          const TIERS = [
+            { gradient: 'from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600', color: 'text-gray-400 dark:text-gray-500' },
+            { gradient: 'from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30', color: 'text-amber-500' },
+            { gradient: 'from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/30', color: 'text-indigo-500' },
+            { gradient: 'from-rose-50 to-rose-100 dark:from-rose-900/30 dark:to-rose-800/30', color: 'text-rose-500' },
+            { gradient: 'from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/30', color: 'text-emerald-500' },
+            { gradient: 'from-yellow-50 to-amber-100 dark:from-yellow-900/30 dark:to-amber-800/30', color: 'text-yellow-500' },
+          ];
+          const t = TIERS[tier] ?? TIERS[0]!;
+          return (
+            <div key={rank.id} className="cursor-pointer" onClick={() => setSelectedRank(rank)}>
+              <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden group h-full">
+                <div className={`aspect-square bg-gradient-to-br ${t.gradient} flex items-center justify-center relative`}>
+                  {rank.badgeIconUrl ? (
+                    <img src={rank.badgeIconUrl} alt="" className="w-full h-full object-contain p-4 transition-transform duration-200 group-hover:scale-110"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+                  ) : (
+                    <Crown className={`w-16 h-16 ${t.color}`} />
+                  )}
+                  <div className="absolute top-2 left-2">
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-white/70 dark:bg-gray-800/70 text-gray-500 dark:text-gray-400">
+                      #{rank.priority}
+                    </span>
                   </div>
                 </div>
-                {canManage && (
-                  <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
-                    <ActionButtons
-                      onEdit={() => openEdit(rank)}
-                      onDelete={() => setDeleteTarget(rank.id)}
-                      canManage={canManage}
-                    />
+                <CardContent className="p-3">
+                  <p className="font-semibold text-sm truncate text-gray-900 dark:text-white">{rank.titleI18n?.en || rank.code}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{rank.code}</p>
+                  {rank.descriptionI18n?.en && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">{rank.descriptionI18n.en}</p>
+                  )}
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                    <div className="flex items-center gap-1">
+                      {tier >= 3 ? <Trophy className={`w-3 h-3 ${t.color}`} /> : tier >= 1 ? <Award className="w-3 h-3 text-gray-400" /> : null}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {rank.titleI18n?.ar && (
+                        <span className="text-[11px] text-gray-400" dir="rtl">{rank.titleI18n.ar}</span>
+                      )}
+                      {canManage && (
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <ActionButtons
+                            onEdit={() => openEdit(rank)}
+                            onDelete={() => setDeleteTarget(rank.id)}
+                            canManage={canManage}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        ))}
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
         {filteredRanks.length === 0 && !error && (
           <EmptyState message={searchQuery ? 'No ranks match your search' : 'No ranks found'} icon={<Inbox className="w-10 h-10" />} />
         )}
@@ -280,7 +314,8 @@ export default function RanksPage() {
           <Input label="Priority" type="number" placeholder="0" value={form.priority}
             onChange={(e) => setForm({ ...form, priority: parseInt(e.target.value) || 0 })} />
           <div className="flex gap-2 pt-4">
-            <Button onClick={handleSubmit} disabled={!form.code}>{t('save') || 'Save'}</Button>
+            <Button onClick={handleSubmit} disabled={!form.code || createMutation.isPending || updateMutation.isPending}>
+              {createMutation.isPending || updateMutation.isPending ? 'Saving...' : (editingRank ? (t('save') || 'Save Changes') : (t('create') || 'Create Rank'))}</Button>
             <Button variant="outline" onClick={closeModal}>{t('cancel') || 'Cancel'}</Button>
           </div>
         </div>

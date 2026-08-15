@@ -20,6 +20,7 @@ import { GiftCard, GiftTable } from '@/shared/components/store';
 import { giftsService, type GiftCatalogEntry, type CreateGiftRequest, type UpdateGiftRequest } from '@/services/gifts.service';
 import { useLanguage } from '@/components/language-context';
 import { PageSkeleton } from '@/components/skeletons';
+import { useHasPermission } from '@/hooks/usePermissions';
 
 const CATEGORIES = [
   { value: 'basic', label: 'Basic' }, { value: 'premium', label: 'Premium' },
@@ -84,7 +85,9 @@ function SectionCard({ icon: Icon, title, children, defaultOpen = true }: { icon
 export default function GiftsPage() {
   const { t } = useLanguage();
   const queryClient = useQueryClient();
-  const canManage = true;
+  // store.catalog_manage is the real canonical permission gating the gift-catalog CRUD
+  // endpoints (POST/PATCH/DELETE gifts/admin/catalog) — see BACKEND_CAPABILITY_REGISTRY.md §8.
+  const canManage = useHasPermission()('store.catalog_manage');
 
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<GiftCatalogEntry | null>(null);
