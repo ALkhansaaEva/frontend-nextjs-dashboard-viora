@@ -7,7 +7,8 @@
     "build": "next build",
     "build:vps": "next build && node deploy/build-vps.cjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.99.0",

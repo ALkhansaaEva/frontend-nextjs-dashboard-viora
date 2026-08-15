@@ -30,4 +30,16 @@ export const PERMISSIONS: Permission[] = [
   'achievements.read', 'achievements.write', 'achievements.delete',
   'gifts.read', 'gifts.write', 'gifts.delete',
   'manage_gift',
+  // Canonical codes added for Agents / Distribution / Finance / Rules / Progression domains
+  // (source: BACKEND_CAPABILITY_REGISTRY.md, src/common/authz/permissions.canonical.ts)
+  'agents.read', 'agents.write', 'agents.execute',
+  'financial.execute',
+  'commissions.write',
+  'gift_policies.write',
+  'iap.read', 'iap.execute',
+  // Full-access bypass codes recognized by can() below
+  'admin.full_access',
 ];
+
+/** Permission codes that grant unconditional access to every gated check. */
+export const ADMIN_BYPASS_PERMISSIONS: Permission[] = ['admin.all', 'admin.full_access'];

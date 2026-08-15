@@ -1,428 +1,298 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trophy, Plus, Coins, Gem, Zap, Inbox, Filter, X, Tag, Award, Eye, ChevronDown, ChevronUp, Target } from 'lucide-react';
+import {
+  Trophy, Plus, AlertTriangle, Loader2, Play, ShieldCheck, Ban, Trash2,
+  FolderOpen, RefreshCw,
+} from 'lucide-react';
+import { PageHeader } from '@/shared/components/ui/PageHeader';
+import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
-import { Badge } from '@/shared/components/ui/Badge';
-import { Modal } from '@/shared/components/ui/Modal';
 import { Input } from '@/shared/components/ui/Input';
 import { Select } from '@/shared/components/ui/Select';
+import { Badge } from '@/shared/components/ui/Badge';
 import { ConfirmDialog } from '@/shared/components/ui/ConfirmDialog';
-import { FileUpload } from '@/shared/components/upload/FileUpload';
-import { PageHeader } from '@/shared/components/ui/PageHeader';
-import { EmptyState } from '@/shared/components/ui/EmptyState';
-import { ViewToggle } from '@/shared/components/ui/ViewToggle';
-import { AchievementCard } from '@/shared/components/achievements/AchievementCard';
-import { AchievementTable } from '@/shared/components/achievements/AchievementTable';
-import { achievementsService, type Achievement, type CreateAchievementRequest, type UpdateAchievementRequest } from '@/services/achievements.service';
-import { useLanguage } from '@/components/language-context';
-import { PageSkeleton } from '@/components/skeletons';
+import { RewardBundleV2Editor } from '@/shared/components/rewards/RewardBundleV2Editor';
+import { NodeSlotPicker } from '@/shared/components/rewards/NodeSlotPicker';
+import { useToast } from '@/store/toast.store';
+import { useHasPermission } from '@/hooks/usePermissions';
+import rulesService from '@/services/rules.service';
+import achievementsService, { type AchievementMetadata } from '@/services/achievements.service';
+import { buildRuleGraph, type RuleStageSelection } from '@/lib/admin/rule-graph-builder';
+import { emptyRewardBundle, type RewardBundleV2, type RuleDefinition } from '@/types/rules';
 
-const RARITIES = [
-  { value: 'common', label: 'Common' }, { value: 'rare', label: 'Rare' },
-  { value: 'epic', label: 'Epic' }, { value: 'legendary', label: 'Legendary' },
-];
+const STATE_COLOR: Record<string, 'default' | 'success' | 'warning' | 'danger'> = {
+  DRAFT: 'default', VALIDATED: 'warning', PUBLISHED: 'success', DISABLED: 'danger',
+  ROLLED_BACK: 'danger', ARCHIVED: 'danger',
+};
 
-const CRITERIA_TYPES = [
-  { value: 'total_games', label: 'Total Games' },
-  { value: 'total_wins', label: 'Total Wins' },
-  { value: 'win_streak', label: 'Win Streak' },
-  { value: 'total_coins', label: 'Total Coins Earned' },
-  { value: 'total_gems', label: 'Total Gems Earned' },
-  { value: 'rank_reached', label: 'Rank Reached' },
-  { value: 'friends_count', label: 'Friends Count' },
-  { value: 'gifts_sent', label: 'Gifts Sent' },
-  { value: 'gifts_received', label: 'Gifts Received' },
-  { value: 'rooms_joined', label: 'Rooms Joined' },
-  { value: 'games_won', label: 'Games Won (specific)' },
-  { value: 'consecutive_wins', label: 'Consecutive Wins' },
-  { value: 'items_collected', label: 'Items Collected' },
-  { value: 'login_streak', label: 'Login Streak' },
-  { value: 'custom', label: 'Custom' },
-];
-
-const GAME_TYPES = [
-  { value: '', label: 'Any' },
-  { value: 'ludo', label: 'Ludo' },
-  { value: 'domino', label: 'Domino' },
-];
-
-const rarityFilterOptions = [
-  { value: '', label: 'All Rarities' },
-  ...RARITIES,
-];
-
-function SectionCard({ icon: Icon, title, children, defaultOpen = true }: { icon: any; title: string; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <button type="button" onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
-        <div className="flex items-center gap-2">
-          <Icon className="w-4 h-4 text-amber-500" />
-          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{title}</span>
-        </div>
-        {open ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-      </button>
-      {open && <div className="p-4 space-y-4">{children}</div>}
-    </div>
-  );
-}
-
-function DetailImg({ iconUrl }: { iconUrl?: string | null }) {
-  const [err, setErr] = useState(false);
-  if (!iconUrl || err) return <Trophy className="w-10 h-10 text-amber-500" />;
-  return <img src={iconUrl} alt="" className="w-16 h-16 object-contain" onError={() => setErr(true)} />;
-}
+const RARITIES = ['common', 'rare', 'epic', 'legendary'] as const;
 
 export default function AchievementsPage() {
-  const { t } = useLanguage();
+  const toast = useToast();
   const queryClient = useQueryClient();
-  const canManage = true;
-  const [showModal, setShowModal] = useState(false);
-  const [editingAchievement, setEditingAchievement] = useState<Achievement | null>(null);
-  const [viewingAchievement, setViewingAchievement] = useState<Achievement | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
-  const [showFilters, setShowFilters] = useState(false);
-  const [filter, setFilter] = useState({ rarity: '', status: '', hasReward: '' });
-  const [form, setForm] = useState({
-    code: '', titleEn: '', titleAr: '', descriptionEn: '', descriptionAr: '',
-    rarity: 'common', criteriaType: 'total_games', criteriaTarget: 1, criteriaGameType: '',
-    rewardGold: 0, rewardGems: 0, rewardXp: 0, rewardItemCode: '',
-    iconUrl: '', isHidden: false, isActive: true,
+  const canManage = useHasPermission()('achievements.write');
+  const [activeAchievement, setActiveAchievement] = useState<RuleDefinition | null>(null);
+
+  const { data: registry } = useQuery({ queryKey: ['rule-node-registry'], queryFn: () => rulesService.getNodeRegistry() });
+
+  // ── Durable catalog (GET /admin/rules?kind=ACHIEVEMENT) ──
+  const [listState, setListState] = useState('');
+  const [listOffset, setListOffset] = useState(0);
+  const LIST_LIMIT = 20;
+  const listQueryKey = ['admin-rules', 'ACHIEVEMENT', listState, listOffset] as const;
+  const { data: list, isLoading: listLoading, isFetching: listFetching } = useQuery({
+    queryKey: listQueryKey,
+    queryFn: () => achievementsService.listAchievements({
+      state: (listState || undefined) as RuleDefinition['state'] | undefined,
+      limit: LIST_LIMIT, offset: listOffset,
+    }),
+  });
+  const invalidateList = () => queryClient.invalidateQueries({ queryKey: ['admin-rules', 'ACHIEVEMENT'] });
+  const loadMutation = useMutation({
+    mutationFn: (id: string) => achievementsService.getAchievementById(id),
+    onSuccess: (rule) => setActiveAchievement(rule),
+    onError: (err) => toast.error('Failed to load achievement detail.', err),
   });
 
-  const { data: achievements = [], isLoading } = useQuery({
-    queryKey: ['achievements'],
-    queryFn: () => achievementsService.getAchievements(),
-  });
+  // ── Identity + metadata ──
+  const [code, setCode] = useState('');
+  const [version, setVersion] = useState(1);
+  const [titleEn, setTitleEn] = useState('');
+  const [titleAr, setTitleAr] = useState('');
+  const [descriptionEn, setDescriptionEn] = useState('');
+  const [rarity, setRarity] = useState<AchievementMetadata['rarity']>('common');
+  const [isHidden, setIsHidden] = useState(false);
+  const [targetCount, setTargetCount] = useState('1');
 
-  const filtered = useMemo(() => {
-    let result = achievements;
-    if (filter.rarity) result = result.filter((a) => a.rarity === filter.rarity);
-    if (filter.status === 'active') result = result.filter((a) => a.isActive);
-    if (filter.status === 'inactive') result = result.filter((a) => !a.isActive);
-    if (filter.hasReward === 'yes') result = result.filter((a) => a.rewards.gold || a.rewards.gems || a.rewards.xp || a.rewards.itemCode);
-    if (filter.hasReward === 'no') result = result.filter((a) => !a.rewards.gold && !a.rewards.gems && !a.rewards.xp && !a.rewards.itemCode);
-    return result;
-  }, [achievements, filter]);
+  // ── Criteria (Rule graph) ──
+  const [trigger, setTrigger] = useState<{ type: string; config: Record<string, unknown> } | null>(null);
+  const [conditions, setConditions] = useState<Array<{ type: string; config: Record<string, unknown> }>>([]);
+  const [counter, setCounter] = useState<{ type: string; config: Record<string, unknown> } | null>(null);
+  const [window, setWindow] = useState<{ type: string; config: Record<string, unknown> } | null>(null);
+  const [rewardBundle, setRewardBundle] = useState<RewardBundleV2>(emptyRewardBundle());
 
-  const activeFilters = Object.values(filter).filter((v) => v !== '').length;
+  const stages: RuleStageSelection = { trigger, conditions, counter, window };
+  const graph = useMemo(
+    () => (registry ? buildRuleGraph(stages, rewardBundle, registry) : { nodes: [], edges: [] }),
+    [stages, rewardBundle, registry],
+  );
+
+  const [reason, setReason] = useState('');
+  const [confirmAction, setConfirmAction] = useState<'publish' | 'disable' | null>(null);
 
   const createMutation = useMutation({
-    mutationFn: (data: CreateAchievementRequest) => achievementsService.createAchievement(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['achievements'] }); closeModal(); },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateAchievementRequest }) => achievementsService.updateAchievement(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['achievements'], refetchType: 'all' }); closeModal(); },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => achievementsService.deleteAchievement(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['achievements'] }); setDeleteTarget(null); },
-  });
-
-  const openCreate = () => {
-    setEditingAchievement(null);
-    setForm({ code: '', titleEn: '', titleAr: '', descriptionEn: '', descriptionAr: '', rarity: 'common', criteriaType: 'total_games', criteriaTarget: 1, criteriaGameType: '', rewardGold: 0, rewardGems: 0, rewardXp: 0, rewardItemCode: '', iconUrl: '', isHidden: false, isActive: true });
-    setShowModal(true);
-  };
-
-  const openEdit = (achievement: Achievement) => {
-    setEditingAchievement(achievement);
-    setForm({
-      code: achievement.code,
-      titleEn: achievement.title?.en || '',
-      titleAr: achievement.title?.ar || '',
-      descriptionEn: achievement.description?.en || '',
-      descriptionAr: achievement.description?.ar || '',
-      rarity: achievement.rarity,
-      criteriaType: achievement.criteria?.type || 'total_games',
-      criteriaTarget: achievement.criteria?.target || 1,
-      criteriaGameType: achievement.criteria?.gameType || '',
-      rewardGold: achievement.rewards?.gold || 0,
-      rewardGems: achievement.rewards?.gems || 0,
-      rewardXp: achievement.rewards?.xp || 0,
-      rewardItemCode: achievement.rewards?.itemCode || '',
-      iconUrl: achievement.iconUrl || '',
-      isHidden: achievement.isHidden,
-      isActive: achievement.isActive,
-    });
-    setShowModal(true);
-  };
-
-  const closeModal = () => { setShowModal(false); setEditingAchievement(null); };
-
-  const handleSubmit = () => {
-    const titleI18n: Record<string, string> = { en: form.titleEn };
-    if (form.titleAr) titleI18n.ar = form.titleAr;
-    const descriptionI18n: Record<string, string> = {};
-    if (form.descriptionEn) descriptionI18n.en = form.descriptionEn;
-    if (form.descriptionAr) descriptionI18n.ar = form.descriptionAr;
-
-    const payload: CreateAchievementRequest = {
-      code: form.code,
-      titleI18n,
-      descriptionI18n: Object.keys(descriptionI18n).length > 0 ? descriptionI18n : undefined,
-      rarity: form.rarity as CreateAchievementRequest['rarity'],
-      criteria: {
-        type: form.criteriaType,
-        target: form.criteriaTarget,
-        gameType: form.criteriaGameType || undefined,
+    mutationFn: () => achievementsService.createAchievement({
+      code, version,
+      metadata: {
+        titleI18n: { en: titleEn, ...(titleAr ? { ar: titleAr } : {}) },
+        descriptionI18n: descriptionEn ? { en: descriptionEn } : undefined,
+        rarity, isHidden,
       },
-      iconUrl: form.iconUrl || undefined,
-      isHidden: form.isHidden,
-      isActive: form.isActive,
-    };
+      graphDefinition: graph,
+      targetCount,
+      rewardBundle: rewardBundle.components.length > 0 ? rewardBundle : undefined,
+    }),
+    onSuccess: (rule) => { setActiveAchievement(rule); invalidateList(); toast.success(`Achievement draft "${rule.definitionKey}" created.`); },
+    onError: (err) => toast.error('Failed to create achievement draft.', err),
+  });
 
-    const hasRewards = form.rewardGold || form.rewardGems || form.rewardXp || form.rewardItemCode;
-    if (hasRewards) {
-      payload.rewards = {};
-      if (form.rewardGold) payload.rewards.gold = form.rewardGold;
-      if (form.rewardGems) payload.rewards.gems = form.rewardGems;
-      if (form.rewardXp) payload.rewards.xp = form.rewardXp;
-      if (form.rewardItemCode) payload.rewards.itemCode = form.rewardItemCode;
-    }
+  const validateMutation = useMutation({
+    mutationFn: () => achievementsService.validateAchievement(activeAchievement!.id, reason || 'Validated via Admin dashboard'),
+    onSuccess: (rule) => { setActiveAchievement(rule); invalidateList(); toast.success(`Achievement moved to ${rule.state}.`); },
+    onError: (err) => toast.error('Validate failed.', err),
+  });
+  const publishMutation = useMutation({
+    mutationFn: () => achievementsService.publishAchievement(activeAchievement!.id, reason || 'Published via Admin dashboard'),
+    onSuccess: (rule) => { setActiveAchievement(rule); invalidateList(); toast.success('Achievement published.'); setConfirmAction(null); },
+    onError: (err) => toast.error('Publish failed.', err),
+  });
+  const disableMutation = useMutation({
+    mutationFn: () => achievementsService.disableAchievement(activeAchievement!.id, reason || 'Disabled via Admin dashboard'),
+    onSuccess: (rule) => { setActiveAchievement(rule); invalidateList(); toast.success('Achievement disabled.'); setConfirmAction(null); },
+    onError: (err) => toast.error('Disable failed.', err),
+  });
 
-    if (editingAchievement) {
-      const { code, ...updateData } = payload;
-      updateMutation.mutate({ id: editingAchievement.id, data: updateData as UpdateAchievementRequest });
-    } else {
-      createMutation.mutate(payload);
-    }
-  };
-
-  if (isLoading) return <PageSkeleton />;
+  const canCreate = canManage && code.trim().length > 0 && titleEn.trim().length > 0 && !!trigger;
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        icon={<Trophy className="w-6 h-6 text-yellow-500" />}
-        title={t('achievements') || 'Achievements'}
-        action={{ label: t('create') || 'Create', onClick: openCreate, icon: <Plus className="w-4 h-4" /> }}
-      />
+    <div className="p-4 md:p-6 space-y-6">
+      <PageHeader title="Achievements" description="Domain-specific authoring view over the Rule Engine (kind: ACHIEVEMENT)" icon={<Trophy className="w-5 h-5" />} />
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-sm border border-gray-100 dark:border-gray-700">
-        <div className="flex items-center gap-2">
-          <ViewToggle value={viewMode} onChange={setViewMode} />
-          <button onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border transition-all ${
-              showFilters || activeFilters > 0
-                ? 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300'
-                : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
-            }`}>
-            <Filter className="w-4 h-4" />
-            {t('filter') || 'Filter'}
-            {activeFilters > 0 && <span className="ml-1 px-1.5 py-0.5 text-xs bg-amber-600 text-white rounded-full">{activeFilters}</span>}
-          </button>
-        </div>
-        <p className="text-sm text-gray-500">{filtered.length} / {achievements.length} {t('items') || 'items'}</p>
+      <div className="rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 p-3 text-sm text-amber-800 dark:text-amber-300 flex items-start gap-2">
+        <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+        <p>
+          <strong>Verified against source, not assumed:</strong> there is no <code>/admin/achievements</code> and no
+          <code> /achievements*</code> route anywhere in the backend. Achievements only exist as{' '}
+          <code>RuleDefinition.kind=&apos;ACHIEVEMENT&apos;</code>, authored via <code>POST /admin/rules</code> and
+          listed durably via <code>GET /admin/rules?kind=ACHIEVEMENT</code> below — no browser-local catalog.
+        </p>
       </div>
 
-      {showFilters && (
-        <div className="flex flex-wrap gap-3 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700">
-          <Select value={filter.rarity} onChange={(e) => setFilter({ ...filter, rarity: e.target.value })} options={rarityFilterOptions} className="w-36" />
-          <Select value={filter.status} onChange={(e) => setFilter({ ...filter, status: e.target.value })} options={[
-            { value: '', label: 'All Statuses' }, { value: 'active', label: 'Active' }, { value: 'inactive', label: 'Inactive' },
-          ]} className="w-36" />
-          <Select value={filter.hasReward} onChange={(e) => setFilter({ ...filter, hasReward: e.target.value })} options={[
-            { value: '', label: 'All Rewards' }, { value: 'yes', label: 'Has Rewards' }, { value: 'no', label: 'No Rewards' },
-          ]} className="w-36" />
-          {activeFilters > 0 && (
-            <Button variant="ghost" size="sm" onClick={() => setFilter({ rarity: '', status: '', hasReward: '' })} className="text-gray-500 hover:text-red-500">
-              <X className="w-4 h-4 mr-1" /> Clear
-            </Button>
+      {!canManage && (
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-500">
+          You do not have <code>achievements.write</code> — authoring is disabled.
+        </div>
+      )}
+
+      <Card padding="none">
+        <CardHeader className="p-4 pb-0">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <FolderOpen className="w-4 h-4" /> Achievement Catalog
+              {list && <Badge variant="outline">{list.total} total</Badge>}
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Select value={listState} onChange={(e) => { setListState(e.target.value); setListOffset(0); }}
+                options={[{ value: '', label: 'All states' }, ...Object.keys(STATE_COLOR).map((s) => ({ value: s, label: s }))]} />
+              <Button size="sm" variant="outline" onClick={() => queryClient.invalidateQueries({ queryKey: listQueryKey })} disabled={listFetching}>
+                <RefreshCw className={`w-3.5 h-3.5 ${listFetching ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4">
+          {listLoading ? (
+            <p className="text-sm text-gray-400 py-4">Loading catalog…</p>
+          ) : !list || list.items.length === 0 ? (
+            <p className="text-sm text-gray-400 py-4">No achievements match this filter yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-xs text-gray-500 uppercase">
+                  <tr><th className="py-2 pr-3">Key</th><th className="py-2 pr-3">Version</th><th className="py-2 pr-3">State</th><th className="py-2 pr-3">Updated</th><th /></tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {list.items.map((r) => (
+                    <tr key={r.id}>
+                      <td className="py-2 pr-3 font-mono text-xs">{r.definitionKey}</td>
+                      <td className="py-2 pr-3">{r.definitionVersion}</td>
+                      <td className="py-2 pr-3"><Badge variant={STATE_COLOR[r.state]}>{r.state}</Badge></td>
+                      <td className="py-2 pr-3 text-gray-500">{new Date(r.updatedAt).toLocaleString()}</td>
+                      <td className="py-2 text-right">
+                        <Button size="sm" variant="outline" disabled={loadMutation.isPending} onClick={() => loadMutation.mutate(r.id)}>Open</Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+                <span>{listOffset + 1}–{Math.min(listOffset + LIST_LIMIT, list.total)} of {list.total}</span>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" disabled={listOffset === 0} onClick={() => setListOffset((o) => Math.max(0, o - LIST_LIMIT))}>Prev</Button>
+                  <Button size="sm" variant="outline" disabled={listOffset + LIST_LIMIT >= list.total} onClick={() => setListOffset((o) => o + LIST_LIMIT)}>Next</Button>
+                </div>
+              </div>
+            </div>
           )}
-        </div>
-      )}
+        </CardContent>
+      </Card>
 
-      {viewMode === 'grid' ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {filtered.map((a) => (
-            <AchievementCard key={a.id} achievement={a} canManage={canManage}
-              onEdit={() => openEdit(a)} onDelete={() => setDeleteTarget(a.id)} />
-          ))}
-        </div>
-      ) : (
-        <AchievementTable achievements={filtered} canManage={canManage}
-          onEdit={openEdit} onDelete={setDeleteTarget} onView={setViewingAchievement} />
-      )}
+      <Card>
+        <CardHeader><CardTitle className="text-sm font-bold">Create Draft Achievement</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <Input label="Code" disabled={!canManage} value={code} onChange={(e) => setCode(e.target.value)} placeholder="e.g. QA_ACHIEVEMENT_first_win" />
+            <Input label="Version" type="number" min={1} disabled={!canManage} value={version} onChange={(e) => setVersion(Number(e.target.value))} />
+            <Select label="Rarity" disabled={!canManage} value={rarity} onChange={(e) => setRarity(e.target.value as AchievementMetadata['rarity'])}
+              options={RARITIES.map((r) => ({ value: r, label: r }))} />
+            <Input label="Target count" disabled={!canManage} value={targetCount} onChange={(e) => setTargetCount(e.target.value.replace(/[^0-9]/g, ''))} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input label="Title (EN)" disabled={!canManage} value={titleEn} onChange={(e) => setTitleEn(e.target.value)} />
+            <Input label="Title (AR, optional)" disabled={!canManage} value={titleAr} onChange={(e) => setTitleAr(e.target.value)} />
+          </div>
+          <Input label="Description (EN, optional)" disabled={!canManage} value={descriptionEn} onChange={(e) => setDescriptionEn(e.target.value)} />
+          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <input type="checkbox" disabled={!canManage} checked={isHidden} onChange={(e) => setIsHidden(e.target.checked)} />
+            Hidden until unlocked
+          </label>
 
-      {(viewMode === 'grid' ? filtered.length === 0 : filtered.length === 0) && (
-        <EmptyState message={t('noData') || 'No achievements'} icon={<Inbox className="w-10 h-10" />} />
-      )}
-
-      <Modal isOpen={!!viewingAchievement} onClose={() => setViewingAchievement(null)}
-        title={viewingAchievement?.title?.en || viewingAchievement?.title?.ar || 'Achievement'} size="lg">
-        {viewingAchievement && (
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-              <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-amber-100 to-amber-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
-                <DetailImg iconUrl={viewingAchievement.iconUrl} />
+          <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Criteria</p>
+            <div className="space-y-3">
+              <NodeSlotPicker label="Trigger *" registry={registry} category="TRIGGER" value={trigger} onChange={canManage ? setTrigger : () => {}} />
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Conditions (AND when 2+)</label>
+                {canManage && (
+                  <Button type="button" size="sm" variant="outline" onClick={() => setConditions((c) => [...c, { type: '', config: {} }])}>
+                    <Plus className="w-3.5 h-3.5 mr-1" /> Add condition
+                  </Button>
+                )}
               </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <Badge variant="outline">{viewingAchievement.rarity}</Badge>
-                  <Badge variant={viewingAchievement.isActive ? 'success' : 'danger'}>{viewingAchievement.isActive ? 'Active' : 'Inactive'}</Badge>
-                  {viewingAchievement.isHidden && <Badge variant="warning">Hidden</Badge>}
+              {conditions.map((c, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <div className="flex-1">
+                    <NodeSlotPicker label={`Condition ${i + 1}`} registry={registry} category="CONDITION"
+                      value={c.type ? c : null}
+                      onChange={(v) => setConditions((prev) => prev.map((p, idx) => (idx === i ? (v ?? { type: '', config: {} }) : p)))} />
+                  </div>
+                  {canManage && (
+                    <button type="button" onClick={() => setConditions((prev) => prev.filter((_, idx) => idx !== i))} className="mt-7 text-gray-400 hover:text-red-500">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
-                <h3 className="text-xl font-bold">{viewingAchievement.title?.en || viewingAchievement.code}</h3>
-                <p className="text-sm text-gray-500 font-mono">{viewingAchievement.code}</p>
-              </div>
-            </div>
-
-            {viewingAchievement.description?.en && (
-              <div><label className="text-sm font-medium text-gray-500">Description</label><p className="text-gray-900 dark:text-white mt-1">{viewingAchievement.description.en}</p></div>
-            )}
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Criteria Type</p>
-                <p className="font-medium capitalize">{viewingAchievement.criteria.type.replace(/_/g, ' ')}</p>
-              </div>
-              <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Target</p>
-                <p className="font-medium">{viewingAchievement.criteria.target}</p>
-              </div>
-              {viewingAchievement.criteria.gameType && (
-                <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                  <p className="text-xs text-gray-500 mb-1">Game Type</p>
-                  <p className="font-medium capitalize">{viewingAchievement.criteria.gameType}</p>
-                </div>
-              )}
-            </div>
-
-            {(viewingAchievement.rewards.gold || viewingAchievement.rewards.gems || viewingAchievement.rewards.xp || viewingAchievement.rewards.itemCode) && (
-              <div>
-                <label className="text-sm font-medium text-gray-500 mb-2 block">Rewards</label>
-                <div className="flex flex-wrap gap-3">
-                  {viewingAchievement.rewards.gold ? (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-                      <Coins className="w-5 h-5 text-yellow-500" />
-                      <span className="font-bold text-amber-700 dark:text-amber-300">{viewingAchievement.rewards.gold}</span>
-                      <span className="text-sm text-amber-600 dark:text-amber-400">Gold</span>
-                    </div>
-                  ) : null}
-                  {viewingAchievement.rewards.gems ? (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                      <Gem className="w-5 h-5 text-blue-500" />
-                      <span className="font-bold text-blue-700 dark:text-blue-300">{viewingAchievement.rewards.gems}</span>
-                      <span className="text-sm text-blue-600 dark:text-blue-400">Gems</span>
-                    </div>
-                  ) : null}
-                  {viewingAchievement.rewards.xp ? (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                      <Zap className="w-5 h-5 text-purple-500" />
-                      <span className="font-bold text-purple-700 dark:text-purple-300">{viewingAchievement.rewards.xp}</span>
-                      <span className="text-sm text-purple-600 dark:text-purple-400">XP</span>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            )}
-
-            <div className="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
-              {canManage && (
-                <>
-                  <Button variant="outline" onClick={() => { setViewingAchievement(null); openEdit(viewingAchievement); }}>Edit</Button>
-                  <Button variant="danger" onClick={() => { setViewingAchievement(null); setDeleteTarget(viewingAchievement.id); }}>Delete</Button>
-                </>
-              )}
-              <Button variant="ghost" onClick={() => setViewingAchievement(null)}>Close</Button>
+              ))}
+              <NodeSlotPicker label="Counter (optional)" registry={registry} category="COUNTER" value={counter} onChange={setCounter} allowClear />
+              <NodeSlotPicker label="Window (optional)" registry={registry} category="WINDOW" value={window} onChange={setWindow} allowClear />
             </div>
           </div>
-        )}
-      </Modal>
 
-      <Modal isOpen={showModal} onClose={closeModal}
-        title={editingAchievement ? (t('edit') || 'Edit Achievement') : (t('create') || 'Create Achievement')} size="lg">
-        <div className="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
-          <SectionCard icon={Tag} title="Basic Information">
-            <Input label="Code *" placeholder="achievement_code" value={form.code}
-              onChange={(e) => setForm({ ...form, code: e.target.value })} disabled={!!editingAchievement} />
-            <div className="grid grid-cols-2 gap-3">
-              <Input label="Title (EN) *" placeholder="Achievement Name" value={form.titleEn}
-                onChange={(e) => setForm({ ...form, titleEn: e.target.value })} />
-              <Input label="Title (AR)" placeholder="اسم الإنجاز" value={form.titleAr}
-                onChange={(e) => setForm({ ...form, titleAr: e.target.value })} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Input label="Description (EN)" placeholder="Description in English" value={form.descriptionEn}
-                onChange={(e) => setForm({ ...form, descriptionEn: e.target.value })} />
-              <Input label="Description (AR)" placeholder="وصف الإنجاز" value={form.descriptionAr}
-                onChange={(e) => setForm({ ...form, descriptionAr: e.target.value })} />
-            </div>
-            <Select label="Rarity" value={form.rarity}
-              onChange={(e) => setForm({ ...form, rarity: e.target.value })} options={RARITIES} />
-            <FileUpload profile="achievement" label="Icon URL" placeholder="icon URL or upload" value={form.iconUrl}
-              onChange={(v) => setForm({ ...form, iconUrl: v })} />
-          </SectionCard>
+          <div>
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Reward Bundle V2</p>
+            <RewardBundleV2Editor value={rewardBundle} onChange={setRewardBundle} disabled={!canManage} />
+          </div>
 
-          <SectionCard icon={Target} title="Criteria">
-            <Select label="Criteria Type" value={form.criteriaType}
-              onChange={(e) => setForm({ ...form, criteriaType: e.target.value })} options={CRITERIA_TYPES} />
-            <Input label="Target Value *" type="number" value={form.criteriaTarget}
-              onChange={(e) => setForm({ ...form, criteriaTarget: parseInt(e.target.value) || 1 })} />
-            <Select label="Game Type" value={form.criteriaGameType}
-              onChange={(e) => setForm({ ...form, criteriaGameType: e.target.value })} options={GAME_TYPES} />
-          </SectionCard>
-
-          <SectionCard icon={Award} title="Rewards">
-            <div className="grid grid-cols-2 gap-3">
-              <Input label="Gold" type="number" value={form.rewardGold}
-                onChange={(e) => setForm({ ...form, rewardGold: parseInt(e.target.value) || 0 })}
-                icon={<Coins className="w-4 h-4 text-yellow-500" />} />
-              <Input label="Gems" type="number" value={form.rewardGems}
-                onChange={(e) => setForm({ ...form, rewardGems: parseInt(e.target.value) || 0 })}
-                icon={<Gem className="w-4 h-4 text-purple-500" />} />
-              <Input label="XP" type="number" value={form.rewardXp}
-                onChange={(e) => setForm({ ...form, rewardXp: parseInt(e.target.value) || 0 })}
-                icon={<Zap className="w-4 h-4 text-purple-500" />} />
-              <Input label="Item Code" placeholder="item_code_to_grant" value={form.rewardItemCode}
-                onChange={(e) => setForm({ ...form, rewardItemCode: e.target.value })} />
-            </div>
-          </SectionCard>
-
-          <SectionCard icon={Eye} title="Visibility">
-            <div className="flex items-center gap-4 flex-wrap">
-              <label className="flex items-center gap-2 cursor-pointer p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
-                <input type="checkbox" checked={form.isActive}
-                  onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500" />
-                <span className="font-medium text-sm">Active</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
-                <input type="checkbox" checked={form.isHidden}
-                  onChange={(e) => setForm({ ...form, isHidden: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500" />
-                <span className="font-medium text-sm">Hidden (not shown in public list)</span>
-              </label>
-            </div>
-          </SectionCard>
-
-          <div className="flex gap-2 pt-2">
-            <Button variant="outline" className="flex-1" onClick={closeModal}>{t('cancel') || 'Cancel'}</Button>
-            <Button className="flex-1 bg-amber-600 hover:bg-amber-700" onClick={handleSubmit}
-              disabled={!form.code || !form.titleEn || createMutation.isPending || updateMutation.isPending}>
-              {(createMutation.isPending || updateMutation.isPending) ? 'Saving...' : (editingAchievement ? (t('save') || 'Save Changes') : (t('create') || 'Create Achievement'))}
+          <div className="flex items-center gap-3 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <Button type="button" onClick={() => createMutation.mutate()} disabled={!canCreate || createMutation.isPending}>
+              {createMutation.isPending ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Plus className="w-4 h-4 mr-1" />}
+              Create draft
             </Button>
           </div>
-        </div>
-      </Modal>
+        </CardContent>
+      </Card>
+
+      {activeAchievement && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-bold">
+                {activeAchievement.definitionKey} <span className="text-gray-400 font-normal">v{activeAchievement.definitionVersion}</span>
+              </CardTitle>
+              <Badge variant={STATE_COLOR[activeAchievement.state]}>{activeAchievement.state}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-xs text-gray-400">id: {activeAchievement.id}</p>
+            <Input label="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button size="sm" variant="outline" disabled={!canManage || activeAchievement.state !== 'DRAFT' || validateMutation.isPending} onClick={() => validateMutation.mutate()}>
+                <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validate
+              </Button>
+              <Button size="sm" variant="outline" disabled={!canManage || activeAchievement.state !== 'VALIDATED'} onClick={() => setConfirmAction('publish')}>
+                <Play className="w-3.5 h-3.5 mr-1" /> Publish
+              </Button>
+              <Button size="sm" variant="danger" disabled={!canManage || activeAchievement.state !== 'PUBLISHED'} onClick={() => setConfirmAction('disable')}>
+                <Ban className="w-3.5 h-3.5 mr-1" /> Disable
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <ConfirmDialog
-        open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}
-        title={t('delete') || 'Delete Achievement'}
-        message={t('deleteConfirm') || 'Are you sure you want to delete this achievement?'}
-        confirmText={t('confirm')} cancelText={t('cancel')} variant="danger"
-        onConfirm={() => { if (deleteTarget) deleteMutation.mutate(deleteTarget); }} />
+        open={confirmAction === 'publish'} onOpenChange={(open) => !open && setConfirmAction(null)}
+        title="Publish achievement?" message="It will become PUBLISHED and immutable; players can start unlocking it immediately."
+        confirmText="Publish" variant="warning"
+        onConfirm={async () => { await publishMutation.mutateAsync(); }}
+      />
+      <ConfirmDialog
+        open={confirmAction === 'disable'} onOpenChange={(open) => !open && setConfirmAction(null)}
+        title="Disable achievement?" message="It will stop matching new events." confirmText="Disable" variant="danger"
+        onConfirm={async () => { await disableMutation.mutateAsync(); }}
+      />
     </div>
   );
 }

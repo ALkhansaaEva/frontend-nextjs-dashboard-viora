@@ -1,156 +1,66 @@
-import apiClient from '@/lib/api/api-client';
+import rulesService from './rules.service';
+import type { RewardBundleV2, RuleDefinition, RuleDefinitionState, RuleGraph } from '@/types/rules';
 
-export interface Achievement {
-  id: string;
-  code: string;
-  title: Record<string, string>;
-  description: Record<string, string> | null;
-  rarity: 'common' | 'rare' | 'epic' | 'legendary';
-  criteria: {
-    type: string;
-    target: number;
-    gameType?: string;
-    metadata?: Record<string, unknown>;
-  };
-  rewards: {
-    gold?: number;
-    gems?: number;
-    xp?: number;
-    itemCode?: string;
-  };
-  iconUrl?: string | null;
-  isActive: boolean;
-  isHidden: boolean;
-  createdAt: string;
-  updatedAt?: string | null;
-}
+/**
+ * Achievements are NOT a standalone backend CRUD domain — verified by direct source
+ * read: `src/modules/achievements/` is empty (no controller/entity/DTO at all), and a
+ * repo-wide search for `@Controller('achievements'` returns zero matches anywhere in
+ * the backend. There is no `/admin/achievements` and no `/achievements*` route of any
+ * kind — admin OR self-service.
+ *
+ * Achievement authoring is `RuleDefinition.kind = 'ACHIEVEMENT'`, served entirely by
+ * `RuleAdminController` (`/admin/rules`). This service is a thin, honestly-named
+ * wrapper over rules.service.ts — it does not call any achievements-prefixed route.
+ */
 
-export interface UserAchievement {
-  id: string;
-  userId: string;
-  achievementId: string;
-  achievement: Achievement;
-  progress: number;
-  unlockedAt: string | null;
-  createdAt: string;
+export interface AchievementMetadata {
+  titleI18n: Record<string, string>;
+  descriptionI18n?: Record<string, string>;
+  rarity?: 'common' | 'rare' | 'epic' | 'legendary';
+  isHidden?: boolean;
+  iconUrl?: string;
 }
 
 export interface CreateAchievementRequest {
   code: string;
-  titleI18n: Record<string, string>;
-  descriptionI18n?: Record<string, string>;
-  rarity?: 'common' | 'rare' | 'epic' | 'legendary';
-  criteria: {
-    type: string;
-    target: number;
-    gameType?: string;
-    metadata?: Record<string, unknown>;
-  };
-  rewards?: {
-    gold?: number;
-    gems?: number;
-    xp?: number;
-    itemCode?: string;
-  };
-  iconUrl?: string;
-  isHidden?: boolean;
-  isActive?: boolean;
-}
-
-export interface UpdateAchievementRequest {
-  titleI18n?: Record<string, string>;
-  descriptionI18n?: Record<string, string>;
-  rarity?: 'common' | 'rare' | 'epic' | 'legendary';
-  criteria?: {
-    type: string;
-    target: number;
-    gameType?: string;
-    metadata?: Record<string, unknown>;
-  };
-  rewards?: {
-    gold?: number;
-    gems?: number;
-    xp?: number;
-    itemCode?: string;
-  };
-  iconUrl?: string;
-  isHidden?: boolean;
-  isActive?: boolean;
-}
-
-function normalizeArrayResponse<T>(response: unknown): T[] {
-  if (Array.isArray(response)) return response;
-  if (response && typeof response === 'object') {
-    const res = response as Record<string, unknown>;
-    if (Array.isArray(res.data)) return res.data as T[];
-    if (Array.isArray(res.achievements)) return res.achievements as T[];
-    if (Array.isArray(res.items)) return res.items as T[];
-    for (const key in res) {
-      if (Array.isArray(res[key])) return res[key] as T[];
-    }
-  }
-  return [];
+  version: number;
+  metadata: AchievementMetadata;
+  graphDefinition: RuleGraph;
+  targetCount: string;
+  rewardBundle?: RewardBundleV2;
 }
 
 export const achievementsService = {
-  async getAchievements(): Promise<Achievement[]> {
-    const response = await apiClient.get<unknown>('/admin/achievements');
-    return normalizeArrayResponse<Achievement>(response);
+  /** POST /admin/rules with kind='ACHIEVEMENT'. */
+  async createAchievement(data: CreateAchievementRequest): Promise<RuleDefinition> {
+    return rulesService.createRule({
+      definitionKey: data.code,
+      definitionVersion: data.version,
+      kind: 'ACHIEVEMENT',
+      graphDefinition: data.graphDefinition,
+      targetCount: data.targetCount,
+      rewardDefinition: data.rewardBundle as unknown as Record<string, unknown> | undefined,
+      metadata: data.metadata as unknown as Record<string, unknown>,
+    });
   },
 
-  async getAchievementById(id: string): Promise<Achievement> {
-    return apiClient.get<Achievement>(`/admin/achievements/${id}`);
+  /** GET /admin/rules?kind=ACHIEVEMENT — durable, paginated, server-authoritative. */
+  async listAchievements(params?: { state?: RuleDefinitionState; limit?: number; offset?: number }) {
+    return rulesService.listRules({ kind: 'ACHIEVEMENT', ...params });
   },
 
-  async createAchievement(data: CreateAchievementRequest): Promise<Achievement> {
-    return apiClient.post<Achievement>('/admin/achievements', data);
-  },
+  getAchievementById: rulesService.getRuleById,
+  validateAchievement: rulesService.validateRule,
+  publishAchievement: rulesService.publishRule,
+  disableAchievement: rulesService.disableRule,
+  rollbackAchievement: rulesService.rollbackRule,
 
-  async updateAchievement(id: string, data: UpdateAchievementRequest): Promise<Achievement> {
-    return apiClient.put<Achievement>(`/admin/achievements/${id}`, data);
-  },
-
-  async deleteAchievement(id: string): Promise<void> {
-    await apiClient.delete(`/admin/achievements/${id}`);
-  },
-
-  async getCatalog(): Promise<Achievement[]> {
-    const response = await apiClient.get<unknown>('/admin/catalog/achievements');
-    return normalizeArrayResponse<Achievement>(response);
-  },
-
-  async getUserAchievements(userId: string): Promise<UserAchievement[]> {
-    const response = await apiClient.get<unknown>(`/achievements/user/${userId}`);
-    return normalizeArrayResponse<UserAchievement>(response);
-  },
-
-  async getPublicAchievements(): Promise<Achievement[]> {
-    const response = await apiClient.get<unknown>('/achievements');
-    return normalizeArrayResponse<Achievement>(response);
-  },
-
-  async getMyAchievements(): Promise<Achievement[]> {
-    const response = await apiClient.get<unknown>('/achievements/me');
-    return normalizeArrayResponse<Achievement>(response);
-  },
-
-  async getMyUnlocked(): Promise<UserAchievement[]> {
-    const response = await apiClient.get<unknown>('/achievements/me/unlocked');
-    return normalizeArrayResponse<UserAchievement>(response);
-  },
-
-  async getMyIncomplete(): Promise<UserAchievement[]> {
-    const response = await apiClient.get<unknown>('/achievements/me/incomplete');
-    return normalizeArrayResponse<UserAchievement>(response);
-  },
-
-  async getMyRare(): Promise<UserAchievement[]> {
-    const response = await apiClient.get<unknown>('/achievements/me/rare');
-    return normalizeArrayResponse<UserAchievement>(response);
-  },
-
-  async claimAchievement(achievementId: string): Promise<void> {
-    await apiClient.post(`/achievements/${achievementId}/claim`);
+  /**
+   * GET /progress?kind=ACHIEVEMENT — the only real read surface for achievement
+   * progress, and it is self-service (current user only), not an admin listing.
+   */
+  async getMyProgress(params?: { limit?: number; offset?: number }): Promise<unknown> {
+    return rulesService.getProgress('ACHIEVEMENT', params);
   },
 };
 

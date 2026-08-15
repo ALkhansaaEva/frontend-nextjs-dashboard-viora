@@ -7,6 +7,8 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { LanguageProvider } from '@/components/language-context';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { useAuthStore } from '@/store/auth.store';
+import { Toaster } from '@/shared/components/ui/Toaster';
+import { hasAnyAdminSignal } from '@/lib/auth/permissions';
 
 const PUBLIC_ROUTES = ['/login', '/'];
 
@@ -35,13 +37,6 @@ const AuthCheckComponent = memo(function AuthCheck({ children }: { children: Rea
       return;
     }
 
-    if (token && pathname === '/login') {
-      router.push('/dashboard');
-      setChecked(true);
-      setLoading(false);
-      return;
-    }
-
     if (token) {
       const isTokenExpired = (): boolean => {
         const expiryStr = localStorage.getItem('tokenExpiry');
@@ -52,16 +47,34 @@ const AuthCheckComponent = memo(function AuthCheck({ children }: { children: Rea
         return Date.now() >= parseInt(expiryStr, 10);
       };
 
+      // Authentication (valid token) and authorization (admin access) are
+      // resolved separately, and destination is only decided AFTER effective
+      // permissions have loaded — never render/redirect on a stale or empty
+      // permission snapshot from before this fetch.
+      const resolveDestination = () => {
+        const { permissions: p, roles: r } = useAuthStore.getState();
+        const authorized = hasAnyAdminSignal(p, r);
+        if (pathname === '/login') {
+          router.push(authorized ? '/dashboard' : '/unauthorized');
+        } else if (!authorized && pathname !== '/unauthorized' && !isPublicRoute) {
+          router.push('/unauthorized');
+        }
+        setChecked(true);
+        setLoading(false);
+      };
+
       if (refreshToken && isTokenExpired()) {
         useAuthStore.getState().refreshAuth().then((refreshed) => {
-          if (!refreshed && !isPublicRoute) router.push('/login');
-          setChecked(true);
+          if (!refreshed && !isPublicRoute) {
+            router.push('/login');
+            setChecked(true);
+            setLoading(false);
+            return;
+          }
+          resolveDestination();
         });
       } else {
-        useAuthStore.getState().initAuth().finally(() => {
-          setChecked(true);
-          setLoading(false);
-        });
+        useAuthStore.getState().initAuth().finally(resolveDestination);
       }
     } else {
       setChecked(true);
@@ -87,6 +100,7 @@ const ProvidersComponent = memo(function Providers({ children }: { children: Rea
         <ThemeProvider>
           <LanguageProvider>
             <AuthCheckComponent>{children}</AuthCheckComponent>
+            <Toaster />
           </LanguageProvider>
         </ThemeProvider>
       </QueryProvider>

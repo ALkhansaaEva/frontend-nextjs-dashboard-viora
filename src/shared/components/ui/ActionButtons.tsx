@@ -9,7 +9,10 @@ interface ActionButtonsProps {
   canManage?: boolean;
 }
 
-export function ActionButtons({ onEdit, onDelete, canManage = true }: ActionButtonsProps) {
+// Safe default: privileged edit/delete controls are hidden unless the caller
+// explicitly proves authorization (real backend-derived permission check).
+// Do not change this default back to `true`.
+export function ActionButtons({ onEdit, onDelete, canManage = false }: ActionButtonsProps) {
   if (!canManage) return null;
 
   return (
