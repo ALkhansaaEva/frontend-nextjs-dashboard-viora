@@ -1,0 +1,1 @@
+{"command": ["python3", "-m", "unittest", "discover", "-s", "tests/skill-system", "-p", "test_*.py", "-k", "revision_", "-v"], "cwd": "/mnt/data/skill_revision/red/opencode-game-studio-main", "exit": 1, "elapsed_seconds": 38.25}

@@ -57,9 +57,10 @@ export const mediaService = {
     if (options?.altText) formData.append('altText', options.altText);
     if (options?.fileKind) formData.append('fileKind', options.fileKind);
     if (options?.filePurpose) formData.append('filePurpose', options.filePurpose);
-    return apiClient.post<MediaFile>('/media/admin/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    // No explicit Content-Type: the browser must add the multipart boundary.
+    // Setting `multipart/form-data` by hand omits it and the gateway rejects
+    // the upload with `Multipart: Boundary not found`.
+    return apiClient.post<MediaFile>('/media/admin/upload', formData);
   },
 
   async uploadFiles(files: File[], bucket: string, options?: {
@@ -88,9 +89,7 @@ export const mediaService = {
     if (options?.altText) formData.append('altText', options.altText);
     if (options?.fileKind) formData.append('fileKind', options.fileKind);
     if (options?.filePurpose) formData.append('filePurpose', options.filePurpose);
-    return apiClient.post<MediaFile>('/media/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    return apiClient.post<MediaFile>('/media/upload', formData);
   },
 
   async getAdminFiles(params?: ListParams): Promise<PaginatedResponse<MediaFile>> {

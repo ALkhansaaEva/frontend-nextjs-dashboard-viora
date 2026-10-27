@@ -1,0 +1,9 @@
+{
+  "node": "v22.16.0",
+  "python": "Python 3.13.5",
+  "git": "git version 2.47.3",
+  "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "opencode": "NOT INSTALLED \u2014 live host integration NOT RUN",
+  "official_schema": "Full downloaded JSON schema validation NOT RUN; download unavailable in this environment"
+}

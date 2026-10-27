@@ -52,7 +52,7 @@ export function SystemPerformanceCard({ users, memory }: PerformanceCardProps) {
             <Activity className="w-5 h-5 text-violet-600 dark:text-violet-400" />
           </div>
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-white">{isRTL ? 'أداء النظام' : 'System Performance'}</h3>
+            <h3 className="font-bold text-gray-900 dark:text-white">          {isRTL ? 'أداء النظام' : 'System Performance'}</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">{isRTL ? 'تحليل البيانات' : 'Analytics Overview'}</p>
           </div>
         </div>

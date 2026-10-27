@@ -1,0 +1,52 @@
+test_agent_log_duplicate_key_rejected (test_repairs.HookTests.test_agent_log_duplicate_key_rejected) ... ok
+test_agent_log_injection_rejected (test_repairs.HookTests.test_agent_log_injection_rejected) ... ok
+test_agent_log_malformed_input_rejected (test_repairs.HookTests.test_agent_log_malformed_input_rejected) ... ok
+test_agent_log_symlink_refused (test_repairs.HookTests.test_agent_log_symlink_refused) ... ok
+test_agent_log_write_failure_reported (test_repairs.HookTests.test_agent_log_write_failure_reported) ... ok
+test_asset_outside_repo_rejected (test_repairs.HookTests.test_asset_outside_repo_rejected) ... ok
+test_compound_commit_without_spaces_is_refused (test_repairs.HookTests.test_compound_commit_without_spaces_is_refused) ... ok
+test_deleted_staged_file_not_read (test_repairs.HookTests.test_deleted_staged_file_not_read) ... ok
+test_duplicate_json_keys_block (test_repairs.HookTests.test_duplicate_json_keys_block) ... ok
+test_invalid_asset_json_reports_failure (test_repairs.HookTests.test_invalid_asset_json_reports_failure) ... ok
+test_invalid_index_valid_worktree_blocked (test_repairs.HookTests.test_invalid_index_valid_worktree_blocked) ... ok
+test_large_applicable_blob_blocks_before_validation (test_repairs.HookTests.test_large_applicable_blob_blocks_before_validation) ... ok
+test_large_unrelated_asset_is_not_content_validated (test_repairs.HookTests.test_large_unrelated_asset_is_not_content_validated) ... ok
+test_malformed_envelope_blocks (test_repairs.HookTests.test_malformed_envelope_blocks) ... ok
+test_missing_command_blocks (test_repairs.HookTests.test_missing_command_blocks) ... ok
+test_no_staged_files (test_repairs.HookTests.test_no_staged_files) ... ok
+test_noncommit_command_does_not_execute (test_repairs.HookTests.test_noncommit_command_does_not_execute) ... ok
+test_nonstandard_json_constant_blocks (test_repairs.HookTests.test_nonstandard_json_constant_blocks) ... ok
+test_session_stop_reports_log_failure_and_keeps_state (test_repairs.HookTests.test_session_stop_reports_log_failure_and_keeps_state) ... ok
+test_session_stop_retains_incomplete_state (test_repairs.HookTests.test_session_stop_retains_incomplete_state) ... ok
+test_session_stop_retains_state_when_log_unwritable (test_repairs.HookTests.test_session_stop_retains_state_when_log_unwritable) ... ok
+test_spaces_and_newline_filename (test_repairs.HookTests.test_spaces_and_newline_filename) ... ok
+test_symlink_asset_rejected (test_repairs.HookTests.test_symlink_asset_rejected) ... ok
+test_unconventional_project_is_not_declared_new (test_repairs.HookTests.test_unconventional_project_is_not_declared_new) ... ok
+test_valid_agent_log_omits_other_payload_fields (test_repairs.HookTests.test_valid_agent_log_omits_other_payload_fields) ... ok
+test_valid_index_invalid_worktree_allowed (test_repairs.HookTests.test_valid_index_invalid_worktree_allowed) ... ok
+test_wrapped_git_command_refused (test_repairs.HookTests.test_wrapped_git_command_refused) ... ok
+test_backup_manifest_and_originals_retained (test_repairs.ModelTests.test_backup_manifest_and_originals_retained) ... ok
+test_body_examples_preserved (test_repairs.ModelTests.test_body_examples_preserved) ... ok
+test_concurrent_user_edit_not_overwritten_by_rollback (test_repairs.ModelTests.test_concurrent_user_edit_not_overwritten_by_rollback) ... Update failed. Inspect retained originals and manifest: /tmp/tmpbm5vf54j/copy/.opencode/model-change-backups/20260927T222230Z-0760388f25a946ba975ae99381837d93
+ok
+test_dry_run_has_no_writes (test_repairs.ModelTests.test_dry_run_has_no_writes) ... ok
+test_duplicate_model_field_preflight_changes_nothing (test_repairs.ModelTests.test_duplicate_model_field_preflight_changes_nothing) ... ok
+test_inherited_models_remain_inherited (test_repairs.ModelTests.test_inherited_models_remain_inherited) ... ok
+test_injected_mid_apply_failure_rolls_back (test_repairs.ModelTests.test_injected_mid_apply_failure_rolls_back) ... Update failed. Inspect retained originals and manifest: /tmp/tmpteymdkda/copy/.opencode/model-change-backups/20260927T222232Z-bcbdda883bb549a6b2e36cd51fb9ee88
+ok
+test_invalid_config_preflight_changes_nothing (test_repairs.ModelTests.test_invalid_config_preflight_changes_nothing) ... ok
+test_nonstandard_config_constants_refused_preflight (test_repairs.ModelTests.test_nonstandard_config_constants_refused_preflight) ... ok
+test_rejects_shell_and_sed_metacharacters_without_changes (test_repairs.ModelTests.test_rejects_shell_and_sed_metacharacters_without_changes) ... ok
+test_symlink_agent_rejected_without_partial_change (test_repairs.ModelTests.test_symlink_agent_rejected_without_partial_change) ... ok
+test_updates_all_existing_model_fields_not_just_first (test_repairs.ModelTests.test_updates_all_existing_model_fields_not_just_first) ... ok
+test_distribution_does_not_self_approve (test_repairs.StructureTests.test_distribution_does_not_self_approve) ... ok
+test_every_skill_has_a_real_command (test_repairs.StructureTests.test_every_skill_has_a_real_command) ... ok
+test_exact_requested_rule_present (test_repairs.StructureTests.test_exact_requested_rule_present) ... ok
+test_no_conflicting_agent_identity_copies_in_json (test_repairs.StructureTests.test_no_conflicting_agent_identity_copies_in_json) ... ok
+test_permission_default_is_not_unrestricted (test_repairs.StructureTests.test_permission_default_is_not_unrestricted) ... ok
+test_runtime_instruction_paths_exist (test_repairs.StructureTests.test_runtime_instruction_paths_exist) ... ok
+
+----------------------------------------------------------------------
+Ran 45 tests in 21.282s
+
+OK

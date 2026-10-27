@@ -1,0 +1,1 @@
+{"command": ["node", ".opencode/scripts/skill-audit.mjs", "inventory"], "exit_code": 0}

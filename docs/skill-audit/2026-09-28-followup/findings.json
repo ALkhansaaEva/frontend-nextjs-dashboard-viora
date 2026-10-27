@@ -1,0 +1,192 @@
+{
+  "authorization": "Explicit user request to improve, audit and minimally repair the attached skill package; no deployment, trust grants or privilege changes authorized.",
+  "findings": [
+    {
+      "id": "SAR-001",
+      "classification": "VERIFIED DEFECT",
+      "severity": "HIGH (local trust-cache integrity, not a CVSS rating)",
+      "title": "Re-approval of a changed dependency silently revives stale consumers",
+      "sources": [
+        {
+          "path": ".opencode/lib/audit-gate.mjs",
+          "before_sha256": "faa7d24f3a5d65f11dbd26e2624af105938153a66e0d77156ba915a9fffd49b5",
+          "original_lines": [
+            103,
+            115
+          ],
+          "quoted_source": "/** Validate all reachable records once. Cycles do not skip a node's validation. */\nexport function assertUsable(root, target) {\n  const registry = loadRegistry(root);\n  const seen = new Set();\n  const pending = [target, ...GOVERNANCE];\n  while (pending.length) {\n    const relative = pending.pop();\n    if (seen.has(relative)) continue;\n    const rec = validateRecord(root, registry, relative);\n    seen.add(relative);\n    pending.push(...rec.dependencies);\n  }\n  return {status: 'VALIDATED_RECORDS', context_id: registry.context_id, checked: [...seen].sort()};",
+          "after_sha256": "6d785231a618490a466ef095446cbb0ca49568d1dbb594d733fe55383284607e"
+        }
+      ],
+      "expected": "Consumer review stays stale after an input changes, even when that input is independently re-approved.",
+      "observed": "Original checker validates current per-file records and names only; both negative reproductions fail with Missing expected exception.",
+      "evidence": [
+        "red-node.txt",
+        "green-node-final.txt"
+      ],
+      "repair": "Schema-2 exact review-time source-input map for transitive dependencies plus governance; check each reachable record and bind full key set; per-invocation digest cache only.",
+      "preserved": "Existing public methods/results, cycle handling, status/date/evidence validation and read-only bootstrap.",
+      "tests": [
+        "refreshed dependency must not revive its stale consumer",
+        "refreshed governance must invalidate consumer snapshots",
+        "transitive refresh does not revive a grandparent consumer",
+        "consumer and dependency re-audit restores usable fixture"
+      ]
+    },
+    {
+      "id": "SAR-002",
+      "classification": "VERIFIED DEFECT",
+      "severity": "HIGH (accidental cross-installation trust reuse)",
+      "title": "Registry is not bound to the canonical installation worktree",
+      "sources": [
+        {
+          "path": ".opencode/lib/audit-gate.mjs",
+          "before_sha256": "faa7d24f3a5d65f11dbd26e2624af105938153a66e0d77156ba915a9fffd49b5",
+          "original_lines": [
+            60,
+            66
+          ],
+          "quoted_source": "export function loadRegistry(root) {\n  const value = strictRegistryJSON(fs.readFileSync(safeFile(root, '.opencode/audit/registry.json'), 'utf8'));\n  if (!object(value) || value.schema_version !== 1 || !object(value.records)\n      || !nonempty(value.context_id) || value.context_id === 'UNCONFIGURED') {\n    throw new Error('Audit registry missing, malformed, or context UNCONFIGURED; perform a read-only bootstrap audit');\n  }\n  return value;",
+          "after_sha256": "6d785231a618490a466ef095446cbb0ca49568d1dbb594d733fe55383284607e"
+        }
+      ],
+      "expected": "A registry declared for another worktree cannot authenticate this installation.",
+      "observed": "Original loadRegistry ignores the wrong worktree value; negative test fails with Missing expected exception.",
+      "evidence": [
+        "red-node.txt",
+        "green-node-final.txt"
+      ],
+      "repair": "Require schema 2, configured context and exact realpath worktree; ship null worktree/UNCONFIGURED and document evidence-backed migration.",
+      "preserved": "No auto-approval or new permissions. Worktree relocation deliberately invalidates trust, not public skill contracts.",
+      "limitation": "Same-path replacement, branch/task changes and external runtime changes still need reviewer-managed context invalidation.",
+      "tests": [
+        "copied approval must not authenticate another worktree",
+        "missing worktree identity fails closed",
+        "schema 1 approval requires explicit re-audit, not promotion"
+      ]
+    },
+    {
+      "id": "SAR-003",
+      "classification": "VERIFIED DEFECT",
+      "severity": "MEDIUM (audit coverage gap; inventory was already labelled non-semantic)",
+      "title": "Inventory omits key execution and governance namespaces",
+      "sources": [
+        {
+          "path": ".opencode/scripts/skill-audit.mjs",
+          "before_sha256": "341579253344805d17e789e8da6d3e902cf0fd523b580638cf7a70a05bc8d505",
+          "original_lines": [
+            14,
+            25
+          ],
+          "quoted_source": "  } else if (action === 'inventory' && targets.length === 0) {\n    const files = [];\n    function visit(dir) {\n      for (const entry of fs.readdirSync(path.join(root, dir), {withFileTypes: true})) {\n        const rel = path.posix.join(dir, entry.name);\n        if (entry.isSymbolicLink()) throw new Error(`Refusing symlink: ${rel}`);\n        if (entry.isDirectory()) visit(rel);\n        else if (entry.isFile()) files.push({path: rel, sha256: fingerprint(root, rel)});\n      }\n    }\n    for (const dir of ['.opencode/skills', '.opencode/agents', '.opencode/rules', '.opencode/hooks']) visit(dir);\n    console.log(JSON.stringify({status: 'INVENTORY_ONLY_NOT_SEMANTIC_APPROVAL', files}, null, 2));",
+          "after_sha256": "587f36ca8946822f047cc47924b71a1620797d981c80b8d38f509999dacb6a3e"
+        }
+      ],
+      "expected": "Local preflight inventory should expose commands, plugin, helper code, governance and workflow definitions alongside skills/agents/rules/hooks.",
+      "observed": "Before inventory has 122 paths and excludes those namespaces; after has 229 deduplicated paths.",
+      "evidence": [
+        "inventory-before.json",
+        "inventory-after.json",
+        "green-python-final.txt"
+      ],
+      "repair": "Include mandatory GOVERNANCE and commands/plugins/lib/scripts/docs/tools, reject unsafe root/entry types and explicitly report missing optional roots.",
+      "preserved": "Read-only inventory and explicit NOT_SEMANTIC_APPROVAL status; no automatic dependency discovery claimed.",
+      "limitation": "Actual external/global resolution and referenced root/project resources require review beyond this inventory.",
+      "tests": [
+        "test_repair_inventory_covers_executable_and_process_surfaces"
+      ]
+    },
+    {
+      "id": "SAR-004",
+      "classification": "VERIFIED DEFECT",
+      "severity": "HIGH (conditional exposure of local readable checkpoint targets)",
+      "title": "Session checkpoint helpers follow symlinks and read unbounded raw state",
+      "sources": [
+        {
+          "path": ".opencode/hooks/session-start.sh",
+          "before_sha256": "4a78cb789cef2513657231c28012ec3a731a06dea512523c9e41946c62eb8b61",
+          "original_lines": [
+            57,
+            70
+          ],
+          "quoted_source": "# --- Active session state recovery ---\nSTATE_FILE=\"production/session-state/active.md\"\nif [ -f \"$STATE_FILE\" ]; then\n    echo \"\"\n    echo \"=== ACTIVE SESSION STATE DETECTED ===\"\n    echo \"A previous session left state at: $STATE_FILE\"\n    echo \"Inspect this checkpoint and verify its revision, scope and unresolved work before resuming.\"\n    echo \"\"\n    echo \"Quick summary:\"\n    head -20 \"$STATE_FILE\" 2>/dev/null\n    TOTAL_LINES=$(wc -l < \"$STATE_FILE\" 2>/dev/null)\n    if [ \"$TOTAL_LINES\" -gt 20 ]; then\n        echo \"  ... ($TOTAL_LINES total lines — read the full file to continue)\"\n    fi",
+          "after_sha256": "b16da42a614563f1561c2a7c0370d68e8d88a60f50ecbbcd0a078e474d49d02f"
+        },
+        {
+          "path": ".opencode/hooks/pre-compact.sh",
+          "before_sha256": "47ef840a897ea47293e5448e2318dc732abececb5d9fca1ef81d7113a62334f7",
+          "original_lines": [
+            8,
+            24
+          ],
+          "quoted_source": "# --- Active session state file ---\nSTATE_FILE=\"production/session-state/active.md\"\nif [ -f \"$STATE_FILE\" ]; then\n    echo \"\"\n    echo \"## Active Session State (from $STATE_FILE)\"\n    STATE_LINES=$(wc -l < \"$STATE_FILE\" 2>/dev/null | tr -d ' ')\n    if [ \"$STATE_LINES\" -gt 100 ] 2>/dev/null; then\n        head -n 100 \"$STATE_FILE\"\n        echo \"... (truncated — $STATE_LINES total lines, showing first 100)\"\n    else\n        cat \"$STATE_FILE\"\n    fi\nelse\n    echo \"\"\n    echo \"## No active session state file found\"\n    echo \"Consider maintaining production/session-state/active.md for better recovery.\"\nfi",
+          "after_sha256": "8deb2e97611bb69f63e53cfb1b854c72d65fa1f88d8565f0f3fbad132998ee3f"
+        },
+        {
+          "path": ".opencode/hooks/session-stop.sh",
+          "before_sha256": "431c07f3b415e2abaa10e82c16eaffc7014e604ba488f000970ca4ea326f2cb1",
+          "original_lines": [
+            18,
+            28
+          ],
+          "quoted_source": "# --- Snapshot state; session exit is NOT proof of task completion ---\nSTATE_FILE=\"production/session-state/active.md\"\nif [ -f \"$STATE_FILE\" ]; then\n    # Copy to the log without deleting the durable recovery checkpoint.\n    {\n        echo \"## Archived Session State: $TIMESTAMP\"\n        cat \"$STATE_FILE\"\n        echo \"---\"\n        echo \"\"\n    } >> \"$SESSION_LOG_DIR/session-log.md\" || { echo \"ERROR: session log write failed; recovery state retained\" >&2; exit 2; }\n    # Keep active.md even when logging fails; unresolved work must survive.",
+          "after_sha256": "47e973d0009b087ccb77f0e24bba8d53bd108b4ced04c44b2094eaabe0734e3a"
+        }
+      ],
+      "expected": "A checkpoint symlink must not expose or archive an unintended file; unsafe data/type/size should fail safely and preserve state.",
+      "observed": "Disposable private canary is printed by start/compact and archived by stop. Original line limits do not bound bytes, and raw reads repeat the path.",
+      "evidence": [
+        "red-python.txt",
+        "green-python-final.txt"
+      ],
+      "repair": "Reuse one bounded regular UTF-8 checkpoint reader with component symlink checks, no-follow/nonblocking open where supported, read/fstat guards and ASCII-control rejection. Reuse snapshot, deny special log files, restrictive umask.",
+      "preserved": "Valid checkpoint previews/archives and incomplete active.md retained; existing logging errors still reported.",
+      "limitation": "No secret redaction or hostile-filesystem race resistance claimed. FIFO/size/control variants have final regressions; only symlink exposure was executed in the original red suite.",
+      "tests": [
+        "test_repair_session_helpers_reject_symlink_checkpoint",
+        "test_repair_checkpoint_parent_symlink_rejected",
+        "test_repair_checkpoint_size_bound",
+        "test_repair_checkpoint_control_characters_rejected",
+        "test_repair_checkpoint_utf8_preserved",
+        "test_repair_checkpoint_fifo_rejected_without_hanging",
+        "test_repair_log_fifo_rejected_without_hanging"
+      ]
+    },
+    {
+      "id": "SAR-005",
+      "classification": "VERIFIED DEFECT",
+      "severity": "MEDIUM (false recovery-state assertion)",
+      "title": "Git inspection failure is reported as a clean worktree",
+      "sources": [
+        {
+          "path": ".opencode/hooks/pre-compact.sh",
+          "before_sha256": "47ef840a897ea47293e5448e2318dc732abececb5d9fca1ef81d7113a62334f7",
+          "original_lines": [
+            30,
+            47
+          ],
+          "quoted_source": "CHANGED=$(git diff --name-only 2>/dev/null)\nSTAGED=$(git diff --staged --name-only 2>/dev/null)\nUNTRACKED=$(git ls-files --others --exclude-standard 2>/dev/null)\n\nif [ -n \"$CHANGED\" ]; then\n    echo \"Unstaged changes:\"\n    echo \"$CHANGED\" | while read -r f; do echo \"  - $f\"; done\nfi\nif [ -n \"$STAGED\" ]; then\n    echo \"Staged changes:\"\n    echo \"$STAGED\" | while read -r f; do echo \"  - $f\"; done\nfi\nif [ -n \"$UNTRACKED\" ]; then\n    echo \"New untracked files:\"\n    echo \"$UNTRACKED\" | while read -r f; do echo \"  - $f\"; done\nfi\nif [ -z \"$CHANGED\" ] && [ -z \"$STAGED\" ] && [ -z \"$UNTRACKED\" ]; then\n    echo \"  (no uncommitted changes)\"",
+          "after_sha256": "8deb2e97611bb69f63e53cfb1b854c72d65fa1f88d8565f0f3fbad132998ee3f"
+        }
+      ],
+      "expected": "Cleanliness cannot be asserted when Git inspection fails.",
+      "observed": "Removing .git from a disposable test repo leads to (no uncommitted changes); original negative assertion fails.",
+      "evidence": [
+        "red-python.txt",
+        "green-python-final.txt"
+      ],
+      "repair": "Track inspection command success and output UNVERIFIED on any failure; only emit clean if successful checks are empty.",
+      "preserved": "Advisory nature of compaction helper, changed-file summaries, checkpoint retention and requested logging.",
+      "tests": [
+        "test_repair_precompact_does_not_report_clean_on_git_failure"
+      ]
+    }
+  ],
+  "investigated_not_defects": [
+    {
+      "title": "CRLF preservation during model updates",
+      "result": "NOT REPRODUCED as a defect; new positive CRLF regression passes with the original updater. Updater left byte-for-byte unchanged.",
+      "test": "test_repair_model_update_preserves_crlf"
+    }
+  ]
+}

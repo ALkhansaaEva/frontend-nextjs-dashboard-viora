@@ -1,0 +1,186 @@
+{
+  "baseline": "opencode-maintained.zip",
+  "baseline_zip_sha256": "38eb53be6d517668c00ca3c01f14bfe47723152cb7557c0fb6a68652c210664f",
+  "original_zip_sha256": "1e4e5c1181a0ecac5629c532971dbdf52760e0c692a94e37e16b331cf4e1fa3c",
+  "scope": "Runtime/package source changes versus maintained baseline; delivery-only audit files listed separately.",
+  "changed": [
+    {
+      "path": ".opencode/commands/sprint-plan.md",
+      "before_sha256": "04345649604c7016c936dc8b363d72ae3c3739dfa79cb1cbb7dfdcac1ccb4c0e",
+      "after_sha256": "decf4ff3b8feaf4bcc385d9eaa19ac5ba220560f423d3b2bc6b43d7e0d86bce7"
+    },
+    {
+      "path": ".opencode/docs/audit-runtime.md",
+      "before_sha256": "8faf38e6d9debda52f252880530525b8840a1a593c19f5a3cf69d6b7fc5edc5c",
+      "after_sha256": "5aff56c484462a16f5518cda12b4f9ac37b1be4ca9de71fd2aa80eca0142cc31"
+    },
+    {
+      "path": ".opencode/docs/context-management.md",
+      "before_sha256": "7c0f605e4fd1fc4a69a58f44a5ce7ed18a95d2497c14aa507b057d2fd09e1907",
+      "after_sha256": "f4476d6b4b1ac627a0a4422f0885a01051ce53b2e382366f7bff06d407756984"
+    },
+    {
+      "path": ".opencode/docs/engineering-capabilities.md",
+      "before_sha256": "c4a455ce557777138e071bc7bb6e2459072915a64c7809827a7fe3511fe19fe1",
+      "after_sha256": "1ae1269f8529c7974193ac00e54e21f566c4e0948e8bf7dce3554d1f6a14c1e3"
+    },
+    {
+      "path": ".opencode/docs/engineering-workflow.md",
+      "before_sha256": "1946252422b0ab72130c354344109b054476ede377dcfab60ec5c35342359eaf",
+      "after_sha256": "c04247b31795e518d586eb29dfcf8545f1c5c8c97721c3bc7df5287ea2255677"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference.md",
+      "before_sha256": "50e45703d4521ac560db550745d04b00ad662a3bcf828c39c0e816f96706e12b",
+      "after_sha256": "46942a916a0a6c72bc7982bb184889db57af918e6b0369edb427aed64d769133"
+    },
+    {
+      "path": ".opencode/docs/skills-reference.md",
+      "before_sha256": "1ad9c2eb7faae7f3d3dfc7a036df1fc6cccec65199be72db8ef05163a1200a38",
+      "after_sha256": "a6886e34fc7f34b0f4e04367bcdaa6e2e08f0be869e2ffc08a5ba7d3ab8935b5"
+    },
+    {
+      "path": ".opencode/hooks/detect-gaps.sh",
+      "before_sha256": "4590520f640bed28bb7a6b43f54b8ae50ad9a03e5c8a3616dfbe8e07be83bcf6",
+      "after_sha256": "faf925f333457a14d6988549fa456aa290fa68651d8d9fd40b2cd62ea91ecce1"
+    },
+    {
+      "path": ".opencode/lib/audit-gate.mjs",
+      "before_sha256": "6d785231a618490a466ef095446cbb0ca49568d1dbb594d733fe55383284607e",
+      "after_sha256": "0d94f8daa1771929dc377c370b1ad07c756cabe2f76fbe7305cd98c62f12db50"
+    },
+    {
+      "path": ".opencode/rules/skill-integrity.md",
+      "before_sha256": "439423108d7c579e2f06ecad50f520d2868e4f3b6dc3ee41dbeabe3020942556",
+      "after_sha256": "f3ff697c3d37f145fd7173508312760611bcb59557931046fd4b3566a0f5425c"
+    },
+    {
+      "path": ".opencode/scripts/skill-audit.mjs",
+      "before_sha256": "587f36ca8946822f047cc47924b71a1620797d981c80b8d38f509999dacb6a3e",
+      "after_sha256": "58df0ada0d8ee9bec05e803142965079866e61eb68af826818b6646d5f9218c1"
+    },
+    {
+      "path": ".opencode/skills/code-review/SKILL.md",
+      "before_sha256": "dbee0fde2148b9d85ebc77ea3879026d47ebe7f9b5650e8d42c2669e59147a29",
+      "after_sha256": "d9225af542c78974570caf3044c77547a3f66907dab1de47c4315a9b724cc33b"
+    },
+    {
+      "path": ".opencode/skills/concurrency-analysis/SKILL.md",
+      "before_sha256": "0c12977203b3d9fa771948c80733fb1e81158fdadb0423720c533cb12b6ae853",
+      "after_sha256": "63a913b3ef9c24fd45c3e79101ca91d24cef685329a919eae3f0bc53eb9f15b5"
+    },
+    {
+      "path": ".opencode/skills/debugging-analysis/SKILL.md",
+      "before_sha256": "1e347f99baa25023bf20347d8cfe348f105e3f12b020c742490e2414019cf502",
+      "after_sha256": "cfc24a00f6c627cfb0a53e2970ec405b7fe3fb20274f7c36abc52024bce292f9"
+    },
+    {
+      "path": ".opencode/skills/framework-engineering/SKILL.md",
+      "before_sha256": "97cb002af395b546a84d1bf8f89dbefdaa464d8c2193b8e4a31f99743566f90e",
+      "after_sha256": "048648b1a2dac5b1b437d9728fb01a3418f529ac192f9344ed2863636ca4b997"
+    },
+    {
+      "path": ".opencode/skills/milestone-review/SKILL.md",
+      "before_sha256": "cfbab54188650c3ce7b0e93632a754bd7d17d4419d77f2139a10ebb1c62e602a",
+      "after_sha256": "05052202bc4f175559412d0c128b632580d6432804a881ea6760e1165b9611e7"
+    },
+    {
+      "path": ".opencode/skills/production-validation/SKILL.md",
+      "before_sha256": "868b3287238ec960fb34e1990c51448fc374bf3e583bc724c754ad749bcb6d57",
+      "after_sha256": "a2fa014473c5eba4e92a8a48a9abb695b0314f71b74f58fb202a24dd08bfb26c"
+    },
+    {
+      "path": ".opencode/skills/repository-discovery/SKILL.md",
+      "before_sha256": "112e3e2f5e1bea2867d01820bf557296e72227d58300abf63dab22041666640e",
+      "after_sha256": "8e7379196f54452bf94ffc3ef46fc27eceec2887d5deb3dee2b1b7751b6d644c"
+    },
+    {
+      "path": ".opencode/skills/retrospective/SKILL.md",
+      "before_sha256": "7e40510a7f42ff3800e5fe86c0a46f5d5f40d3900b2157db34c4173a4faf34bd",
+      "after_sha256": "ccd4b468cd88deaa5addec5e200bbe0d53185970dff7d4c454c5584a0c9fef89"
+    },
+    {
+      "path": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "before_sha256": "b7e9845a725c1e3d572b16376f73bd9b8eeed73b3bb5ae095045698b2524424e",
+      "after_sha256": "a8563256ff47ab71f8b2fd9625a7b59bd1f899e3266e4936f95d86a6be99fb73"
+    },
+    {
+      "path": ".opencode/skills/sprint-plan/SKILL.md",
+      "before_sha256": "3bfaa6d26216f424cbf9012b5f949c83187a51945cf9152f27cbd71b2e64ca3e",
+      "after_sha256": "ee65073c32c61e409f0856d1eb04ab59c71b4a242cca931f64371fe100180bf3"
+    },
+    {
+      "path": ".opencode/skills/start/SKILL.md",
+      "before_sha256": "f14fc4152438487f2954feb50a10663ebb86760e21872c8cc7d7f58f26fcd456",
+      "after_sha256": "4d1b407d27bd08cf5356d992ee6829f25edaa96ce617a6e6184205f19dd5a4f9"
+    },
+    {
+      "path": ".opencode/skills/tech-debt/SKILL.md",
+      "before_sha256": "6a478e6bf19b502b5ff0d7f3a79e0a729d709eaed2d90ef6f72682897ecf7f22",
+      "after_sha256": "249e5d67c91461bf3b18c57c65e77a37904d6c32d1c4efccab235f8ee5ca3664"
+    },
+    {
+      "path": "AGENTS.md",
+      "before_sha256": "78e77806bb04a4855873082c50087555a8cb57d81480e64f2c40c922062282aa",
+      "after_sha256": "4d12dbdd4146ad6f68ddb178f2e7d2fb164639c313b0d69d1c5875f87068e75d"
+    },
+    {
+      "path": "README.md",
+      "before_sha256": "b0edd37a6682a8f82a5ce36302637b657b3431bfaa749f2f7a085b72c8322570",
+      "after_sha256": "511ec2f26a5a8d36818c883b06993fedb222fddcae2bf2224eb7d89acd8e67f4"
+    },
+    {
+      "path": "opencode.json",
+      "before_sha256": "163fbc5114ae8129887c45d89ae71d3da9b92a8a5955eed72bc9fa9a07fb59bd",
+      "after_sha256": "904aef97054a794960d4036a5500f49def3ce56b6193031c15958526404e5bf1"
+    }
+  ],
+  "added": [
+    {
+      "path": ".opencode/docs/engineering-tools.md",
+      "sha256": "6ad5e24a2222b738e7119d0f77bb2892cb0628eb885b8c7f16d9af0129c0e51a"
+    },
+    {
+      "path": ".opencode/docs/execution-and-queues.md",
+      "sha256": "1900dabc886deb48f005e8af75d1778d626cdd881dabaf6d8b87d45f1ed82c5b"
+    },
+    {
+      "path": ".opencode/docs/language-tooling.md",
+      "sha256": "62ae751ff51199ad04850b0ceb1bcbe0fd40be7db8333602dd4e65f143aef460"
+    },
+    {
+      "path": ".opencode/docs/templates/work-ledger.example.json",
+      "sha256": "08cb6be7c420afa9ef38265725fab7c9c799781d5561cc17a7a83392e6a7063d"
+    },
+    {
+      "path": ".opencode/lib/execution-queue.mjs",
+      "sha256": "fd885ba3846f209ba2a0c9cc30ead92d0ce8151e9a914de8f93ab2978801610d"
+    },
+    {
+      "path": ".opencode/lib/work-evidence.mjs",
+      "sha256": "fc3476b5f1db779c1b6305adc92b36a4b336e9e30e8d6b45ada654b4643ae979"
+    },
+    {
+      "path": ".opencode/rules/task-evidence.md",
+      "sha256": "283016210ae6a0e07e33f60b71f0f92a4a96aff3967eae8d11a86f32ad2e60ea"
+    },
+    {
+      "path": ".opencode/scripts/execution-queue.mjs",
+      "sha256": "17be414a37480b988b8fb51fd5c356970fd265e9c6e6a84ccd498c30967ad70c"
+    },
+    {
+      "path": ".opencode/scripts/work-evidence.mjs",
+      "sha256": "863f9d29b169c2a7d3b11e12099da011ba30be09e5a615bfe0bb55b86e7d491a"
+    },
+    {
+      "path": "tests/skill-system/test_upgrade_contracts.py",
+      "sha256": "d5f8cd3f52a8326462f2ac129bb778e2f2de4499c4ef8ebbd910544f32c2d7f4"
+    },
+    {
+      "path": "tests/skill-system/work-evidence.test.mjs",
+      "sha256": "97013cbfb451f63b3c6f678938d985c5c0650f440e1b31090cafec6599ebb620"
+    }
+  ],
+  "deleted": [],
+  "unchanged_count": 374
+}

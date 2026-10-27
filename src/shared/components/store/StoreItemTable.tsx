@@ -1,9 +1,12 @@
 'use client';
 
-import { Package, Gem, Coins } from 'lucide-react';
+import { Package, Coins, ImageIcon } from 'lucide-react';
 import { Card } from '@/shared/components/ui/Card';
 import { Badge } from '@/shared/components/ui/Badge';
+import { formatIntegerString } from '@/shared/lib/money';
 import type { StoreItem } from '@/services/store.service';
+import { storeItemTypeLabel } from '@/shared/lib/store-item-types';
+import { MediaPreview } from '@/shared/components/media/MediaPreview';
 
 const rarityColors: Record<string, string> = {
   common: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
@@ -12,13 +15,9 @@ const rarityColors: Record<string, string> = {
   legendary: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300'
 };
 
-const typeLabels: Record<string, string> = {
-  ludo_cover: 'Ludo Cover', dice: 'Dice', chess_piece: 'Chess Piece', room_theme: 'Room Theme',
-  room_wallpaper: 'Room Wallpaper', room_mic_skin: 'Mic Skin', domino_board: 'Domino Board',
-  domino_tile_face: 'Tile Face', domino_tile_back: 'Tile Back', avatar_frame: 'Avatar Frame',
-  profile_background: 'Profile BG', profile_frame: 'Profile Frame', profile_avatar: 'Profile Avatar',
-  ludo_board: 'Ludo Board', ludo_dice: 'Ludo Dice', ludo_tokens: 'Ludo Tokens', badge: 'Badge', avatar: 'Avatar'
-};
+// Matches the backend `StoreItem.type` entity enum (see @/dto/store's
+// ITEM_TYPES) — `slot` is deliberately NOT looked up here, it has no
+// backend enum and is rendered as the free-text value the operator entered.
 
 interface StoreItemTableProps {
   items: StoreItem[];
@@ -39,11 +38,19 @@ export function StoreItemTable({ items, isRTL, onRowClick }: StoreItemTableProps
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Scope</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rarity</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Assets</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {items.map((item) => (
+            {items.map((item) => {
+              const preview =
+                item.assets?.find((a) => a.purpose === 'icon' && a.url) ??
+                item.assets?.find((a) => Boolean(a.url)) ??
+                null;
+              const title = item.title?.[isRTL ? 'ar' : 'en'] || item.title?.en || 'Unnamed';
+
+              return (
               <tr
                 key={item.id}
                 className="hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
@@ -51,17 +58,21 @@ export function StoreItemTable({ items, isRTL, onRowClick }: StoreItemTableProps
               >
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-lg flex items-center justify-center">
-                      <Package className="w-5 h-5 text-gray-400" />
+                    <div className="w-10 h-10 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
+                      {preview?.url ? (
+                        <MediaPreview url={preview.url} className="h-full w-full object-cover" />
+                      ) : (
+                        <Package className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                      )}
                     </div>
-                    <div>
-                      <p className="font-medium">{item.title?.[isRTL ? 'ar' : 'en'] || item.title?.en || 'Unnamed'}</p>
-                      <p className="text-xs text-gray-400 font-mono">{item.code}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{title}</p>
+                      <p className="text-xs text-gray-400 font-mono truncate">{item.code}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{typeLabels[item.type] || item.type}</td>
-                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{typeLabels[item.slot] || item.slot}</td>
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{storeItemTypeLabel(item.type)}</td>
+                <td className="px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-400">{item.slot}</td>
                 <td className="px-4 py-3">
                   <span className="text-sm capitalize text-gray-600 dark:text-gray-400">{item.scope}</span>
                 </td>
@@ -70,22 +81,21 @@ export function StoreItemTable({ items, isRTL, onRowClick }: StoreItemTableProps
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    {item.priceGems > 0 && (
+                    {item.priceGameCurrency != null ? (
                       <div className="flex items-center gap-1">
-                        <Gem className="w-3.5 h-3.5 text-purple-500" />
-                        <span className="text-sm font-medium">{item.priceGems}</span>
+                        <Coins className="w-3.5 h-3.5 text-emerald-500" />
+                        <span className="text-sm font-medium">{formatIntegerString(item.priceGameCurrency)}</span>
                       </div>
-                    )}
-                    {item.priceCoins > 0 && (
-                      <div className="flex items-center gap-1">
-                        <Coins className="w-3.5 h-3.5 text-yellow-500" />
-                        <span className="text-sm font-medium">{item.priceCoins}</span>
-                      </div>
-                    )}
-                    {item.priceGems === 0 && item.priceCoins === 0 && (
+                    ) : (
                       <span className="text-xs text-gray-400">Free</span>
                     )}
                   </div>
+                </td>
+                <td className="px-4 py-3">
+                  <span className="flex items-center gap-1 text-xs text-gray-500">
+                    <ImageIcon className="w-3.5 h-3.5" aria-hidden="true" />
+                    {item.assets?.length ?? 0}
+                  </span>
                 </td>
                 <td className="px-4 py-3">
                   <Badge variant={item.isActive ? 'success' : 'default'}>
@@ -93,7 +103,8 @@ export function StoreItemTable({ items, isRTL, onRowClick }: StoreItemTableProps
                   </Badge>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>

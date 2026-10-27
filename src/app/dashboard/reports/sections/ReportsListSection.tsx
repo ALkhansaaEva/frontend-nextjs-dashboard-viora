@@ -1,10 +1,11 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, Eye, Clock, CheckCircle2, XCircle, ArrowRight, Flag } from 'lucide-react';
+import { ArrowRight, Clock, CheckCircle2, XCircle, AlertTriangle, Eye, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '@/shared/components/ui/Card';
 import { Badge } from '@/shared/components/ui/Badge';
-import type { Report } from '@/types';
+import { CopyId } from '@/shared/components/ui/UserIdentityCell';
+import type { Report, User } from '@/types';
 
 interface ReportsListSectionProps {
   reports: Report[];
@@ -12,18 +13,59 @@ interface ReportsListSectionProps {
 }
 
 const statusColors: Record<string, 'warning' | 'info' | 'success' | 'default'> = {
-  pending: 'warning',
+  open: 'warning',
   investigating: 'info',
   resolved: 'success',
   dismissed: 'default',
 };
 
 const statusIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  pending: Clock,
+  open: Clock,
   investigating: Eye,
   resolved: CheckCircle2,
   dismissed: XCircle,
 };
+
+const leftBarColors: Record<string, string> = {
+  open: 'bg-amber-500',
+  investigating: 'bg-blue-500',
+  resolved: 'bg-emerald-500',
+  dismissed: 'bg-gray-500',
+};
+
+const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+
+/** Compact "3 hours ago" age. Empty string when createdAt is missing/invalid. */
+function compactAge(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (!Number.isFinite(then)) return '';
+  const minutes = Math.round((Date.now() - then) / 60000);
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return rtf.format(-minutes, 'minute');
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return rtf.format(-hours, 'hour');
+  return rtf.format(-Math.round(hours / 24), 'day');
+}
+
+function label(value: string): string {
+  return value.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+}
+
+/**
+ * The list already ships `reporterUser`/`targetUser`, so the row shows that
+ * relation directly — no per-row identity lookup, and an unresolved relation
+ * degrades to the raw id instead of blanking.
+ */
+function Party({ user, userId }: { user?: User; userId: string }) {
+  return (
+    <div className="min-w-0">
+      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+        {user?.nickname || label('unknown user')}
+      </p>
+      <CopyId id={userId} />
+    </div>
+  );
+}
 
 export function ReportsListSection({ reports, onSelectReport }: ReportsListSectionProps) {
   if (reports.length === 0) {
@@ -31,25 +73,17 @@ export function ReportsListSection({ reports, onSelectReport }: ReportsListSecti
       <div className="flex flex-col items-center justify-center py-20 text-center opacity-50">
         <AlertTriangle className="w-16 h-16 text-gray-300 mb-4" />
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">No Reports</h3>
-        <p className="text-gray-500 dark:text-gray-400">Your sector is currently clean. All reports processed.</p>
+        <p className="text-gray-500 dark:text-gray-400">Nothing matches the current filters on this page.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <AnimatePresence mode="popLayout">
         {reports.map((report, index) => {
           const StatusIcon = statusIcons[report.status] || Clock;
-          const statusColor = statusColors[report.status] || 'default';
-          const leftBarColor =
-            report.status === 'pending'
-              ? 'bg-amber-500'
-              : report.status === 'investigating'
-                ? 'bg-blue-500'
-                : report.status === 'resolved'
-                  ? 'bg-emerald-500'
-                  : 'bg-gray-500';
+          const age = compactAge(report.createdAt);
 
           return (
             <motion.div
@@ -60,44 +94,47 @@ export function ReportsListSection({ reports, onSelectReport }: ReportsListSecti
               transition={{ delay: index * 0.05 }}
               onClick={() => onSelectReport(report)}
             >
-              <Card className="group border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/40 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-all duration-300 cursor-pointer overflow-hidden relative">
-                <div className={`absolute left-0 top-0 bottom-0 w-1 ${leftBarColor}`} />
-                <CardContent className="p-5 flex items-center gap-6">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className="font-bold text-gray-900 dark:text-gray-100 truncate">
-                        {report.reporter?.nickname || 'Station ' + report.reporterId.slice(0, 4)}
-                      </span>
-                      <ArrowRight className="w-3 h-3 text-gray-400" />
-                      <span className="text-gray-500 dark:text-gray-400 truncate">
-                        Target: {report.reportedUser?.nickname || report.reportedUserId.slice(0, 8)}
-                      </span>
+              <Card className="group relative overflow-hidden cursor-pointer border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/40 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/60">
+                <div className={`absolute left-0 top-0 bottom-0 w-1 ${leftBarColors[report.status] ?? 'bg-gray-500'}`} />
+                <CardContent className="py-3 pl-5 pr-4 flex items-center gap-4">
+                  <div className="flex-1 min-w-0 flex items-center gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Party user={report.reporterUser} userId={report.reporterUserId} />
+                      <ArrowRight className="w-3.5 h-3.5 shrink-0 text-gray-300 dark:text-gray-600" />
+                      <Party user={report.targetUser} userId={report.targetUserId} />
                     </div>
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="flex items-center gap-1.5 text-gray-500">
-                        <Flag className="w-3.5 h-3.5" />
-                        {report.reason || 'Generic violation'}
-                      </span>
-                      <span className="flex items-center gap-1.5 text-gray-400">
-                        <Clock className="w-3.5 h-3.5" />
-                        {new Date(report.createdAt).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
+                    <div className="flex-1 min-w-0 border-l border-gray-100 dark:border-gray-800 pl-3">
+                      <Badge variant="outline" className="text-[10px] py-0 mb-1">
+                        {label(report.category)}
+                      </Badge>
+                      <p
+                        className="text-xs text-gray-500 dark:text-gray-400 truncate"
+                        title={report.description || undefined}
+                      >
+                        {report.description || 'No description provided.'}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 shrink-0">
-                    <Badge
-                      variant={statusColor}
-                      className="px-3 py-1 flex items-center gap-1.5 capitalize font-medium"
-                    >
-                      <StatusIcon className="w-3.5 h-3.5" />
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <Badge variant={statusColors[report.status] ?? 'default'} className="capitalize font-medium">
+                      <StatusIcon className="w-3.5 h-3.5 mr-1" />
                       {report.status}
                     </Badge>
-                    <div className="p-2 rounded-full hover:bg-white dark:hover:bg-gray-700 transition-colors">
-                      <Eye className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
-                    </div>
+                    {age && (
+                      <span className="flex items-center gap-1 text-xs text-gray-400" title={report.createdAt}>
+                        <Clock className="w-3.5 h-3.5" />
+                        {age}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); onSelectReport(report); }}
+                      className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      Review
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </CardContent>
               </Card>

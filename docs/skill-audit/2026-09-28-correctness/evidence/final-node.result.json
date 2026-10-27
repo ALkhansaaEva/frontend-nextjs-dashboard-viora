@@ -1,0 +1,1 @@
+{"command": ["node", "--test", "tests/skill-system/audit-gate.test.mjs"], "cwd": "/mnt/data/skill_revision/updated/opencode-game-studio-main", "exit": 0, "elapsed_seconds": 2.346}

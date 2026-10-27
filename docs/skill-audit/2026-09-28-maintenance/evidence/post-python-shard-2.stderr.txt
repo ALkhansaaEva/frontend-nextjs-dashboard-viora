@@ -1,0 +1,16 @@
+test_agent_log_malformed_input_rejected (test_repairs.HookTests.test_agent_log_malformed_input_rejected) ... ok
+test_invalid_index_valid_worktree_blocked (test_repairs.HookTests.test_invalid_index_valid_worktree_blocked) ... ok
+test_maintenance_design_document_count_limit_blocks (test_repairs.HookTests.test_maintenance_design_document_count_limit_blocks) ... ok
+test_maintenance_design_utf8_and_no_marker_advisories_preserved (test_repairs.HookTests.test_maintenance_design_utf8_and_no_marker_advisories_preserved) ... ok
+test_repair_checkpoint_parent_symlink_rejected (test_repairs.HookTests.test_repair_checkpoint_parent_symlink_rejected) ... ok
+test_revision_compaction_rejects_design_parent_symlink (test_repairs.HookTests.test_revision_compaction_rejects_design_parent_symlink) ... ok
+test_valid_index_invalid_worktree_allowed (test_repairs.HookTests.test_valid_index_invalid_worktree_allowed) ... ok
+test_injected_mid_apply_failure_rolls_back (test_repairs.ModelTests.test_injected_mid_apply_failure_rolls_back) ... ok
+test_revision_quoted_model_key_rejected_without_changes (test_repairs.ModelTests.test_revision_quoted_model_key_rejected_without_changes) ... ok
+test_exact_requested_rule_present (test_repairs.StructureTests.test_exact_requested_rule_present) ... ok
+test_no_conflicting_agent_identity_copies_in_json (test_repairs.StructureTests.test_no_conflicting_agent_identity_copies_in_json) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 8.907s
+
+OK

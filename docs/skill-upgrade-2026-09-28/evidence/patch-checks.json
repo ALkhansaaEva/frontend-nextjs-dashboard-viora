@@ -1,0 +1,5 @@
+{
+  "forward_check": "PASS: git apply --check against maintained baseline",
+  "reverse_check": "PASS: git apply --reverse --check against updated source",
+  "note": "Dry-run applicability only. No claim of rollback on a host with subsequent user edits."
+}

@@ -1,0 +1,22 @@
+{
+  "shard": 0,
+  "test_ids": [
+    "test_repairs.HookTests.test_agent_log_duplicate_key_rejected",
+    "test_repairs.HookTests.test_duplicate_json_keys_block",
+    "test_repairs.HookTests.test_maintenance_design_control_filename_blocks",
+    "test_repairs.HookTests.test_maintenance_design_read_error_propagates",
+    "test_repairs.HookTests.test_repair_checkpoint_control_characters_rejected",
+    "test_repairs.HookTests.test_revision_compaction_preserves_normal_wip_advisory",
+    "test_repairs.HookTests.test_unconventional_project_is_not_declared_new",
+    "test_repairs.ModelTests.test_duplicate_model_field_preflight_changes_nothing",
+    "test_repairs.ModelTests.test_revision_following_nested_field_preserved",
+    "test_repairs.StructureTests.test_distribution_does_not_self_approve",
+    "test_repairs.StructureTests.test_maintenance_resume_and_update_contracts"
+  ],
+  "tests": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 6.679,
+  "exit_code": 0
+}

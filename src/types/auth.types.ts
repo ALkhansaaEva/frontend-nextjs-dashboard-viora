@@ -12,10 +12,11 @@ export interface User {
   avatar?: string;
 }
 
+/** Mirrors backend `Wallet` entity — GAME_CURRENCY is the sole canonical
+ * currency, kept as a string end-to-end for numeric(30,0) precision. */
 export interface Wallet {
   userId: string;
-  gold: number;
-  gems: number;
+  gameCurrency: string;
 }
 
 export interface Role {

@@ -1,0 +1,292 @@
+TAP version 13
+# Subtest: accepts a fully evidenced fixture and all governance records
+ok 1 - accepts a fully evidenced fixture and all governance records
+  ---
+  duration_ms: 8.069533
+  type: 'test'
+  ...
+# Subtest: blocks UNREVIEWED
+ok 2 - blocks UNREVIEWED
+  ---
+  duration_ms: 3.462371
+  type: 'test'
+  ...
+# Subtest: blocks IN_REVIEW
+ok 3 - blocks IN_REVIEW
+  ---
+  duration_ms: 2.850322
+  type: 'test'
+  ...
+# Subtest: blocks INVALID
+ok 4 - blocks INVALID
+  ---
+  duration_ms: 2.860969
+  type: 'test'
+  ...
+# Subtest: blocks REPAIR_PENDING
+ok 5 - blocks REPAIR_PENDING
+  ---
+  duration_ms: 3.096842
+  type: 'test'
+  ...
+# Subtest: blocks BLOCKED
+ok 6 - blocks BLOCKED
+  ---
+  duration_ms: 2.511643
+  type: 'test'
+  ...
+# Subtest: missing target record blocks
+ok 7 - missing target record blocks
+  ---
+  duration_ms: 2.44283
+  type: 'test'
+  ...
+# Subtest: unconfigured installation blocks
+ok 8 - unconfigured installation blocks
+  ---
+  duration_ms: 2.264211
+  type: 'test'
+  ...
+# Subtest: malformed registry blocks
+ok 9 - malformed registry blocks
+  ---
+  duration_ms: 2.62941
+  type: 'test'
+  ...
+# Subtest: source edits invalidate prior validation
+ok 10 - source edits invalidate prior validation
+  ---
+  duration_ms: 2.454127
+  type: 'test'
+  ...
+# Subtest: context mismatch invalidates records
+ok 11 - context mismatch invalidates records
+  ---
+  duration_ms: 1.926895
+  type: 'test'
+  ...
+# Subtest: evidence edits invalidate records
+ok 12 - evidence edits invalidate records
+  ---
+  duration_ms: 1.663689
+  type: 'test'
+  ...
+# Subtest: governance changes cannot be omitted by target
+ok 13 - governance changes cannot be omitted by target
+  ---
+  duration_ms: 1.988708
+  type: 'test'
+  ...
+# Subtest: missing governance record blocks
+ok 14 - missing governance record blocks
+  ---
+  duration_ms: 3.091084
+  type: 'test'
+  ...
+# Subtest: known-invalid status survives source edits and a new hash
+ok 15 - known-invalid status survives source edits and a new hash
+  ---
+  duration_ms: 2.187326
+  type: 'test'
+  ...
+# Subtest: a changed transitive dependency blocks
+ok 16 - a changed transitive dependency blocks
+  ---
+  duration_ms: 2.475129
+  type: 'test'
+  ...
+# Subtest: undeclared record for a declared dependency blocks
+ok 17 - undeclared record for a declared dependency blocks
+  ---
+  duration_ms: 2.489009
+  type: 'test'
+  ...
+# Subtest: a validated dependency cycle terminates
+ok 18 - a validated dependency cycle terminates
+  ---
+  duration_ms: 2.53645
+  type: 'test'
+  ...
+# Subtest: a cycle cannot hide an invalid member
+ok 19 - a cycle cannot hide an invalid member
+  ---
+  duration_ms: 3.898918
+  type: 'test'
+  ...
+# Subtest: cannot label FAIL validation as accepted
+ok 20 - cannot label FAIL validation as accepted
+  ---
+  duration_ms: 2.55604
+  type: 'test'
+  ...
+# Subtest: cannot label BLOCKED validation as accepted
+ok 21 - cannot label BLOCKED validation as accepted
+  ---
+  duration_ms: 2.280255
+  type: 'test'
+  ...
+# Subtest: cannot label NOT RUN validation as accepted
+ok 22 - cannot label NOT RUN validation as accepted
+  ---
+  duration_ms: 2.88864
+  type: 'test'
+  ...
+# Subtest: N/A needs a reason
+ok 23 - N/A needs a reason
+  ---
+  duration_ms: 3.142542
+  type: 'test'
+  ...
+# Subtest: all-N/A cannot count as validation
+ok 24 - all-N/A cannot count as validation
+  ---
+  duration_ms: 2.038502
+  type: 'test'
+  ...
+# Subtest: future review dates block
+ok 25 - future review dates block
+  ---
+  duration_ms: 2.297692
+  type: 'test'
+  ...
+# Subtest: empty evidence blocks
+ok 26 - empty evidence blocks
+  ---
+  duration_ms: 2.165523
+  type: 'test'
+  ...
+# Subtest: fingerprints are deterministic and files are not mutated
+ok 27 - fingerprints are deterministic and files are not mutated
+  ---
+  duration_ms: 2.451373
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "../outside"
+ok 28 - rejects unsafe path "../outside"
+  ---
+  duration_ms: 1.352572
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "/tmp/outside"
+ok 29 - rejects unsafe path "/tmp/outside"
+  ---
+  duration_ms: 1.95024
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "C:/outside"
+ok 30 - rejects unsafe path "C:/outside"
+  ---
+  duration_ms: 1.460535
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a/../outside"
+ok 31 - rejects unsafe path "a/../outside"
+  ---
+  duration_ms: 1.407354
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a\\\\b"
+ok 32 - rejects unsafe path "a\\\\b"
+  ---
+  duration_ms: 1.329177
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a//b"
+ok 33 - rejects unsafe path "a//b"
+  ---
+  duration_ms: 1.438612
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a/./b"
+ok 34 - rejects unsafe path "a/./b"
+  ---
+  duration_ms: 1.265391
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a\\nfile"
+ok 35 - rejects unsafe path "a\\nfile"
+  ---
+  duration_ms: 1.231961
+  type: 'test'
+  ...
+# Subtest: rejects symlinks
+ok 36 - rejects symlinks
+  ---
+  duration_ms: 1.409398
+  type: 'test'
+  ...
+# Subtest: target names cannot escape local directories
+ok 37 - target names cannot escape local directories
+  ---
+  duration_ms: 0.243717
+  type: 'test'
+  ...
+# Subtest: plugin passes through read-only bootstrap without granting a skill approval
+ok 38 - plugin passes through read-only bootstrap without granting a skill approval
+  ---
+  duration_ms: 2.54936
+  type: 'test'
+  ...
+# Subtest: plugin accepts the audited local skill and blocks an unknown target
+ok 39 - plugin accepts the audited local skill and blocks an unknown target
+  ---
+  duration_ms: 4.403165
+  type: 'test'
+  ...
+# Subtest: plugin gates task delegation using the agent record
+ok 40 - plugin gates task delegation using the agent record
+  ---
+  duration_ms: 4.269805
+  type: 'test'
+  ...
+# Subtest: malformed tool arguments fail closed
+ok 41 - malformed tool arguments fail closed
+  ---
+  duration_ms: 1.853895
+  type: 'test'
+  ...
+# Subtest: duplicate status cannot silently override INVALID
+ok 42 - duplicate status cannot silently override INVALID
+  ---
+  duration_ms: 1.740255
+  type: 'test'
+  ...
+# Subtest: escaped duplicate JSON keys are rejected
+ok 43 - escaped duplicate JSON keys are rejected
+  ---
+  duration_ms: 1.580043
+  type: 'test'
+  ...
+# Subtest: repeated nested keys in separate objects and quoted punctuation are legitimate
+ok 44 - repeated nested keys in separate objects and quoted punctuation are legitimate
+  ---
+  duration_ms: 2.398553
+  type: 'test'
+  ...
+# Subtest: invalid calendar dates must not normalize into valid reviews
+ok 45 - invalid calendar dates must not normalize into valid reviews
+  ---
+  duration_ms: 2.104782
+  type: 'test'
+  ...
+# Subtest: leap-day and fractional UTC timestamps are valid
+ok 46 - leap-day and fractional UTC timestamps are valid
+  ---
+  duration_ms: 1.880786
+  type: 'test'
+  ...
+# Subtest: loaded OPENCODE overview is mandatory governance
+ok 47 - loaded OPENCODE overview is mandatory governance
+  ---
+  duration_ms: 0.072629
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 178.553607

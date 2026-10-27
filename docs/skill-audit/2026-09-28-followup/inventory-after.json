@@ -1,0 +1,925 @@
+{
+  "status": "INVENTORY_ONLY_NOT_SEMANTIC_APPROVAL",
+  "scope": "project-local governance and .opencode definition namespaces; not global/external/project references",
+  "missing_roots": [
+    ".opencode/tools"
+  ],
+  "files": [
+    {
+      "path": ".opencode/agents/accessibility-specialist.md",
+      "sha256": "9a311c046972f55966704d029e2661fd1660bed4dc2cabd3aa78abe9dadb6967"
+    },
+    {
+      "path": ".opencode/agents/ai-programmer.md",
+      "sha256": "833a9bd191d383bf4e587fa3674160459e0fa92ec8d86d260e14ad6b9d7bbfb9"
+    },
+    {
+      "path": ".opencode/agents/analytics-engineer.md",
+      "sha256": "c158668aa4f75c523ec4a73012c05ebceda1f9977bd418ceb009a7e0b4caf4c4"
+    },
+    {
+      "path": ".opencode/agents/art-director.md",
+      "sha256": "df6e16f557ae7156a1c043a08835fb0e0507ef7aba4b648bf3d0869680790e87"
+    },
+    {
+      "path": ".opencode/agents/audio-director.md",
+      "sha256": "1ad3d377c852c3ee5bd8a3ec017651fd55ea736884b1c5cc815990538d6dde27"
+    },
+    {
+      "path": ".opencode/agents/backend-programmer.md",
+      "sha256": "44a59eb9603f181823fa6d6df4232c34a366730e11d4c8725813e82373d42b39"
+    },
+    {
+      "path": ".opencode/agents/community-manager.md",
+      "sha256": "b50434324d6140fb90155517f029fd16880383d3e1e58d3b091d0f524c176455"
+    },
+    {
+      "path": ".opencode/agents/concurrency-reviewer.md",
+      "sha256": "a2b5b09a62d71af0e301fe375f33d19f9dcd51f80101a7ee0db23bd51c1f7bd6"
+    },
+    {
+      "path": ".opencode/agents/creative-director.md",
+      "sha256": "5829ccb740a2357223cd1b975ee432b2fe2a54f2745b37d7071307aea0722e8e"
+    },
+    {
+      "path": ".opencode/agents/devops-engineer.md",
+      "sha256": "642c95bb42e440af369efef22b56350f660d3be2ddf63f6f2aef18270ef2fa31"
+    },
+    {
+      "path": ".opencode/agents/economy-designer.md",
+      "sha256": "e3514cf835256f5beac7ee14b56da8354d4f5dcd10aa06a088463dd6b2c7bfed"
+    },
+    {
+      "path": ".opencode/agents/engine-programmer.md",
+      "sha256": "bd178b2afd47ce467edb9b391103e66e931b92dac24068e58872002cca55e6a3"
+    },
+    {
+      "path": ".opencode/agents/game-designer.md",
+      "sha256": "dad958518b2569b75abbb3ce78502a37b1eaa1b759b24e6ed80eed5f0dd1b458"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-assets-specialist.md",
+      "sha256": "ffcf881d2dc2a35a34897d1ad6b640b8bb97aaac5bf4a13bc26ec1197d60c60f"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-gml-specialist.md",
+      "sha256": "be7d12e43c5d36fcc609ec58b2c4cfc5d39e01b3fdda9908270871c26b3272ed"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-networking-specialist.md",
+      "sha256": "25b0d73ef29c90bb40bb2f20fd913c6d8e102e7406d0fd4273329dd32bd78e9e"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-performance-specialist.md",
+      "sha256": "8bfdec5b92be661fc4a40e5277ea01e0231aadd63c9d348a8d329801e2d1d545"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-shader-specialist.md",
+      "sha256": "8050dbfb55e197f775a6e983457c1a58e3448be26adef86b06a992781fa522f0"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-specialist.md",
+      "sha256": "ca1072896a8323ee64e1f2ecd5f9ebca8400dca13692529c1735a13231fd9f14"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-ui-specialist.md",
+      "sha256": "a86b1dc2ba44e0faaa60917045c4f8f710f6da1609fd1ca467099121649e4897"
+    },
+    {
+      "path": ".opencode/agents/gameplay-programmer.md",
+      "sha256": "0d4e31297964b510bf137cf5f1e812c56893c11e654bc9f13e10ed65c51256da"
+    },
+    {
+      "path": ".opencode/agents/godot-gdextension-specialist.md",
+      "sha256": "0cc7a7086f35ba62bf79a0f897d4c1d9187fdb6aec9b1f6dba026597f49f4eab"
+    },
+    {
+      "path": ".opencode/agents/godot-gdscript-specialist.md",
+      "sha256": "aba74e1b3e8e30aee4c70b238f5b2836c507888d2b65646786aa4bc1447a891f"
+    },
+    {
+      "path": ".opencode/agents/godot-shader-specialist.md",
+      "sha256": "f636ba7ceb981d9893403dda3e72f228ca24a21f38554d34f11e61537bd8213d"
+    },
+    {
+      "path": ".opencode/agents/godot-specialist.md",
+      "sha256": "6cd428cd111b1bab54d51368cb3e40fe75b426a3f71cec430de46f1cfbfa7962"
+    },
+    {
+      "path": ".opencode/agents/lead-programmer.md",
+      "sha256": "6b064a44e2d412383f776c3ca84e6cd954959286ea5e5ee16b6ce7bba4779319"
+    },
+    {
+      "path": ".opencode/agents/level-designer.md",
+      "sha256": "bead0a567226fef938ff3bfc4fecc2ff63c879c6028e37e9cce9794fb616a7dd"
+    },
+    {
+      "path": ".opencode/agents/live-ops-designer.md",
+      "sha256": "ee276c7180d852facb4fb9a49159f3e1f7771d41e9d8683769689dfe33444b3f"
+    },
+    {
+      "path": ".opencode/agents/localization-lead.md",
+      "sha256": "29b7c223b37b0518baab17ddf922ab726488f5f59af4238b4d6c1a247eebece1"
+    },
+    {
+      "path": ".opencode/agents/narrative-director.md",
+      "sha256": "243708011d329d7aeaf0f090a02ac44dfcb8e251a3815603241db0714073a801"
+    },
+    {
+      "path": ".opencode/agents/network-programmer.md",
+      "sha256": "7ab30f7c36a5fc61b312480de5e8f578864dacd652a12c22a117d3cd8b31d9c4"
+    },
+    {
+      "path": ".opencode/agents/performance-analyst.md",
+      "sha256": "44a0a39d258993e43fdef53100d24166e378cf7e6811d62ba5d551991087a178"
+    },
+    {
+      "path": ".opencode/agents/producer.md",
+      "sha256": "9d0ed23b1ed8d918876c2900c03d8506a08aa5c241ef7953d346a63649e6cb1f"
+    },
+    {
+      "path": ".opencode/agents/project-discovery.md",
+      "sha256": "85f08d1420ed53e5576f14f16528cbb164212ce27358f46ea0e8bcaa0510ac2f"
+    },
+    {
+      "path": ".opencode/agents/prototyper.md",
+      "sha256": "b8b27d6d631d3f3a15d427633a352bb225b00acbcbb8cee99541eb50d5d5ceeb"
+    },
+    {
+      "path": ".opencode/agents/qa-lead.md",
+      "sha256": "8b631373d6b3828b8b89792f990d1e6dd6267afdc6be11cd9406282affc190c1"
+    },
+    {
+      "path": ".opencode/agents/qa-tester.md",
+      "sha256": "98d6b2e9731f1ad1329033181cf12ea4d4f4c973c9929bda75f5a7f6ec01a280"
+    },
+    {
+      "path": ".opencode/agents/release-manager.md",
+      "sha256": "3b510755c0ad5a71ea8f1a99c37bf8baa588594519780fc674d9167dffb238b7"
+    },
+    {
+      "path": ".opencode/agents/security-engineer.md",
+      "sha256": "5175db0fe5ba778f1778c408cea99ec0ca048bb65eef3d518108b05e51b64b3a"
+    },
+    {
+      "path": ".opencode/agents/skill-auditor.md",
+      "sha256": "52a01f07ac15f97ab4e52f2dfbfce287f2bcb684d4a0093750c40df2bb30b260"
+    },
+    {
+      "path": ".opencode/agents/sound-designer.md",
+      "sha256": "671befe43f3a931e01a4a18d05885e1e55c9cf0aff54250c7bc7f66de56d647f"
+    },
+    {
+      "path": ".opencode/agents/systems-designer.md",
+      "sha256": "f6016a0d4bbd6133791e3ebfce8a1dda6812ba5c6deb83adae07748be193c89d"
+    },
+    {
+      "path": ".opencode/agents/technical-artist.md",
+      "sha256": "2704cbfb5dd6c920db6f4dd913a4e335ee3286c5f4893f9dee3dad834a3ec626"
+    },
+    {
+      "path": ".opencode/agents/technical-director.md",
+      "sha256": "db326086536b3bd71ba60e9436ea6466944fb043d505e7099815c88848e04ea4"
+    },
+    {
+      "path": ".opencode/agents/tools-programmer.md",
+      "sha256": "407a8836442e9aba36c918996c0088a9e6badc302129c49400e6e9acfdec75bc"
+    },
+    {
+      "path": ".opencode/agents/ue-blueprint-specialist.md",
+      "sha256": "48ac51d4d68fc5e39931c03d129d0779f611797ac6e902eee992ac05c7be4d56"
+    },
+    {
+      "path": ".opencode/agents/ue-gas-specialist.md",
+      "sha256": "7752a64c08957a9e997129454b8cc23cc3ee7c1ce84e583fda1d32472d3a3b15"
+    },
+    {
+      "path": ".opencode/agents/ue-replication-specialist.md",
+      "sha256": "3d9805d9bf3b8dafe7f8a7cf1167d206f3bfa7b33ba3ce8d3f08102c5095cb06"
+    },
+    {
+      "path": ".opencode/agents/ue-umg-specialist.md",
+      "sha256": "2db5926232d0e745ff77be808b075f0b2687b0e5a581bf9703dae12d66f5ec68"
+    },
+    {
+      "path": ".opencode/agents/ui-programmer.md",
+      "sha256": "e4dec2566ef153291baa5e6094500ed851eceeb42e0db206e9dfc4fe9b109cb8"
+    },
+    {
+      "path": ".opencode/agents/unity-addressables-specialist.md",
+      "sha256": "aad6cc0241bf53b19f9a18c784f42093a95a068d7431efd1a7aac059bccb7350"
+    },
+    {
+      "path": ".opencode/agents/unity-dots-specialist.md",
+      "sha256": "f118d1b26005d98a125be3804616d5c7ca389a33e4919be143de6923cb8151e4"
+    },
+    {
+      "path": ".opencode/agents/unity-shader-specialist.md",
+      "sha256": "e734ca56b0f6abef050bc61e050e88f37210a0d886548959fa8c28cc719914e4"
+    },
+    {
+      "path": ".opencode/agents/unity-specialist.md",
+      "sha256": "ff62a78f6bb2dae54825e455c53b4bd260c8b771c6fff468b0fcd4472eae76af"
+    },
+    {
+      "path": ".opencode/agents/unity-ui-specialist.md",
+      "sha256": "ddc861d7f7ef26cf232516626a3034a251f5770ce0fa45f82b33ddbf33d39fe5"
+    },
+    {
+      "path": ".opencode/agents/unreal-specialist.md",
+      "sha256": "2913d34d73d17d3b64a44f19a8d79f10d40823d522935dfe16a1802dca031187"
+    },
+    {
+      "path": ".opencode/agents/ux-designer.md",
+      "sha256": "cb9fb793a0984ef1f88740842be9cf8c75a14d323eccd9faa47551e74d60781b"
+    },
+    {
+      "path": ".opencode/agents/world-builder.md",
+      "sha256": "9177f4b868f26a2ae8c33c8e9dfeacc02c12a412b6f89e4b31eddc8b878df9a8"
+    },
+    {
+      "path": ".opencode/agents/writer.md",
+      "sha256": "6281b901ee720d13cb053095402541033c9dda8a9a9cceafa6191b20306dc173"
+    },
+    {
+      "path": ".opencode/commands/architecture-decision.md",
+      "sha256": "9126e439f717a5e375be927539b09da8a117e42e96671807e20c4f9654d56856"
+    },
+    {
+      "path": ".opencode/commands/asset-audit.md",
+      "sha256": "c7c88c44feec5cbddc942ffb3ba83abccbb46519e0df14992144aca342b1064f"
+    },
+    {
+      "path": ".opencode/commands/balance-check.md",
+      "sha256": "f319c271ac8a1b82d323eecd10c1d448381cd280b199e35b5c0f7cb892c96858"
+    },
+    {
+      "path": ".opencode/commands/brainstorm.md",
+      "sha256": "33f4f6730f626a7894477dbb4b4818396c7e4bae7d560682816cbcc754036309"
+    },
+    {
+      "path": ".opencode/commands/bug-report.md",
+      "sha256": "1a27b4aaa68faf98ff3978f956dce24eaa06b7e00d184a5da84a2a8d67b03052"
+    },
+    {
+      "path": ".opencode/commands/changelog.md",
+      "sha256": "1948f9f4d2f26b437e715c2828dad1b0130e4d44f7c6610b9de69e587210c590"
+    },
+    {
+      "path": ".opencode/commands/code-review.md",
+      "sha256": "e79ee2cbad7200752950835b598524a089bba8a1ac7e9129a1f96d558fb4f229"
+    },
+    {
+      "path": ".opencode/commands/concurrency-analysis.md",
+      "sha256": "40ceba56fb2da6c5da433a1edad9922943bbdc159966d8542653e8ecc215e6f2"
+    },
+    {
+      "path": ".opencode/commands/debugging-analysis.md",
+      "sha256": "0402a5d38804a88b24aa75e4c0341325b70ef910447923d4b8a4416afa4c9d12"
+    },
+    {
+      "path": ".opencode/commands/design-review.md",
+      "sha256": "76039e61b125236408d0e17e633f1dfe6cf291bcd7e09c550299b4e9693b37a5"
+    },
+    {
+      "path": ".opencode/commands/design-system.md",
+      "sha256": "e70bb0b98a7d4f58167d62ef03d5d7f278d53b5d1dc2aa38a611585fb2b29d63"
+    },
+    {
+      "path": ".opencode/commands/estimate.md",
+      "sha256": "8f1378419581c92e8aa5de07789bc67913f267c4daff3bde71eab86e9e7faedc"
+    },
+    {
+      "path": ".opencode/commands/framework-engineering.md",
+      "sha256": "609fd8d4e130def7d51ffc33fa9675942eed204a5728f7ea422ade220bf5b14a"
+    },
+    {
+      "path": ".opencode/commands/gate-check.md",
+      "sha256": "b05512b94227f056c3752957e2a318bfaa311d7c6a28c5ee19010deb28bb1da4"
+    },
+    {
+      "path": ".opencode/commands/hotfix.md",
+      "sha256": "abb6a71ac3be607575f3699c2dcce319e5a2c60a0a82dfa9830061dcab9ecfa2"
+    },
+    {
+      "path": ".opencode/commands/launch-checklist.md",
+      "sha256": "7af8d8969a2e5066f5c461ca5f1b94123d675413ee1730173865c19809d9ba71"
+    },
+    {
+      "path": ".opencode/commands/localize.md",
+      "sha256": "45eaf02ee5abdafa16ea9e0bbcc5caba665b40219aa0fa83c74ec7d9857735f5"
+    },
+    {
+      "path": ".opencode/commands/map-systems.md",
+      "sha256": "8269b917216454c9ac98f5476866ed13add0038b78971c3d01a3f0030fbfe88c"
+    },
+    {
+      "path": ".opencode/commands/milestone-review.md",
+      "sha256": "38f5d123d6cebe6b49838a034dd981c44baa9f6bddd4a7f670b8b2478370387f"
+    },
+    {
+      "path": ".opencode/commands/onboard.md",
+      "sha256": "7a6ce19546dd430c732843d6d0614e9ebc0711c898e1a05d352f74ee1a1ac127"
+    },
+    {
+      "path": ".opencode/commands/patch-notes.md",
+      "sha256": "87d64f4689a2e9d395af7263a59ce55a20fed852cc649377c875932c9b281637"
+    },
+    {
+      "path": ".opencode/commands/perf-profile.md",
+      "sha256": "e0be661c57c67dab9847a8134f46703bd68311197e902171d9bab4cfedcbd770"
+    },
+    {
+      "path": ".opencode/commands/playtest-report.md",
+      "sha256": "2c8233a7b4b2ec61aab29e69d216afa891b7d39003b474c0114015d7adedd8d1"
+    },
+    {
+      "path": ".opencode/commands/production-validation.md",
+      "sha256": "e10a35c93b47140feef3f055d171ef970bbe7c49843f1b2b439f59cdd97934fb"
+    },
+    {
+      "path": ".opencode/commands/project-stage-detect.md",
+      "sha256": "ae0052e158c239348ec8f63cf0e6e72024662327676a29d8d2dbdaa6fdbd8284"
+    },
+    {
+      "path": ".opencode/commands/prototype.md",
+      "sha256": "3f089e00bc1a567e54d1387c9b63e15d93de2d0eafe029e27c0098f78337bccf"
+    },
+    {
+      "path": ".opencode/commands/release-checklist.md",
+      "sha256": "bcd1395d6f0c56f21e44a72f15ba46e936b005e2521c4aae3026c6b826ddcd14"
+    },
+    {
+      "path": ".opencode/commands/repository-discovery.md",
+      "sha256": "0d38068764cbbabdfc736f975d794c4f9794ec9d1e90369b61e3e497424bf905"
+    },
+    {
+      "path": ".opencode/commands/retrospective.md",
+      "sha256": "4082e86d1257a0a1f9bcfbd66cff2418e918af03f8b12056e8b0f45160a7a83d"
+    },
+    {
+      "path": ".opencode/commands/reverse-document.md",
+      "sha256": "bb18c8f611ad7878baf8bdd3ffbf24de003541e67d337c6395395dc3f39f528a"
+    },
+    {
+      "path": ".opencode/commands/scope-check.md",
+      "sha256": "a4d523b73346df2daa9307d032974be48f3ad411db994a9267e25268c1dbb50b"
+    },
+    {
+      "path": ".opencode/commands/setup-engine.md",
+      "sha256": "7f23716f4e86edd89cdcda472fb194750ed59859b0bd9441d0bd4cc39b01e4b6"
+    },
+    {
+      "path": ".opencode/commands/skill-audit-repair.md",
+      "sha256": "dc8907c04379b101c72351171ae8763ccb297156bb009f65a1d84ea777000b03"
+    },
+    {
+      "path": ".opencode/commands/sprint-plan.md",
+      "sha256": "04345649604c7016c936dc8b363d72ae3c3739dfa79cb1cbb7dfdcac1ccb4c0e"
+    },
+    {
+      "path": ".opencode/commands/start.md",
+      "sha256": "7cd9f12bcd14ad2e07720d6e24261efeb809c3261d2d2a81665f16bc47b1a630"
+    },
+    {
+      "path": ".opencode/commands/team-audio.md",
+      "sha256": "7abe89292d0fed74257ceff52200766901f15435631cdcc92fa1246b75d686c6"
+    },
+    {
+      "path": ".opencode/commands/team-combat.md",
+      "sha256": "09fae9c172f628ad5ad283e3c75208f87ef203b2b9466bc6993ea00f01836857"
+    },
+    {
+      "path": ".opencode/commands/team-level.md",
+      "sha256": "a7ef7294b6b414f4c16ab582ac53fa91a52b44ea3cbd5fb90442a41b2b2844ce"
+    },
+    {
+      "path": ".opencode/commands/team-narrative.md",
+      "sha256": "9b6fe08cf5b5776b8d662b181b4f52d7a6963b5b54408bd9bf8717a4a58eece9"
+    },
+    {
+      "path": ".opencode/commands/team-polish.md",
+      "sha256": "e48dccc8f805bfb30c9265619013e2f934fc37429109743859d3d08f3d4b6dad"
+    },
+    {
+      "path": ".opencode/commands/team-release.md",
+      "sha256": "b5ea15ae73a0d8b77c375c286b7d3f21af5282c1b8df461513bab8fbd988dd32"
+    },
+    {
+      "path": ".opencode/commands/team-ui.md",
+      "sha256": "601f77cd6b66b88e116d9dcd5628c36f65f727f9038b64935cdecdd4581f0057"
+    },
+    {
+      "path": ".opencode/commands/tech-debt.md",
+      "sha256": "305b75fb1847e40e56afbc1e702df25e385b103ef61c243232a0eefaf2d7a331"
+    },
+    {
+      "path": ".opencode/docs/OPENCODE-local-template.md",
+      "sha256": "c9b4e14c424c08e8a57a9c469e45838134f22cca23afd108a0186bdbb0dbc39e"
+    },
+    {
+      "path": ".opencode/docs/agent-coordination-map.md",
+      "sha256": "b2dc092653a8ec5b05854610aa1f4e5cb20e961b011d797494dca8ce84c3ca3e"
+    },
+    {
+      "path": ".opencode/docs/agent-roster.md",
+      "sha256": "d2ae5d49677aa9fd1b4c303eefb6691bb62ea2e6130ab913fd68fcc2068cf886"
+    },
+    {
+      "path": ".opencode/docs/audit-runtime.md",
+      "sha256": "74630deae5256e68223f416c0cc4ee8a9bd60e3b80cc365ff60e21b22bb956ac"
+    },
+    {
+      "path": ".opencode/docs/coding-standards.md",
+      "sha256": "d02c693cbf2001f14dc483b6bf16b67b5586d4820d410fba0078ceefbe1a963e"
+    },
+    {
+      "path": ".opencode/docs/context-management.md",
+      "sha256": "7c0f605e4fd1fc4a69a58f44a5ce7ed18a95d2497c14aa507b057d2fd09e1907"
+    },
+    {
+      "path": ".opencode/docs/coordination-rules.md",
+      "sha256": "ca771faef5f4baddd1b0f76f5315b6ee812ba0306ab5b9560aae005ebb711612"
+    },
+    {
+      "path": ".opencode/docs/directory-structure.md",
+      "sha256": "1c07046364c88a3d18aa35eea6d20acff5ba7cf53b79109ef5a268d8bc8066eb"
+    },
+    {
+      "path": ".opencode/docs/engineering-capabilities.md",
+      "sha256": "c4a455ce557777138e071bc7bb6e2459072915a64c7809827a7fe3511fe19fe1"
+    },
+    {
+      "path": ".opencode/docs/engineering-roles.md",
+      "sha256": "acecd741b63f828a514837bb35db4d2064ff74113c69a3d9790a4e1ce9a8ff3a"
+    },
+    {
+      "path": ".opencode/docs/engineering-workflow.md",
+      "sha256": "2b9a80ff9111689cb7996ef15443382669a2f78bd5e2497f820dbe67e041a3da"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference.md",
+      "sha256": "d531b12ccb82df936ebf5c6ffcc282bb0e528e33348983b96d46a59085e113bb"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/hook-input-schemas.md",
+      "sha256": "7c409038a39424b214f1b3e581e4e35da34259c2db8157a3ad3a5aefc865218c"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/post-merge-asset-validation.md",
+      "sha256": "8774c0856048a2bf79204843bb37923c08b4712341a42bf46dcbecfb5b980302"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/post-sprint-retrospective.md",
+      "sha256": "b5dab66a71d7aa36892ead1ceb38ab5e557826423befce00cdfd07799f8f777b"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/pre-commit-code-quality.md",
+      "sha256": "dda0b717cbf42ddd78d8810eb9209d570c2eb9f7c3a81b1352c30d1ab8348b48"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/pre-commit-design-check.md",
+      "sha256": "b8a5ee44dda1a86951c655d81084c1479a3b0e32120c1c976a6b49a5538978f5"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/pre-push-test-gate.md",
+      "sha256": "60f2f7a8c396a0b464598b08e8010b9f65cd8fd7eb57d8209bb4cffa1b99ed22"
+    },
+    {
+      "path": ".opencode/docs/quick-start.md",
+      "sha256": "ad3c292ea64253d180c8b4ddc70b28c98222d57f53afb2288a3e24dfbb9bca22"
+    },
+    {
+      "path": ".opencode/docs/review-workflow.md",
+      "sha256": "5473fff8fd07ed08d9c6c918a251fab3a253ee89c6a99ed208a835146aa134c7"
+    },
+    {
+      "path": ".opencode/docs/rules-reference.md",
+      "sha256": "9c68eba6f087e8a2da08e4a359522df26a757fe8d87bd584457e771fb8156c47"
+    },
+    {
+      "path": ".opencode/docs/settings-local-template.md",
+      "sha256": "c4ad9d7801796526f1846e64a45991814b91e8fa8357b603a7dc1de01f489977"
+    },
+    {
+      "path": ".opencode/docs/setup-requirements.md",
+      "sha256": "e8911358ce432efc8b9c3156fc0d33eaeffeb18c74ca6bd4a4b4674470f5080b"
+    },
+    {
+      "path": ".opencode/docs/skills-reference.md",
+      "sha256": "1ad9c2eb7faae7f3d3dfc7a036df1fc6cccec65199be72db8ef05163a1200a38"
+    },
+    {
+      "path": ".opencode/docs/technical-preferences.md",
+      "sha256": "6009382a7f0afcd712027c194678a511a821356bcc6703ff0bb20c2195c9578d"
+    },
+    {
+      "path": ".opencode/docs/templates/architecture-decision-record.md",
+      "sha256": "0a5c81ecf089b5562a325b98fe83e4476cb3e719fbc5fb8ae346655751a58e03"
+    },
+    {
+      "path": ".opencode/docs/templates/architecture-doc-from-code.md",
+      "sha256": "a171673089d3364d848797fe7c7dd415206e65ba1313fec0c1612d32a1a57ad9"
+    },
+    {
+      "path": ".opencode/docs/templates/art-bible.md",
+      "sha256": "763d85c3ce5cb297c73603ac48718e4a73bf01b908d2e283693d8f678e71edd6"
+    },
+    {
+      "path": ".opencode/docs/templates/changelog-template.md",
+      "sha256": "cb4dad3cbc41b1501babe53cc9f00be1311aed39f3ea19f57d77ecc0bb9314b1"
+    },
+    {
+      "path": ".opencode/docs/templates/collaborative-protocols/design-agent-protocol.md",
+      "sha256": "c5c778e3d9ecb80d224944510c67be99861f9f96b4ac07f6660d06e6e0a971e4"
+    },
+    {
+      "path": ".opencode/docs/templates/collaborative-protocols/implementation-agent-protocol.md",
+      "sha256": "039218e2c26b0e83bbb7c57f97bfff39659e9c88aca649fae9b506855135db02"
+    },
+    {
+      "path": ".opencode/docs/templates/collaborative-protocols/leadership-agent-protocol.md",
+      "sha256": "e1fbc30461f18c4ff5f018cdaf04dc868c47e4aa54da79a26885aaba7081e57b"
+    },
+    {
+      "path": ".opencode/docs/templates/concept-doc-from-prototype.md",
+      "sha256": "67cac0117cdadda7494196edff3d92e2195c660067c7fa2ad4f0055de9165291"
+    },
+    {
+      "path": ".opencode/docs/templates/design-doc-from-implementation.md",
+      "sha256": "464a3bf7f674d0f82117d5880e6966a0496e14135009747547697c4d5d7f27ab"
+    },
+    {
+      "path": ".opencode/docs/templates/economy-model.md",
+      "sha256": "22af6a9df657a17e8155a6130d04a8ce04c095e5dcb7ad5c2648449013b35a58"
+    },
+    {
+      "path": ".opencode/docs/templates/faction-design.md",
+      "sha256": "abe1d5720e68169e349156bbcb42db135ecca25bf1510dda5ddd1deb3980f257"
+    },
+    {
+      "path": ".opencode/docs/templates/game-concept.md",
+      "sha256": "ecbf63a48ab4d0352cb2a26444a75b973cece5e25beba1b7f54d8efd3ca351a7"
+    },
+    {
+      "path": ".opencode/docs/templates/game-design-document.md",
+      "sha256": "af6e4ba818fb5275a7b5cd245ae7a7302d54048f1961cab51ab2c173a14e72d6"
+    },
+    {
+      "path": ".opencode/docs/templates/game-pillars.md",
+      "sha256": "3603610be7704cdee1c421813cd248ce07a410969dc3416aa2b9e4959801d3c8"
+    },
+    {
+      "path": ".opencode/docs/templates/incident-response.md",
+      "sha256": "8ba68a9ac8a1f404c5fd785b2a3c9287ed52873bb7acf028e6eef1bb6f9dab4c"
+    },
+    {
+      "path": ".opencode/docs/templates/level-design-document.md",
+      "sha256": "61b48448c070490ebb0bb5214cfbfa3a926683f687dc1f74c83d310dc063aacb"
+    },
+    {
+      "path": ".opencode/docs/templates/milestone-definition.md",
+      "sha256": "ecdef4e53c02ea9ee954ae0124291fcd9bd3627ef6a444a4fc7878587a101251"
+    },
+    {
+      "path": ".opencode/docs/templates/narrative-character-sheet.md",
+      "sha256": "b40bb1cb386727a9c506cbbd76f037990e4461315554e0f78f896f0195cc79e2"
+    },
+    {
+      "path": ".opencode/docs/templates/pitch-document.md",
+      "sha256": "f33c7ec8faefc1d2909184328bbe53ffc00832de52d47eabf07ec418451e1662"
+    },
+    {
+      "path": ".opencode/docs/templates/post-mortem.md",
+      "sha256": "e7e2ea73be4295761c2a355ab542be620d5b947ca5749ad8efd43abdd9c16390"
+    },
+    {
+      "path": ".opencode/docs/templates/project-stage-report.md",
+      "sha256": "b78afb205a473f5ab30e6c0c0d4db20a1be907d4d3d38b72ed19a5dc73c8ba8e"
+    },
+    {
+      "path": ".opencode/docs/templates/release-checklist-template.md",
+      "sha256": "7886ea10821a99cfde3e7b3e3d3688fbc475f39701b79481ec4d5f5466eed11e"
+    },
+    {
+      "path": ".opencode/docs/templates/release-notes.md",
+      "sha256": "0d3ea9d50eb6a2dd57a042f656fc8fc8918522c6ec9b19d6cd48d36f4b390ecb"
+    },
+    {
+      "path": ".opencode/docs/templates/risk-register-entry.md",
+      "sha256": "0d4460ea5b5a3b2a87506fab8db2344efbffb9cf39b4ece285025038f9e0ff34"
+    },
+    {
+      "path": ".opencode/docs/templates/skill-audit-report.md",
+      "sha256": "25d6621b30e9e6b926291b0c3737636be1244390f4c2334e589c15f01f2bda93"
+    },
+    {
+      "path": ".opencode/docs/templates/sound-bible.md",
+      "sha256": "9e1e63cbcc751113702d33a2134e05032994cd84a9a70acdf09909ec77f9b087"
+    },
+    {
+      "path": ".opencode/docs/templates/sprint-plan.md",
+      "sha256": "6ecb4de2c19780cea1fd4dca377cf4e6fc9425bb0e8c75d667fa724e42975a2d"
+    },
+    {
+      "path": ".opencode/docs/templates/systems-index.md",
+      "sha256": "7ede654c74704230feb88a331f98473b664ade9196dd1abdf6a041c49c683545"
+    },
+    {
+      "path": ".opencode/docs/templates/technical-design-document.md",
+      "sha256": "8809608a44354cf9f26086e23fa4c4cb3bd0012a8429877e0a92bb4e48dec9e6"
+    },
+    {
+      "path": ".opencode/docs/templates/test-plan.md",
+      "sha256": "b26cce181e3e7c67b3bc0592e299731a2c457dd43282854e962db8f87e550224"
+    },
+    {
+      "path": ".opencode/hooks/detect-gaps.sh",
+      "sha256": "4590520f640bed28bb7a6b43f54b8ae50ad9a03e5c8a3616dfbe8e07be83bcf6"
+    },
+    {
+      "path": ".opencode/hooks/log-agent.sh",
+      "sha256": "925f470c15929708c574d6affda769fea3cfc745e60e12121cf63175d9eae905"
+    },
+    {
+      "path": ".opencode/hooks/pre-compact.sh",
+      "sha256": "8deb2e97611bb69f63e53cfb1b854c72d65fa1f88d8565f0f3fbad132998ee3f"
+    },
+    {
+      "path": ".opencode/hooks/session-start.sh",
+      "sha256": "b16da42a614563f1561c2a7c0370d68e8d88a60f50ecbbcd0a078e474d49d02f"
+    },
+    {
+      "path": ".opencode/hooks/session-stop.sh",
+      "sha256": "47e973d0009b087ccb77f0e24bba8d53bd108b4ced04c44b2094eaabe0734e3a"
+    },
+    {
+      "path": ".opencode/hooks/validate-assets.sh",
+      "sha256": "9938c290805d81a2bee8e738a5854ac6f476b47e66d631e43923ddcfdf4b8d4d"
+    },
+    {
+      "path": ".opencode/hooks/validate-commit.sh",
+      "sha256": "c03e57fd46b235826c974ecb0198fce7b422fb4bc336db6cb9d18b794f95b956"
+    },
+    {
+      "path": ".opencode/hooks/validate-push.sh",
+      "sha256": "ebe3333d49da8cb3f2285a091fbbe3bd74e3992a2c1dec33b7fab39528e3e0e9"
+    },
+    {
+      "path": ".opencode/lib/audit-gate.mjs",
+      "sha256": "6d785231a618490a466ef095446cbb0ca49568d1dbb594d733fe55383284607e"
+    },
+    {
+      "path": ".opencode/opencode.json",
+      "sha256": "d2274fa53013e891f6cadd09d33487775f62f65af0caebbf03cb67ab8c553c0c"
+    },
+    {
+      "path": ".opencode/plugins/skill-integrity.js",
+      "sha256": "acd3b60b4f34f3444252d96778c5b0a8124f35bcdd4dfcf0b180e6816ec73563"
+    },
+    {
+      "path": ".opencode/rules/ai-code.md",
+      "sha256": "0b2ed79ed959c24262ca1b7ae353a78d574019d64eca040293753e165c5adb21"
+    },
+    {
+      "path": ".opencode/rules/data-files.md",
+      "sha256": "bbc65708e00a98e18278c8331fd4f69ad261a6fdc15cbbb3a96815d0800dab9d"
+    },
+    {
+      "path": ".opencode/rules/design-docs.md",
+      "sha256": "8e3ea21cd637f39b2fbca4ec1d660c97e0143f1b211466c7b03cf6447a59bfb4"
+    },
+    {
+      "path": ".opencode/rules/engine-code.md",
+      "sha256": "24e3bc62c96ef2840843721d047ea375726fc57a5ba816faa0432007c23d98f7"
+    },
+    {
+      "path": ".opencode/rules/gameplay-code.md",
+      "sha256": "94030c94f9f39c669f9292a0e1ab57a8d6fd53d1353485202713c2465098606c"
+    },
+    {
+      "path": ".opencode/rules/narrative.md",
+      "sha256": "be8925e4d9a6242eb7db40fd918bdc94aa6f40e498f9e3aa8d7ffe27ede4a819"
+    },
+    {
+      "path": ".opencode/rules/network-code.md",
+      "sha256": "e75454f6ea2e3892521ab6500865190fe74b28ce90b604e78a7d74a6c08e675e"
+    },
+    {
+      "path": ".opencode/rules/prototype-code.md",
+      "sha256": "67cf516d0febcb9829407386b4d16b773ea38cc21012fdeb03a53943cc6ed5bd"
+    },
+    {
+      "path": ".opencode/rules/shader-code.md",
+      "sha256": "c48a60ba3734ac3f75146434e867095eda907f7770cb8c56e28b236d1c751a04"
+    },
+    {
+      "path": ".opencode/rules/skill-integrity.md",
+      "sha256": "a4b106e2dceefd1a17e3d75ed9835fbe907808e28020f1b049e4d5dacb354295"
+    },
+    {
+      "path": ".opencode/rules/test-standards.md",
+      "sha256": "78c642a6f22a815a990aca02e677d5d7f676524dff59a9a8034f1c7d69b42597"
+    },
+    {
+      "path": ".opencode/rules/ui-code.md",
+      "sha256": "be45904c33e72c717ac56ba2ee760d5a5ec1435a3b84ad4365ca513c91a7a68b"
+    },
+    {
+      "path": ".opencode/scripts/change-model.py",
+      "sha256": "09bd991f07cbade3c6398d9ec72b405a21257007d064e42e1b9d8e8e6233dcbc"
+    },
+    {
+      "path": ".opencode/scripts/hook-checks.py",
+      "sha256": "666178498edbccf6716c15aebfc4fc2c2e16d3af36aee10a3a2135100b6e4125"
+    },
+    {
+      "path": ".opencode/scripts/skill-audit.mjs",
+      "sha256": "587f36ca8946822f047cc47924b71a1620797d981c80b8d38f509999dacb6a3e"
+    },
+    {
+      "path": ".opencode/skills/architecture-decision/SKILL.md",
+      "sha256": "2c0370893b191d0c6081e626be45a8664a19b6db13d35a466efdd6d89ca9d3c3"
+    },
+    {
+      "path": ".opencode/skills/asset-audit/SKILL.md",
+      "sha256": "786dae49b033de518866286ff1b1cabf09829b3796d309af02e040e8d2e77f7d"
+    },
+    {
+      "path": ".opencode/skills/balance-check/SKILL.md",
+      "sha256": "5698b9aee687f536b7ad83ccd2657e06437454623ca79eeff4f6aee9e0f31a2e"
+    },
+    {
+      "path": ".opencode/skills/brainstorm/SKILL.md",
+      "sha256": "ce2ce575d8dee989d8ea766dea3b497fe8ada9cc4f6fedf9b693fa4210ac759c"
+    },
+    {
+      "path": ".opencode/skills/bug-report/SKILL.md",
+      "sha256": "1b3ee55fa19780c291f2f535a053be3aa2089a3dddbed55280ec9c100210e2b1"
+    },
+    {
+      "path": ".opencode/skills/changelog/SKILL.md",
+      "sha256": "a6ac81374cdc0ac319de4515210ecf20c3a4a966a9519a7e6aaae148e8735482"
+    },
+    {
+      "path": ".opencode/skills/code-review/SKILL.md",
+      "sha256": "addec5fe3a3e408f56eee800010d7249ab1dcf47f25e7d4cdbeba85aabc58e95"
+    },
+    {
+      "path": ".opencode/skills/concurrency-analysis/SKILL.md",
+      "sha256": "0c12977203b3d9fa771948c80733fb1e81158fdadb0423720c533cb12b6ae853"
+    },
+    {
+      "path": ".opencode/skills/debugging-analysis/SKILL.md",
+      "sha256": "1e347f99baa25023bf20347d8cfe348f105e3f12b020c742490e2414019cf502"
+    },
+    {
+      "path": ".opencode/skills/design-review/SKILL.md",
+      "sha256": "890be8dc95e41e46c483147d14385811c00da8d5801f36649c9700c84fb25a17"
+    },
+    {
+      "path": ".opencode/skills/design-system/SKILL.md",
+      "sha256": "ad9c1f18cc7e8acdb3a7588538f1850ce73583823e3192e931fe31b47b268ae8"
+    },
+    {
+      "path": ".opencode/skills/estimate/SKILL.md",
+      "sha256": "76b0d98d3e575f29963831f2f79d13cad2c7b4495ff39380265ec80156ece006"
+    },
+    {
+      "path": ".opencode/skills/framework-engineering/SKILL.md",
+      "sha256": "97cb002af395b546a84d1bf8f89dbefdaa464d8c2193b8e4a31f99743566f90e"
+    },
+    {
+      "path": ".opencode/skills/gate-check/SKILL.md",
+      "sha256": "9318a307e53d26a2d1a45bef147f92f818ea7ae4fbe86d031d0153dd6a6df30c"
+    },
+    {
+      "path": ".opencode/skills/hotfix/SKILL.md",
+      "sha256": "bc635c9f6f86a06ca2a9aeb0562e75b4a4c3da91a58a0c08e6b0aafde84c1e2b"
+    },
+    {
+      "path": ".opencode/skills/launch-checklist/SKILL.md",
+      "sha256": "2aa9b89a57ed6e21bd30a5b2c778f12c96f470fb15a692e10ac75d0b5e64cee2"
+    },
+    {
+      "path": ".opencode/skills/localize/SKILL.md",
+      "sha256": "f9214e423b0b4e8ca0ef60989d8ddb8f593fdd48c77e732e6818d8cff1ebfc4f"
+    },
+    {
+      "path": ".opencode/skills/map-systems/SKILL.md",
+      "sha256": "85a31705c4184c2924733fce1d831084bca370bf37338d7bd32c785cd0a8f589"
+    },
+    {
+      "path": ".opencode/skills/milestone-review/SKILL.md",
+      "sha256": "cfbab54188650c3ce7b0e93632a754bd7d17d4419d77f2139a10ebb1c62e602a"
+    },
+    {
+      "path": ".opencode/skills/onboard/SKILL.md",
+      "sha256": "39f011ef2ebf427f74197e48d4389c8872db467ba6b27edd30d3a3a4e05d7a2a"
+    },
+    {
+      "path": ".opencode/skills/patch-notes/SKILL.md",
+      "sha256": "5ebd5b076b6a60f758b8848fec5f4e263c17e9d9dc74515c1e5527e981aa5b36"
+    },
+    {
+      "path": ".opencode/skills/perf-profile/SKILL.md",
+      "sha256": "fc93ffbd06599ed3eb03bf7d31baeb185bb43cfc11bcdb02c2b9a1d04f28cd05"
+    },
+    {
+      "path": ".opencode/skills/playtest-report/SKILL.md",
+      "sha256": "17d98a878b3ecaea1f1269a2d6c9a3aa585a2adf19285dd295a04ada5309ed7f"
+    },
+    {
+      "path": ".opencode/skills/production-validation/SKILL.md",
+      "sha256": "868b3287238ec960fb34e1990c51448fc374bf3e583bc724c754ad749bcb6d57"
+    },
+    {
+      "path": ".opencode/skills/project-stage-detect/SKILL.md",
+      "sha256": "6eb74d147d458cd1e02dfa7192fdd957d18bdafdaaf67d1f6e1a9c55babee095"
+    },
+    {
+      "path": ".opencode/skills/prototype/SKILL.md",
+      "sha256": "71dc38c108bce1740e18f9f875460323dbdf5242dfee93f35f334c755c7605a4"
+    },
+    {
+      "path": ".opencode/skills/release-checklist/SKILL.md",
+      "sha256": "cbe4d334efa1a59f75943537d73e3de75d462a5b2cfbb3864445eb7a25ef3e39"
+    },
+    {
+      "path": ".opencode/skills/repository-discovery/SKILL.md",
+      "sha256": "112e3e2f5e1bea2867d01820bf557296e72227d58300abf63dab22041666640e"
+    },
+    {
+      "path": ".opencode/skills/retrospective/SKILL.md",
+      "sha256": "fa9de8f3d76250d2c9778c9db8aefe2ccb146a78031fafeff84104ed1f68f367"
+    },
+    {
+      "path": ".opencode/skills/reverse-document/SKILL.md",
+      "sha256": "133839df766a6c16e3f71a43ce763b47422de5980f760fc88bfcd4076f2fd69a"
+    },
+    {
+      "path": ".opencode/skills/scope-check/SKILL.md",
+      "sha256": "a8ee43a21bcc29ac40b71464f590fb633f1ad5befd6368b41f0722efa54ca666"
+    },
+    {
+      "path": ".opencode/skills/setup-engine/SKILL.md",
+      "sha256": "6f3f152a6041c515ffbba2edd6aeec4841339fc11ba3fdad73de0991d68c6a8c"
+    },
+    {
+      "path": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "sha256": "0ef70316cd6d3cf36c2330e059612a462ef2e415ebd58bcffbe051fa42afc006"
+    },
+    {
+      "path": ".opencode/skills/sprint-plan/SKILL.md",
+      "sha256": "7293ff5219645ab41c4f1e91893377fe58a7b078b7e356a47c58ba4592040c02"
+    },
+    {
+      "path": ".opencode/skills/start/SKILL.md",
+      "sha256": "7c8620fbe2e1ed99f9420be0120aa2eaecf35c04f0035733084bc8ed0ce48369"
+    },
+    {
+      "path": ".opencode/skills/team-audio/SKILL.md",
+      "sha256": "260bf50925a080285dd847f2497c4335f014becadb521d53a8499fec6a0f642c"
+    },
+    {
+      "path": ".opencode/skills/team-combat/SKILL.md",
+      "sha256": "18625e28937ab457960e3daaec745b369f4237d080719fb399937e272f80294c"
+    },
+    {
+      "path": ".opencode/skills/team-level/SKILL.md",
+      "sha256": "834743d57e605f29484ea751626a6041f0d674b49f932fd8be738d2e097062fc"
+    },
+    {
+      "path": ".opencode/skills/team-narrative/SKILL.md",
+      "sha256": "7bd2e1be4e2f3dfd36ac8482ab354b698204e4cbdcf45cc70d37025912219174"
+    },
+    {
+      "path": ".opencode/skills/team-polish/SKILL.md",
+      "sha256": "421bb9248c309932031079a4322c44444ee850d1a122b1c05f602d47260e2efb"
+    },
+    {
+      "path": ".opencode/skills/team-release/SKILL.md",
+      "sha256": "dd8ccc92195c4e8ecbbea7a3482ae5d8b87ba252f697a84ddff1b015a8225bde"
+    },
+    {
+      "path": ".opencode/skills/team-ui/SKILL.md",
+      "sha256": "3aaf26005a235f608706f2743214c85174b585c904c1f612e8abef151b680c79"
+    },
+    {
+      "path": ".opencode/skills/tech-debt/SKILL.md",
+      "sha256": "506b3525d34d3bba8fa88448b8a20f1f5776cd58913d164065ce55d9e7c9ed71"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "78e77806bb04a4855873082c50087555a8cb57d81480e64f2c40c922062282aa"
+    },
+    {
+      "path": "OPENCODE.md",
+      "sha256": "bb7bb4fbf8363e00b90079e942ace1177b84ab6722a94fab4acceb54780611cb"
+    },
+    {
+      "path": "opencode.json",
+      "sha256": "163fbc5114ae8129887c45d89ae71d3da9b92a8a5955eed72bc9fa9a07fb59bd"
+    }
+  ]
+}

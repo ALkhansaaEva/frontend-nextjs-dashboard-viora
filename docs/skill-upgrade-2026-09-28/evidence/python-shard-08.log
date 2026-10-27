@@ -1,0 +1,14 @@
+test_revision_following_nested_field_preserved (test_repairs.ModelTests.test_revision_following_nested_field_preserved) ... ok
+test_revision_multiline_model_rejected_without_changes (test_repairs.ModelTests.test_revision_multiline_model_rejected_without_changes) ... ok
+test_revision_quoted_model_key_rejected_without_changes (test_repairs.ModelTests.test_revision_quoted_model_key_rejected_without_changes) ... ok
+test_revision_quoted_multiline_model_rejected_without_changes (test_repairs.ModelTests.test_revision_quoted_multiline_model_rejected_without_changes) ... ok
+test_revision_repeated_update_is_a_noop (test_repairs.ModelTests.test_revision_repeated_update_is_a_noop) ... ok
+test_revision_unsupported_root_yaml_rejected_without_changes (test_repairs.ModelTests.test_revision_unsupported_root_yaml_rejected_without_changes) ... ok
+test_symlink_agent_rejected_without_partial_change (test_repairs.ModelTests.test_symlink_agent_rejected_without_partial_change) ... ok
+test_updates_all_existing_model_fields_not_just_first (test_repairs.ModelTests.test_updates_all_existing_model_fields_not_just_first) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 20.464s
+
+OK
+SHARD_RESULT={"ids": ["test_repairs.ModelTests.test_revision_following_nested_field_preserved", "test_repairs.ModelTests.test_revision_multiline_model_rejected_without_changes", "test_repairs.ModelTests.test_revision_quoted_model_key_rejected_without_changes", "test_repairs.ModelTests.test_revision_quoted_multiline_model_rejected_without_changes", "test_repairs.ModelTests.test_revision_repeated_update_is_a_noop", "test_repairs.ModelTests.test_revision_unsupported_root_yaml_rejected_without_changes", "test_repairs.ModelTests.test_symlink_agent_rejected_without_partial_change", "test_repairs.ModelTests.test_updates_all_existing_model_fields_not_just_first"], "run": 8, "failures": 0, "errors": 0, "skipped": 0, "success": true}

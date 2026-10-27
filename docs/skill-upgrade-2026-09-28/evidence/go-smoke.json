@@ -1,0 +1,42 @@
+{
+  "root": "/mnt/data/skill-upgrade-work/go-smoke",
+  "network_policy": "GOTOOLCHAIN=local, GOPROXY=off, GOSUMDB=off",
+  "results": [
+    {
+      "name": "format",
+      "argv": [
+        "/usr/local/go/bin/gofmt",
+        "-l",
+        "sum.go",
+        "sum_test.go"
+      ],
+      "exit": 0,
+      "seconds": 0.003,
+      "passed": true
+    },
+    {
+      "name": "behavior",
+      "argv": [
+        "/usr/local/go/bin/go",
+        "test",
+        "-count=1",
+        "-v",
+        "./..."
+      ],
+      "exit": 0,
+      "seconds": 10.085,
+      "passed": true
+    },
+    {
+      "name": "vet",
+      "argv": [
+        "/usr/local/go/bin/go",
+        "vet",
+        "./..."
+      ],
+      "exit": 0,
+      "seconds": 1.374,
+      "passed": true
+    }
+  ]
+}

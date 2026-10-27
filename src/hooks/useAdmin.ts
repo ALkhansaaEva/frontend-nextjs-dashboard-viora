@@ -124,8 +124,8 @@ export const useDeleteRole = () => {
 export const useCreatePermission = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: { code: string; name: string; description?: string }) => 
-      adminService.createPermission(data as any),
+    mutationFn: (data: { code: string; name: string; description?: string }) =>
+      adminService.createPermission(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['permissions'] });
     },

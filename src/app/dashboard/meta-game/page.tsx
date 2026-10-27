@@ -1,142 +1,43 @@
 'use client';
 
 import { useState } from 'react';
-import { Gift, Trophy, Flame, Target } from 'lucide-react';
-import { useDailyLogin, useClaimDailyLogin, useTasks, useClaimTask, useLeaderboard } from '@/hooks';
+import Link from 'next/link';
+import { Trophy, AlertTriangle } from 'lucide-react';
+import { useLeaderboard } from '@/hooks';
 import { useLanguage } from '@/components/language-context';
 import { TableSkeleton } from '@/components/skeletons';
 import { Card, CardContent } from '@/shared/components/ui/Card';
-import { Badge } from '@/shared/components/ui/Badge';
-import { Button } from '@/shared/components/ui/Button';
+import { Select } from '@/shared/components/ui/Select';
 import { DataTable, type Column } from '@/shared/components/ui/DataTable';
+import { UserIdentityCell } from '@/shared/components/ui/UserIdentityCell';
+import { QueryErrorNotice } from '@/shared/components/ui/QueryState';
+import type { LeaderboardEntry } from '@/services/meta-game.service';
 
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  progress: number;
-  target: number;
-  reward: {
-    currency: 'gold' | 'gems';
-    amount: number;
-  };
-  isCompleted: boolean;
-  isClaimed: boolean;
-  expiresAt?: string;
-}
+const GAME_TYPES = [
+  { value: 'ludo', label: 'Ludo' },
+  { value: 'domino', label: 'Domino' },
+];
 
-interface LeaderboardEntry {
-  rank: number;
-  userId: string;
-  score: number;
-  user?: {
-    id: string;
-    nickname: string;
-    avatar?: string;
-  };
-}
-
+/**
+ * Meta-Game / Rankings — meta-game/ranking/:gameType/leaderboard
+ * (modules/meta-game/meta-game.controller.ts). This page used to also show
+ * "Daily Login" and "Tasks" tabs that called `/meta-game/daily-login` and
+ * `/meta-game/tasks` — neither route exists anywhere on the backend (a full
+ * controller sweep confirmed it), so those tabs always 404'd. Removed rather
+ * than shipped broken. "Tasks" as a real backend feature lives under
+ * RuleAdminController (kind=TASK) at /dashboard/meta/tasks — a completely
+ * different route and data model from what this page used to fake.
+ */
 export default function MetaGamePage() {
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'daily' | 'tasks' | 'leaderboard'>('daily');
-
-  const { data: dailyLogin, isLoading: dailyLoading } = useDailyLogin();
-  const { data: tasks = [], isLoading: tasksLoading } = useTasks();
-  const { data: leaderboard = [] } = useLeaderboard('ludo');
-
-  const claimDailyMutation = useClaimDailyLogin();
-  const claimTaskMutation = useClaimTask();
-
-  const handleClaimDaily = async () => {
-    try {
-      await claimDailyMutation.mutateAsync();
-    } catch (error) {
-      console.error('Failed to claim daily reward:', error);
-    }
-  };
-
-  const handleClaimTask = async (taskId: string) => {
-    try {
-      await claimTaskMutation.mutateAsync(taskId);
-    } catch (error) {
-      console.error('Failed to claim task reward:', error);
-    }
-  };
-
-  const isLoading = dailyLoading || tasksLoading;
-
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('metaGame')}</h1>
-        <TableSkeleton rows={5} />
-      </div>
-    );
-  }
-
-  const taskColumns: Column<Task>[] = [
-    {
-      key: 'title',
-      header: t('task'),
-      render: (task) => (
-        <div>
-          <p className="font-medium text-gray-900 dark:text-white">{task.title}</p>
-          <p className="text-xs text-gray-500">{task.description}</p>
-        </div>
-      ),
-    },
-    {
-      key: 'progress',
-      header: t('progress'),
-      render: (task) => (
-        <div className="w-32">
-          <div className="flex justify-between text-xs mb-1">
-            <span>{task.progress}/{task.target}</span>
-            <span>{Math.round((task.progress / task.target) * 100)}%</span>
-          </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div
-              className="bg-indigo-600 h-2 rounded-full"
-              style={{ width: `${Math.min((task.progress / task.target) * 100, 100)}%` }}
-            />
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: 'reward',
-      header: t('reward'),
-      render: (task) => (
-        <Badge variant={task.reward.currency === 'gems' ? 'warning' : 'success'}>
-          {task.reward.amount} {task.reward.currency}
-        </Badge>
-      ),
-    },
-    {
-      key: 'status',
-      header: t('status'),
-      render: (task) => (
-        <Badge variant={task.isClaimed ? 'success' : task.isCompleted ? 'warning' : 'default'}>
-          {task.isClaimed ? t('claimed') : task.isCompleted ? t('claimable') : t('inProgress')}
-        </Badge>
-      ),
-    },
-    {
-      key: 'actions',
-      header: t('actions'),
-      render: (task) => (
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => handleClaimTask(task.id)}
-          disabled={!task.isCompleted || task.isClaimed || claimTaskMutation.isPending}
-        >
-          {t('claim')}
-        </Button>
-      ),
-    },
-  ];
+  const [gameType, setGameType] = useState('ludo');
+  const {
+    data: leaderboard = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useLeaderboard(gameType);
 
   const leaderboardColumns: Column<LeaderboardEntry>[] = [
     {
@@ -159,108 +60,71 @@ export default function MetaGamePage() {
       key: 'nickname',
       header: t('player'),
       render: (entry) => (
-        <span className="font-medium text-gray-900 dark:text-white">
-          {entry.user?.nickname || entry.userId.slice(0, 8)}
+        <span className="font-mono text-sm text-gray-900 dark:text-white">
+          <UserIdentityCell userId={entry.userId} />
         </span>
       ),
     },
     {
-      key: 'score',
-      header: t('score'),
+      key: 'tier',
+      header: 'Tier',
       render: (entry) => (
-        <span className="font-semibold">{entry.score.toLocaleString()}</span>
+        <span className="font-semibold">{entry.tier}</span>
       ),
+    },
+    {
+      key: 'currentRating',
+      header: 'Rating',
+      render: (entry) => entry.currentRating.toLocaleString(),
+    },
+    {
+      key: 'record',
+      header: 'Record',
+      render: (entry) => `${entry.wins}-${entry.losses}-${entry.draws}`,
+    },
+    {
+      key: 'winRate',
+      header: 'Win rate',
+      render: (entry) => `${(entry.winRate * 100).toFixed(1)}%`,
     },
   ];
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('metaGame')}</h1>
-
-      <div className="flex gap-2 border-b border-gray-200 dark:border-gray-800 pb-1">
-        <button
-          onClick={() => setActiveTab('daily')}
-          className={`px-4 py-2 text-sm font-semibold transition-all relative ${
-            activeTab === 'daily' ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Flame className="w-4 h-4 inline mr-2" />
-          {t('dailyLogin')}
-          {activeTab === 'daily' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-full" />}
-        </button>
-        <button
-          onClick={() => setActiveTab('tasks')}
-          className={`px-4 py-2 text-sm font-semibold transition-all relative ${
-            activeTab === 'tasks' ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Target className="w-4 h-4 inline mr-2" />
-          {t('tasks')}
-          {activeTab === 'tasks' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-full" />}
-        </button>
-        <button
-          onClick={() => setActiveTab('leaderboard')}
-          className={`px-4 py-2 text-sm font-semibold transition-all relative ${
-            activeTab === 'leaderboard' ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Trophy className="w-4 h-4 inline mr-2" />
-          {t('leaderboard')}
-          {activeTab === 'leaderboard' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-full" />}
-        </button>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('metaGame')}</h1>
+        <Select value={gameType} onChange={(e) => setGameType(e.target.value)} options={GAME_TYPES} className="w-40" />
       </div>
 
-      {activeTab === 'daily' && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-2xl">
-                  <Flame className="w-8 h-8 text-orange-500" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Login Streak</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {dailyLogin?.streak || 0} {t('days')}
-                  </p>
-                </div>
-              </div>
-              <Button
-                onClick={handleClaimDaily}
-                disabled={!dailyLogin?.canClaim || claimDailyMutation.isPending}
-                variant={dailyLogin?.canClaim ? 'primary' : 'outline'}
-              >
-                <Gift className="w-4 h-4 mr-2" />
-                {dailyLogin?.canClaim ? t('claimReward') : t('claimNext')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <div className="rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-3 flex gap-3 text-xs text-amber-800 dark:text-amber-300">
+        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+        <p>
+          This page previously showed Daily Login and Task-claim tabs that called backend routes which do not
+          exist (<code>/meta-game/daily-login</code>, <code>/meta-game/tasks</code>) — removed. Task management
+          lives at <Link href="/dashboard/meta/tasks" className="underline">Tasks</Link> (backed by the real Rule Engine).
+        </p>
+      </div>
 
-      {activeTab === 'tasks' && (
-        <Card>
-          <CardContent className="pt-6">
-            <DataTable
-              data={tasks}
-              columns={taskColumns}
-              emptyMessage={t('noTasks')}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <p className="text-sm text-gray-600 dark:text-gray-300">
+        Competitive rating is authoritative per game type. It is separate from manually assigned system badges,
+        room ranks, room-member progression, and room roles.
+      </p>
 
-      {activeTab === 'leaderboard' && (
-        <Card>
-          <CardContent className="pt-6">
+      {isError && <QueryErrorNotice error={error} onRetry={() => refetch()} />}
+
+      <Card>
+        <CardContent className="pt-6">
+          {isLoading ? (
+            <TableSkeleton rows={5} />
+          ) : !isError ? (
             <DataTable
               data={leaderboard}
               columns={leaderboardColumns}
               emptyMessage={t('noLeaderboard')}
             />
-          </CardContent>
-        </Card>
-      )}
+          ) : null}
+        </CardContent>
+      </Card>
     </div>
   );
 }

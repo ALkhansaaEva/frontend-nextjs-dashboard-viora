@@ -1,0 +1,1807 @@
+--- a/.opencode/docs/audit-runtime.md
++++ b/.opencode/docs/audit-runtime.md
+@@ -146,6 +146,18 @@
+ Users able to alter plugins/records can alter controls. Maintain host permissions and
+ organizational security independently. No audit can override higher-priority policy.
+ 
++## Optional design-preview bounds
++
++`pre-compact.sh` uses the existing `hook-checks.py` reader for both the checkpoint
++and design WIP preview. Design text is UTF-8, regular, unlinked and at most 1 MiB
++per file; the scan caps directory entries (4096), Markdown files (256), total input
++(8 MiB), rendered matching lines (100) and excerpt output (32 KiB plus a summary).
++Long matching lines are explicitly excerpted. Unsafe text, controls, special files,
++unreadable data or exceeded input limits block before preview/logging rather than
++claiming a clean scan. No markers is not design completeness or secret redaction.
++The filesystem can still change between checks; this is not a hostile-filesystem
++sandbox. Other Git/status output is not covered by the design-preview output cap.
++
+ ## Local validation
+ 
+ Tested locally with Node.js 22.16.0 and Python 3.13.5, plus Git and Bash. The Python
+--- a/.opencode/docs/templates/project-stage-report.md
++++ b/.opencode/docs/templates/project-stage-report.md
+@@ -15,6 +15,14 @@
+ **Estimated Time to Next Stage**: [If applicable]
+ 
+ ---
++
++## Evidence and Metric Interpretation
++
++Each percentage needs a defined denominator and an actual evidence source/revision.
++With absent measurements or incomplete inventory, report UNKNOWN; a zero denominator
++is N/A. Source/test-file counts do not establish implemented completeness or coverage.
++Stage labels are diagnostic and do not certify a passed phase gate. Listed directory
++paths are examples; map them to the inspected repository instead of assuming layout.
+ 
+ ## Completeness Overview
+ 
+@@ -60,11 +68,11 @@
+   - [ ] [Missing production artifact + impact]
+ 
+ ### Testing
+-- **Status**: [X%] coverage (estimated)
++- **Status**: [measured coverage and source/revision, or UNKNOWN]
+ - **Test Files**: [N] in `tests/`
+ - **Coverage by System**:
+-  - [System 1]: [X%] (estimated)
+-  - [System 2]: [X%] (estimated)
++  - [System 1]: [measured coverage with evidence, or UNKNOWN]
++  - [System 2]: [measured coverage with evidence, or UNKNOWN]
+ - **Key Gaps**:
+   - [ ] [Missing test area + risk]
+ 
+--- a/.opencode/hooks/pre-compact.sh
++++ b/.opencode/hooks/pre-compact.sh
+@@ -10,13 +10,8 @@
+ fi
+ STATE_CONTENT="$(python3 "$SCRIPT_DIR/../scripts/hook-checks.py" state)" || exit 2
+ 
+-# The later WIP scan must not read through linked design namespaces either.
+-for directory in design design/gdd; do
+-    if [ -L "$directory" ]; then
+-        echo "BLOCKED: symlink design directory refused; no linked content exposed" >&2
+-        exit 2
+-    fi
+-done
++# Preflight design text before any preview or log write. Never stream raw grep output.
++WIP_CONTENT="$(python3 "$SCRIPT_DIR/../scripts/hook-checks.py" wip)" || exit 2
+ 
+ echo "=== SESSION STATE BEFORE COMPACTION ==="
+ echo "Timestamp: $(date)"
+@@ -71,24 +66,7 @@
+ echo ""
+ echo "## Design Docs — Work In Progress"
+ 
+-WIP_FOUND=false
+-for f in design/gdd/*.md; do
+-    if [ -L "$f" ]; then
+-        echo "BLOCKED: symlink design document refused; no linked content exposed" >&2
+-        exit 2
+-    fi
+-    [ -f "$f" ] || continue
+-    INCOMPLETE=$(grep -n -E "TODO|WIP|PLACEHOLDER|\[TO BE|\[TBD\]" "$f" 2>/dev/null)
+-    if [ -n "$INCOMPLETE" ]; then
+-        WIP_FOUND=true
+-        echo "  $f:"
+-        echo "$INCOMPLETE" | while read -r line; do echo "    $line"; done
+-    fi
+-done
+-
+-if [ "$WIP_FOUND" = false ]; then
+-    echo "  (no WIP markers found in design docs)"
+-fi
++printf '%s\n' "$WIP_CONTENT"
+ 
+ # --- Log compaction event ---
+ SESSION_LOG_DIR="production/session-logs"
+--- a/.opencode/rules/skill-integrity.md
++++ b/.opencode/rules/skill-integrity.md
+@@ -15,6 +15,37 @@
+ policy. Within this template it governs contradictory process defaults; preserve
+ valid domain-specific constraints. Unresolved material conflicts block reliance;
+ do not silently choose the easiest rule or invent missing project facts.
++
++## Source-first maintenance loop
++
++**INSPECT → VALIDATE → DETECT → CORRECT → REVIEW → VERIFY → USE**
++
++Inspection is permitted while use is blocked. Repair the source under authorization,
++then re-audit its affected consumers; do not create an overlapping replacement or
++new dependency on an unreliable definition. Keep reviewed/corrected/uncertain status
++separate from runtime approval.
++
++## Portable execution and evidence
++
++Tool names in legacy skill prose describe capabilities, not guaranteed host APIs.
++Use the actual installed tool schema. `AskUserQuestion` means the available question
++capability or a plain-text question; `Task` means an available, audited delegation
++capability. Never invent a call, imply a subagent ran, or bypass an unavailable tool.
++Unknown SKILL.md metadata is not permission enforcement or automatic command execution.
++
++Resolve repository paths, source locale, build pipeline, standards and acceptance
++criteria from the actual project before applying a template. Listed paths, example
++metrics, capacity buffers and platform checklists are starting points, not evidence
++that the project uses them. Do not impose optional dependencies or infrastructure.
++Counts are not coverage, effort, completed behavior or readiness. Report unknowns,
++zero/absent denominators and missing measurements explicitly; do not fill a template
++with invented facts, owners, approvals, test results or performance gains.
++
++Reuse answers and approval already given for the same scoped operation. Collaborative
++questions capture missing material decisions, not repeated consent for an authorized
++edit. Provide concise evidence and options, not a mandatory full analysis transcript.
++Suggestions do not authorize subsequent features. Only one writer may mutate shared
++files; parallel work must be isolated read-only analysis/tests with separate resources.
+ 
+ ## Required audit
+ 
+--- a/.opencode/scripts/hook-checks.py
++++ b/.opencode/scripts/hook-checks.py
+@@ -176,51 +176,119 @@
+     return 0
+ 
+ 
+-def read_checkpoint() -> str:
+-    """Read only the local Markdown checkpoint; never follow links or stream a FIFO.
+-
+-    No semantic approval or redaction is implied. The owner must keep state sanitized.
+-    Parent checks and O_NOFOLLOW are defense in depth, not a hostile-filesystem sandbox.
++def bounded_text(parts: tuple, *, optional: bool = True) -> str:
++    """Read local UTF-8 text without links, special files or terminal controls.
++
++    Parent checks are defense in depth, not a hostile-filesystem sandbox. This
++    does not establish semantic approval or redact private application content.
+     """
+     current = Path.cwd().resolve()
+-    parts = ('production', 'session-state', 'active.md')
++    if not parts or any(not isinstance(part, str) or part in ('', '.', '..')
++                        or '/' in part or '\\' in part for part in parts):
++        raise ValueError('unsafe local text path')
+     for i, part in enumerate(parts):
+         current /= part
+         try:
+             info = current.lstat()
+         except FileNotFoundError:
+-            return ''
++            if optional:
++                return ''
++            raise ValueError('required text file disappeared') from None
+         if stat.S_ISLNK(info.st_mode):
+-            raise ValueError('symlink checkpoint path refused; no state exposed')
++            raise ValueError('symlink text path refused; no content exposed')
+         if i < len(parts) - 1 and not stat.S_ISDIR(info.st_mode):
+-            raise ValueError('checkpoint parent is not a directory')
++            raise ValueError('text parent is not a directory')
+     if not stat.S_ISREG(info.st_mode) or info.st_size > MAX_INPUT:
+-        raise ValueError('checkpoint is not a bounded regular file')
++        raise ValueError('text is not a bounded regular file')
+     flags = os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_NONBLOCK', 0)
+     fd = os.open(current, flags)
+     with os.fdopen(fd, 'rb') as handle:
+         before = os.fstat(handle.fileno())
+         if not stat.S_ISREG(before.st_mode) or before.st_size > MAX_INPUT:
+-            raise ValueError('checkpoint changed or is not a bounded regular file')
++            raise ValueError('text changed or is not a bounded regular file')
+         data = handle.read(MAX_INPUT + 1)
+         after = os.fstat(handle.fileno())
+     if (len(data) > MAX_INPUT or (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
+             != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
+-        raise ValueError('checkpoint changed during read; retry after writer stops')
++        raise ValueError('text changed during read; retry after writer stops')
+     text = data.decode('utf-8')
+-    if any(ord(ch) < 32 and ch not in '\t\r\n' or ord(ch) == 127 for ch in text):
+-        raise ValueError('checkpoint contains unsafe control characters; no state exposed')
++    if any(ord(ch) < 32 and ch not in '\t\r\n' or 127 <= ord(ch) <= 159 for ch in text):
++        raise ValueError('text contains unsafe control characters; no content exposed')
+     return text
++
++
++def read_checkpoint() -> str:
++    """Preserve the existing optional, bounded checkpoint interface."""
++    return bounded_text(('production', 'session-state', 'active.md'))
++
++
++def design_wip() -> str:
++    """Bounded advisory marker scan, not design completeness validation.
++
++    Preflight all candidates before returning any preview. Missing namespaces
++    are optional; unreadable/unsafe/incomplete scans block instead of claiming
++    no markers. Caps bound enumeration, total input and rendered output.
++    """
++    folder = Path.cwd().resolve()
++    for part in ('design', 'gdd'):
++        folder /= part
++        try:
++            info = folder.lstat()
++        except FileNotFoundError:
++            return '  (no local design/gdd directory; scan not applicable)\n'
++        if stat.S_ISLNK(info.st_mode) or not stat.S_ISDIR(info.st_mode):
++            raise ValueError('design namespace must be an unlinked local directory')
++    names = []
++    with os.scandir(folder) as entries:
++        for count, entry in enumerate(entries, 1):
++            if count > 4096:
++                raise ValueError('design enumeration limit exceeded; scan incomplete')
++            if entry.name.endswith('.md'):
++                if (any(ord(ch) < 32 or 127 <= ord(ch) <= 159 for ch in entry.name)
++                        or '\\' in entry.name):
++                    raise ValueError('unsafe design filename; no content exposed')
++                names.append(entry.name)
++                if len(names) > 256:
++                    raise ValueError('design document limit exceeded; scan incomplete')
++    marker = re.compile(r'TODO|WIP|PLACEHOLDER|\[TO BE|\[TBD\]')
++    output = []
++    total_bytes = output_bytes = matches = 0
++    truncated = False
++    for name in sorted(names):
++        text = bounded_text(('design', 'gdd', name), optional=False)
++        total_bytes += len(text.encode('utf-8'))
++        if total_bytes > MAX_FILE:
++            raise ValueError('design input limit exceeded; scan incomplete')
++        for number, line in enumerate(text.splitlines(), 1):
++            if not marker.search(line):
++                continue
++            matches += 1
++            excerpt = line[:240] + (' [line truncated]' if len(line) > 240 else '')
++            rendered = f'  design/gdd/{name}:{number}: {excerpt}\n'
++            size = len(rendered.encode('utf-8'))
++            if len(output) < 100 and output_bytes + size <= 32768:
++                output.append(rendered)
++                output_bytes += size
++            else:
++                truncated = True
++    if not matches:
++        return f'  (no WIP markers in {len(names)} scanned documents; not proof of completeness)\n'
++    summary = f'  ({matches} matching lines in {len(names)} scanned documents'
++    summary += '; preview truncated' if truncated else ''
++    return ''.join(output) + summary + ')\n'
+ 
+ def main() -> int:
+     p = argparse.ArgumentParser(description=__doc__)
+-    p.add_argument('mode', choices=['commit', 'push', 'assets', 'agent', 'state'])
++    p.add_argument('mode', choices=['commit', 'push', 'assets', 'agent', 'state', 'wip'])
+     p.add_argument('--staged', action='store_true', help='commit mode: inspect index directly, no stdin')
+     p.add_argument('--direct', action='store_true', help='push mode: advisory branch check without stdin')
+     args = p.parse_args()
+     if (args.staged and args.mode != 'commit') or (args.direct and args.mode != 'push'):
+         p.error('direct switches must match the selected mode')
+     try:
++        if args.mode == 'wip':
++            sys.stdout.write(design_wip())
++            return 0
+         if args.mode == 'state':
+             sys.stdout.write(read_checkpoint())
+             return 0
+--- a/.opencode/skills/asset-audit/SKILL.md
++++ b/.opencode/skills/asset-audit/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep
+ ---
++
++Read-only audit. Report checked scope, evidence and unavailable checks. CLEAN is limited to the applicable checks actually completed; do not infer a clean pipeline from filenames alone.
++
+ 
+ When this skill is invoked:
+ 
+@@ -18,20 +21,21 @@
+    - `assets/shaders/**/*` for shaders
+    - `assets/data/**/*` for data files
+ 
+-3. **Check naming conventions**:
++3. **Check the project's verified naming conventions** (the following are examples, not mandatory defaults):
+    - Art: `[category]_[name]_[variant]_[size].[ext]`
+    - Audio: `[category]_[context]_[name]_[variant].[ext]`
+-   - All files must be lowercase with underscores
++   - Apply lowercase/underscore naming only if required by the actual asset pipeline
+ 
+-4. **Check file standards**:
++4. **Check verified platform/importer file standards**. Example checks below apply only when required; do not assume power-of-two dimensions or formats are universal:
+    - Textures: Power-of-two dimensions, correct format (PNG for UI, compressed
+      for 3D), within size budget
+    - Audio: Correct sample rate, format (OGG for SFX, OGG/MP3 for music),
+      within duration limits
+    - Data: Valid JSON/YAML, schema-compliant
+ 
+-5. **Check for orphaned assets** by searching code for references to each
+-   asset file.
++5. **Identify potentially unreferenced assets** by checking code, scenes, import
++   metadata, resource registries, bundles and dynamic loading conventions. Absence
++   from a text search is not proof of an orphan and never authorizes deletion.
+ 
+ 6. **Check for missing assets** by searching code for asset references and
+    verifying the files exist.
+@@ -48,7 +52,7 @@
+ - **Format violations**: [N]
+ - **Orphaned assets**: [N]
+ - **Missing assets**: [N]
+-- **Overall health**: [CLEAN / MINOR ISSUES / NEEDS ATTENTION]
++- **Overall health**: [CLEAN / MINOR ISSUES / NEEDS ATTENTION / UNVERIFIED]
+ 
+ ## Naming Violations
+ | File | Expected Pattern | Issue |
+@@ -62,7 +66,7 @@
+ | File | Expected Format | Actual Format |
+ |------|----------------|---------------|
+ 
+-## Orphaned Assets (no code references found)
++## Potentially Unreferenced Assets (confirm runtime/resource references)
+ | File | Last Modified | Size | Recommendation |
+ |------|-------------|------|---------------|
+ 
+--- a/.opencode/skills/brainstorm/SKILL.md
++++ b/.opencode/skills/brainstorm/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write, WebSearch, AskUserQuestion
+ ---
++
++Use prior answers and existing concept work. Proposed market fit, player motivation and scope are hypotheses until supported; cited frameworks do not validate a specific audience. Preserve unknown/open sections instead of inventing answers to fill every template section. An existing engine is not replaced by a brainstorming recommendation. Use the canonical portable question/approval protocol.
++
+ 
+ When this skill is invoked:
+ 
+@@ -189,9 +192,9 @@
+ ---
+ 
+ 4. **Generate the game concept document** using the template at
+-   `.opencode/docs/templates/game-concept.md`. Fill in ALL sections from the
+-   brainstorm conversation, including the MDA analysis, player motivation
+-   profile, and flow state design sections.
++   `.opencode/docs/templates/game-concept.md`. Fill supported sections from the
++   conversation; mark missing decisions/open questions explicitly. MDA, motivation
++   and flow-state analysis are design hypotheses, not measured validation.
+ 
+ 5. **Save to** `design/gdd/game-concept.md`, creating directories as needed.
+ 
+--- a/.opencode/skills/changelog/SKILL.md
++++ b/.opencode/skills/changelog/SKILL.md
+@@ -9,6 +9,9 @@
+   !git tag --list --sort=-v:refname 2>/dev/null | head -5
+ ---
+ 
++Only the resolved release range establishes inclusion. Design documents and commit titles are supporting context, not proof that functionality shipped or tests passed. Preserve verified reasons; mark absent design rationale unknown.
++
++
+ When this skill is invoked:
+ 
+ 1. **Read the argument** for the target version or sprint number. If a version
+@@ -19,12 +22,13 @@
+    - Run `git rev-parse --is-inside-work-tree` to confirm git is available
+    - If not a git repo, inform the user and abort gracefully
+ 
+-2. **Read the git log** since the last tag or release:
+-   ```
+-   git log --oneline [last-tag]..HEAD
+-   ```
+-   If no tags exist, read the full log or a reasonable recent range (last 100
+-   commits).
++2. **Resolve the exact release interval** before reading changes. For a named
++   released version, resolve its target tag/commit and the preceding release on
++   that release history; inspect `[base]..[target]`, not `[last-tag]..HEAD`.
++   Use HEAD only for explicitly unreleased work. For a sprint, use its actual
++   boundaries and task attribution. Record resolved commit IDs. If no base is
++   known, report the limitation; a last-100-commits sample is partial, not a full
++   release. Inspect relevant diffs and verification records, not commit titles alone.
+ 
+ 3. **Read sprint reports** from `production/sprints/` for the relevant period
+    to understand planned work and context behind changes.
+--- a/.opencode/skills/code-review/SKILL.md
++++ b/.opencode/skills/code-review/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Bash
+ ---
++
++Apply only relevant standards for the detected framework and requested scope. SOLID is a design lens, not authority to rewrite working systems. Missing required evidence yields BLOCKED, not approval.
++
+ 
+ When this skill is invoked:
+ 
+@@ -17,17 +20,17 @@
+ 
+ 4. **Evaluate against coding standards**:
+    - [ ] Public methods and classes have doc comments
+-   - [ ] Cyclomatic complexity under 10 per method
+-   - [ ] No method exceeds 40 lines (excluding data declarations)
+-   - [ ] Dependencies are injected (no static singletons for game state)
++   - [ ] Complexity follows verified project standards; a value above 10 is only a review heuristic unless adopted as a requirement
++   - [ ] Method length remains maintainable; 40 lines is not a universal rejection threshold
++   - [ ] Dependencies and state ownership follow the existing framework's verified patterns
+    - [ ] Configuration values loaded from data files
+-   - [ ] Systems expose interfaces (not concrete class dependencies)
++   - [ ] Interfaces or concrete dependencies are appropriate; do not add abstractions without a demonstrated need
+ 
+ 5. **Check architectural compliance**:
+    - [ ] Correct dependency direction (engine <- gameplay, not reverse)
+    - [ ] No circular dependencies between modules
+    - [ ] Proper layer separation (UI does not own game state)
+-   - [ ] Events/signals used for cross-system communication
++   - [ ] Cross-system communication follows verified ownership and contracts, whether direct calls, events or signals
+    - [ ] Consistent with established patterns in the codebase
+ 
+ 6. **Check SOLID compliance**:
+@@ -39,7 +42,7 @@
+ 
+ 7. **Check for common game development issues**:
+    - [ ] Frame-rate independence (delta time usage)
+-   - [ ] No allocations in hot paths (update loops)
++   - [ ] Measured hot-path allocation costs satisfy relevant budgets; static patterns are candidates, not proven bottlenecks
+    - [ ] Proper null/empty state handling
+    - [ ] Thread safety where required
+    - [ ] Resource cleanup (no leaks)
+@@ -49,7 +52,7 @@
+ ```
+ ## Code Review: [File/System Name]
+ 
+-### Standards Compliance: [X/6 passing]
++### Standards Compliance: [X/Y applicable checks passing; blocked checks listed]
+ [List failures with line references]
+ 
+ ### Architecture: [CLEAN / MINOR ISSUES / VIOLATIONS FOUND]
+@@ -70,5 +73,5 @@
+ ### Suggestions
+ [Nice-to-have improvements]
+ 
+-### Verdict: [APPROVED / APPROVED WITH SUGGESTIONS / CHANGES REQUIRED]
++### Verdict: [APPROVED / APPROVED WITH SUGGESTIONS / CHANGES REQUIRED / BLOCKED]
+ ```
+--- a/.opencode/skills/design-review/SKILL.md
++++ b/.opencode/skills/design-review/SKILL.md
+@@ -15,7 +15,10 @@
+ 3. **Read related design documents** referenced or implied by the target doc
+    (check `design/gdd/` for related systems).
+ 
+-4. **Evaluate against the Design Document Standard checklist**:
++4. **Identify the document type and use its actual project template**. The
++   following eight-section checklist is for a system GDD, not a game concept,
++   pillars document or every design artifact. Mark genuinely inapplicable sections
++   N/A with reasons; evaluate meaningful content, not just headings:
+    - [ ] Has Overview section (one-paragraph summary)
+    - [ ] Has Player Fantasy section (intended feeling)
+    - [ ] Has Detailed Rules section (unambiguous mechanics)
+@@ -28,7 +31,7 @@
+ 5. **Check for internal consistency**:
+    - Do the formulas produce values that match the described behavior?
+    - Do edge cases contradict the main rules?
+-   - Are dependencies bidirectional (does the other system know about this one)?
++   - Are dependency and dependent references consistent? Reciprocal documentation does not require bidirectional runtime coupling.
+ 
+ 6. **Check for implementability**:
+    - Are the rules precise enough for a programmer to implement without guessing?
+@@ -45,7 +48,7 @@
+ ```
+ ## Design Review: [Document Title]
+ 
+-### Completeness: [X/8 sections present]
++### Completeness: [X/Y applicable sections supported; N/A and missing evidence listed]
+ [List missing sections]
+ 
+ ### Consistency Issues
+@@ -66,7 +69,7 @@
+ 9. **Contextual next step recommendations**:
+    - If the document being reviewed is `game-concept.md` or `game-pillars.md`:
+      - Check if `design/gdd/systems-index.md` exists
+-     - If it does NOT exist, add to Recommendations:
++     - Only if it does NOT exist and the verdict is APPROVED, add to Recommendations:
+        > "This concept is ready for systems decomposition. Run `/map-systems`
+        > to break it down into individual systems with dependencies and priorities,
+        > then write per-system GDDs."
+--- a/.opencode/skills/design-system/SKILL.md
++++ b/.opencode/skills/design-system/SKILL.md
+@@ -6,6 +6,9 @@
+ allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, TodoWrite
+ ---
+ 
++Use the canonical skill-integrity rule for portable tools and existing approval. Provisional interfaces and unresolved material conflicts must remain explicitly provisional; a filled template alone does not establish design completion. Do not discard an existing GDD to satisfy this template.
++
++
+ When this skill is invoked:
+ 
+ ## 1. Parse Arguments & Validate
+@@ -15,8 +18,10 @@
+ > Run `/map-systems` first to create the systems index, then use this skill
+ > to write individual system GDDs."
+ 
+-Normalize the system name to kebab-case for the filename (e.g., "combat system"
+-becomes `combat-system`).
++Normalize the system name to a single kebab-case filename stem (e.g., "combat
++system" becomes `combat-system`). Require `^[a-z0-9]+(-[a-z0-9]+)*$`, at most
++64 characters, and reject separators, traversal and collisions. Resolve the
++actual existing document before any write; never derive a path from unchecked input.
+ 
+ ---
+ 
+@@ -82,8 +87,10 @@
+ 
+ ## 3. Create File Skeleton
+ 
+-Once the user confirms, **immediately** create the GDD file with empty section
+-headers. This ensures incremental writes have a target.
++For a genuinely new, authorized document only, create the skeleton after confirming
++that the path does not already exist. If a GDD already exists, never recreate its
++skeleton: preserve completed sections, approvals and user edits, identify missing
++sections, and resume with scoped edits. Recheck the current file before each write.
+ 
+ Use the template structure from `.opencode/docs/templates/game-design-document.md`:
+ 
+@@ -384,7 +391,7 @@
+ 
+ Present a completion summary:
+ 
+-> **GDD Complete: [System Name]**
++> **GDD Status: [Complete / In Design / In Review / BLOCKED] — [System Name]**
+ > - Sections written: [list]
+ > - Provisional assumptions: [list any assumptions about undesigned dependencies]
+ > - Cross-system conflicts found: [list or "none"]
+@@ -403,7 +410,7 @@
+ - Update the target system's row:
+   - If design-review was run and verdict is APPROVED: Status → "Approved"
+   - If design-review was run and verdict is NEEDS REVISION: Status → "In Review"
+-  - If design-review was skipped: Status → "Designed" (pending review)
++  - If design-review was skipped: Status → "Designed" only when all required content and dependencies are resolved; otherwise retain "In Design"
+   - If the user chose "I'll review it myself first": Status → "Designed"
+   - Design Doc: link to `design/gdd/[system-name].md`
+ - Update the Progress Tracker counts
+@@ -414,9 +421,9 @@
+ 
+ Update `production/session-state/active.md` with:
+ - Task: [system-name] GDD
+-- Status: Complete (or In Review if design-review was run)
++- Status: Complete only if required content/dependency checks passed; otherwise In Design, In Review or BLOCKED with exact gaps
+ - File: design/gdd/[system-name].md
+-- Sections: All 8 written
++- Sections: [actual completed/applicable count and unresolved sections]
+ - Next: [suggest next system from design order]
+ 
+ ### 5e: Suggest Next Steps
+--- a/.opencode/skills/estimate/SKILL.md
++++ b/.opencode/skills/estimate/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep
+ ---
++
++Ground estimates in explicit scope, assumptions and comparable units. Historical velocity is completed effort per interval, not merely planned-versus-actual ratio. If evidence cannot support numeric ranges, state UNKNOWN and the missing inputs; do not fabricate history, effort ratios or precision to fill the template.
++
+ 
+ When this skill is invoked:
+ 
+@@ -26,7 +29,7 @@
+ 
+ 5. **Read past sprint data** from `production/sprints/` if available:
+    - Look for similar completed tasks and their actual effort
+-   - Calculate historical velocity (planned vs actual)
++   - Calculate historical velocity from completed effort per interval; report planned-vs-actual as a separate completion/estimation metric
+    - Identify any estimation bias patterns (consistently over or under)
+ 
+ 6. **Analyze the following factors**:
+@@ -146,8 +149,7 @@
+ 
+ ### Guidelines
+ 
+-- Always give a range (optimistic / expected / pessimistic), never a single
+-  number. Single-point estimates create false precision.
++- Give a supported range (optimistic / expected / pessimistic) when estimable; otherwise report UNKNOWN and the missing evidence rather than inventing a range.
+ - The recommended budget should be the expected estimate, not the optimistic
+   one. Padding is not dishonest -- it is realistic.
+ - If confidence is Low, recommend a time-boxed spike or prototype before
+--- a/.opencode/skills/gate-check/SKILL.md
++++ b/.opencode/skills/gate-check/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Bash, Write
+ ---
++
++Discover the actual project lifecycle and accepted criteria first; these game-studio phase definitions are a template, not authority to impose new architecture, directories or platforms. Use PASS/CONCERNS/FAIL/BLOCKED: any required unavailable or unverified check yields BLOCKED. N/A needs an applicability reason, not missing runtime access. A skill invocation, heading count or file presence is not evidence its validation passed.
++
+ 
+ # Phase Gate Validation
+ 
+@@ -26,7 +29,7 @@
+ 6. **Polish** — Performance, playtesting, bug fixing
+ 7. **Release** — Launch prep, certification
+ 
+-**When a gate passes**, write the new stage name to `production/stage.txt`
++**Only when the gate passes and the stage update is authorized**, write the new stage name to `production/stage.txt`
+ (single line, e.g. `Production`). This updates the persisted stage value; no status-line renderer is supplied.
+ 
+ ---
+@@ -48,7 +51,7 @@
+ - [ ] Game pillars defined (in concept doc or `design/gdd/game-pillars.md`)
+ 
+ **Quality Checks:**
+-- [ ] Game concept has been reviewed (`/design-review` verdict not MAJOR REVISION NEEDED)
++- [ ] Applicable concept review is APPROVED for the current revision; a missing review or unresolved required revision is not a pass
+ - [ ] Core loop is described and understood
+ - [ ] Target audience is identified
+ 
+@@ -61,7 +64,7 @@
+ - [ ] At least 1 GDD in `design/gdd/` (beyond game-concept.md and systems-index.md)
+ 
+ **Quality Checks:**
+-- [ ] GDD(s) pass design review (8 required sections present)
++- [ ] GDD(s) have evidenced design-review approval for the current revision; eight headings alone do not demonstrate quality
+ - [ ] System dependencies are mapped in the systems index
+ - [ ] MVP priority tier is defined
+ 
+@@ -120,7 +123,7 @@
+ - [ ] Localization strings are externalized (no hardcoded player-facing text in `src/`)
+ - [ ] QA test plan exists
+ - [ ] Balance data has been reviewed (`/balance-check` run)
+-- [ ] Release checklist completed (`/release-checklist` or `/launch-checklist` run)
++- [ ] Applicable release-checklist evidence passes for the exact build; merely running a checklist skill is insufficient
+ - [ ] Store metadata prepared (if applicable)
+ - [ ] Changelog / patch notes drafted
+ 
+@@ -147,7 +150,7 @@
+ 
+ ### Quality Checks
+ - For test checks: Run the test suite via `Bash` if a test runner is configured
+-- For design review checks: `Read` the GDD and check for the 8 required sections
++- For design review checks: verify meaningful applicable content and current review evidence, not merely headings
+ - For performance checks: `Read` technical-preferences.md and compare against any
+   profiling data in `tests/performance/` or recent `/perf-profile` output
+ - For localization checks: `Grep` for hardcoded strings in `src/`
+@@ -198,9 +201,9 @@
+ - [Priority actions to resolve blockers]
+ - [Optional improvements that aren't blocking]
+ 
+-### Verdict: [PASS / CONCERNS / FAIL]
++### Verdict: [PASS / CONCERNS / FAIL / BLOCKED]
+ - **PASS**: All required artifacts present, all quality checks passing
+-- **CONCERNS**: Minor gaps exist but can be addressed during the next phase
++- **CONCERNS**: Only non-required improvements remain; required unverified checks are BLOCKED, not minor gaps
+ - **FAIL**: Critical blockers must be resolved before advancing
+ ```
+ 
+@@ -248,5 +251,7 @@
+ 4. **User decides**: The verdict is a recommendation — the user makes the final call
+ 5. **Get approval**: "May I write this gate check report to production/gate-checks/?"
+ 
+-**Never** block a user from advancing — the verdict is advisory. Document the risks
+-and let the user decide whether to proceed despite concerns.
++The user may make a separate project-stage decision, but do not relabel a failed
++or blocked review PASS, bypass the skill-integrity gate, or infer deployment
++permission. Record any authorized override and its unresolved risks separately;
++only the verified PASS path above may be presented as a passed gate.
+--- a/.opencode/skills/hotfix/SKILL.md
++++ b/.opencode/skills/hotfix/SKILL.md
+@@ -11,7 +11,7 @@
+ 
+ 1. **Assess the emergency** — Read the bug description or ID. Determine severity:
+    - **S1 (Critical)**: Game unplayable, data loss, security vulnerability — hotfix immediately
+-   - **S2 (Major)**: Significant feature broken, workaround exists — hotfix within 24 hours
++   - **S2 (Major)**: Significant feature broken, workaround exists — use the project's actual incident priority and response target, not an assumed 24-hour SLA
+    - If severity is S3 or lower, recommend using the normal bug fix workflow instead
+ 
+ 2. **Create the hotfix record** at `production/hotfixes/hotfix-[date]-[short-name].md`:
+@@ -44,10 +44,11 @@
+    [How to revert if the fix causes new issues]
+    ```
+ 
+-3. **Create the hotfix branch** (if git is initialized):
+-   ```
+-   git checkout -b hotfix/[short-name] [release-tag-or-main]
+-   ```
++3. **Prepare the hotfix branch only under the approved change scope**. Resolve
++   the exact affected deployed revision and actual release/branching policy first.
++   Preserve all unrelated work; do not switch a dirty worktree or assume `main`
++   is the affected release. Use a verified available branch/worktree procedure and
++   a collision-free name. Do not execute unresolved placeholder commands.
+ 
+ 4. **Investigate and implement the fix** — Focus on the minimal change that resolves the issue. Do NOT refactor, clean up, or add features alongside the hotfix.
+ 
+@@ -58,13 +59,13 @@
+ 6b. **Collect approvals** — Use the Task tool to request sign-off:
+    - `subagent_type: lead-programmer` — Review the fix for correctness and side effects
+    - `subagent_type: qa-tester` — Run targeted regression tests on the affected system
+-   - `subagent_type: producer` — Approve deployment timing and communication plan
++   - `subagent_type: producer` — Recommend timing and communication; actual deployment authorization must come from the authorized user/operator
+ 
+ 7. **Output a summary** with: severity, root cause, fix applied, testing status, and what approvals are still needed before deployment.
+ 
+ ### Rules
+ - Hotfixes must be the MINIMUM change to fix the issue — no cleanup, no refactoring, no "while we're here" changes
+ - Every hotfix must have a rollback plan documented before deployment
+-- Hotfix branches merge to BOTH the release branch AND the development branch
+-- All hotfixes require a post-incident review within 48 hours
+-- If the fix is complex enough to need more than 4 hours, escalate to technical-director for a scope decision
++- Identify required backports from actual supported branches; perform merges/cherry-picks only when explicitly authorized and validated, not unconditionally
++- Follow the actual incident-review policy; a proposed deadline is not an existing SLA
++- Escalate material uncertainty or scope growth under the actual incident policy; do not invent a four-hour threshold or promise delivery timing
+--- a/.opencode/skills/launch-checklist/SKILL.md
++++ b/.opencode/skills/launch-checklist/SKILL.md
+@@ -5,6 +5,20 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write
+ ---
++
++Before applying this checklist, resolve the exact build/release, supported targets,
++channels, threat model and adopted acceptance criteria. "All" means those verified
++project targets, not every platform in this template. Checklist items are candidates:
++mark inapplicable items N/A with a reason and required unavailable evidence BLOCKED.
++Record actual commands/results, build identity and dates for checked items; invoking
++another skill or finding a file is not proof that its checks passed. TODO/FIXME and
++logging searches yield candidates, not confirmed release blockers. Verify relevant
++current official platform/legal requirements; no agent supplies legal certification.
++Do not add analytics, autoscaling, encryption, SDKs or other infrastructure merely
++because this template lists them. Preserve verified project policies over example
++warning budgets, soak durations, response times and on-call windows. No deployment,
++publication, external communication or genuine sign-off is authorized by this audit.
++
+ 
+ When this skill is invoked:
+ 
+--- a/.opencode/skills/localize/SKILL.md
++++ b/.opencode/skills/localize/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write, Bash
+ ---
++
++Before all subcommands, discover the actual source locale, target locales, table locations, localization framework, plural/gender rules, fallback behavior and placeholder grammar. Preserve existing keys, translations and project conventions. Scan/validate/status are read-only; extract proposes a diff, not an automatic rewrite.
++
+ When this skill is invoked:
+ 
+ 1. **Parse the subcommand** from the argument:
+@@ -17,7 +20,7 @@
+    - Search `src/` for hardcoded user-facing strings:
+      - String literals in UI code that are not wrapped in a localization function
+      - Concatenated strings that should be parameterized
+-     - Strings with positional placeholders (`%s`, `%d`) instead of named ones (`{playerName}`)
++     - Placeholders incompatible with the detected localization grammar or required argument reordering; positional placeholders are not inherently invalid
+    - Search for localization anti-patterns:
+      - Date/time formatting not using locale-aware functions
+      - Number formatting without locale awareness
+@@ -38,12 +41,12 @@
+      - Missing translations (key exists but no translation for a locale)
+      - Placeholder mismatches (source has `{name}` but translation is missing it)
+      - String length violations (exceeds character limits for UI elements)
+-     - Orphaned keys (translation exists but nothing references the key in code)
++     - Potentially unused keys; check dynamic keys, scenes and resource references before classifying them as orphaned
+    - Report validation results grouped by locale and severity
+ 
+ 5. **For `status`**:
+    - Count total localizable strings
+-   - Per locale: count translated, untranslated, and stale (source changed since translation)
++   - Per locale: count translated/untranslated; infer staleness only from source-version or translation-history evidence, otherwise report UNKNOWN
+    - Generate a coverage matrix:
+ 
+    ```markdown
+@@ -52,19 +55,19 @@
+ 
+    | Locale | Total | Translated | Missing | Stale | Coverage |
+    |--------|-------|-----------|---------|-------|----------|
+-   | en (source) | [N] | [N] | 0 | 0 | 100% |
++   | [verified source locale] | [N] | [verified count] | [N] | [N or UNKNOWN] | [measured %, or N/A if total is zero] |
+    | [locale] | [N] | [N] | [N] | [N] | [X]% |
+ 
+    ### Issues
+    - [N] hardcoded strings found in source code
+    - [N] strings exceeding character limits
+    - [N] placeholder mismatches
+-   - [N] orphaned keys (can be cleaned up)
++   - [N] potentially unused keys (requires resource/dynamic-use verification; no deletion authorized)
+    ```
+ 
+ ### Rules
+-- English (en) is always the source locale
+-- Every string table entry must include a translator comment explaining context
++- Use the verified project source locale; do not assume English or create a replacement locale
++- Preserve the table format; provide translator context in supported comments/metadata without inventing schema fields
+ - Never modify translation files directly — generate diffs for review
+-- Character limits must be defined per-UI-element and enforced automatically
++- Validate actual UI constraints with the existing tooling; distinguish length checks from rendered fit and do not introduce unrequested automation
+ - Right-to-left (RTL) language support should be considered from the start, not bolted on later
+--- a/.opencode/skills/map-systems/SKILL.md
++++ b/.opencode/skills/map-systems/SKILL.md
+@@ -10,12 +10,14 @@
+ 
+ ## 1. Parse Arguments
+ 
+-Two modes:
++Three modes:
+ 
+ - **No argument**: `/map-systems` — Run the full decomposition workflow (Phases 1-5)
+   to create or update the systems index.
+ - **`next`**: `/map-systems next` — Pick the highest-priority undesigned system
+   from the index and hand off to `/design-system` (Phase 6).
++- **System name**: Resolve the exact existing index entry and use Phase 6; unknown
++  names are reported, not silently added or converted into a new scope.
+ 
+ ---
+ 
+@@ -61,8 +63,10 @@
+ 
+ ### Step 2b: Identify Implicit Systems
+ 
+-For each explicit system, identify the **hidden systems** it implies. Games always
+-need more systems than the concept doc mentions. Use this inference pattern:
++For each explicit system, propose possible supporting responsibilities. These are
++hypotheses, not mandatory systems: inventory need not have equipment, crafting need
++not have failure, and an open world need not have fast travel. Verify need and reuse
++existing boundaries before proposing new systems. Examples to evaluate:
+ 
+ - "Inventory" implies: item database, equipment slots, weight/capacity rules,
+   inventory UI, item serialization for save/load
+@@ -108,8 +112,7 @@
+ For each system, list its dependencies. Use these dependency heuristics:
+ - **Input/output dependencies**: System A produces data System B needs
+ - **Structural dependencies**: System A provides the framework System B plugs into
+-- **UI dependencies**: Every gameplay system has a corresponding UI system that
+-  depends on it (but UI is designed after the gameplay system)
++- **UI dependencies**: Map presentation dependencies only where the actual system needs them; do not require a separate UI system for every mechanic
+ 
+ ### Step 3b: Sort by Dependency Order
+ 
+@@ -118,7 +121,7 @@
+ 2. **Core**: Systems depending only on Foundation systems
+ 3. **Feature**: Systems depending on Core systems
+ 4. **Presentation**: UI and feedback systems that wrap gameplay systems
+-5. **Polish**: Meta-systems, tutorials, analytics, accessibility
++5. **Other responsibilities**: Place tutorials, analytics and accessibility according to actual requirements and dependency order; accessibility is not automatically deferred to polish
+ 
+ ### Step 3c: Detect Circular Dependencies
+ 
+@@ -132,7 +135,7 @@
+ Show the dependency map as a layered list. Highlight:
+ - Any circular dependencies
+ - Any "bottleneck" systems (many others depend on them — these are high-risk)
+-- Any systems with no dependents (leaf nodes — lower risk, can be designed late)
++- Leaf systems: few dependents do not prove low implementation, product or security risk
+ 
+ Use `AskUserQuestion` to ask: "Does this dependency ordering look right? Any
+ dependencies I'm missing or that should be removed?"
+@@ -146,8 +149,7 @@
+ ### Step 4a: Auto-Assign Based on Concept
+ 
+ Use these heuristics for initial assignment:
+-- **MVP**: Systems mentioned in the concept's "Required for MVP" section, plus their
+-  Foundation-layer dependencies
++- **MVP**: Systems in the approved MVP scope plus the full transitive closure of their hard dependencies, regardless of the heuristic layer label
+ - **Vertical Slice**: Systems needed for a complete experience in one area
+ - **Alpha**: All remaining gameplay systems
+ - **Full Vision**: Polish, meta, and nice-to-have systems
+@@ -234,7 +236,7 @@
+ 
+ The `/design-system` skill handles the full GDD authoring process:
+ - Gathers context from game concept, systems index, and dependency GDDs
+-- Creates a file skeleton immediately
++- Creates a skeleton only for a new document; otherwise preserves and resumes the existing GDD
+ - Walks through all 8 required sections one at a time (collaborative, incremental)
+ - Cross-references existing docs to prevent contradictions
+ - Routes to specialist agents for domain expertise
+--- a/.opencode/skills/patch-notes/SKILL.md
++++ b/.opencode/skills/patch-notes/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write, Bash
+ ---
++
++Every shipped behavior, balance value, rationale and performance claim must be traceable to the selected release evidence. Missing data remains unknown. Developer commentary is a labeled draft, not an invented quotation or attributed approval.
++
+ 
+ When this skill is invoked:
+ 
+@@ -15,7 +18,7 @@
+ 
+ 2. **Gather change data from multiple sources**:
+    - Read the internal changelog at `production/releases/[version]/changelog.md` if it exists
+-   - Run `git log` between the previous release tag and current tag/HEAD
++   - Resolve and record the exact base and target commits for this version, following the audited changelog release-interval contract; HEAD is only for explicitly unreleased notes
+    - Read sprint retrospectives in `production/sprints/` for context
+    - Read any balance change documents in `design/balance/`
+    - Read bug fix records from QA if available
+@@ -29,9 +32,9 @@
+    - **Known Issues**: transparency about unresolved problems
+ 
+ 4. **Translate developer language to player language**:
+-   - "Refactored damage calculation pipeline" → "Improved hit detection accuracy"
+-   - "Fixed null reference in inventory manager" → "Fixed a crash when opening inventory"
+-   - "Reduced GC allocations in combat loop" → "Improved combat performance"
++   - "Refactored damage calculation pipeline" → omit unless a player-visible change is independently verified; refactoring does not prove improved hit detection
++   - "Fixed null reference in inventory manager" → describe only the verified crash condition, not an invented trigger
++   - "Reduced GC allocations in combat loop" → claim smoother/faster play only when measured; otherwise keep this as an internal change
+    - Remove purely internal changes that don't affect players
+    - Preserve specific numbers for balance changes (damage: 50 → 45)
+ 
+--- a/.opencode/skills/perf-profile/SKILL.md
++++ b/.opencode/skills/perf-profile/SKILL.md
+@@ -21,7 +21,7 @@
+ 3. **Analyze the codebase** for common performance issues:
+ 
+    **CPU Profiling Targets**:
+-   - `_process()` / `Update()` / `Tick()` functions — list all and estimate cost
++   - `_process()` / `Update()` / `Tick()` functions — identify relevant candidates; report cost only from measurements or an explicit workload model
+    - Nested loops over large collections
+    - String operations in hot paths
+    - Allocation patterns in per-frame code
+@@ -54,12 +54,12 @@
+    Generated: [Date]
+ 
+    ### Performance Budgets
+-   | Metric | Budget | Estimated Current | Status |
++   | Metric | Verified Budget | Measured / Modeled / UNKNOWN | Evidence / Status |
+    |--------|--------|-------------------|--------|
+-   | Frame time | [16.67ms] | [estimate] | [OK/WARNING/OVER] |
+-   | Memory | [target] | [estimate] | [OK/WARNING/OVER] |
+-   | Load time | [target] | [estimate] | [OK/WARNING/OVER] |
+-   | Draw calls | [target] | [estimate] | [OK/WARNING/OVER] |
++   | Frame time | [target or UNKNOWN] | [value and method or UNKNOWN] | [evidence; OK/WARNING/OVER only with comparable evidence, otherwise UNVERIFIED] |
++   | Memory | [target or UNKNOWN] | [value and method or UNKNOWN] | [evidence; OK/WARNING/OVER only with comparable evidence, otherwise UNVERIFIED] |
++   | Load time | [target or UNKNOWN] | [value and method or UNKNOWN] | [evidence; OK/WARNING/OVER only with comparable evidence, otherwise UNVERIFIED] |
++   | Draw calls | [target or UNKNOWN] | [value and method or UNKNOWN] | [evidence; OK/WARNING/OVER only with comparable evidence, otherwise UNVERIFIED] |
+ 
+    ### Hotspots Identified
+    | # | Location | Issue | Estimated Impact | Fix Effort |
+@@ -70,11 +70,11 @@
+    ### Optimization Recommendations (Priority Order)
+    1. **[Title]** — [Description of the optimization]
+       - Location: [file:line]
+-      - Expected gain: [estimate]
++      - Gain: [measured result, supported model with assumptions, or UNKNOWN]
+       - Risk: [Low/Med/High]
+       - Approach: [How to implement]
+ 
+-   ### Quick Wins (< 1 hour each)
++   ### Candidate Small Changes (effort unverified unless supported)
+    - [Simple optimization 1]
+    - [Simple optimization 2]
+ 
+@@ -86,7 +86,7 @@
+ 
+ ### Rules
+ - Never optimize without measuring first — gut feelings about performance are unreliable
+-- Recommendations must include estimated impact — "make it faster" is not actionable
++- Recommendations must state evidence and a validation method; unknown impact remains UNKNOWN rather than an invented gain
+ - Profile on target hardware, not just development machines
+ - Distinguish between CPU-bound, GPU-bound, and I/O-bound bottlenecks
+ - Consider worst-case scenarios (maximum entities, lowest spec hardware, worst network conditions)
+--- a/.opencode/skills/project-stage-detect/SKILL.md
++++ b/.opencode/skills/project-stage-detect/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Bash
+ ---
++
++First discover actual manifests, source roots and tracking locations; the directories below are examples. Classification is a heuristic, not a phase-gate approval. Verify persisted stage provenance and report conflicts rather than blindly trusting stale stage.txt. Missing template paths do not prove missing project work.
++
+ 
+ # Project Stage Detection
+ 
+@@ -53,12 +56,12 @@
+ 
+ **Tests** (`tests/`):
+ - Count test files
+-- Estimate test coverage (rough heuristic)
++- Report coverage only from an actual coverage report with revision/scope; test-file counts do not establish coverage
+ 
+ ### 2. Classify Project Stage
+ 
+ Based on scanned artifacts, determine stage. Check `production/stage.txt` first —
+-if it exists, use its value (explicit override from `/gate-check`). Otherwise,
++if it exists, report its value and provenance separately from observed evidence. Otherwise,
+ auto-detect using these heuristics (check from most-advanced backward):
+ 
+ | Stage | Indicators |
+@@ -97,7 +100,7 @@
+ - Code: [X%] ([N] files, [systems])
+ - Architecture: [X%] ([N] ADRs, [gaps])
+ - Production: [X%] ([status])
+-- Tests: [X%] ([coverage estimate])
++- Tests: [measured coverage with source/revision, or UNKNOWN; never inferred from file count]
+ 
+ ## Gaps Identified
+ 1. [Gap description + clarifying question]
+--- a/.opencode/skills/prototype/SKILL.md
++++ b/.opencode/skills/prototype/SKILL.md
+@@ -23,8 +23,10 @@
+ 4. **Create the prototype directory**: `prototypes/[concept-name]/` where
+    `[concept-name]` is a short, kebab-case identifier derived from the concept.
+ 
+-5. **Implement the prototype** in the isolated directory. Every file must begin
+-   with:
++5. **Implement the prototype** in the isolated directory. Mark code as a
++   prototype using comments valid for its language; preserve shebangs, encoding
++   declarations and required file headers. For JSON, binary assets or other formats
++   without comments, put the marker in the prototype README instead. C-style example:
+    ```
+    // PROTOTYPE - NOT FOR PRODUCTION
+    // Question: [Core question being tested]
+@@ -33,7 +35,7 @@
+    Standards are intentionally relaxed:
+    - Hardcode values freely
+    - Use placeholder assets
+-   - Skip error handling
++   - Simplify nonessential polish, but retain critical input validation, resource limits, cleanup and security-sensitive error handling
+    - Use the simplest approach that works
+    - Copy code rather than importing from production
+ 
+--- a/.opencode/skills/release-checklist/SKILL.md
++++ b/.opencode/skills/release-checklist/SKILL.md
+@@ -5,6 +5,20 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write
+ ---
++
++Before applying this checklist, resolve the exact build/release, supported targets,
++channels, threat model and adopted acceptance criteria. "All" means those verified
++project targets, not every platform in this template. Checklist items are candidates:
++mark inapplicable items N/A with a reason and required unavailable evidence BLOCKED.
++Record actual commands/results, build identity and dates for checked items; invoking
++another skill or finding a file is not proof that its checks passed. TODO/FIXME and
++logging searches yield candidates, not confirmed release blockers. Verify relevant
++current official platform/legal requirements; no agent supplies legal certification.
++Do not add analytics, autoscaling, encryption, SDKs or other infrastructure merely
++because this template lists them. Preserve verified project policies over example
++warning budgets, soak durations, response times and on-call windows. No deployment,
++publication, external communication or genuine sign-off is authorized by this audit.
++
+ 
+ When this skill is invoked:
+ 
+--- a/.opencode/skills/retrospective/SKILL.md
++++ b/.opencode/skills/retrospective/SKILL.md
+@@ -7,6 +7,9 @@
+ context: |
+   !git log --oneline --since="2 weeks ago" 2>/dev/null
+ ---
++
++Resolve the actual sprint/milestone boundaries; the legacy two-week context snippet is not the requested period. Keep effort units comparable, guard zero/unknown denominators, and distinguish completed acceptance criteria from commits. TODO counts are marker trends, not a measurement of debt. Unknown owners, durations and deadlines remain unassigned/unknown, not invented facts.
++
+ 
+ When this skill is invoked:
+ 
+@@ -34,7 +37,7 @@
+    - Count current TODO/FIXME/HACK comments
+    - Compare to previous sprint counts if available (check previous
+      retrospectives)
+-   - Note whether technical debt is growing or shrinking
++   - Report marker-count changes only; verify underlying issues before inferring whether technical debt is growing or shrinking
+ 
+ 6. **Read previous retrospectives** (if any) from `production/sprints/` or
+    `production/milestones/` to check:
+@@ -151,7 +154,7 @@
+   better") produce vague improvements. Use data and examples.
+ - Focus on systemic issues, not individual blame.
+ - Limit action items to 3-5. More than that dilutes focus.
+-- Every action item must have an owner and a deadline.
++- Record confirmed owners/deadlines; otherwise label them proposed or unassigned, not agreed commitments.
+ - Check whether previous action items were completed. Recurring unaddressed
+   items are a process smell.
+ - If this is a milestone retrospective, also evaluate whether the milestone
+--- a/.opencode/skills/reverse-document/SKILL.md
++++ b/.opencode/skills/reverse-document/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
+ ---
++
++Inspect an existing destination before writing; preserve approved documentation and make only the scoped update. Distinguish observed code behavior, user-confirmed intent, inferred hypotheses and proposed changes. Unknown intent may remain explicitly unknown in a draft; do not invent it or silently correct implementation through documentation. Preserve source revision and actual verification status.
++
+ 
+ # Reverse Documentation
+ 
+@@ -122,9 +125,9 @@
+ 
+ | Type | Template | Output Path |
+ |------|----------|-------------|
+-| `design` | `templates/design-doc-from-implementation.md` | `design/gdd/[system-name].md` |
+-| `architecture` | `templates/architecture-doc-from-code.md` | `docs/architecture/[decision-name].md` |
+-| `concept` | `templates/concept-doc-from-prototype.md` | `prototypes/[name]/CONCEPT.md` or `design/concepts/[name].md` |
++| `design` | `.opencode/docs/templates/design-doc-from-implementation.md` | `design/gdd/[system-name].md` |
++| `architecture` | `.opencode/docs/templates/architecture-doc-from-code.md` | `docs/architecture/[decision-name].md` |
++| `concept` | `.opencode/docs/templates/concept-doc-from-prototype.md` | `prototypes/[name]/CONCEPT.md` or `design/concepts/[name].md` |
+ 
+ **Draft structure**:
+ - Capture **what exists** (mechanics, patterns, implementation)
+@@ -162,8 +165,8 @@
+ ---
+ status: reverse-documented
+ source: src/gameplay/combat/
+-date: 2026-02-13
+-verified-by: [User name]
++date: [actual generation date]
++verified-by: [actual reviewer, or UNVERIFIED]
+ ---
+ 
+ # Combat System Design
+--- a/.opencode/skills/scope-check/SKILL.md
++++ b/.opencode/skills/scope-check/SKILL.md
+@@ -60,14 +60,13 @@
+    4. **Flag**: [Items that need a decision from producer/creative-director]
+    ```
+ 
+-4. **Output the scope check** with a clear verdict:
+-   - **On Track**: Scope within 10% of original
+-   - **Minor Creep**: 10-25% scope increase — manageable with adjustments
+-   - **Significant Creep**: 25-50% scope increase — need to cut or extend timeline
+-   - **Out of Control**: >50% scope increase — stop and re-plan
++4. **Output an evidence-based verdict**: WITHIN APPROVED SCOPE, APPROVED CHANGE,
++   UNAPPROVED EXPANSION, or UNVERIFIED. Separate authorization from schedule risk.
++   Item counts are not comparable effort: one large addition can dominate many
++   small tasks. Use risk thresholds only if the project adopted and justified them.
+ 
+ ### Rules
+-- Scope creep is additions without corresponding cuts or timeline extensions
++- Scope creep is unapproved expansion relative to the agreed baseline; cuts or extra time do not themselves authorize new features
+ - Not all additions are bad — some are discovered requirements. But they must be acknowledged and accounted for.
+ - When recommending cuts, prioritize preserving the core player experience over nice-to-haves
+-- Always quantify scope changes — "it feels bigger" is not actionable, "+35% items" is
++- Quantify supported raw counts and comparable effort separately. With an empty/unknown baseline, percentages are N/A/UNKNOWN; never divide by zero or infer effort from item count.
+--- a/.opencode/skills/setup-engine/SKILL.md
++++ b/.opencode/skills/setup-engine/SKILL.md
+@@ -6,15 +6,19 @@
+ allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Task
+ ---
+ 
++Before any recommendation or write, perform the project/version discovery described in section 6. A requested version is a target, not an installed version. Retain existing engine, languages, build pipeline, import tooling and conventions; example stacks below are proposals only, not proof that optional packages (such as Addressables or GDExtension) are installed or needed.
++
++
+ When this skill is invoked:
+ 
+ ## 1. Parse Arguments
+ 
+-Three modes:
++Four modes (recognize `refresh` before interpreting an engine name):
+ 
+ - **Full spec**: `/setup-engine godot 4.6` — engine and version provided
+ - **Engine only**: `/setup-engine unity` — engine provided, version will be looked up
+-- **No args**: `/setup-engine` — fully guided mode (engine recommendation + version)
++- **No args**: `/setup-engine` — guided mode, unless existing project evidence already resolves the choice
++- **Refresh**: `/setup-engine refresh` — use section 10 without changing the installed engine/version
+ 
+ ---
+ 
+@@ -66,7 +70,7 @@
+ Once the engine is chosen:
+ 
+ - If version was provided, use it
+-- If no version provided, use WebSearch to find the latest stable release:
++- If no version is provided, retain the verified installed/pinned version. Only for a new choice or an explicitly requested upgrade, verify the suitable stable release using official sources:
+   - Search: `"[engine] latest stable version [current year]"`
+   - Confirm with the user: "The latest stable [engine] is [version]. Use this?"
+ 
+@@ -260,7 +264,7 @@
+ After setup is complete, output:
+ 
+ ```
+-Engine Setup Complete
++Engine Setup Result (complete only if required project verification passed)
+ =====================
+ Engine:          [name] [version]
+ Evidence Status: [VERIFIED FOR THIS PROJECT / UNVERIFIED / BLOCKED]
+@@ -282,7 +286,7 @@
+ 
+ ## Guardrails
+ 
+-- NEVER guess an engine version — always verify via WebSearch or user confirmation
++- NEVER guess an installed engine version: verify project/tool evidence; user confirmation establishes a requested target, not compatibility
+ - NEVER overwrite existing reference docs without asking — append or update
+ - If reference docs already exist for a different engine, ask before replacing
+ - Always show the user what you're about to change before making OPENCODE.md edits
+--- a/.opencode/skills/sprint-plan/SKILL.md
++++ b/.opencode/skills/sprint-plan/SKILL.md
+@@ -7,6 +7,9 @@
+ context: |
+   !ls production/sprints/ 2>/dev/null
+ ---
++
++Resolve new/update/status before any write. Use actual capacity and compatible effort units; report UNKNOWN rather than inventing velocity, completion percentages or ETAs. A zero task denominator produces N/A, not division by zero.
++
+ 
+ When this skill is invoked:
+ 
+@@ -32,7 +35,7 @@
+ 
+ ## Capacity
+ - Total days: [X]
+-- Buffer (20%): [Y days reserved for unplanned work]
++- Buffer: [verified project policy or explicit proposal; not an assumed 20%]
+ - Available: [Z days]
+ 
+ ## Tasks
+@@ -68,7 +71,15 @@
+ - [ ] Code reviewed and merged
+ ```
+ 
+-For `status`:
++For `update`:
++
++5. Read the exact current sprint before editing. Preserve task IDs, completed work,
++   approvals, history and unrelated user changes. Apply only requested/approved
++   deltas; do not regenerate the plan or silently add future features. Reconcile
++   remaining capacity, dependencies, blocked work and acceptance criteria from
++   evidence. Show the scoped diff and retain the existing sprint identity.
++
++For `status` (read-only):
+ 
+ 5. **Generate a status report**:
+ 
+--- a/.opencode/skills/start/SKILL.md
++++ b/.opencode/skills/start/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, AskUserQuestion
+ ---
++
++Resolve actual manifests and source roots before the template-path checks below. A missing src/ directory or unfilled technical-preferences template does not prove the project is empty or has no engine. Reuse existing user answers and skip questions already resolved by the request or inspected project; report unknowns rather than redirecting on an incomplete scan.
++
+ 
+ # Guided Onboarding
+ 
+--- a/.opencode/skills/team-audio/SKILL.md
++++ b/.opencode/skills/team-audio/SKILL.md
+@@ -24,13 +24,13 @@
+ 
+ ## How to Delegate
+ 
+-Use the Task tool to spawn each team member as a subagent:
++Use the installed delegation capability only for the needed, audited team members:
+ - `subagent_type: audio-director` — Sonic identity, emotional tone, audio palette
+ - `subagent_type: sound-designer` — SFX specifications, audio events, mixing groups
+ - `subagent_type: technical-artist` — Audio middleware, bus structure, memory budgets
+ - `subagent_type: gameplay-programmer` — Audio manager, gameplay triggers, adaptive music
+ 
+-Always provide full context in each agent's prompt (feature description, existing audio assets, design doc references).
++Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources.
+ 
+ 3. **Orchestrate the audio team** in sequence:
+ 
+--- a/.opencode/skills/team-combat/SKILL.md
++++ b/.opencode/skills/team-combat/SKILL.md
+@@ -7,10 +7,12 @@
+ ---
+ When this skill is invoked, orchestrate the combat team through a structured pipeline.
+ 
+-**Decision Points:** At each phase transition, use `AskUserQuestion` to present
+-the user with the subagent's proposals as selectable options. Write the agent's
+-full analysis in conversation, then capture the decision with concise labels.
+-The user must approve before moving to the next phase.
++**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host
++capabilities, scoped approval and one-writer execution. Present concise findings
++and ask only for unresolved material decisions; reuse approval already given.
++Delegate only needed subtasks to available agents whose definitions and dependencies
++have passed review. If delegation is unavailable, report that limitation; never
++claim an agent ran or fabricate its result.
+ 
+ ## Team Composition
+ - **game-designer** — Design the mechanic, define formulas and edge cases
+@@ -22,7 +24,7 @@
+ 
+ ## How to Delegate
+ 
+-Use the Task tool to spawn each team member as a subagent:
++Use the installed delegation capability only for the needed, audited team members:
+ - `subagent_type: game-designer` — Design the mechanic, define formulas and edge cases
+ - `subagent_type: gameplay-programmer` — Implement the core gameplay code
+ - `subagent_type: ai-programmer` — Implement NPC/enemy AI behavior
+@@ -30,7 +32,7 @@
+ - `subagent_type: sound-designer` — Define audio events, impact sounds, ambient audio
+ - `subagent_type: qa-tester` — Write test cases and validate implementation
+ 
+-Always provide full context in each agent's prompt (design doc path, relevant code files, constraints). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 3 agents can run simultaneously).
++Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources.
+ 
+ ## Pipeline
+ 
+@@ -46,8 +48,8 @@
+ - Identify integration points with existing systems
+ - Output: architecture sketch with file list and interface definitions
+ 
+-### Phase 3: Implementation (parallel where possible)
+-Delegate in parallel:
++### Phase 3: Implementation (one writer; isolated read-only work may overlap)
++Delegate sequentially for shared-file writes; isolated read-only analysis may run in parallel:
+ - **gameplay-programmer**: Implement core combat mechanic code
+ - **ai-programmer**: Implement AI behaviors (if the feature involves NPC reactions)
+ - **technical-artist**: Create VFX and shader effects
+--- a/.opencode/skills/team-level/SKILL.md
++++ b/.opencode/skills/team-level/SKILL.md
+@@ -25,7 +25,7 @@
+ 
+ ## How to Delegate
+ 
+-Use the Task tool to spawn each team member as a subagent:
++Use the installed delegation capability only for the needed, audited team members:
+ - `subagent_type: narrative-director` — Narrative purpose, characters, emotional arc
+ - `subagent_type: world-builder` — Lore context, environmental storytelling, world rules
+ - `subagent_type: level-designer` — Spatial layout, pacing, encounters, navigation
+@@ -33,7 +33,7 @@
+ - `subagent_type: art-director` — Visual theme, color palette, lighting, asset requirements
+ - `subagent_type: qa-tester` — Test cases, boundary testing, playtest checklist
+ 
+-Always provide full context in each agent's prompt (game concept, pillars, existing level docs, narrative docs).
++Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources.
+ 
+ 3. **Orchestrate the level design team** in sequence:
+ 
+--- a/.opencode/skills/team-narrative/SKILL.md
++++ b/.opencode/skills/team-narrative/SKILL.md
+@@ -5,12 +5,17 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, TodoWrite
+ ---
++
++Respect established narrative intent, including deliberately unresolved mysteries. Do not invent canon or force a true answer where none is defined. Dialogue limits come from the actual presentation/localization constraints, not a universal character count.
++
+ When this skill is invoked, orchestrate the narrative team through a structured pipeline.
+ 
+-**Decision Points:** At each phase transition, use `AskUserQuestion` to present
+-the user with the subagent's proposals as selectable options. Write the agent's
+-full analysis in conversation, then capture the decision with concise labels.
+-The user must approve before moving to the next phase.
++**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host
++capabilities, scoped approval and one-writer execution. Present concise findings
++and ask only for unresolved material decisions; reuse approval already given.
++Delegate only needed subtasks to available agents whose definitions and dependencies
++have passed review. If delegation is unavailable, report that limitation; never
++claim an agent ran or fabricate its result.
+ 
+ ## Team Composition
+ - **narrative-director** — Story arcs, character design, dialogue strategy, narrative vision
+@@ -20,13 +25,13 @@
+ 
+ ## How to Delegate
+ 
+-Use the Task tool to spawn each team member as a subagent:
++Use the installed delegation capability only for the needed, audited team members:
+ - `subagent_type: narrative-director` — Story arcs, character design, narrative vision
+ - `subagent_type: writer` — Dialogue writing, lore entries, in-game text
+ - `subagent_type: world-builder` — World rules, faction design, history, geography
+ - `subagent_type: level-designer` — Level layouts that serve the narrative, pacing
+ 
+-Always provide full context in each agent's prompt (narrative brief, lore dependencies, character profiles). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 2 agents can run simultaneously).
++Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources.
+ 
+ ## Pipeline
+ 
+@@ -38,10 +43,10 @@
+ - Specify any lore dependencies or new lore this introduces
+ - Output: narrative brief with story requirements
+ 
+-### Phase 2: World Foundation (parallel)
+-Delegate in parallel:
++### Phase 2: World Foundation (one writer for shared files)
++Delegate sequentially for shared-file writes; isolated read-only analysis may run in parallel:
+ - **world-builder**: Create or update lore entries for factions, locations, and history relevant to this content. Cross-reference against existing lore for contradictions. Set canon level for new entries.
+-- **writer**: Draft character dialogue using voice profiles. Ensure all lines are under 120 characters, use named placeholders for variables, and are localization-ready.
++- **writer**: Draft character dialogue using voice profiles. Use the actual UI length/fit constraints and localization placeholder grammar; do not impose a universal 120-character limit.
+ 
+ ### Phase 3: Level Narrative Integration
+ Delegate to **level-designer**:
+@@ -55,7 +60,7 @@
+ - Review all dialogue against character voice profiles
+ - Verify lore consistency across new and existing entries
+ - Confirm narrative pacing aligns with level design
+-- Check that all mysteries have documented "true answers"
++- Check established canon and explicitly intentional ambiguity; only require true answers where the approved narrative defines them
+ 
+ ### Phase 5: Polish
+ - Writer reviews all text for localization readiness
+--- a/.opencode/skills/team-polish/SKILL.md
++++ b/.opencode/skills/team-polish/SKILL.md
+@@ -5,12 +5,17 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
+ ---
++
++Apply only the requested polish scope and verified performance/accessibility targets. Examples such as camera shake or ambient effects are not authorization to add new features. Readiness concerns the reviewed feature/build, not the entire game by inference.
++
+ When this skill is invoked, orchestrate the polish team through a structured pipeline.
+ 
+-**Decision Points:** At each phase transition, use `AskUserQuestion` to present
+-the user with the subagent's proposals as selectable options. Write the agent's
+-full analysis in conversation, then capture the decision with concise labels.
+-The user must approve before moving to the next phase.
++**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host
++capabilities, scoped approval and one-writer execution. Present concise findings
++and ask only for unresolved material decisions; reuse approval already given.
++Delegate only needed subtasks to available agents whose definitions and dependencies
++have passed review. If delegation is unavailable, report that limitation; never
++claim an agent ran or fabricate its result.
+ 
+ ## Team Composition
+ - **performance-analyst** — Profiling, optimization, memory analysis, frame budget
+@@ -20,13 +25,13 @@
+ 
+ ## How to Delegate
+ 
+-Use the Task tool to spawn each team member as a subagent:
++Use the installed delegation capability only for the needed, audited team members:
+ - `subagent_type: performance-analyst` — Profiling, optimization, memory analysis
+ - `subagent_type: technical-artist` — VFX polish, shader optimization, visual quality
+ - `subagent_type: sound-designer` — Audio polish, mixing, ambient layers
+ - `subagent_type: qa-tester` — Edge case testing, regression testing, soak testing
+ 
+-Always provide full context in each agent's prompt (target feature/area, performance budgets, known issues). Launch independent agents in parallel where the pipeline allows it (e.g., Phases 3 and 4 can run simultaneously).
++Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources.
+ 
+ ## Pipeline
+ 
+@@ -46,7 +51,7 @@
+ - Verify optimizations don't change gameplay behavior
+ - Output: optimized code with before/after metrics
+ 
+-### Phase 3: Visual Polish (parallel with Phase 2)
++### Phase 3: Visual Polish (sequence shared-file writes after Phase 2)
+ Delegate to **technical-artist**:
+ - Review VFX for quality and consistency with art bible
+ - Optimize particle systems and shader effects
+@@ -54,7 +59,7 @@
+ - Ensure effects degrade gracefully on lower settings
+ - Output: polished visual effects
+ 
+-### Phase 4: Audio Polish (parallel with Phase 2)
++### Phase 4: Audio Polish (sequence shared-file writes)
+ Delegate to **sound-designer**:
+ - Review audio events for completeness (are any actions missing sound feedback?)
+ - Check audio mix levels — nothing too loud or too quiet relative to the mix
+--- a/.opencode/skills/team-release/SKILL.md
++++ b/.opencode/skills/team-release/SKILL.md
+@@ -5,12 +5,17 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
+ ---
++
++A team or producer recommendation is not deployment authorization. Report READY only for the exact tested artifact, environment and applicable criteria; required missing checks are BLOCKED. Deployment and monitoring require explicit scope and real configured tooling/owners. Do not promise background monitoring or treat an agent role as a human sign-off.
++
+ When this skill is invoked, orchestrate the release team through a structured pipeline.
+ 
+-**Decision Points:** At each phase transition, use `AskUserQuestion` to present
+-the user with the subagent's proposals as selectable options. Write the agent's
+-full analysis in conversation, then capture the decision with concise labels.
+-The user must approve before moving to the next phase.
++**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host
++capabilities, scoped approval and one-writer execution. Present concise findings
++and ask only for unresolved material decisions; reuse approval already given.
++Delegate only needed subtasks to available agents whose definitions and dependencies
++have passed review. If delegation is unavailable, report that limitation; never
++claim an agent ran or fabricate its result.
+ 
+ ## Team Composition
+ - **release-manager** — Release branch, versioning, changelog, deployment
+@@ -20,13 +25,13 @@
+ 
+ ## How to Delegate
+ 
+-Use the Task tool to spawn each team member as a subagent:
++Use the installed delegation capability only for the needed, audited team members:
+ - `subagent_type: release-manager` — Release branch, versioning, changelog, deployment
+ - `subagent_type: qa-lead` — Test sign-off, regression suite, release quality gate
+ - `subagent_type: devops-engineer` — Build pipeline, artifacts, deployment automation
+ - `subagent_type: producer` — Go/no-go decision, stakeholder communication
+ 
+-Always provide full context in each agent's prompt (version number, milestone status, known issues). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 3 agents can run simultaneously).
++Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources.
+ 
+ ## Pipeline
+ 
+@@ -35,7 +40,7 @@
+ - Confirm all milestone acceptance criteria are met
+ - Identify any scope items deferred from this release
+ - Set the target release date and communicate to team
+-- Output: release authorization with scope confirmation
++- Output: readiness recommendation and scope confirmation; obtain actual operator authorization separately before deployment
+ 
+ ### Phase 2: Release Candidate
+ Delegate to **release-manager**:
+@@ -46,12 +51,12 @@
+ - Output: release branch name and checklist
+ 
+ ### Phase 3: Quality Gate (parallel)
+-Delegate in parallel:
++Delegate sequentially for shared-file writes; isolated read-only analysis may run in parallel:
+ - **qa-lead**: Execute full regression test suite. Test all critical paths. Verify no S1/S2 bugs. Sign off on quality.
+ - **devops-engineer**: Build release artifacts for all target platforms. Verify builds are clean and reproducible. Run automated tests in CI.
+ 
+ ### Phase 4: Localization and Performance
+-Delegate (can run in parallel with Phase 3 if resources available):
++Delegate (parallel only for isolated read-only checks with separate resources; no shared-file writes):
+ - Verify all strings are translated (delegate to localization-lead if available)
+ - Run performance benchmarks against targets (delegate to performance-analyst if available)
+ - Output: localization and performance sign-off
+@@ -69,7 +74,7 @@
+ - Generate changelog using `/changelog`
+ - Deploy to staging for final smoke test
+ - Deploy to production
+-- Monitor for 48 hours post-release
++- Define the actual approved post-release monitoring window, responsible operator and configured monitoring system; no implicit background agent execution
+ 
+ ### Phase 7: Post-Release
+ - **release-manager**: Generate release report (what shipped, what was deferred, metrics)
+--- a/.opencode/skills/team-ui/SKILL.md
++++ b/.opencode/skills/team-ui/SKILL.md
+@@ -5,12 +5,17 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
+ ---
++
++Validate only the actual supported input/platform targets, including touch where relevant. Do not impose gamepad support on a touch-only product. Keep authoritative business state in its existing owner; local presentation state may remain in UI.
++
+ When this skill is invoked, orchestrate the UI team through a structured pipeline.
+ 
+-**Decision Points:** At each phase transition, use `AskUserQuestion` to present
+-the user with the subagent's proposals as selectable options. Write the agent's
+-full analysis in conversation, then capture the decision with concise labels.
+-The user must approve before moving to the next phase.
++**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host
++capabilities, scoped approval and one-writer execution. Present concise findings
++and ask only for unresolved material decisions; reuse approval already given.
++Delegate only needed subtasks to available agents whose definitions and dependencies
++have passed review. If delegation is unavailable, report that limitation; never
++claim an agent ran or fabricate its result.
+ 
+ ## Team Composition
+ - **ux-designer** — User flows, wireframes, accessibility, input handling
+@@ -19,12 +24,12 @@
+ 
+ ## How to Delegate
+ 
+-Use the Task tool to spawn each team member as a subagent:
++Use the installed delegation capability only for the needed, audited team members:
+ - `subagent_type: ux-designer` — User flows, wireframes, accessibility, input handling
+ - `subagent_type: ui-programmer` — UI framework, screens, widgets, data binding
+ - `subagent_type: art-director` — Visual style, layout polish, art bible consistency
+ 
+-Always provide full context in each agent's prompt (feature requirements, existing UI patterns, platform targets). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 4 review agents can run simultaneously).
++Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources.
+ 
+ ## Pipeline
+ 
+@@ -32,7 +37,7 @@
+ Delegate to **ux-designer**:
+ - Define the user flow for this feature (entry points, states, exit points)
+ - Create wireframes for each screen/state
+-- Specify interaction patterns: how does keyboard/mouse AND gamepad navigate this?
++- Specify interaction patterns for the verified supported devices (touch, keyboard/mouse, gamepad or others as applicable)
+ - Define accessibility requirements: text sizes, contrast, colorblind safety
+ - Identify data the UI needs to display (what game state does it read?)
+ - Output: UX spec with wireframes and interaction map
+@@ -50,14 +55,14 @@
+ - Implement the UI following the UX spec and visual design
+ - Ensure UI NEVER owns or modifies game state — display only, events for actions
+ - All text through localization system — no hardcoded strings
+-- Support both input methods (keyboard/mouse + gamepad)
++- Support the actual approved input targets without introducing unrequested platforms
+ - Implement accessibility features (text scaling, colorblind mode support)
+ - Wire up data binding to game state
+ - Output: implemented UI feature
+ 
+ ### Phase 4: Review (parallel)
+-Delegate in parallel:
+-- **ux-designer**: Verify implementation matches wireframes and interaction spec. Test keyboard-only and gamepad-only navigation. Check accessibility.
++Delegate sequentially for shared-file writes; isolated read-only analysis may run in parallel:
++- **ux-designer**: Verify implementation matches wireframes and interaction spec. Test each supported navigation method separately, including touch where applicable. Check accessibility.
+ - **art-director**: Verify visual consistency with art bible. Check at minimum and maximum supported resolutions.
+ 
+ ### Phase 5: Polish
+--- a/.opencode/skills/tech-debt/SKILL.md
++++ b/.opencode/skills/tech-debt/SKILL.md
+@@ -5,6 +5,9 @@
+ user-invocable: true
+ allowed-tools: Read, Glob, Grep, Write
+ ---
++
++Scan findings are candidates: FIXME markers, file size and age do not alone prove bugs, debt or obsolete dependencies. Verify impact and current project/version requirements before recommending a repair.
++
+ When this skill is invoked:
+ 
+ 1. **Parse the subcommand** from the argument:
+@@ -37,7 +40,10 @@
+ 
+ 4. **For `prioritize`**:
+    - Read the debt register
+-   - Score each item by: `(impact_if_unfixed * frequency_of_encounter) / fix_effort`
++   - Use `(impact_if_unfixed * frequency_of_encounter) / fix_effort` only when
++     all factors have a documented numeric scale and effort is positive and
++     comparable. Otherwise rank qualitatively with evidence and uncertainty;
++     do not calculate using S/M/L/XL or divide by zero.
+    - Re-sort the register by priority score
+    - Recommend which items to include in the next sprint
+ 
+@@ -56,7 +62,7 @@
+ ```markdown
+ ## Technical Debt Register
+ Last updated: [Date]
+-Total items: [N] | Estimated total effort: [T-shirt sizes summed]
++Total items: [N] | Effort: [distribution by size; sum only calibrated compatible numeric units]
+ 
+ | ID | Category | Description | Files | Effort | Impact | Priority | Added | Sprint |
+ |----|----------|-------------|-------|--------|--------|----------|-------|--------|
+--- a/README.md
++++ b/README.md
+@@ -72,11 +72,24 @@
+ ## Targeted correctness revision
+ 
+ The existing **Skill Audit & Repair** capability is strengthened, not duplicated.
+-See [the current audit, exact findings and regression results](docs/skill-audit/2026-09-28-correctness/REPORT.md).
++See [the earlier correctness audit and its regression results](docs/skill-audit/2026-09-28-correctness/REPORT.md).
+ It clarifies the no-reliance gate and read-only reporting, repairs the existing model
+ editor and compaction content scan, and preserves the original capabilities and
+ empty installation-specific trust registry. Prior audit reports remain historical evidence,
+ not automatic approval of this revised or newly installed copy.
++
++---
++
++## Source-first maintenance review
++
++The [maintenance review and verification log](docs/skill-audit/2026-09-28-maintenance/REPORT.md)
++records a source review of all 43 supplied skills, targeted corrections to 31 existing
++skill files, bounded design-preview repairs, and a deterministic test fixture fix.
++All 60 Node tests and 87 Python tests passed locally, including source-contract checks;
++this is not an OpenCode integration or game-runtime certification. The per-skill
++register, original/final hashes, patch, negative-case evidence and outstanding
++installation requirements are included. No skills/agents were added or removed and
++no runtime approvals were fabricated. Historical reports remain unchanged.
+ 
+ ---
+ 
+--- a/tests/skill-system/test_repairs.py
++++ b/tests/skill-system/test_repairs.py
+@@ -200,6 +200,100 @@
+         self.assertEqual(result.returncode,0,result.stderr)
+         self.assertIn('TODO(owner): confirm the design',result.stdout)
+ 
++    # Maintenance regressions: executable hook behavior, not LLM compliance claims.
++    def design_file(self, data, name='review.md'):
++        p=self.repo/'design/gdd'/name
++        p.parent.mkdir(parents=True, exist_ok=True)
++        p.write_bytes(data if isinstance(data, bytes) else data.encode('utf-8'))
++        return p
++
++    def assert_design_blocked(self):
++        r=self.hook('pre-compact.sh')
++        self.assertEqual(r.returncode,2,r.stderr)
++        self.assertNotIn('PRIVATE-CANARY',r.stdout+r.stderr)
++        self.assertEqual(r.stdout,'')
++        self.assertFalse((self.repo/'production/session-logs/compaction-log.txt').exists())
++        return r
++
++    def test_maintenance_design_terminal_controls_block_before_output(self):
++        self.design_file('TODO \x1b[31mPRIVATE-CANARY\x1b[0m\n')
++        self.assert_design_blocked()
++
++    def test_maintenance_design_c1_controls_block_before_output(self):
++        self.design_file('TODO \u009bPRIVATE-CANARY')
++        self.assert_design_blocked()
++
++    def test_maintenance_design_invalid_utf8_blocks_before_output(self):
++        self.design_file(b'TODO \xffPRIVATE-CANARY')
++        self.assert_design_blocked()
++
++    def test_maintenance_design_oversize_blocks_before_output(self):
++        self.design_file(b'TODO '+b'x'*(1024*1024))
++        self.assert_design_blocked()
++
++    def test_maintenance_design_at_input_limit_has_bounded_excerpt(self):
++        p=self.design_file(b'TODO '+b'x'*(1024*1024-5))
++        r=self.hook('pre-compact.sh')
++        self.assertEqual(r.returncode,0,r.stderr)
++        self.assertLess(len(r.stdout.encode()),35000)
++        self.assertIn('[line truncated]',r.stdout)
++        self.assertEqual(p.stat().st_size,1024*1024)
++
++    def test_maintenance_design_preview_caps_matching_lines(self):
++        self.design_file(('TODO '+ 'x'*240+'\n')*1000)
++        r=self.hook('pre-compact.sh')
++        self.assertEqual(r.returncode,0,r.stderr)
++        self.assertIn('1000 matching lines',r.stdout)
++        self.assertIn('preview truncated',r.stdout)
++        self.assertLess(len(r.stdout.encode()),35000)
++
++    def test_maintenance_design_aggregate_limit_blocks(self):
++        for i in range(9):self.design_file(b'x'*(1024*1024),f'{i}.md')
++        self.assert_design_blocked()
++
++    def test_maintenance_design_document_count_limit_blocks(self):
++        for i in range(257):self.design_file('',f'{i}.md')
++        self.assert_design_blocked()
++
++    def test_maintenance_design_namespace_entry_limit_blocks(self):
++        folder=self.repo/'design/gdd';folder.mkdir(parents=True)
++        for i in range(4097):(folder/f'{i}.txt').touch()
++        self.assert_design_blocked()
++
++    def test_maintenance_design_control_filename_blocks(self):
++        self.design_file('TODO private','unsafe\nname.md')
++        self.assert_design_blocked()
++
++    def test_maintenance_design_directory_with_md_suffix_blocks(self):
++        p=self.repo/'design/gdd/folder.md';p.mkdir(parents=True)
++        self.assert_design_blocked()
++
++    @unittest.skipUnless(hasattr(os,'mkfifo'), 'FIFO fixtures require POSIX')
++    def test_maintenance_design_fifo_blocks_without_hanging(self):
++        p=self.repo/'design/gdd/input.md';p.parent.mkdir(parents=True);os.mkfifo(p)
++        r=subprocess.run(['bash',str(ROOT/'.opencode/hooks/pre-compact.sh')],
++                         cwd=self.repo,capture_output=True,text=True,timeout=5)
++        self.assertEqual(r.returncode,2);self.assertEqual(r.stdout,'')
++
++    def test_maintenance_design_utf8_and_no_marker_advisories_preserved(self):
++        p=self.design_file('TODO: مراجعة التصميم\n')
++        r=self.hook('pre-compact.sh');self.assertEqual(r.returncode,0,r.stderr)
++        self.assertIn('مراجعة التصميم',r.stdout)
++        p.write_text('# Existing design\n',encoding='utf-8')
++        r=self.hook('pre-compact.sh');self.assertEqual(r.returncode,0,r.stderr)
++        self.assertIn('not proof of completeness',r.stdout)
++
++    def test_maintenance_design_read_error_propagates(self):
++        self.design_file('TODO inspect')
++        spec=importlib.util.spec_from_file_location('maintenance_hooks',ROOT/'.opencode/scripts/hook-checks.py')
++        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
++        prior=Path.cwd()
++        try:
++            os.chdir(self.repo)
++            with patch.object(module,'bounded_text',side_effect=PermissionError('fixture unreadable')):
++                with self.assertRaises(PermissionError):module.design_wip()
++        finally:os.chdir(prior)
++
+ class ModelTests(unittest.TestCase):
+     def setUp(self):
+         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
+@@ -235,7 +329,11 @@
+         before=self.snapshot();(self.repo/'.opencode/opencode.json').write_text('{bad')
+         self.assertEqual(self.run_update().returncode,2);self.assertEqual(self.snapshot(),before)
+     def test_duplicate_model_field_preflight_changes_nothing(self):
+-        p=next((self.repo/'.opencode/agents').glob('*.md'));t=p.read_text();p.write_text(t.replace('mode: subagent','model: duplicate/value\nmode: subagent'))
++        # Explicit duplicate fixture: glob order and inherited-model agents are irrelevant.
++        p=self.repo/'.opencode/agents/duplicate-fixture.md'
++        p.write_text('---\ndescription: duplicate model fixture\nmode: subagent\n'
++                     'model: original/value\nmodel: duplicate/value\n---\nFixture only.\n')
++        self.assertEqual(p.read_text().split('---')[1].count('model:'), 2)
+         before=self.snapshot();self.assertEqual(self.run_update().returncode,2);self.assertEqual(self.snapshot(),before)
+     def test_body_examples_preserved(self):
+         p=self.repo/'.opencode/agents/lead-programmer.md';p.write_text(p.read_text()+'\nmodel: preserve/body-example\n')
+@@ -398,4 +496,50 @@
+             text=(ROOT/relative).read_text()
+             self.assertRegex(text, r'(?:Dependent\s+work|Do not extend)[\s\S]{0,240}IN_REVIEW',relative)
+ 
++    # These are source-contract regressions, not end-to-end agent evaluations.
++    def test_maintenance_exact_source_first_loop_present(self):
++        text=(ROOT/'.opencode/rules/skill-integrity.md').read_text()
++        self.assertIn('INSPECT → VALIDATE → DETECT → CORRECT → REVIEW → VERIFY → USE',text)
++        self.assertIn('plain-text question',text)
++
++    def test_maintenance_locale_and_prototype_contracts(self):
++        locale=(ROOT/'.opencode/skills/localize/SKILL.md').read_text()
++        prototype=(ROOT/'.opencode/skills/prototype/SKILL.md').read_text()
++        self.assertNotIn('English (en) is always',locale)
++        self.assertIn('verified project source locale',locale)
++        self.assertIn('preserve shebangs',prototype)
++        self.assertNotIn('Skip error handling',prototype)
++
++    def test_maintenance_resume_and_update_contracts(self):
++        design=(ROOT/'.opencode/skills/design-system/SKILL.md').read_text()
++        sprint=(ROOT/'.opencode/skills/sprint-plan/SKILL.md').read_text()
++        self.assertIn('never recreate its',design)
++        self.assertIn('For `update`:',sprint)
++        self.assertIn('Preserve task IDs',sprint)
++
++    def test_maintenance_release_claims_not_fabricated(self):
++        patchnotes=(ROOT/'.opencode/skills/patch-notes/SKILL.md').read_text()
++        changelog=(ROOT/'.opencode/skills/changelog/SKILL.md').read_text()
++        self.assertNotIn('→ "Improved hit detection accuracy"',patchnotes)
++        self.assertIn('only when measured',patchnotes)
++        self.assertIn('[base]..[target]',changelog)
++
++    def test_maintenance_metrics_require_evidence(self):
++        debt=(ROOT/'.opencode/skills/tech-debt/SKILL.md').read_text()
++        template=(ROOT/'.opencode/docs/templates/project-stage-report.md').read_text()
++        self.assertNotIn('T-shirt sizes summed',debt)
++        self.assertIn('effort is positive',debt)
++        self.assertIn('Source/test-file counts do not establish',template)
++
++    def test_maintenance_teams_do_not_mandate_parallel_writes(self):
++        for skill in (ROOT/'.opencode/skills').glob('team-*/SKILL.md'):
++            text=skill.read_text()
++            self.assertIn('Sequence all shared-file writes',text,skill.name)
++            self.assertNotIn('Delegate in parallel:',text,skill.name)
++
++    def test_maintenance_gate_keeps_required_unknowns_blocked(self):
++        text=(ROOT/'.opencode/skills/gate-check/SKILL.md').read_text()
++        self.assertIn('any required unavailable or unverified check yields BLOCKED',text)
++        self.assertNotIn('verdict not MAJOR REVISION NEEDED',text)
++
+ if __name__=='__main__':unittest.main()

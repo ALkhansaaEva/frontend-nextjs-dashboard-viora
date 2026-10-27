@@ -1,189 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-hooks/preserve-manual-memoization */
 'use client';
 
 import { useEffect, useMemo, memo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  LayoutDashboard,
-  Users,
-  Shield,
-  Settings,
-  ShoppingBag,
-  User,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Lock,
-  Wallet,
-  Bell,
-  Trophy,
-  Gift,
-  FileText,
-  Skull,
-  Mic,
-  LifeBuoy,
-  Crown,
-  CreditCard,
-  Landmark,
-} from 'lucide-react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { useSidebarStore } from '@/store/sidebar.store';
 import { useAuthStore } from '@/store/auth.store';
-import { can } from '@/lib/auth/permissions';
-
-interface NavItem {
-  href: string;
-  Icon: typeof LayoutDashboard;
-  label: string;
-  labelAr: string;
-  permission?: string;
-}
-
-interface SidebarSection {
-  id: string;
-  label: string;
-  labelAr: string;
-  icon: typeof LayoutDashboard;
-  items: NavItem[];
-  sectionPermission?: string;
-}
-
-const SIDEBAR_SECTIONS: SidebarSection[] = [
-  {
-    id: 'dashboard',
-    label: 'Dashboard',
-    labelAr: 'لوحة التحكم',
-    icon: LayoutDashboard,
-    items: [
-      { href: '/dashboard', Icon: LayoutDashboard, label: 'Dashboard', labelAr: 'لوحة التحكم' },
-    ]
-  },
-  {
-    id: 'system',
-    label: 'System',
-    labelAr: 'النظام',
-    icon: Settings,
-    sectionPermission: 'manage_config',
-    items: [
-      { href: '/dashboard/roles', Icon: Shield, label: 'Roles', labelAr: 'الأدوار', permission: 'manage_roles' },
-      { href: '/dashboard/permissions', Icon: Lock, label: 'Permissions', labelAr: 'الصلاحيات', permission: 'manage_permissions' },
-      { href: '/dashboard/settings', Icon: Settings, label: 'Configs', labelAr: 'الإعدادات', permission: 'manage_config' },
-    ]
-  },
-  {
-    id: 'users',
-    label: 'Users',
-    labelAr: 'المستخدمون',
-    icon: Users,
-    sectionPermission: 'view_users',
-    items: [
-      { href: '/dashboard/users', Icon: Users, label: 'Users', labelAr: 'المستخدمون', permission: 'view_users' },
-    ]
-  },
-  {
-    id: 'moderation',
-    label: 'Moderation',
-    labelAr: 'الإشراف',
-    icon: Skull,
-    sectionPermission: 'manage_reports',
-    items: [
-      { href: '/dashboard/reports', Icon: FileText, label: 'Reports', labelAr: 'التقارير', permission: 'manage_reports' },
-      { href: '/dashboard/moderation', Icon: Skull, label: 'Sanctions', labelAr: 'العقوبات', permission: 'global_ban' },
-    ]
-  },
-  {
-    id: 'rooms',
-    label: 'Rooms',
-    labelAr: 'الغرف',
-    icon: Mic,
-    sectionPermission: 'manage_all_rooms',
-    items: [
-      { href: '/dashboard/rooms', Icon: Mic, label: 'Rooms', labelAr: 'الغرف', permission: 'manage_all_rooms' },
-    ]
-  },
-  {
-    id: 'support',
-    label: 'Support',
-    labelAr: 'الدعم',
-    icon: LifeBuoy,
-    sectionPermission: 'manage_tickets',
-    items: [
-      { href: '/dashboard/support', Icon: LifeBuoy, label: 'Tickets', labelAr: 'التذاكر', permission: 'manage_tickets' },
-    ]
-  },
-  {
-    id: 'store',
-    label: 'Store',
-    labelAr: 'المتجر',
-    icon: ShoppingBag,
-    sectionPermission: 'view_transactions',
-    items: [
-      { href: '/dashboard/store', Icon: ShoppingBag, label: 'Store', labelAr: 'المتجر', permission: 'view_transactions' },
-    ]
-  },
-  {
-    id: 'gifts',
-    label: 'Gifts',
-    labelAr: 'الهدايا',
-    icon: Gift,
-    sectionPermission: 'manage_gift',
-    items: [
-      { href: '/dashboard/gifts', Icon: Gift, label: 'Gifts Catalog', labelAr: 'الهدايا', permission: 'manage_gift' },
-    ]
-  },
-  {
-    id: 'achievements',
-    label: 'Achievements',
-    labelAr: 'الإنجازات',
-    icon: Trophy,
-    sectionPermission: 'manage_games',
-    items: [
-      { href: '/dashboard/achievements', Icon: Trophy, label: 'Achievements', labelAr: 'الإنجازات', permission: 'manage_games' },
-    ]
-  },
-  {
-    id: 'rank',
-    label: 'Ranks',
-    labelAr: 'الترتيب',
-    icon: Crown,
-    sectionPermission: 'manage_games',
-    items: [
-      { href: '/dashboard/ranks', Icon: Crown, label: 'Ranks', labelAr: 'الترتيب', permission: 'manage_games' },
-    ]
-  },
-  {
-    id: 'profile',
-    label: 'Profile',
-    labelAr: 'الملف الشخصي',
-    icon: User,
-    items: [
-      { href: '/dashboard/profile', Icon: User, label: 'My Profile', labelAr: 'ملفي' },
-    ]
-  },
-  {
-    id: 'finance',
-    label: 'Finance',
-    labelAr: 'المالية',
-    icon: Landmark,
-    sectionPermission: 'adjust_balance',
-    items: [
-      { href: '/dashboard/wallets', Icon: Wallet, label: 'Wallets', labelAr: 'المحافظ', permission: 'adjust_balance' },
-      { href: '/dashboard/payments', Icon: CreditCard, label: 'Payments', labelAr: 'المدفوعات', permission: 'view_transactions' },
-      { href: '/dashboard/wallet', Icon: Wallet, label: 'My Wallet', labelAr: 'محفظتي' },
-    ]
-  },
-  {
-    id: 'notifications',
-    label: 'Notifications',
-    labelAr: 'الإشعارات',
-    icon: Bell,
-    items: [
-      { href: '/dashboard/notifications', Icon: Bell, label: 'Notifications', labelAr: 'الإشعارات' },
-    ]
-  },
-];
+import { hasAny, hasAll } from '@/lib/auth/permissions';
+import {
+  ADMIN_SECTIONS,
+  getRoutesForSection,
+  matchActiveNavRoute,
+  type AdminRouteDefinition,
+} from '@/lib/admin/admin-routes';
 
 function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
   const pathname = usePathname();
@@ -193,7 +24,7 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     const checkDesktop = () => {
       const desktop = window.innerWidth >= 1024;
       setIsDesktop(desktop);
@@ -201,38 +32,52 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
         closeMobile();
       }
     };
-    
+
     checkDesktop();
     window.addEventListener('resize', checkDesktop);
     return () => window.removeEventListener('resize', checkDesktop);
   }, [isMobileOpen, closeMobile]);
 
-  const hasPermission = (permission?: string) => {
-    if (!permission) return true;
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.style.overflow = isMobileOpen && !isDesktop ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileOpen, isDesktop]);
+
+  const hasRouteAccess = (route: AdminRouteDefinition) => {
+    if (route.requiredPermissions.length === 0) return true;
     if (!isAuthenticated) return false;
-    if (userPermissions.some((p) => p === 'admin.full_access' || p === 'admin.all')) return true;
-    return can(userPermissions, permission);
+    return route.matchMode === 'all'
+      ? hasAll(userPermissions, route.requiredPermissions)
+      : hasAny(userPermissions, route.requiredPermissions);
   };
 
-  const hasSectionAccess = (sectionPermission?: string) => {
-    if (!sectionPermission) return true;
-    return hasPermission(sectionPermission);
-  };
+  const activeRouteId = matchActiveNavRoute(pathname)?.id;
 
-  const isActive = (href: string) => pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
-
-  const sidebarWidth = isCollapsed ? 'w-20' : 'w-64';
+  // A desktop collapse preference must never collapse the mobile drawer.
+  // Otherwise opening the menu on a phone produces an unusable 80px rail.
+  const visuallyCollapsed = isDesktop && isCollapsed;
+  const sidebarWidth = visuallyCollapsed ? 'w-20' : 'w-64';
 
   const showMobileOverlay = isMobileOpen;
 
+  // Single source of truth: src/lib/admin/admin-routes.ts drives both the Sidebar
+  // and route-level authorization (RouteAuthorization.tsx) — no independent nav list here.
   const visibleSections = useMemo(() => {
-    return SIDEBAR_SECTIONS.filter(section => hasSectionAccess(section.sectionPermission));
+    return ADMIN_SECTIONS
+      .map((section) => ({
+        section,
+        items: getRoutesForSection(section.id).filter(hasRouteAccess),
+      }))
+      .filter((entry) => entry.items.length > 0);
   }, [userPermissions, isAuthenticated]);
 
   return (
     <>
       {showMobileOverlay && !isDesktop && (
-        <div 
+        <div
           className="fixed inset-0 z-40 lg:hidden"
           onClick={closeMobile}
           role="button"
@@ -245,15 +90,15 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
 
       <aside
         className={cn(
-          "fixed top-0 h-screen z-50 flex flex-col",
+          "fixed top-0 z-[60] flex h-[100dvh] flex-col",
           "bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl",
           "border-e border-gray-200/50 dark:border-gray-700/50",
           "transition-all duration-300 ease-in-out",
           sidebarWidth,
           isRTL ? "right-0" : "left-0",
           "lg:translate-x-0",
-          isMobileOpen ? "translate-x-0" : isRTL 
-            ? "translate-x-full" 
+          isMobileOpen ? "translate-x-0" : isRTL
+            ? "translate-x-full"
             : "-translate-x-full"
         )}
       >
@@ -261,7 +106,7 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
           "h-16 flex items-center justify-between px-4 shrink-0",
           "border-b border-gray-200/50 dark:border-gray-700/50"
         )}>
-          {!isCollapsed && (
+          {!visuallyCollapsed && (
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-indigo-600/20">
                 <span className="text-white font-bold text-lg">V</span>
@@ -274,7 +119,7 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
               </div>
             </div>
           )}
-          {isCollapsed && (
+          {visuallyCollapsed && (
             <div className="w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-indigo-600/20">
               <span className="text-white font-bold text-lg">V</span>
             </div>
@@ -285,13 +130,13 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
         </div>
 
         <nav className="flex-1 p-3 space-y-4 overflow-y-auto overflow-x-hidden">
-          {visibleSections.map((section) => {
+          {visibleSections.map(({ section, items }) => {
             const SectionIcon = section.icon;
-            const sectionLabel = isRTL ? section.labelAr : section.label;
-            
+            const sectionLabel = isRTL ? section.titleAr : section.title;
+
             return (
               <div key={section.id} className="space-y-1">
-                {!isCollapsed && (
+                {!visuallyCollapsed && (
                   <div className="flex items-center gap-2 px-3 py-1">
                     <SectionIcon className="w-4 h-4 text-gray-400" />
                     <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -299,28 +144,28 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
                     </span>
                   </div>
                 )}
-                {section.items.filter(item => hasPermission(item.permission)).map((item) => {
-                  const IconComp = item.Icon;
-                  const isPageActive = isActive(item.href);
-                  const label = isRTL ? item.labelAr : item.label;
+                {items.map((route) => {
+                  const IconComp = route.icon;
+                  const isPageActive = activeRouteId === route.id;
+                  const label = isRTL ? route.titleAr : route.title;
 
                   return (
                     <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={closeMobile}
+                      key={route.id}
+                      href={route.path}
+                      onClick={isMobileOpen ? closeMobile : undefined}
                       className={cn(
                         "flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium",
                         "transition-all duration-200 ease-out",
                         isPageActive
                           ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/25"
                           : "text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/80",
-                        isCollapsed && "justify-center px-0"
+                        visuallyCollapsed && "justify-center px-0"
                       )}
-                      title={isCollapsed ? label : undefined}
+                      title={visuallyCollapsed ? label : undefined}
                     >
                       <IconComp className={cn("w-5 h-5 flex-shrink-0", isPageActive && "text-white")} />
-                      {!isCollapsed && <span className="truncate">{label}</span>}
+                      {!visuallyCollapsed && <span className="truncate">{label}</span>}
                     </Link>
                   );
                 })}
@@ -329,18 +174,18 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
           })}
         </nav>
 
-        <div className={cn("p-3 border-t border-gray-200/50 dark:border-gray-700/50 shrink-0", isCollapsed && "px-2")}>
+        <div className={cn("p-3 border-t border-gray-200/50 dark:border-gray-700/50 shrink-0", visuallyCollapsed && "px-2")}>
           <button
             onClick={toggleSidebar}
             className={cn(
-              "w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl",
+              "hidden w-full items-center justify-center gap-2 px-3 py-2.5 rounded-xl lg:flex",
               "text-sm font-medium text-gray-500 dark:text-gray-400",
               "hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors",
-              isCollapsed && "px-2"
+              visuallyCollapsed && "px-2"
             )}
-            title={isCollapsed ? (isRTL ? 'توسيع' : 'Expand') : (isRTL ? 'طي' : 'Collapse')}
+            title={visuallyCollapsed ? (isRTL ? 'توسيع' : 'Expand') : (isRTL ? 'طي' : 'Collapse')}
           >
-            {isCollapsed ? (
+            {visuallyCollapsed ? (
               isRTL ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />
             ) : (
               <>
@@ -349,8 +194,8 @@ function SidebarComponent({ isRTL = false }: { isRTL?: boolean }) {
               </>
             )}
           </button>
-          
-          {!isCollapsed && (
+
+          {!visuallyCollapsed && (
             <div className="text-center mt-3 pt-3 border-t border-gray-200/50 dark:border-gray-700/50">
               <p className="text-xs font-medium text-gray-400 dark:text-gray-500">Viora Admin v1.0.0</p>
             </div>

@@ -1,0 +1,14 @@
+test_agent_log_duplicate_key_rejected (test_repairs.HookTests.test_agent_log_duplicate_key_rejected) ... ok
+test_agent_log_injection_rejected (test_repairs.HookTests.test_agent_log_injection_rejected) ... ok
+test_agent_log_malformed_input_rejected (test_repairs.HookTests.test_agent_log_malformed_input_rejected) ... ok
+test_agent_log_symlink_refused (test_repairs.HookTests.test_agent_log_symlink_refused) ... ok
+test_agent_log_write_failure_reported (test_repairs.HookTests.test_agent_log_write_failure_reported) ... ok
+test_asset_outside_repo_rejected (test_repairs.HookTests.test_asset_outside_repo_rejected) ... ok
+test_compound_commit_without_spaces_is_refused (test_repairs.HookTests.test_compound_commit_without_spaces_is_refused) ... ok
+test_deleted_staged_file_not_read (test_repairs.HookTests.test_deleted_staged_file_not_read) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 19.249s
+
+OK
+SHARD_RESULT={"ids": ["test_repairs.HookTests.test_agent_log_duplicate_key_rejected", "test_repairs.HookTests.test_agent_log_injection_rejected", "test_repairs.HookTests.test_agent_log_malformed_input_rejected", "test_repairs.HookTests.test_agent_log_symlink_refused", "test_repairs.HookTests.test_agent_log_write_failure_reported", "test_repairs.HookTests.test_asset_outside_repo_rejected", "test_repairs.HookTests.test_compound_commit_without_spaces_is_refused", "test_repairs.HookTests.test_deleted_staged_file_not_read"], "run": 8, "failures": 0, "errors": 0, "skipped": 0, "success": true}

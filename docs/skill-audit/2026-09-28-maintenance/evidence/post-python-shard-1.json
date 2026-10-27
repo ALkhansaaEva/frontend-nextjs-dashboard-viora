@@ -1,0 +1,22 @@
+{
+  "shard": 1,
+  "test_ids": [
+    "test_repairs.HookTests.test_agent_log_injection_rejected",
+    "test_repairs.HookTests.test_invalid_asset_json_reports_failure",
+    "test_repairs.HookTests.test_maintenance_design_directory_with_md_suffix_blocks",
+    "test_repairs.HookTests.test_maintenance_design_terminal_controls_block_before_output",
+    "test_repairs.HookTests.test_repair_checkpoint_fifo_rejected_without_hanging",
+    "test_repairs.HookTests.test_revision_compaction_rejects_design_file_symlink",
+    "test_repairs.HookTests.test_valid_agent_log_omits_other_payload_fields",
+    "test_repairs.ModelTests.test_inherited_models_remain_inherited",
+    "test_repairs.ModelTests.test_revision_multiline_model_rejected_without_changes",
+    "test_repairs.StructureTests.test_every_skill_has_a_real_command",
+    "test_repairs.StructureTests.test_maintenance_teams_do_not_mandate_parallel_writes"
+  ],
+  "tests": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 8.392,
+  "exit_code": 0
+}

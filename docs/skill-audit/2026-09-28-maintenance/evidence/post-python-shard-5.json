@@ -1,0 +1,22 @@
+{
+  "shard": 5,
+  "test_ids": [
+    "test_repairs.HookTests.test_asset_outside_repo_rejected",
+    "test_repairs.HookTests.test_maintenance_design_aggregate_limit_blocks",
+    "test_repairs.HookTests.test_maintenance_design_namespace_entry_limit_blocks",
+    "test_repairs.HookTests.test_no_staged_files",
+    "test_repairs.HookTests.test_repair_log_fifo_rejected_without_hanging",
+    "test_repairs.HookTests.test_session_stop_retains_state_when_log_unwritable",
+    "test_repairs.ModelTests.test_body_examples_preserved",
+    "test_repairs.ModelTests.test_rejects_shell_and_sed_metacharacters_without_changes",
+    "test_repairs.ModelTests.test_revision_unsupported_root_yaml_rejected_without_changes",
+    "test_repairs.StructureTests.test_maintenance_locale_and_prototype_contracts",
+    "test_repairs.StructureTests.test_revision_policy_blocks_every_unapproved_state"
+  ],
+  "tests": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 13.896,
+  "exit_code": 0
+}

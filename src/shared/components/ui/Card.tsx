@@ -14,15 +14,15 @@ interface CardProps {
 export function Card({ children, className, padding = 'md', hover = false, onClick }: CardProps) {
   const paddingStyles = { 
     none: '', 
-    sm: 'p-3', 
-    md: 'p-4', 
-    lg: 'p-6' 
+    sm: 'p-2.5 sm:p-3',
+    md: 'p-3 sm:p-4',
+    lg: 'p-4 sm:p-6',
   };
 
   return (
     <div 
       className={cn(
-        'bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700',
+        'min-w-0 max-w-full rounded-xl border border-gray-200 bg-white shadow-sm sm:rounded-2xl dark:border-gray-700 dark:bg-gray-800',
         paddingStyles[padding], 
         hover && 'hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300',
         className
@@ -35,15 +35,15 @@ export function Card({ children, className, padding = 'md', hover = false, onCli
 }
 
 export function CardHeader({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn('mb-4', className)}>{children}</div>;
+  return <div className={cn('mb-3 min-w-0 sm:mb-4', className)}>{children}</div>;
 }
 
 export function CardTitle({ children, className }: { children: ReactNode; className?: string }) {
-  return <h3 className={cn('text-lg font-bold text-gray-900 dark:text-white', className)}>{children}</h3>;
+  return <h3 className={cn('break-words text-base font-bold text-gray-900 sm:text-lg dark:text-white', className)}>{children}</h3>;
 }
 
 export function CardContent({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn('', className)}>{children}</div>;
+  return <div className={cn('min-w-0 max-w-full overflow-x-auto overscroll-x-contain', className)}>{children}</div>;
 }
 
 export default Card;

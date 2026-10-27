@@ -1,6 +1,6 @@
 import apiClient from './api.client';
 
-interface SystemRank {
+export interface SystemRank {
   id: string;
   code: string;
   titleI18n: Record<string, string>;
@@ -11,7 +11,7 @@ interface SystemRank {
   createdAt?: string;
 }
 
-interface RoomRank {
+export interface RoomRank {
   id: string;
   roomId: string;
   code: string;
@@ -19,17 +19,32 @@ interface RoomRank {
   priority: number;
 }
 
-interface RankAssignment {
+export interface SystemRankAssignment {
   id: string;
   userId: string;
   rankId: string;
+  rank: SystemRank;
   note?: string;
   assignedAt: string;
-  assignedBy?: string;
-  user?: {
-    id: string;
-    nickname: string;
-  };
+  assignedByUserId?: string;
+}
+
+export interface RoomRankAssignment {
+  id: string;
+  roomId: string;
+  userId: string;
+  roomRankId: string;
+  roomRank: RoomRank;
+  note?: string;
+  assignedAt: string;
+  assignedByUserId?: string;
+  expiresAt?: string;
+}
+
+export interface RoomRankTemplate {
+  code: string;
+  titleI18n: Record<string, string>;
+  priority: number;
 }
 
 export const ranksService = {
@@ -68,16 +83,16 @@ export const ranksService = {
     await apiClient.post(`/ranks/system/revoke/${userId}/${rankId}`);
   },
 
-  async getUserSystemRanks(userId: string): Promise<RankAssignment[]> {
-    const response = await apiClient.get<RankAssignment[] | { data: RankAssignment[] }>(`/ranks/system/user/${userId}`);
+  async getUserSystemRanks(userId: string): Promise<SystemRankAssignment[]> {
+    const response = await apiClient.get<SystemRankAssignment[] | { data: SystemRankAssignment[] }>(`/ranks/system/user/${userId}`);
     if (Array.isArray(response)) return response;
-    return (response as { data: RankAssignment[] }).data || [];
+    return (response as { data: SystemRankAssignment[] }).data || [];
   },
 
-  async getMySystemRanks(): Promise<SystemRank[]> {
-    const response = await apiClient.get<SystemRank[] | { data: SystemRank[] }>('/ranks/system/me');
+  async getMySystemRanks(): Promise<SystemRankAssignment[]> {
+    const response = await apiClient.get<SystemRankAssignment[] | { data: SystemRankAssignment[] }>('/ranks/system/me');
     if (Array.isArray(response)) return response;
-    return (response as { data: SystemRank[] }).data || [];
+    return (response as { data: SystemRankAssignment[] }).data || [];
   },
 
   async getRoomRanks(roomId: string): Promise<RoomRank[]> {
@@ -103,25 +118,21 @@ export const ranksService = {
     await apiClient.post(`/ranks/room/revoke/${roomId}/${userId}/${roomRankId}`);
   },
 
-  async getUserRoomRanks(roomId: string, userId: string): Promise<RoomRank[]> {
-    const response = await apiClient.get<RoomRank[] | { data: RoomRank[] }>(`/ranks/room/${roomId}/user/${userId}`);
+  async getUserRoomRanks(roomId: string, userId: string): Promise<RoomRankAssignment[]> {
+    const response = await apiClient.get<RoomRankAssignment[] | { data: RoomRankAssignment[] }>(`/ranks/room/${roomId}/user/${userId}`);
     if (Array.isArray(response)) return response;
-    return (response as { data: RoomRank[] }).data || [];
+    return (response as { data: RoomRankAssignment[] }).data || [];
   },
 
-  async getRoomRanksList(): Promise<{ id: string; code: string; titleI18n: Record<string, string> }[]> {
+  async getRoomRanksList(): Promise<RoomRankTemplate[]> {
     const response = await apiClient.get<unknown>('/ranks/rooms');
-    if (Array.isArray(response)) return response as { id: string; code: string; titleI18n: Record<string, string> }[];
-    const r = response as { data?: { id: string; code: string; titleI18n: Record<string, string> }[] };
+    if (Array.isArray(response)) return response as RoomRankTemplate[];
+    const r = response as { data?: RoomRankTemplate[] };
     return r.data || [];
   },
 
-  async getMyRoomRank(roomId: string): Promise<RoomRank | null> {
-    try {
-      return await apiClient.get<RoomRank>(`/ranks/room/${roomId}/me`);
-    } catch {
-      return null;
-    }
+  async getMyRoomRanks(roomId: string): Promise<RoomRankAssignment[]> {
+    return apiClient.get<RoomRankAssignment[]>(`/ranks/room/${roomId}/me`);
   },
 
   async revokeSystemRankByPath(userId: string, rankId: string): Promise<void> {

@@ -1,0 +1,7 @@
+{
+  "check": "git apply --check; apply in disposable copy; compare all original files to final source",
+  "status": "PASS",
+  "files_compared": 326,
+  "changed_files": 10,
+  "baseline_modified": false
+}

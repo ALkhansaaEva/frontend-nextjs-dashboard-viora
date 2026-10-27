@@ -1,0 +1,16 @@
+test_agent_log_injection_rejected (test_repairs.HookTests.test_agent_log_injection_rejected) ... ok
+test_invalid_asset_json_reports_failure (test_repairs.HookTests.test_invalid_asset_json_reports_failure) ... ok
+test_maintenance_design_directory_with_md_suffix_blocks (test_repairs.HookTests.test_maintenance_design_directory_with_md_suffix_blocks) ... ok
+test_maintenance_design_terminal_controls_block_before_output (test_repairs.HookTests.test_maintenance_design_terminal_controls_block_before_output) ... ok
+test_repair_checkpoint_fifo_rejected_without_hanging (test_repairs.HookTests.test_repair_checkpoint_fifo_rejected_without_hanging) ... ok
+test_revision_compaction_rejects_design_file_symlink (test_repairs.HookTests.test_revision_compaction_rejects_design_file_symlink) ... ok
+test_valid_agent_log_omits_other_payload_fields (test_repairs.HookTests.test_valid_agent_log_omits_other_payload_fields) ... ok
+test_inherited_models_remain_inherited (test_repairs.ModelTests.test_inherited_models_remain_inherited) ... ok
+test_revision_multiline_model_rejected_without_changes (test_repairs.ModelTests.test_revision_multiline_model_rejected_without_changes) ... ok
+test_every_skill_has_a_real_command (test_repairs.StructureTests.test_every_skill_has_a_real_command) ... ok
+test_maintenance_teams_do_not_mandate_parallel_writes (test_repairs.StructureTests.test_maintenance_teams_do_not_mandate_parallel_writes) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 8.391s
+
+OK

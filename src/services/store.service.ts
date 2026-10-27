@@ -1,8 +1,8 @@
 import apiClient from '@/lib/api/api-client';
-import { 
-  CreateStoreItemSchema, type CreateStoreItemRequest, 
+import {
+  CreateStoreItemSchema, type CreateStoreItemRequest,
   CreateStoreBundleSchema, type CreateStoreBundleRequest,
-  UpdateStoreItemSchema, UpdateStoreBundleSchema 
+  UpdateStoreItemSchema, UpdateStoreBundleSchema
 } from '@/dto/store';
 import type { PaginatedResponse, ListParams } from '@/types';
 
@@ -19,11 +19,19 @@ export interface StoreItem {
   description?: Record<string, string>;
   assets: Asset[];
   styleConfig: Record<string, unknown>;
-  priceGems: number;
-  priceCoins: number;
+  /** Backend `StoreItem.priceGameCurrency` — numeric(30,0), read back as a
+   * string; `null` when the item has no price set (not for sale directly). */
+  priceGameCurrency: string | null;
   isActive: boolean;
   isStackable: boolean;
   defaultExpiryHours: number | null;
+  /** Edit-only on the backend (UpdateItemDto); null when never scheduled. */
+  availabilityStartsAt?: string | null;
+  availabilityEndsAt?: string | null;
+  /** Edit-only ordering weight on the backend (UpdateItemDto). */
+  displayPriority?: number;
+  /** Edit-only availability flag on the backend (UpdateItemDto). */
+  isLimitedTime?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -41,6 +49,16 @@ export interface Asset {
   tags: string[];
 }
 
+/** Body of POST /store/admin/items/:id/assets (CreateItemAssetDto). */
+export type CreateAssetPayload = {
+  kind: string;
+  purpose: string;
+  url: string;
+  platform?: string;
+  version?: number;
+  tags?: string[];
+};
+
 export interface StoreBundleItem {
   id: string;
   bundleId: string;
@@ -54,9 +72,8 @@ export interface StoreBundle {
   sku: string;
   title: Record<string, string>;
   description?: Record<string, string>;
-  iconUrl?: string;
-  priceGems?: number;
-  priceCoins?: number;
+  /** Backend `StoreBundle.priceGameCurrency` — numeric(30,0), required, read back as a string. */
+  priceGameCurrency: string;
   isActive: boolean;
   items?: StoreBundleItem[];
   createdAt?: string;
@@ -78,27 +95,69 @@ interface LoadoutItem {
   item: StoreItem;
 }
 
+/** GET /store/admin/stats — nested counters, not the flat shape we assumed. */
+export interface StoreStats {
+  items: { total: number; active: number };
+  bundles: { total: number; active: number };
+  purchases: { total: number; last7Days: number };
+  revenue: { last7DaysGameCurrency: number };
+}
+
+/** Filters the admin item list actually accepts. */
+export interface AdminItemParams extends ListParams {
+  isActive?: boolean;
+  scope?: string;
+  gameType?: string;
+  slot?: string;
+}
+
+export interface AdminBundleParams extends ListParams {
+  isActive?: boolean;
+}
+
+export interface AdminPurchaseParams extends ListParams {
+  userId?: string;
+  itemId?: string;
+  bundleId?: string;
+  status?: string;
+}
+
+/** Every admin list answers `{ data, total, limit, offset }` — no page/totalPages. */
 interface RawPaginatedResponse<T> {
   data?: T[];
   total?: number;
-  page?: number;
   limit?: number;
-  totalPages?: number;
+  offset?: number;
 }
 
-function normalizePaginatedResponse<T>(response: unknown, mapFn?: (item: T) => T): PaginatedResponse<T> {
-  const raw = response as RawPaginatedResponse<T>;
-  const data = raw.data || [];
+function normalizePaginatedResponse<T>(
+  raw: RawPaginatedResponse<T>,
+  requested: { page: number; limit: number },
+): PaginatedResponse<T> {
+  const data = raw.data ?? [];
+  const total = raw.total ?? data.length;
+  const limit = raw.limit || requested.limit;
+  const offset = raw.offset ?? (requested.page - 1) * requested.limit;
+
   return {
-    data: mapFn ? data.map(mapFn) : data,
-    total: raw.total || data.length,
-    page: raw.page || 1,
-    limit: raw.limit || data.length,
-    totalPages: raw.totalPages || 1,
+    data,
+    total,
+    page: Math.floor(offset / limit) + 1,
+    limit,
+    totalPages: Math.max(1, Math.ceil(total / limit)),
   };
 }
 
+/** Public list endpoints answer a bare array. */
+function toArray<T>(response: T[] | { data?: T[] }): T[] {
+  if (Array.isArray(response)) return response;
+  return response.data ?? [];
+}
+
 export const storeService = {
+  // ==================== PUBLIC ====================
+
+  /** GET /store/items — bare array, active only. Accepts scope/gameType/slot only. */
   async getItems(filters?: {
     scope?: string;
     gameType?: string;
@@ -112,15 +171,12 @@ export const storeService = {
     const query = searchParams.toString();
     const url = query ? `/store/items?${query}` : '/store/items';
 
-    const response = await apiClient.get<StoreItem[] | { data: StoreItem[] }>(url);
-    if (Array.isArray(response)) return response;
-    return (response as { data: StoreItem[] }).data || [];
+    return toArray(await apiClient.get<StoreItem[] | { data: StoreItem[] }>(url));
   },
 
+  /** GET /store/bundles — bare array, active only. */
   async getBundles(): Promise<StoreBundle[]> {
-    const response = await apiClient.get<StoreBundle[] | { data: StoreBundle[] }>('/store/bundles');
-    if (Array.isArray(response)) return response;
-    return (response as { data: StoreBundle[] }).data || [];
+    return toArray(await apiClient.get<StoreBundle[] | { data: StoreBundle[] }>('/store/bundles'));
   },
 
   async purchaseBundle(bundleId: string): Promise<void> {
@@ -131,21 +187,28 @@ export const storeService = {
     await apiClient.post(`/store/purchase/item/${itemId}`);
   },
 
-  async getInventory(params?: ListParams): Promise<PaginatedResponse<InventoryItem>> {
+  /**
+   * GET /store/inventory — bare array, unpaginated. It accepts only
+   * sortBy/filter/gameType/slot (no limit/offset, no total).
+   */
+  async getInventory(filters?: {
+    sortBy?: 'rarity' | 'acquiredAt' | 'gameType' | 'slot';
+    filter?: 'equipped' | 'available' | 'expired';
+    gameType?: string;
+    slot?: string;
+  }): Promise<InventoryItem[]> {
     const searchParams = new URLSearchParams();
-
-    if (params?.page) {
-      const offset = (params.page - 1) * (params.limit || 20);
-      searchParams.set('offset', offset.toString());
-    }
-    if (params?.limit) searchParams.set('limit', params.limit.toString());
-    if (params?.search) searchParams.set('filter', params.search);
+    if (filters?.sortBy) searchParams.set('sortBy', filters.sortBy);
+    if (filters?.filter) searchParams.set('filter', filters.filter);
+    if (filters?.gameType) searchParams.set('gameType', filters.gameType);
+    if (filters?.slot) searchParams.set('slot', filters.slot);
 
     const query = searchParams.toString();
-    const url = query ? `/store/inventory?${query}` : '/store/inventory';
-
-    const response = await apiClient.get<RawPaginatedResponse<InventoryItem>>(url);
-    return normalizePaginatedResponse(response);
+    return toArray(
+      await apiClient.get<InventoryItem[] | { data: InventoryItem[] }>(
+        query ? `/store/inventory?${query}` : '/store/inventory',
+      ),
+    );
   },
 
   async equipItem(inventoryId: string): Promise<void> {
@@ -157,15 +220,15 @@ export const storeService = {
   },
 
   async getLoadout(): Promise<LoadoutItem[]> {
-    const response = await apiClient.get<LoadoutItem[] | { data: LoadoutItem[] }>('/store/loadout/me');
-    if (Array.isArray(response)) return response;
-    return (response as { data: LoadoutItem[] }).data || [];
+    return toArray(
+      await apiClient.get<LoadoutItem[] | { data: LoadoutItem[] }>('/store/loadout/me'),
+    );
   },
 
   async getReceivedGifts(): Promise<unknown[]> {
-    const response = await apiClient.get<unknown[] | { data: unknown[] }>('/store/gifts/received');
-    if (Array.isArray(response)) return response;
-    return (response as { data: unknown[] }).data || [];
+    return toArray(
+      await apiClient.get<unknown[] | { data: unknown[] }>('/store/gifts/received'),
+    );
   },
 
   async acceptGift(giftId: string): Promise<void> {
@@ -176,33 +239,137 @@ export const storeService = {
     await apiClient.post(`/store/gifts/${giftId}/decline`);
   },
 
-async getSentGifts(): Promise<unknown[]> {
-    const response = await apiClient.get<unknown[] | { data: unknown[] }>('/store/gifts/sent');
-    if (Array.isArray(response)) return response;
-    return (response as { data: unknown[] }).data || [];
+  async getSentGifts(): Promise<unknown[]> {
+    return toArray(await apiClient.get<unknown[] | { data: unknown[] }>('/store/gifts/sent'));
   },
 
+  // ==================== ADMIN: ITEMS ====================
+
+  /** POST /store/items — the create route is NOT namespaced under /store/admin. */
   async createItem(data: CreateStoreItemRequest): Promise<StoreItem> {
     const validated = CreateStoreItemSchema.parse(data);
     return apiClient.post<StoreItem>('/store/items', validated);
   },
 
+  /**
+   * PATCH /store/admin/items/:id. `UpdateStoreItemSchema` omits `code` and
+   * `styleConfig` (immutable / create-only server-side) and strips them here,
+   * so no caller can send them on an update.
+   *
+   * Two backend rules this has to absorb:
+   *  - `UpdateItemDto` makes every field optional, but the zod schema is derived
+   *    from the create schema, so `.partial()` is applied here. Without it a
+   *    payload that omits `assets` (the normal edit: the form only re-sends them
+   *    when they actually changed) fails validation before the request is made.
+   *  - `store-admin-item.service.updateItemAdmin` rejects a body carrying BOTH
+   *    pricing/stackability and `assets` ("must be submitted separately"), so an
+   *    asset edit goes out as two requests: scalars+assets, then pricing alone.
+   */
+  async updateItem(id: string, data: Partial<CreateStoreItemRequest>): Promise<StoreItem> {
+    const { assets, priceGameCurrency, isStackable, ...scalars } = data;
+    const hasPricing = priceGameCurrency !== undefined || isStackable !== undefined;
+
+    const body = UpdateStoreItemSchema.partial().parse(
+      assets === undefined ? scalars : { ...scalars, assets },
+    );
+    // The first response is the one returned: it carries `assets`, the pricing
+    // response does not (it is saved without the relation loaded).
+    const saved = await apiClient.patch<StoreItem>(`/store/admin/items/${id}`, body);
+
+    if (hasPricing) {
+      await apiClient.patch<StoreItem>(`/store/admin/items/${id}`, {
+        priceGameCurrency,
+        isStackable,
+      });
+    }
+    return saved;
+  },
+
+  /** DELETE /store/admin/items/:id — deactivates unless `?hard=true`. */
+  async deleteItem(id: string): Promise<void> {
+    await apiClient.delete(`/store/admin/items/${id}`);
+  },
+
+  /** GET /store/admin/items — `{ data, total, limit, offset }`. */
+  async getAdminItems(params?: AdminItemParams): Promise<PaginatedResponse<StoreItem>> {
+    const page = params?.page ?? 1;
+    const limit = params?.limit || 20;
+    const searchParams = new URLSearchParams();
+    if (params?.isActive !== undefined) searchParams.set('isActive', String(params.isActive));
+    if (params?.scope) searchParams.set('scope', params.scope);
+    if (params?.gameType) searchParams.set('gameType', params.gameType);
+    if (params?.slot) searchParams.set('slot', params.slot);
+    if (params?.search) searchParams.set('search', params.search);
+    searchParams.set('limit', String(limit));
+    searchParams.set('offset', String((page - 1) * limit));
+
+    const response = await apiClient.get<RawPaginatedResponse<StoreItem>>(
+      `/store/admin/items?${searchParams}`,
+    );
+    return normalizePaginatedResponse(response, { page, limit });
+  },
+
+  /** GET /store/admin/items/:id — the only item-by-id route that exists. */
+  async getAdminItemById(id: string): Promise<StoreItem> {
+    return apiClient.get<StoreItem>(`/store/admin/items/${id}`);
+  },
+
+  /** POST /store/admin/items/:id/assets — one CreateItemAssetDto, not a list. */
+  async addAssetToItem(itemId: string, asset: CreateAssetPayload): Promise<Asset> {
+    return apiClient.post<Asset>(`/store/admin/items/${itemId}/assets`, asset);
+  },
+
+  /** POST /store/admin/items/:id/assets/bulk — `{ assets: CreateItemAssetDto[] }`. */
+  async addAssetsToItem(
+    itemId: string,
+    assets: CreateAssetPayload[],
+  ): Promise<{ success: boolean; message: string; assets: Asset[] }> {
+    return apiClient.post<{ success: boolean; message: string; assets: Asset[] }>(
+      `/store/admin/items/${itemId}/assets/bulk`,
+      { assets },
+    );
+  },
+
+  /** PATCH /store/admin/items/:id/assets — per-asset update, keyed by `id`. */
+  async updateItemAssets(
+    itemId: string,
+    assets: Array<{
+      id: string;
+      kind?: string;
+      purpose?: string;
+      platform?: string;
+      url?: string;
+      sizeBytes?: number;
+      meta?: Record<string, unknown>;
+      tags?: string[];
+    }>,
+  ): Promise<{ success: boolean; message: string; assets: Asset[] }> {
+    return apiClient.patch<{ success: boolean; message: string; assets: Asset[] }>(
+      `/store/admin/items/${itemId}/assets`,
+      { assets },
+    );
+  },
+
+  /** DELETE /store/admin/items/:id/assets/:assetId */
+  async deleteAssetFromItem(itemId: string, assetId: string): Promise<void> {
+    await apiClient.delete(`/store/admin/items/${itemId}/assets/${assetId}`);
+  },
+
+  // ==================== ADMIN: BUNDLES ====================
+
+  /** POST /store/bundles — accepts `items[]`; the server hardcodes isActive:true. */
   async createBundle(data: CreateStoreBundleRequest): Promise<StoreBundle> {
     const validated = CreateStoreBundleSchema.parse(data);
     return apiClient.post<StoreBundle>('/store/bundles', validated);
   },
 
-  async updateItem(id: string, data: Partial<CreateStoreItemRequest>): Promise<StoreItem> {
-    const validated = data.title ? UpdateStoreItemSchema.parse(data) : data;
-    return apiClient.patch<StoreItem>(`/store/admin/items/${id}`, validated);
-  },
-
-  async deleteItem(id: string): Promise<void> {
-    await apiClient.delete(`/store/admin/items/${id}`);
-  },
-
   async updateBundle(id: string, data: Partial<CreateStoreBundleRequest>): Promise<StoreBundle> {
-    const validated = data.title ? UpdateStoreBundleSchema.parse(data) : data;
+    // Validate unconditionally: gating on `data.title` let any payload without
+    // a title skip the schema entirely. `items` is stripped because
+    // UpdateBundleDto does not declare it and the whitelist pipe drops it
+    // silently, which reads as "save did nothing".
+    const { items: _items, ...rest } = data;
+    const validated = UpdateStoreBundleSchema.parse(rest);
     return apiClient.patch<StoreBundle>(`/store/admin/bundles/${id}`, validated);
   },
 
@@ -210,143 +377,98 @@ async getSentGifts(): Promise<unknown[]> {
     await apiClient.delete(`/store/admin/bundles/${id}`);
   },
 
-  async getItemById(id: string): Promise<StoreItem> {
-    return apiClient.get<StoreItem>(`/store/items/${id}`);
-  },
-
-  async getBundleById(bundleId: string): Promise<StoreBundle> {
-    return apiClient.get<StoreBundle>(`/store/bundles/${bundleId}`);
-  },
-
-  async addBulkAssetsToItem(itemId: string, assets: Array<{
-    kind: string;
-    purpose: string;
-    platform: string;
-    url: string;
-    hash?: string;
-    version?: number;
-    sizeBytes?: number;
-  }>): Promise<{ success: boolean; message: string; assets: Asset[] }> {
-    return apiClient.post<{ success: boolean; message: string; assets: Asset[] }>(`/store/admin/items/${itemId}/assets/bulk`, { assets });
-  },
-
-  async getPurchaseHistory(): Promise<unknown[]> {
-    const response = await apiClient.get<unknown[] | { data: unknown[] }>('/store/purchases');
-    if (Array.isArray(response)) return response;
-    return (response as { data: unknown[] }).data || [];
-  },
-
-  async getAdminItems(params?: ListParams): Promise<PaginatedResponse<StoreItem>> {
+  /** GET /store/admin/bundles — `{ data, total, limit, offset }`. */
+  async getAdminBundles(params?: AdminBundleParams): Promise<PaginatedResponse<StoreBundle>> {
+    const page = params?.page ?? 1;
+    const limit = params?.limit || 20;
     const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set('offset', ((params.page - 1) * (params.limit || 20)).toString());
-    if (params?.limit) searchParams.set('limit', params.limit.toString());
+    if (params?.isActive !== undefined) searchParams.set('isActive', String(params.isActive));
     if (params?.search) searchParams.set('search', params.search);
-    const query = searchParams.toString();
-    const url = query ? `/store/items?${query}` : '/store/items';
-    const response = await apiClient.get<RawPaginatedResponse<StoreItem>>(url);
-    return normalizePaginatedResponse(response);
+    searchParams.set('limit', String(limit));
+    searchParams.set('offset', String((page - 1) * limit));
+
+    const response = await apiClient.get<RawPaginatedResponse<StoreBundle>>(
+      `/store/admin/bundles?${searchParams}`,
+    );
+    return normalizePaginatedResponse(response, { page, limit });
   },
 
-  async getAdminItemById(id: string): Promise<StoreItem> {
-    return apiClient.get<StoreItem>(`/store/items/${id}`);
-  },
-
-  async updateAdminItem(id: string, data: Partial<CreateStoreItemRequest>): Promise<StoreItem> {
-    return apiClient.patch<StoreItem>(`/store/admin/items/${id}`, data);
-  },
-
-  async deleteAdminItem(id: string): Promise<void> {
-    await apiClient.delete(`/store/admin/items/${id}`);
-  },
-
-  async addAssetToItem(itemId: string, asset: Asset): Promise<StoreItem> {
-    return apiClient.post<StoreItem>(`/store/admin/items/${itemId}/assets`, asset);
-  },
-
-  async deleteAssetFromItem(itemId: string, assetId: string): Promise<void> {
-    await apiClient.delete(`/store/admin/items/${itemId}/assets/${assetId}`);
-  },
-
-  async getAdminBundles(params?: ListParams): Promise<PaginatedResponse<StoreBundle>> {
-    const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set('offset', ((params.page - 1) * (params.limit || 20)).toString());
-    if (params?.limit) searchParams.set('limit', params.limit.toString());
-    if (params?.search) searchParams.set('search', params.search);
-    const query = searchParams.toString();
-    const url = query ? `/store/bundles?${query}` : '/store/bundles';
-    const response = await apiClient.get<RawPaginatedResponse<StoreBundle>>(url);
-    return normalizePaginatedResponse(response);
-  },
-
+  /** GET /store/admin/bundles/:id — the only bundle-by-id route that exists. */
   async getAdminBundleById(id: string): Promise<StoreBundle> {
-    return apiClient.get<StoreBundle>(`/store/bundles/${id}`);
+    return apiClient.get<StoreBundle>(`/store/admin/bundles/${id}`);
   },
 
-  async updateAdminBundle(id: string, data: Partial<CreateStoreBundleRequest>): Promise<StoreBundle> {
-    return apiClient.patch<StoreBundle>(`/store/admin/bundles/${id}`, data);
-  },
-
-  async deleteAdminBundle(id: string): Promise<void> {
-    await apiClient.delete(`/store/admin/bundles/${id}`);
-  },
-
-  async addItemToBundle(bundleId: string, item: { itemId: string; quantity: number }): Promise<StoreBundle> {
-    return apiClient.post<StoreBundle>(`/store/admin/bundles/${bundleId}/items`, item);
+  /** POST /store/admin/bundles/:id/items — `{ itemId, quantity? }`. */
+  async addItemToBundle(
+    bundleId: string,
+    item: { itemId: string; quantity?: number },
+  ): Promise<StoreBundleItem> {
+    return apiClient.post<StoreBundleItem>(`/store/admin/bundles/${bundleId}/items`, item);
   },
 
   async removeItemFromBundle(bundleId: string, itemId: string): Promise<void> {
     await apiClient.delete(`/store/admin/bundles/${bundleId}/items/${itemId}`);
   },
 
-  async getAdminPurchases(params?: ListParams): Promise<PaginatedResponse<unknown>> {
+  // ==================== ADMIN: OPS ====================
+
+  /** GET /store/admin/purchases — `{ data, total, limit, offset }`. */
+  async getAdminPurchases(params?: AdminPurchaseParams): Promise<PaginatedResponse<unknown>> {
+    const page = params?.page ?? 1;
+    const limit = params?.limit || 20;
     const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set('offset', ((params.page - 1) * (params.limit || 20)).toString());
-    if (params?.limit) searchParams.set('limit', params.limit.toString());
-    if (params?.search) searchParams.set('search', params.search);
-    const query = searchParams.toString();
-    const url = query ? `/store/purchases?${query}` : '/store/purchases';
-    const response = await apiClient.get<RawPaginatedResponse<unknown>>(url);
-    return normalizePaginatedResponse(response);
+    if (params?.userId) searchParams.set('userId', params.userId);
+    if (params?.itemId) searchParams.set('itemId', params.itemId);
+    if (params?.bundleId) searchParams.set('bundleId', params.bundleId);
+    if (params?.status) searchParams.set('status', params.status);
+    searchParams.set('limit', String(limit));
+    searchParams.set('offset', String((page - 1) * limit));
+
+    const response = await apiClient.get<RawPaginatedResponse<unknown>>(
+      `/store/admin/purchases?${searchParams}`,
+    );
+    return normalizePaginatedResponse(response, { page, limit });
   },
 
+  /** GET /store/admin/purchases/:id */
   async getAdminPurchaseById(id: string): Promise<unknown> {
-    return apiClient.get(`/store/purchases/${id}`);
+    return apiClient.get(`/store/admin/purchases/${id}`);
   },
 
-  async getStoreStats(): Promise<{ totalItems: number; totalBundles: number; totalPurchases: number; revenue: Record<string, number> }> {
-    return apiClient.get('/store/stats');
+  /** GET /store/admin/stats */
+  async getStoreStats(): Promise<StoreStats> {
+    return apiClient.get<StoreStats>('/store/admin/stats');
   },
 
+  /** GET /store/admin/user/:userId/inventory */
   async getUserInventoryByAdmin(userId: string): Promise<InventoryItem[]> {
-    const response = await apiClient.get<InventoryItem[] | { data: InventoryItem[] }>(`/store/user/${userId}/inventory`);
-    if (Array.isArray(response)) return response;
-    return (response as { data: InventoryItem[] }).data || [];
+    return toArray(
+      await apiClient.get<InventoryItem[] | { data: InventoryItem[] }>(
+        `/store/admin/user/${userId}/inventory`,
+      ),
+    );
   },
 
-  async addItemAssets(itemId: string, assets: { url: string; type: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.post(`/store/admin/items/${itemId}/assets`, { assets });
+  /** POST /store/admin/user/:userId/grant-item */
+  async grantItemToUser(
+    userId: string,
+    data: { itemId: string; quantity?: number; reason?: string },
+  ): Promise<void> {
+    await apiClient.post(`/store/admin/user/${userId}/grant-item`, data);
   },
 
-  async bulkAddItemAssets(itemId: string, assets: { url: string; type: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.post(`/store/admin/items/${itemId}/assets/bulk`, { assets });
-  },
-
-  async updateItemAssets(itemId: string, assets: { id: string; url?: string; type?: string; metadata?: Record<string, unknown> }[]): Promise<void> {
-    await apiClient.patch(`/store/admin/items/${itemId}/assets`, { assets });
-  },
-
-  async deleteItemAsset(itemId: string, assetId: string): Promise<void> {
-    await apiClient.delete(`/store/admin/items/${itemId}/assets/${assetId}`);
-  },
-
-  async grantItemToUser(userId: string, data: { itemId: string; quantity: number; reason?: string }): Promise<void> {
-    await apiClient.post(`/store/user/${userId}/grant-item`, data);
-  },
-
+  /**
+   * GET /store/admin/user/:userId/loadout.
+   * ponytail: LoadoutItem still describes the old per-slot shape; the endpoint
+   * answers `{ inventoryId, slot, itemCode, itemType, rarity, assets, owned }[]`.
+   * Correct the type when a caller actually consumes the rows.
+   */
   async getUserLoadoutByAdmin(userId: string): Promise<LoadoutItem[]> {
-    const response = await apiClient.get<LoadoutItem[] | { data: LoadoutItem[] }>(`/store/user/${userId}/loadout`);
-    if (Array.isArray(response)) return response;
-    return (response as { data: LoadoutItem[] }).data || [];
+    return toArray(
+      await apiClient.get<LoadoutItem[] | { data: LoadoutItem[] }>(
+        `/store/admin/user/${userId}/loadout`,
+      ),
+    );
   },
 };
 

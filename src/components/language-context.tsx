@@ -144,6 +144,20 @@ const translationsEn: Record<string, string> = {
   systemRole: 'System Role',
   restricted: 'Restricted',
   comingSoon: 'Coming soon',
+  newItem: 'New Item',
+  newBundle: 'New Bundle',
+  createItem: 'Create Item',
+  createBundle: 'Create Bundle',
+  allScopes: 'All Scopes',
+  allGames: 'All Games',
+  allSlots: 'All Slots',
+  receivedGifts: 'Received Gifts',
+  inventory: 'Inventory',
+  purchase: 'Purchase',
+  equip: 'Equip',
+  unequip: 'Unequip',
+  useItem: 'Use Item',
+  sendGift: 'Send Gift',
 };
 
 const translationsAr: Record<string, string> = {
@@ -327,9 +341,7 @@ export function LanguageProvider({
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) {
-      const browserLocale = getBrowserLocale();
-      setLocaleState(browserLocale);
-      localStorage.setItem(STORAGE_KEY, browserLocale);
+      localStorage.setItem(STORAGE_KEY, getBrowserLocale());
     }
   }, []);
 

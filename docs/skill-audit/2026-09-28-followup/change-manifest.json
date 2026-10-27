@@ -1,0 +1,2620 @@
+{
+  "scope": "Every packaged file, including unchanged historical evidence. This manifest self-hash is intentionally excluded to avoid circularity. No deletion or public path rename.",
+  "original_zip_sha256": "89098bb372ae1c08d5a7d1d96a59883efdd37cb87c35c7d1685e99bb105ab21e",
+  "counts": {
+    "UNCHANGED": 291,
+    "MODIFIED": 16,
+    "ADDED": 19,
+    "DELETED": 0,
+    "original_files": 307,
+    "final_files": 326
+  },
+  "files": [
+    {
+      "path": ".gitignore",
+      "status": "UNCHANGED",
+      "before_sha256": "73b63d6229adbd5f4fecbd9a7eae6a612a335d5db7248c5792ae87de2e867145",
+      "after_sha256": "73b63d6229adbd5f4fecbd9a7eae6a612a335d5db7248c5792ae87de2e867145",
+      "bytes_after": 183,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/accessibility-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9a311c046972f55966704d029e2661fd1660bed4dc2cabd3aa78abe9dadb6967",
+      "after_sha256": "9a311c046972f55966704d029e2661fd1660bed4dc2cabd3aa78abe9dadb6967",
+      "bytes_after": 6240,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/ai-programmer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "833a9bd191d383bf4e587fa3674160459e0fa92ec8d86d260e14ad6b9d7bbfb9",
+      "after_sha256": "833a9bd191d383bf4e587fa3674160459e0fa92ec8d86d260e14ad6b9d7bbfb9",
+      "bytes_after": 4934,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/analytics-engineer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c158668aa4f75c523ec4a73012c05ebceda1f9977bd418ceb009a7e0b4caf4c4",
+      "after_sha256": "c158668aa4f75c523ec4a73012c05ebceda1f9977bd418ceb009a7e0b4caf4c4",
+      "bytes_after": 5052,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/art-director.md",
+      "status": "UNCHANGED",
+      "before_sha256": "df6e16f557ae7156a1c043a08835fb0e0507ef7aba4b648bf3d0869680790e87",
+      "after_sha256": "df6e16f557ae7156a1c043a08835fb0e0507ef7aba4b648bf3d0869680790e87",
+      "bytes_after": 5469,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/audio-director.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1ad3d377c852c3ee5bd8a3ec017651fd55ea736884b1c5cc815990538d6dde27",
+      "after_sha256": "1ad3d377c852c3ee5bd8a3ec017651fd55ea736884b1c5cc815990538d6dde27",
+      "bytes_after": 5344,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/backend-programmer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "44a59eb9603f181823fa6d6df4232c34a366730e11d4c8725813e82373d42b39",
+      "after_sha256": "44a59eb9603f181823fa6d6df4232c34a366730e11d4c8725813e82373d42b39",
+      "bytes_after": 1263,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/community-manager.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b50434324d6140fb90155517f029fd16880383d3e1e58d3b091d0f524c176455",
+      "after_sha256": "b50434324d6140fb90155517f029fd16880383d3e1e58d3b091d0f524c176455",
+      "bytes_after": 7657,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/concurrency-reviewer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "a2b5b09a62d71af0e301fe375f33d19f9dcd51f80101a7ee0db23bd51c1f7bd6",
+      "after_sha256": "a2b5b09a62d71af0e301fe375f33d19f9dcd51f80101a7ee0db23bd51c1f7bd6",
+      "bytes_after": 1051,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/creative-director.md",
+      "status": "UNCHANGED",
+      "before_sha256": "5829ccb740a2357223cd1b975ee432b2fe2a54f2745b37d7071307aea0722e8e",
+      "after_sha256": "5829ccb740a2357223cd1b975ee432b2fe2a54f2745b37d7071307aea0722e8e",
+      "bytes_after": 12845,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/devops-engineer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "642c95bb42e440af369efef22b56350f660d3be2ddf63f6f2aef18270ef2fa31",
+      "after_sha256": "642c95bb42e440af369efef22b56350f660d3be2ddf63f6f2aef18270ef2fa31",
+      "bytes_after": 4751,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/economy-designer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e3514cf835256f5beac7ee14b56da8354d4f5dcd10aa06a088463dd6b2c7bfed",
+      "after_sha256": "e3514cf835256f5beac7ee14b56da8354d4f5dcd10aa06a088463dd6b2c7bfed",
+      "bytes_after": 4877,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/engine-programmer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bd178b2afd47ce467edb9b391103e66e931b92dac24068e58872002cca55e6a3",
+      "after_sha256": "bd178b2afd47ce467edb9b391103e66e931b92dac24068e58872002cca55e6a3",
+      "bytes_after": 4991,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/game-designer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "dad958518b2569b75abbb3ce78502a37b1eaa1b759b24e6ed80eed5f0dd1b458",
+      "after_sha256": "dad958518b2569b75abbb3ce78502a37b1eaa1b759b24e6ed80eed5f0dd1b458",
+      "bytes_after": 12824,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-assets-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ffcf881d2dc2a35a34897d1ad6b640b8bb97aaac5bf4a13bc26ec1197d60c60f",
+      "after_sha256": "ffcf881d2dc2a35a34897d1ad6b640b8bb97aaac5bf4a13bc26ec1197d60c60f",
+      "bytes_after": 11181,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-gml-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "be7d12e43c5d36fcc609ec58b2c4cfc5d39e01b3fdda9908270871c26b3272ed",
+      "after_sha256": "be7d12e43c5d36fcc609ec58b2c4cfc5d39e01b3fdda9908270871c26b3272ed",
+      "bytes_after": 20066,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-networking-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "25b0d73ef29c90bb40bb2f20fd913c6d8e102e7406d0fd4273329dd32bd78e9e",
+      "after_sha256": "25b0d73ef29c90bb40bb2f20fd913c6d8e102e7406d0fd4273329dd32bd78e9e",
+      "bytes_after": 14829,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-performance-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8bfdec5b92be661fc4a40e5277ea01e0231aadd63c9d348a8d329801e2d1d545",
+      "after_sha256": "8bfdec5b92be661fc4a40e5277ea01e0231aadd63c9d348a8d329801e2d1d545",
+      "bytes_after": 12011,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-shader-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8050dbfb55e197f775a6e983457c1a58e3448be26adef86b06a992781fa522f0",
+      "after_sha256": "8050dbfb55e197f775a6e983457c1a58e3448be26adef86b06a992781fa522f0",
+      "bytes_after": 11496,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ca1072896a8323ee64e1f2ecd5f9ebca8400dca13692529c1735a13231fd9f14",
+      "after_sha256": "ca1072896a8323ee64e1f2ecd5f9ebca8400dca13692529c1735a13231fd9f14",
+      "bytes_after": 11241,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/gamemaker-ui-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "a86b1dc2ba44e0faaa60917045c4f8f710f6da1609fd1ca467099121649e4897",
+      "after_sha256": "a86b1dc2ba44e0faaa60917045c4f8f710f6da1609fd1ca467099121649e4897",
+      "bytes_after": 14242,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/gameplay-programmer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0d4e31297964b510bf137cf5f1e812c56893c11e654bc9f13e10ed65c51256da",
+      "after_sha256": "0d4e31297964b510bf137cf5f1e812c56893c11e654bc9f13e10ed65c51256da",
+      "bytes_after": 5827,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/godot-gdextension-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0cc7a7086f35ba62bf79a0f897d4c1d9187fdb6aec9b1f6dba026597f49f4eab",
+      "after_sha256": "0cc7a7086f35ba62bf79a0f897d4c1d9187fdb6aec9b1f6dba026597f49f4eab",
+      "bytes_after": 12447,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/godot-gdscript-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "aba74e1b3e8e30aee4c70b238f5b2836c507888d2b65646786aa4bc1447a891f",
+      "after_sha256": "aba74e1b3e8e30aee4c70b238f5b2836c507888d2b65646786aa4bc1447a891f",
+      "bytes_after": 11715,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/godot-shader-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "f636ba7ceb981d9893403dda3e72f228ca24a21f38554d34f11e61537bd8213d",
+      "after_sha256": "f636ba7ceb981d9893403dda3e72f228ca24a21f38554d34f11e61537bd8213d",
+      "bytes_after": 11418,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/godot-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "6cd428cd111b1bab54d51368cb3e40fe75b426a3f71cec430de46f1cfbfa7962",
+      "after_sha256": "6cd428cd111b1bab54d51368cb3e40fe75b426a3f71cec430de46f1cfbfa7962",
+      "bytes_after": 9837,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/lead-programmer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "6b064a44e2d412383f776c3ca84e6cd954959286ea5e5ee16b6ce7bba4779319",
+      "after_sha256": "6b064a44e2d412383f776c3ca84e6cd954959286ea5e5ee16b6ce7bba4779319",
+      "bytes_after": 5554,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/level-designer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bead0a567226fef938ff3bfc4fecc2ff63c879c6028e37e9cce9794fb616a7dd",
+      "after_sha256": "bead0a567226fef938ff3bfc4fecc2ff63c879c6028e37e9cce9794fb616a7dd",
+      "bytes_after": 5330,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/live-ops-designer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ee276c7180d852facb4fb9a49159f3e1f7771d41e9d8683769689dfe33444b3f",
+      "after_sha256": "ee276c7180d852facb4fb9a49159f3e1f7771d41e9d8683769689dfe33444b3f",
+      "bytes_after": 8641,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/localization-lead.md",
+      "status": "UNCHANGED",
+      "before_sha256": "29b7c223b37b0518baab17ddf922ab726488f5f59af4238b4d6c1a247eebece1",
+      "after_sha256": "29b7c223b37b0518baab17ddf922ab726488f5f59af4238b4d6c1a247eebece1",
+      "bytes_after": 9277,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/narrative-director.md",
+      "status": "UNCHANGED",
+      "before_sha256": "243708011d329d7aeaf0f090a02ac44dfcb8e251a3815603241db0714073a801",
+      "after_sha256": "243708011d329d7aeaf0f090a02ac44dfcb8e251a3815603241db0714073a801",
+      "bytes_after": 5819,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/network-programmer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7ab30f7c36a5fc61b312480de5e8f578864dacd652a12c22a117d3cd8b31d9c4",
+      "after_sha256": "7ab30f7c36a5fc61b312480de5e8f578864dacd652a12c22a117d3cd8b31d9c4",
+      "bytes_after": 5052,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/performance-analyst.md",
+      "status": "UNCHANGED",
+      "before_sha256": "44a0a39d258993e43fdef53100d24166e378cf7e6811d62ba5d551991087a178",
+      "after_sha256": "44a0a39d258993e43fdef53100d24166e378cf7e6811d62ba5d551991087a178",
+      "bytes_after": 5107,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/producer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9d0ed23b1ed8d918876c2900c03d8506a08aa5c241ef7953d346a63649e6cb1f",
+      "after_sha256": "9d0ed23b1ed8d918876c2900c03d8506a08aa5c241ef7953d346a63649e6cb1f",
+      "bytes_after": 6356,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/project-discovery.md",
+      "status": "UNCHANGED",
+      "before_sha256": "85f08d1420ed53e5576f14f16528cbb164212ce27358f46ea0e8bcaa0510ac2f",
+      "after_sha256": "85f08d1420ed53e5576f14f16528cbb164212ce27358f46ea0e8bcaa0510ac2f",
+      "bytes_after": 1068,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/prototyper.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b8b27d6d631d3f3a15d427633a352bb225b00acbcbb8cee99541eb50d5d5ceeb",
+      "after_sha256": "b8b27d6d631d3f3a15d427633a352bb225b00acbcbb8cee99541eb50d5d5ceeb",
+      "bytes_after": 8318,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/qa-lead.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8b631373d6b3828b8b89792f990d1e6dd6267afdc6be11cd9406282affc190c1",
+      "after_sha256": "8b631373d6b3828b8b89792f990d1e6dd6267afdc6be11cd9406282affc190c1",
+      "bytes_after": 5179,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/qa-tester.md",
+      "status": "UNCHANGED",
+      "before_sha256": "98d6b2e9731f1ad1329033181cf12ea4d4f4c973c9929bda75f5a7f6ec01a280",
+      "after_sha256": "98d6b2e9731f1ad1329033181cf12ea4d4f4c973c9929bda75f5a7f6ec01a280",
+      "bytes_after": 4674,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/release-manager.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3b510755c0ad5a71ea8f1a99c37bf8baa588594519780fc674d9167dffb238b7",
+      "after_sha256": "3b510755c0ad5a71ea8f1a99c37bf8baa588594519780fc674d9167dffb238b7",
+      "bytes_after": 7970,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/security-engineer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "5175db0fe5ba778f1778c408cea99ec0ca048bb65eef3d518108b05e51b64b3a",
+      "after_sha256": "5175db0fe5ba778f1778c408cea99ec0ca048bb65eef3d518108b05e51b64b3a",
+      "bytes_after": 6077,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/skill-auditor.md",
+      "status": "UNCHANGED",
+      "before_sha256": "52a01f07ac15f97ab4e52f2dfbfce287f2bcb684d4a0093750c40df2bb30b260",
+      "after_sha256": "52a01f07ac15f97ab4e52f2dfbfce287f2bcb684d4a0093750c40df2bb30b260",
+      "bytes_after": 1181,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/sound-designer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "671befe43f3a931e01a4a18d05885e1e55c9cf0aff54250c7bc7f66de56d647f",
+      "after_sha256": "671befe43f3a931e01a4a18d05885e1e55c9cf0aff54250c7bc7f66de56d647f",
+      "bytes_after": 4279,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/systems-designer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "f6016a0d4bbd6133791e3ebfce8a1dda6812ba5c6deb83adae07748be193c89d",
+      "after_sha256": "f6016a0d4bbd6133791e3ebfce8a1dda6812ba5c6deb83adae07748be193c89d",
+      "bytes_after": 4827,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/technical-artist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "2704cbfb5dd6c920db6f4dd913a4e335ee3286c5f4893f9dee3dad834a3ec626",
+      "after_sha256": "2704cbfb5dd6c920db6f4dd913a4e335ee3286c5f4893f9dee3dad834a3ec626",
+      "bytes_after": 4981,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/technical-director.md",
+      "status": "UNCHANGED",
+      "before_sha256": "db326086536b3bd71ba60e9436ea6466944fb043d505e7099815c88848e04ea4",
+      "after_sha256": "db326086536b3bd71ba60e9436ea6466944fb043d505e7099815c88848e04ea4",
+      "bytes_after": 6560,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/tools-programmer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "407a8836442e9aba36c918996c0088a9e6badc302129c49400e6e9acfdec75bc",
+      "after_sha256": "407a8836442e9aba36c918996c0088a9e6badc302129c49400e6e9acfdec75bc",
+      "bytes_after": 4743,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/ue-blueprint-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "48ac51d4d68fc5e39931c03d129d0779f611797ac6e902eee992ac05c7be4d56",
+      "after_sha256": "48ac51d4d68fc5e39931c03d129d0779f611797ac6e902eee992ac05c7be4d56",
+      "bytes_after": 7490,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/ue-gas-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7752a64c08957a9e997129454b8cc23cc3ee7c1ce84e583fda1d32472d3a3b15",
+      "after_sha256": "7752a64c08957a9e997129454b8cc23cc3ee7c1ce84e583fda1d32472d3a3b15",
+      "bytes_after": 7441,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/ue-replication-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3d9805d9bf3b8dafe7f8a7cf1167d206f3bfa7b33ba3ce8d3f08102c5095cb06",
+      "after_sha256": "3d9805d9bf3b8dafe7f8a7cf1167d206f3bfa7b33ba3ce8d3f08102c5095cb06",
+      "bytes_after": 7786,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/ue-umg-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "2db5926232d0e745ff77be808b075f0b2687b0e5a581bf9703dae12d66f5ec68",
+      "after_sha256": "2db5926232d0e745ff77be808b075f0b2687b0e5a581bf9703dae12d66f5ec68",
+      "bytes_after": 7949,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/ui-programmer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e4dec2566ef153291baa5e6094500ed851eceeb42e0db206e9dfc4fe9b109cb8",
+      "after_sha256": "e4dec2566ef153291baa5e6094500ed851eceeb42e0db206e9dfc4fe9b109cb8",
+      "bytes_after": 5384,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/unity-addressables-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "aad6cc0241bf53b19f9a18c784f42093a95a068d7431efd1a7aac059bccb7350",
+      "after_sha256": "aad6cc0241bf53b19f9a18c784f42093a95a068d7431efd1a7aac059bccb7350",
+      "bytes_after": 8841,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/unity-dots-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "f118d1b26005d98a125be3804616d5c7ca389a33e4919be143de6923cb8151e4",
+      "after_sha256": "f118d1b26005d98a125be3804616d5c7ca389a33e4919be143de6923cb8151e4",
+      "bytes_after": 8222,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/unity-shader-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e734ca56b0f6abef050bc61e050e88f37210a0d886548959fa8c28cc719914e4",
+      "after_sha256": "e734ca56b0f6abef050bc61e050e88f37210a0d886548959fa8c28cc719914e4",
+      "bytes_after": 9153,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/unity-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ff62a78f6bb2dae54825e455c53b4bd260c8b771c6fff468b0fcd4472eae76af",
+      "after_sha256": "ff62a78f6bb2dae54825e455c53b4bd260c8b771c6fff468b0fcd4472eae76af",
+      "bytes_after": 9862,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/unity-ui-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ddc861d7f7ef26cf232516626a3034a251f5770ce0fa45f82b33ddbf33d39fe5",
+      "after_sha256": "ddc861d7f7ef26cf232516626a3034a251f5770ce0fa45f82b33ddbf33d39fe5",
+      "bytes_after": 10524,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/unreal-specialist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "2913d34d73d17d3b64a44f19a8d79f10d40823d522935dfe16a1802dca031187",
+      "after_sha256": "2913d34d73d17d3b64a44f19a8d79f10d40823d522935dfe16a1802dca031187",
+      "bytes_after": 9341,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/ux-designer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "cb9fb793a0984ef1f88740842be9cf8c75a14d323eccd9faa47551e74d60781b",
+      "after_sha256": "cb9fb793a0984ef1f88740842be9cf8c75a14d323eccd9faa47551e74d60781b",
+      "bytes_after": 5002,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/world-builder.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9177f4b868f26a2ae8c33c8e9dfeacc02c12a412b6f89e4b31eddc8b878df9a8",
+      "after_sha256": "9177f4b868f26a2ae8c33c8e9dfeacc02c12a412b6f89e4b31eddc8b878df9a8",
+      "bytes_after": 5213,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/agents/writer.md",
+      "status": "UNCHANGED",
+      "before_sha256": "6281b901ee720d13cb053095402541033c9dda8a9a9cceafa6191b20306dc173",
+      "after_sha256": "6281b901ee720d13cb053095402541033c9dda8a9a9cceafa6191b20306dc173",
+      "bytes_after": 5147,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/audit/registry.json",
+      "status": "MODIFIED",
+      "before_sha256": "fd515579e3f5cbcca8dcef105c47771a9da04a37364327765f78317cb0e925ca",
+      "after_sha256": "87003e78ea01aa2d07666536a104ce97c45cf4f5f5f3ad4a7e1bf80fe0a777e4",
+      "bytes_after": 95,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/architecture-decision.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9126e439f717a5e375be927539b09da8a117e42e96671807e20c4f9654d56856",
+      "after_sha256": "9126e439f717a5e375be927539b09da8a117e42e96671807e20c4f9654d56856",
+      "bytes_after": 717,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/asset-audit.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c7c88c44feec5cbddc942ffb3ba83abccbb46519e0df14992144aca342b1064f",
+      "after_sha256": "c7c88c44feec5cbddc942ffb3ba83abccbb46519e0df14992144aca342b1064f",
+      "bytes_after": 687,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/balance-check.md",
+      "status": "UNCHANGED",
+      "before_sha256": "f319c271ac8a1b82d323eecd10c1d448381cd280b199e35b5c0f7cb892c96858",
+      "after_sha256": "f319c271ac8a1b82d323eecd10c1d448381cd280b199e35b5c0f7cb892c96858",
+      "bytes_after": 693,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/brainstorm.md",
+      "status": "UNCHANGED",
+      "before_sha256": "33f4f6730f626a7894477dbb4b4818396c7e4bae7d560682816cbcc754036309",
+      "after_sha256": "33f4f6730f626a7894477dbb4b4818396c7e4bae7d560682816cbcc754036309",
+      "bytes_after": 684,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/bug-report.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1a27b4aaa68faf98ff3978f956dce24eaa06b7e00d184a5da84a2a8d67b03052",
+      "after_sha256": "1a27b4aaa68faf98ff3978f956dce24eaa06b7e00d184a5da84a2a8d67b03052",
+      "bytes_after": 684,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/changelog.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1948f9f4d2f26b437e715c2828dad1b0130e4d44f7c6610b9de69e587210c590",
+      "after_sha256": "1948f9f4d2f26b437e715c2828dad1b0130e4d44f7c6610b9de69e587210c590",
+      "bytes_after": 681,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/code-review.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e79ee2cbad7200752950835b598524a089bba8a1ac7e9129a1f96d558fb4f229",
+      "after_sha256": "e79ee2cbad7200752950835b598524a089bba8a1ac7e9129a1f96d558fb4f229",
+      "bytes_after": 687,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/concurrency-analysis.md",
+      "status": "UNCHANGED",
+      "before_sha256": "40ceba56fb2da6c5da433a1edad9922943bbdc159966d8542653e8ecc215e6f2",
+      "after_sha256": "40ceba56fb2da6c5da433a1edad9922943bbdc159966d8542653e8ecc215e6f2",
+      "bytes_after": 714,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/debugging-analysis.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0402a5d38804a88b24aa75e4c0341325b70ef910447923d4b8a4416afa4c9d12",
+      "after_sha256": "0402a5d38804a88b24aa75e4c0341325b70ef910447923d4b8a4416afa4c9d12",
+      "bytes_after": 708,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/design-review.md",
+      "status": "UNCHANGED",
+      "before_sha256": "76039e61b125236408d0e17e633f1dfe6cf291bcd7e09c550299b4e9693b37a5",
+      "after_sha256": "76039e61b125236408d0e17e633f1dfe6cf291bcd7e09c550299b4e9693b37a5",
+      "bytes_after": 693,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/design-system.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e70bb0b98a7d4f58167d62ef03d5d7f278d53b5d1dc2aa38a611585fb2b29d63",
+      "after_sha256": "e70bb0b98a7d4f58167d62ef03d5d7f278d53b5d1dc2aa38a611585fb2b29d63",
+      "bytes_after": 693,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/estimate.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8f1378419581c92e8aa5de07789bc67913f267c4daff3bde71eab86e9e7faedc",
+      "after_sha256": "8f1378419581c92e8aa5de07789bc67913f267c4daff3bde71eab86e9e7faedc",
+      "bytes_after": 678,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/framework-engineering.md",
+      "status": "UNCHANGED",
+      "before_sha256": "609fd8d4e130def7d51ffc33fa9675942eed204a5728f7ea422ade220bf5b14a",
+      "after_sha256": "609fd8d4e130def7d51ffc33fa9675942eed204a5728f7ea422ade220bf5b14a",
+      "bytes_after": 717,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/gate-check.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b05512b94227f056c3752957e2a318bfaa311d7c6a28c5ee19010deb28bb1da4",
+      "after_sha256": "b05512b94227f056c3752957e2a318bfaa311d7c6a28c5ee19010deb28bb1da4",
+      "bytes_after": 684,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/hotfix.md",
+      "status": "UNCHANGED",
+      "before_sha256": "abb6a71ac3be607575f3699c2dcce319e5a2c60a0a82dfa9830061dcab9ecfa2",
+      "after_sha256": "abb6a71ac3be607575f3699c2dcce319e5a2c60a0a82dfa9830061dcab9ecfa2",
+      "bytes_after": 672,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/launch-checklist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7af8d8969a2e5066f5c461ca5f1b94123d675413ee1730173865c19809d9ba71",
+      "after_sha256": "7af8d8969a2e5066f5c461ca5f1b94123d675413ee1730173865c19809d9ba71",
+      "bytes_after": 702,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/localize.md",
+      "status": "UNCHANGED",
+      "before_sha256": "45eaf02ee5abdafa16ea9e0bbcc5caba665b40219aa0fa83c74ec7d9857735f5",
+      "after_sha256": "45eaf02ee5abdafa16ea9e0bbcc5caba665b40219aa0fa83c74ec7d9857735f5",
+      "bytes_after": 678,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/map-systems.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8269b917216454c9ac98f5476866ed13add0038b78971c3d01a3f0030fbfe88c",
+      "after_sha256": "8269b917216454c9ac98f5476866ed13add0038b78971c3d01a3f0030fbfe88c",
+      "bytes_after": 687,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/milestone-review.md",
+      "status": "UNCHANGED",
+      "before_sha256": "38f5d123d6cebe6b49838a034dd981c44baa9f6bddd4a7f670b8b2478370387f",
+      "after_sha256": "38f5d123d6cebe6b49838a034dd981c44baa9f6bddd4a7f670b8b2478370387f",
+      "bytes_after": 702,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/onboard.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7a6ce19546dd430c732843d6d0614e9ebc0711c898e1a05d352f74ee1a1ac127",
+      "after_sha256": "7a6ce19546dd430c732843d6d0614e9ebc0711c898e1a05d352f74ee1a1ac127",
+      "bytes_after": 675,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/patch-notes.md",
+      "status": "UNCHANGED",
+      "before_sha256": "87d64f4689a2e9d395af7263a59ce55a20fed852cc649377c875932c9b281637",
+      "after_sha256": "87d64f4689a2e9d395af7263a59ce55a20fed852cc649377c875932c9b281637",
+      "bytes_after": 687,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/perf-profile.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e0be661c57c67dab9847a8134f46703bd68311197e902171d9bab4cfedcbd770",
+      "after_sha256": "e0be661c57c67dab9847a8134f46703bd68311197e902171d9bab4cfedcbd770",
+      "bytes_after": 690,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/playtest-report.md",
+      "status": "UNCHANGED",
+      "before_sha256": "2c8233a7b4b2ec61aab29e69d216afa891b7d39003b474c0114015d7adedd8d1",
+      "after_sha256": "2c8233a7b4b2ec61aab29e69d216afa891b7d39003b474c0114015d7adedd8d1",
+      "bytes_after": 699,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/production-validation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e10a35c93b47140feef3f055d171ef970bbe7c49843f1b2b439f59cdd97934fb",
+      "after_sha256": "e10a35c93b47140feef3f055d171ef970bbe7c49843f1b2b439f59cdd97934fb",
+      "bytes_after": 717,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/project-stage-detect.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ae0052e158c239348ec8f63cf0e6e72024662327676a29d8d2dbdaa6fdbd8284",
+      "after_sha256": "ae0052e158c239348ec8f63cf0e6e72024662327676a29d8d2dbdaa6fdbd8284",
+      "bytes_after": 714,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/prototype.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3f089e00bc1a567e54d1387c9b63e15d93de2d0eafe029e27c0098f78337bccf",
+      "after_sha256": "3f089e00bc1a567e54d1387c9b63e15d93de2d0eafe029e27c0098f78337bccf",
+      "bytes_after": 681,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/release-checklist.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bcd1395d6f0c56f21e44a72f15ba46e936b005e2521c4aae3026c6b826ddcd14",
+      "after_sha256": "bcd1395d6f0c56f21e44a72f15ba46e936b005e2521c4aae3026c6b826ddcd14",
+      "bytes_after": 705,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/repository-discovery.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0d38068764cbbabdfc736f975d794c4f9794ec9d1e90369b61e3e497424bf905",
+      "after_sha256": "0d38068764cbbabdfc736f975d794c4f9794ec9d1e90369b61e3e497424bf905",
+      "bytes_after": 714,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/retrospective.md",
+      "status": "UNCHANGED",
+      "before_sha256": "4082e86d1257a0a1f9bcfbd66cff2418e918af03f8b12056e8b0f45160a7a83d",
+      "after_sha256": "4082e86d1257a0a1f9bcfbd66cff2418e918af03f8b12056e8b0f45160a7a83d",
+      "bytes_after": 693,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/reverse-document.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bb18c8f611ad7878baf8bdd3ffbf24de003541e67d337c6395395dc3f39f528a",
+      "after_sha256": "bb18c8f611ad7878baf8bdd3ffbf24de003541e67d337c6395395dc3f39f528a",
+      "bytes_after": 702,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/scope-check.md",
+      "status": "UNCHANGED",
+      "before_sha256": "a4d523b73346df2daa9307d032974be48f3ad411db994a9267e25268c1dbb50b",
+      "after_sha256": "a4d523b73346df2daa9307d032974be48f3ad411db994a9267e25268c1dbb50b",
+      "bytes_after": 687,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/setup-engine.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7f23716f4e86edd89cdcda472fb194750ed59859b0bd9441d0bd4cc39b01e4b6",
+      "after_sha256": "7f23716f4e86edd89cdcda472fb194750ed59859b0bd9441d0bd4cc39b01e4b6",
+      "bytes_after": 690,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/skill-audit-repair.md",
+      "status": "UNCHANGED",
+      "before_sha256": "dc8907c04379b101c72351171ae8763ccb297156bb009f65a1d84ea777000b03",
+      "after_sha256": "dc8907c04379b101c72351171ae8763ccb297156bb009f65a1d84ea777000b03",
+      "bytes_after": 898,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/sprint-plan.md",
+      "status": "UNCHANGED",
+      "before_sha256": "04345649604c7016c936dc8b363d72ae3c3739dfa79cb1cbb7dfdcac1ccb4c0e",
+      "after_sha256": "04345649604c7016c936dc8b363d72ae3c3739dfa79cb1cbb7dfdcac1ccb4c0e",
+      "bytes_after": 687,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/start.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7cd9f12bcd14ad2e07720d6e24261efeb809c3261d2d2a81665f16bc47b1a630",
+      "after_sha256": "7cd9f12bcd14ad2e07720d6e24261efeb809c3261d2d2a81665f16bc47b1a630",
+      "bytes_after": 669,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/team-audio.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7abe89292d0fed74257ceff52200766901f15435631cdcc92fa1246b75d686c6",
+      "after_sha256": "7abe89292d0fed74257ceff52200766901f15435631cdcc92fa1246b75d686c6",
+      "bytes_after": 684,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/team-combat.md",
+      "status": "UNCHANGED",
+      "before_sha256": "09fae9c172f628ad5ad283e3c75208f87ef203b2b9466bc6993ea00f01836857",
+      "after_sha256": "09fae9c172f628ad5ad283e3c75208f87ef203b2b9466bc6993ea00f01836857",
+      "bytes_after": 687,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/team-level.md",
+      "status": "UNCHANGED",
+      "before_sha256": "a7ef7294b6b414f4c16ab582ac53fa91a52b44ea3cbd5fb90442a41b2b2844ce",
+      "after_sha256": "a7ef7294b6b414f4c16ab582ac53fa91a52b44ea3cbd5fb90442a41b2b2844ce",
+      "bytes_after": 684,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/team-narrative.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9b6fe08cf5b5776b8d662b181b4f52d7a6963b5b54408bd9bf8717a4a58eece9",
+      "after_sha256": "9b6fe08cf5b5776b8d662b181b4f52d7a6963b5b54408bd9bf8717a4a58eece9",
+      "bytes_after": 696,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/team-polish.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e48dccc8f805bfb30c9265619013e2f934fc37429109743859d3d08f3d4b6dad",
+      "after_sha256": "e48dccc8f805bfb30c9265619013e2f934fc37429109743859d3d08f3d4b6dad",
+      "bytes_after": 687,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/team-release.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b5ea15ae73a0d8b77c375c286b7d3f21af5282c1b8df461513bab8fbd988dd32",
+      "after_sha256": "b5ea15ae73a0d8b77c375c286b7d3f21af5282c1b8df461513bab8fbd988dd32",
+      "bytes_after": 690,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/team-ui.md",
+      "status": "UNCHANGED",
+      "before_sha256": "601f77cd6b66b88e116d9dcd5628c36f65f727f9038b64935cdecdd4581f0057",
+      "after_sha256": "601f77cd6b66b88e116d9dcd5628c36f65f727f9038b64935cdecdd4581f0057",
+      "bytes_after": 675,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/commands/tech-debt.md",
+      "status": "UNCHANGED",
+      "before_sha256": "305b75fb1847e40e56afbc1e702df25e385b103ef61c243232a0eefaf2d7a331",
+      "after_sha256": "305b75fb1847e40e56afbc1e702df25e385b103ef61c243232a0eefaf2d7a331",
+      "bytes_after": 681,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/OPENCODE-local-template.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c9b4e14c424c08e8a57a9c469e45838134f22cca23afd108a0186bdbb0dbc39e",
+      "after_sha256": "c9b4e14c424c08e8a57a9c469e45838134f22cca23afd108a0186bdbb0dbc39e",
+      "bytes_after": 1110,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/agent-coordination-map.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b2dc092653a8ec5b05854610aa1f4e5cb20e961b011d797494dca8ce84c3ca3e",
+      "after_sha256": "b2dc092653a8ec5b05854610aa1f4e5cb20e961b011d797494dca8ce84c3ca3e",
+      "bytes_after": 13543,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/agent-roster.md",
+      "status": "UNCHANGED",
+      "before_sha256": "d2ae5d49677aa9fd1b4c303eefb6691bb62ea2e6130ab913fd68fcc2068cf886",
+      "after_sha256": "d2ae5d49677aa9fd1b4c303eefb6691bb62ea2e6130ab913fd68fcc2068cf886",
+      "bytes_after": 7642,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/audit-runtime.md",
+      "status": "MODIFIED",
+      "before_sha256": "bbd9ab2ce91c6ce60a364b868c16d720dfbeace8f22a051dbaa77da8dc9d8422",
+      "after_sha256": "74630deae5256e68223f416c0cc4ee8a9bd60e3b80cc365ff60e21b22bb956ac",
+      "bytes_after": 10722,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/coding-standards.md",
+      "status": "UNCHANGED",
+      "before_sha256": "d02c693cbf2001f14dc483b6bf16b67b5586d4820d410fba0078ceefbe1a963e",
+      "after_sha256": "d02c693cbf2001f14dc483b6bf16b67b5586d4820d410fba0078ceefbe1a963e",
+      "bytes_after": 1303,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/context-management.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7c0f605e4fd1fc4a69a58f44a5ce7ed18a95d2497c14aa507b057d2fd09e1907",
+      "after_sha256": "7c0f605e4fd1fc4a69a58f44a5ce7ed18a95d2497c14aa507b057d2fd09e1907",
+      "bytes_after": 5019,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/coordination-rules.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ca771faef5f4baddd1b0f76f5315b6ee812ba0306ab5b9560aae005ebb711612",
+      "after_sha256": "ca771faef5f4baddd1b0f76f5315b6ee812ba0306ab5b9560aae005ebb711612",
+      "bytes_after": 1438,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/directory-structure.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1c07046364c88a3d18aa35eea6d20acff5ba7cf53b79109ef5a268d8bc8066eb",
+      "after_sha256": "1c07046364c88a3d18aa35eea6d20acff5ba7cf53b79109ef5a268d8bc8066eb",
+      "bytes_after": 1196,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/engineering-capabilities.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c4a455ce557777138e071bc7bb6e2459072915a64c7809827a7fe3511fe19fe1",
+      "after_sha256": "c4a455ce557777138e071bc7bb6e2459072915a64c7809827a7fe3511fe19fe1",
+      "bytes_after": 2669,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/engineering-roles.md",
+      "status": "UNCHANGED",
+      "before_sha256": "acecd741b63f828a514837bb35db4d2064ff74113c69a3d9790a4e1ce9a8ff3a",
+      "after_sha256": "acecd741b63f828a514837bb35db4d2064ff74113c69a3d9790a4e1ce9a8ff3a",
+      "bytes_after": 2664,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/engineering-workflow.md",
+      "status": "UNCHANGED",
+      "before_sha256": "2b9a80ff9111689cb7996ef15443382669a2f78bd5e2497f820dbe67e041a3da",
+      "after_sha256": "2b9a80ff9111689cb7996ef15443382669a2f78bd5e2497f820dbe67e041a3da",
+      "bytes_after": 12798,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference.md",
+      "status": "MODIFIED",
+      "before_sha256": "f802a05528f0623d95e35f048624d33efba66675e87f77a3f980dacbb2fbfbd1",
+      "after_sha256": "d531b12ccb82df936ebf5c6ffcc282bb0e528e33348983b96d46a59085e113bb",
+      "bytes_after": 4120,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/hook-input-schemas.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7c409038a39424b214f1b3e581e4e35da34259c2db8157a3ad3a5aefc865218c",
+      "after_sha256": "7c409038a39424b214f1b3e581e4e35da34259c2db8157a3ad3a5aefc865218c",
+      "bytes_after": 2664,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/post-merge-asset-validation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8774c0856048a2bf79204843bb37923c08b4712341a42bf46dcbecfb5b980302",
+      "after_sha256": "8774c0856048a2bf79204843bb37923c08b4712341a42bf46dcbecfb5b980302",
+      "bytes_after": 2899,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/post-sprint-retrospective.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b5dab66a71d7aa36892ead1ceb38ab5e557826423befce00cdfd07799f8f777b",
+      "after_sha256": "b5dab66a71d7aa36892ead1ceb38ab5e557826423befce00cdfd07799f8f777b",
+      "bytes_after": 2478,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/pre-commit-code-quality.md",
+      "status": "UNCHANGED",
+      "before_sha256": "dda0b717cbf42ddd78d8810eb9209d570c2eb9f7c3a81b1352c30d1ab8348b48",
+      "after_sha256": "dda0b717cbf42ddd78d8810eb9209d570c2eb9f7c3a81b1352c30d1ab8348b48",
+      "bytes_after": 2456,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/pre-commit-design-check.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b8a5ee44dda1a86951c655d81084c1479a3b0e32120c1c976a6b49a5538978f5",
+      "after_sha256": "b8a5ee44dda1a86951c655d81084c1479a3b0e32120c1c976a6b49a5538978f5",
+      "bytes_after": 2526,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/hooks-reference/pre-push-test-gate.md",
+      "status": "UNCHANGED",
+      "before_sha256": "60f2f7a8c396a0b464598b08e8010b9f65cd8fd7eb57d8209bb4cffa1b99ed22",
+      "after_sha256": "60f2f7a8c396a0b464598b08e8010b9f65cd8fd7eb57d8209bb4cffa1b99ed22",
+      "bytes_after": 2322,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/quick-start.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ad3c292ea64253d180c8b4ddc70b28c98222d57f53afb2288a3e24dfbb9bca22",
+      "after_sha256": "ad3c292ea64253d180c8b4ddc70b28c98222d57f53afb2288a3e24dfbb9bca22",
+      "bytes_after": 14596,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/review-workflow.md",
+      "status": "UNCHANGED",
+      "before_sha256": "5473fff8fd07ed08d9c6c918a251fab3a253ee89c6a99ed208a835146aa134c7",
+      "after_sha256": "5473fff8fd07ed08d9c6c918a251fab3a253ee89c6a99ed208a835146aa134c7",
+      "bytes_after": 292,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/rules-reference.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9c68eba6f087e8a2da08e4a359522df26a757fe8d87bd584457e771fb8156c47",
+      "after_sha256": "9c68eba6f087e8a2da08e4a359522df26a757fe8d87bd584457e771fb8156c47",
+      "bytes_after": 1505,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/settings-local-template.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c4ad9d7801796526f1846e64a45991814b91e8fa8357b603a7dc1de01f489977",
+      "after_sha256": "c4ad9d7801796526f1846e64a45991814b91e8fa8357b603a7dc1de01f489977",
+      "bytes_after": 1367,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/setup-requirements.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e8911358ce432efc8b9c3156fc0d33eaeffeb18c74ca6bd4a4b4674470f5080b",
+      "after_sha256": "e8911358ce432efc8b9c3156fc0d33eaeffeb18c74ca6bd4a4b4674470f5080b",
+      "bytes_after": 2896,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/skills-reference.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1ad9c2eb7faae7f3d3dfc7a036df1fc6cccec65199be72db8ef05163a1200a38",
+      "after_sha256": "1ad9c2eb7faae7f3d3dfc7a036df1fc6cccec65199be72db8ef05163a1200a38",
+      "bytes_after": 5059,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/technical-preferences.md",
+      "status": "UNCHANGED",
+      "before_sha256": "6009382a7f0afcd712027c194678a511a821356bcc6703ff0bb20c2195c9578d",
+      "after_sha256": "6009382a7f0afcd712027c194678a511a821356bcc6703ff0bb20c2195c9578d",
+      "bytes_after": 1471,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/architecture-decision-record.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0a5c81ecf089b5562a325b98fe83e4476cb3e719fbc5fb8ae346655751a58e03",
+      "after_sha256": "0a5c81ecf089b5562a325b98fe83e4476cb3e719fbc5fb8ae346655751a58e03",
+      "bytes_after": 2891,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/architecture-doc-from-code.md",
+      "status": "UNCHANGED",
+      "before_sha256": "a171673089d3364d848797fe7c7dd415206e65ba1313fec0c1612d32a1a57ad9",
+      "after_sha256": "a171673089d3364d848797fe7c7dd415206e65ba1313fec0c1612d32a1a57ad9",
+      "bytes_after": 6217,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/art-bible.md",
+      "status": "UNCHANGED",
+      "before_sha256": "763d85c3ce5cb297c73603ac48718e4a73bf01b908d2e283693d8f678e71edd6",
+      "after_sha256": "763d85c3ce5cb297c73603ac48718e4a73bf01b908d2e283693d8f678e71edd6",
+      "bytes_after": 2243,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/changelog-template.md",
+      "status": "UNCHANGED",
+      "before_sha256": "cb4dad3cbc41b1501babe53cc9f00be1311aed39f3ea19f57d77ecc0bb9314b1",
+      "after_sha256": "cb4dad3cbc41b1501babe53cc9f00be1311aed39f3ea19f57d77ecc0bb9314b1",
+      "bytes_after": 1445,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/collaborative-protocols/design-agent-protocol.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c5c778e3d9ecb80d224944510c67be99861f9f96b4ac07f6660d06e6e0a971e4",
+      "after_sha256": "c5c778e3d9ecb80d224944510c67be99861f9f96b4ac07f6660d06e6e0a971e4",
+      "bytes_after": 6121,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/collaborative-protocols/implementation-agent-protocol.md",
+      "status": "UNCHANGED",
+      "before_sha256": "039218e2c26b0e83bbb7c57f97bfff39659e9c88aca649fae9b506855135db02",
+      "after_sha256": "039218e2c26b0e83bbb7c57f97bfff39659e9c88aca649fae9b506855135db02",
+      "bytes_after": 6312,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/collaborative-protocols/leadership-agent-protocol.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e1fbc30461f18c4ff5f018cdaf04dc868c47e4aa54da79a26885aaba7081e57b",
+      "after_sha256": "e1fbc30461f18c4ff5f018cdaf04dc868c47e4aa54da79a26885aaba7081e57b",
+      "bytes_after": 7741,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/concept-doc-from-prototype.md",
+      "status": "UNCHANGED",
+      "before_sha256": "67cac0117cdadda7494196edff3d92e2195c660067c7fa2ad4f0055de9165291",
+      "after_sha256": "67cac0117cdadda7494196edff3d92e2195c660067c7fa2ad4f0055de9165291",
+      "bytes_after": 8239,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/design-doc-from-implementation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "464a3bf7f674d0f82117d5880e6966a0496e14135009747547697c4d5d7f27ab",
+      "after_sha256": "464a3bf7f674d0f82117d5880e6966a0496e14135009747547697c4d5d7f27ab",
+      "bytes_after": 5763,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/economy-model.md",
+      "status": "UNCHANGED",
+      "before_sha256": "22af6a9df657a17e8155a6130d04a8ce04c095e5dcb7ad5c2648449013b35a58",
+      "after_sha256": "22af6a9df657a17e8155a6130d04a8ce04c095e5dcb7ad5c2648449013b35a58",
+      "bytes_after": 4482,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/faction-design.md",
+      "status": "UNCHANGED",
+      "before_sha256": "abe1d5720e68169e349156bbcb42db135ecca25bf1510dda5ddd1deb3980f257",
+      "after_sha256": "abe1d5720e68169e349156bbcb42db135ecca25bf1510dda5ddd1deb3980f257",
+      "bytes_after": 4653,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/game-concept.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ecbf63a48ab4d0352cb2a26444a75b973cece5e25beba1b7f54d8efd3ca351a7",
+      "after_sha256": "ecbf63a48ab4d0352cb2a26444a75b973cece5e25beba1b7f54d8efd3ca351a7",
+      "bytes_after": 12443,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/game-design-document.md",
+      "status": "UNCHANGED",
+      "before_sha256": "af6e4ba818fb5275a7b5cd245ae7a7302d54048f1961cab51ab2c173a14e72d6",
+      "after_sha256": "af6e4ba818fb5275a7b5cd245ae7a7302d54048f1961cab51ab2c173a14e72d6",
+      "bytes_after": 3812,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/game-pillars.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3603610be7704cdee1c421813cd248ce07a410969dc3416aa2b9e4959801d3c8",
+      "after_sha256": "3603610be7704cdee1c421813cd248ce07a410969dc3416aa2b9e4959801d3c8",
+      "bytes_after": 12852,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/incident-response.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8ba68a9ac8a1f404c5fd785b2a3c9287ed52873bb7acf028e6eef1bb6f9dab4c",
+      "after_sha256": "8ba68a9ac8a1f404c5fd785b2a3c9287ed52873bb7acf028e6eef1bb6f9dab4c",
+      "bytes_after": 3943,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/level-design-document.md",
+      "status": "UNCHANGED",
+      "before_sha256": "61b48448c070490ebb0bb5214cfbfa3a926683f687dc1f74c83d310dc063aacb",
+      "after_sha256": "61b48448c070490ebb0bb5214cfbfa3a926683f687dc1f74c83d310dc063aacb",
+      "bytes_after": 3248,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/milestone-definition.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ecdef4e53c02ea9ee954ae0124291fcd9bd3627ef6a444a4fc7878587a101251",
+      "after_sha256": "ecdef4e53c02ea9ee954ae0124291fcd9bd3627ef6a444a4fc7878587a101251",
+      "bytes_after": 2313,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/narrative-character-sheet.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b40bb1cb386727a9c506cbbd76f037990e4461315554e0f78f896f0195cc79e2",
+      "after_sha256": "b40bb1cb386727a9c506cbbd76f037990e4461315554e0f78f896f0195cc79e2",
+      "bytes_after": 3197,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/pitch-document.md",
+      "status": "UNCHANGED",
+      "before_sha256": "f33c7ec8faefc1d2909184328bbe53ffc00832de52d47eabf07ec418451e1662",
+      "after_sha256": "f33c7ec8faefc1d2909184328bbe53ffc00832de52d47eabf07ec418451e1662",
+      "bytes_after": 3497,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/post-mortem.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e7e2ea73be4295761c2a355ab542be620d5b947ca5749ad8efd43abdd9c16390",
+      "after_sha256": "e7e2ea73be4295761c2a355ab542be620d5b947ca5749ad8efd43abdd9c16390",
+      "bytes_after": 1685,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/project-stage-report.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b78afb205a473f5ab30e6c0c0d4db20a1be907d4d3d38b72ed19a5dc73c8ba8e",
+      "after_sha256": "b78afb205a473f5ab30e6c0c0d4db20a1be907d4d3d38b72ed19a5dc73c8ba8e",
+      "bytes_after": 5205,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/release-checklist-template.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7886ea10821a99cfde3e7b3e3d3688fbc475f39701b79481ec4d5f5466eed11e",
+      "after_sha256": "7886ea10821a99cfde3e7b3e3d3688fbc475f39701b79481ec4d5f5466eed11e",
+      "bytes_after": 3654,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/release-notes.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0d3ea9d50eb6a2dd57a042f656fc8fc8918522c6ec9b19d6cd48d36f4b390ecb",
+      "after_sha256": "0d3ea9d50eb6a2dd57a042f656fc8fc8918522c6ec9b19d6cd48d36f4b390ecb",
+      "bytes_after": 2270,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/risk-register-entry.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0d4460ea5b5a3b2a87506fab8db2344efbffb9cf39b4ece285025038f9e0ff34",
+      "after_sha256": "0d4460ea5b5a3b2a87506fab8db2344efbffb9cf39b4ece285025038f9e0ff34",
+      "bytes_after": 1438,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/skill-audit-report.md",
+      "status": "MODIFIED",
+      "before_sha256": "b93061c4b47cccc14d908ae4d83290bebf14f4ddf1f214b23579584eeb2e9cdc",
+      "after_sha256": "25d6621b30e9e6b926291b0c3737636be1244390f4c2334e589c15f01f2bda93",
+      "bytes_after": 1995,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/sound-bible.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9e1e63cbcc751113702d33a2134e05032994cd84a9a70acdf09909ec77f9b087",
+      "after_sha256": "9e1e63cbcc751113702d33a2134e05032994cd84a9a70acdf09909ec77f9b087",
+      "bytes_after": 5141,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/sprint-plan.md",
+      "status": "UNCHANGED",
+      "before_sha256": "6ecb4de2c19780cea1fd4dca377cf4e6fc9425bb0e8c75d667fa724e42975a2d",
+      "after_sha256": "6ecb4de2c19780cea1fd4dca377cf4e6fc9425bb0e8c75d667fa724e42975a2d",
+      "bytes_after": 2286,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/systems-index.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7ede654c74704230feb88a331f98473b664ade9196dd1abdf6a041c49c683545",
+      "after_sha256": "7ede654c74704230feb88a331f98473b664ade9196dd1abdf6a041c49c683545",
+      "bytes_after": 5642,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/technical-design-document.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8809608a44354cf9f26086e23fa4c4cb3bd0012a8429877e0a92bb4e48dec9e6",
+      "after_sha256": "8809608a44354cf9f26086e23fa4c4cb3bd0012a8429877e0a92bb4e48dec9e6",
+      "bytes_after": 1969,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/docs/templates/test-plan.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b26cce181e3e7c67b3bc0592e299731a2c457dd43282854e962db8f87e550224",
+      "after_sha256": "b26cce181e3e7c67b3bc0592e299731a2c457dd43282854e962db8f87e550224",
+      "bytes_after": 2867,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/hooks/detect-gaps.sh",
+      "status": "UNCHANGED",
+      "before_sha256": "4590520f640bed28bb7a6b43f54b8ae50ad9a03e5c8a3616dfbe8e07be83bcf6",
+      "after_sha256": "4590520f640bed28bb7a6b43f54b8ae50ad9a03e5c8a3616dfbe8e07be83bcf6",
+      "bytes_after": 6123,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/hooks/log-agent.sh",
+      "status": "UNCHANGED",
+      "before_sha256": "925f470c15929708c574d6affda769fea3cfc745e60e12121cf63175d9eae905",
+      "after_sha256": "925f470c15929708c574d6affda769fea3cfc745e60e12121cf63175d9eae905",
+      "bytes_after": 439,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/hooks/pre-compact.sh",
+      "status": "MODIFIED",
+      "before_sha256": "47ef840a897ea47293e5448e2318dc732abececb5d9fca1ef81d7113a62334f7",
+      "after_sha256": "8deb2e97611bb69f63e53cfb1b854c72d65fa1f88d8565f0f3fbad132998ee3f",
+      "bytes_after": 3801,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/hooks/session-start.sh",
+      "status": "MODIFIED",
+      "before_sha256": "4a78cb789cef2513657231c28012ec3a731a06dea512523c9e41946c62eb8b61",
+      "after_sha256": "b16da42a614563f1561c2a7c0370d68e8d88a60f50ecbbcd0a078e474d49d02f",
+      "bytes_after": 2831,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/hooks/session-stop.sh",
+      "status": "MODIFIED",
+      "before_sha256": "431c07f3b415e2abaa10e82c16eaffc7014e604ba488f000970ca4ea326f2cb1",
+      "after_sha256": "47e973d0009b087ccb77f0e24bba8d53bd108b4ced04c44b2094eaabe0734e3a",
+      "bytes_after": 2521,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/hooks/validate-assets.sh",
+      "status": "UNCHANGED",
+      "before_sha256": "9938c290805d81a2bee8e738a5854ac6f476b47e66d631e43923ddcfdf4b8d4d",
+      "after_sha256": "9938c290805d81a2bee8e738a5854ac6f476b47e66d631e43923ddcfdf4b8d4d",
+      "bytes_after": 462,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/hooks/validate-commit.sh",
+      "status": "UNCHANGED",
+      "before_sha256": "c03e57fd46b235826c974ecb0198fce7b422fb4bc336db6cb9d18b794f95b956",
+      "after_sha256": "c03e57fd46b235826c974ecb0198fce7b422fb4bc336db6cb9d18b794f95b956",
+      "bytes_after": 462,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/hooks/validate-push.sh",
+      "status": "UNCHANGED",
+      "before_sha256": "ebe3333d49da8cb3f2285a091fbbe3bd74e3992a2c1dec33b7fab39528e3e0e9",
+      "after_sha256": "ebe3333d49da8cb3f2285a091fbbe3bd74e3992a2c1dec33b7fab39528e3e0e9",
+      "bytes_after": 458,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/lib/audit-gate.mjs",
+      "status": "MODIFIED",
+      "before_sha256": "faa7d24f3a5d65f11dbd26e2624af105938153a66e0d77156ba915a9fffd49b5",
+      "after_sha256": "6d785231a618490a466ef095446cbb0ca49568d1dbb594d733fe55383284607e",
+      "bytes_after": 8473,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/opencode.json",
+      "status": "UNCHANGED",
+      "before_sha256": "d2274fa53013e891f6cadd09d33487775f62f65af0caebbf03cb67ab8c553c0c",
+      "after_sha256": "d2274fa53013e891f6cadd09d33487775f62f65af0caebbf03cb67ab8c553c0c",
+      "bytes_after": 782,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/plugins/skill-integrity.js",
+      "status": "UNCHANGED",
+      "before_sha256": "acd3b60b4f34f3444252d96778c5b0a8124f35bcdd4dfcf0b180e6816ec73563",
+      "after_sha256": "acd3b60b4f34f3444252d96778c5b0a8124f35bcdd4dfcf0b180e6816ec73563",
+      "bytes_after": 803,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/ai-code.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0b2ed79ed959c24262ca1b7ae353a78d574019d64eca040293753e165c5adb21",
+      "after_sha256": "0b2ed79ed959c24262ca1b7ae353a78d574019d64eca040293753e165c5adb21",
+      "bytes_after": 678,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/data-files.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bbc65708e00a98e18278c8331fd4f69ad261a6fdc15cbbb3a96815d0800dab9d",
+      "after_sha256": "bbc65708e00a98e18278c8331fd4f69ad261a6fdc15cbbb3a96815d0800dab9d",
+      "bytes_after": 1219,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/design-docs.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8e3ea21cd637f39b2fbca4ec1d660c97e0143f1b211466c7b03cf6447a59bfb4",
+      "after_sha256": "8e3ea21cd637f39b2fbca4ec1d660c97e0143f1b211466c7b03cf6447a59bfb4",
+      "bytes_after": 1039,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/engine-code.md",
+      "status": "UNCHANGED",
+      "before_sha256": "24e3bc62c96ef2840843721d047ea375726fc57a5ba816faa0432007c23d98f7",
+      "after_sha256": "24e3bc62c96ef2840843721d047ea375726fc57a5ba816faa0432007c23d98f7",
+      "bytes_after": 1380,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/gameplay-code.md",
+      "status": "UNCHANGED",
+      "before_sha256": "94030c94f9f39c669f9292a0e1ab57a8d6fd53d1353485202713c2465098606c",
+      "after_sha256": "94030c94f9f39c669f9292a0e1ab57a8d6fd53d1353485202713c2465098606c",
+      "bytes_after": 1025,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/narrative.md",
+      "status": "UNCHANGED",
+      "before_sha256": "be8925e4d9a6242eb7db40fd918bdc94aa6f40e498f9e3aa8d7ffe27ede4a819",
+      "after_sha256": "be8925e4d9a6242eb7db40fd918bdc94aa6f40e498f9e3aa8d7ffe27ede4a819",
+      "bytes_after": 755,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/network-code.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e75454f6ea2e3892521ab6500865190fe74b28ce90b604e78a7d74a6c08e675e",
+      "after_sha256": "e75454f6ea2e3892521ab6500865190fe74b28ce90b604e78a7d74a6c08e675e",
+      "bytes_after": 678,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/prototype-code.md",
+      "status": "UNCHANGED",
+      "before_sha256": "67cf516d0febcb9829407386b4d16b773ea38cc21012fdeb03a53943cc6ed5bd",
+      "after_sha256": "67cf516d0febcb9829407386b4d16b773ea38cc21012fdeb03a53943cc6ed5bd",
+      "bytes_after": 1551,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/shader-code.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c48a60ba3734ac3f75146434e867095eda907f7770cb8c56e28b236d1c751a04",
+      "after_sha256": "c48a60ba3734ac3f75146434e867095eda907f7770cb8c56e28b236d1c751a04",
+      "bytes_after": 1933,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/skill-integrity.md",
+      "status": "MODIFIED",
+      "before_sha256": "dc982a4eb54462453adf9732d2f55e454872ec7977b54c952ec7b2cbcc682be3",
+      "after_sha256": "a4b106e2dceefd1a17e3d75ed9835fbe907808e28020f1b049e4d5dacb354295",
+      "bytes_after": 6339,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/test-standards.md",
+      "status": "UNCHANGED",
+      "before_sha256": "78c642a6f22a815a990aca02e677d5d7f676524dff59a9a8034f1c7d69b42597",
+      "after_sha256": "78c642a6f22a815a990aca02e677d5d7f676524dff59a9a8034f1c7d69b42597",
+      "bytes_after": 1249,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/rules/ui-code.md",
+      "status": "UNCHANGED",
+      "before_sha256": "be45904c33e72c717ac56ba2ee760d5a5ec1435a3b84ad4365ca513c91a7a68b",
+      "after_sha256": "be45904c33e72c717ac56ba2ee760d5a5ec1435a3b84ad4365ca513c91a7a68b",
+      "bytes_after": 641,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/scripts/change-model.py",
+      "status": "UNCHANGED",
+      "before_sha256": "09bd991f07cbade3c6398d9ec72b405a21257007d064e42e1b9d8e8e6233dcbc",
+      "after_sha256": "09bd991f07cbade3c6398d9ec72b405a21257007d064e42e1b9d8e8e6233dcbc",
+      "bytes_after": 7083,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/scripts/hook-checks.py",
+      "status": "MODIFIED",
+      "before_sha256": "9f3d7342636257e5edb51c7fed4a5b539d93977a2caaf90adcc8ea551fee056b",
+      "after_sha256": "666178498edbccf6716c15aebfc4fc2c2e16d3af36aee10a3a2135100b6e4125",
+      "bytes_after": 11585,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/scripts/skill-audit.mjs",
+      "status": "MODIFIED",
+      "before_sha256": "341579253344805d17e789e8da6d3e902cf0fd523b580638cf7a70a05bc8d505",
+      "after_sha256": "587f36ca8946822f047cc47924b71a1620797d981c80b8d38f509999dacb6a3e",
+      "bytes_after": 2760,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/architecture-decision/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "2c0370893b191d0c6081e626be45a8664a19b6db13d35a466efdd6d89ca9d3c3",
+      "after_sha256": "2c0370893b191d0c6081e626be45a8664a19b6db13d35a466efdd6d89ca9d3c3",
+      "bytes_after": 2502,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/asset-audit/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "786dae49b033de518866286ff1b1cabf09829b3796d309af02e040e8d2e77f7d",
+      "after_sha256": "786dae49b033de518866286ff1b1cabf09829b3796d309af02e040e8d2e77f7d",
+      "bytes_after": 2338,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/balance-check/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "5698b9aee687f536b7ad83ccd2657e06437454623ca79eeff4f6aee9e0f31a2e",
+      "after_sha256": "5698b9aee687f536b7ad83ccd2657e06437454623ca79eeff4f6aee9e0f31a2e",
+      "bytes_after": 2411,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/brainstorm/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ce2ce575d8dee989d8ea766dea3b497fe8ada9cc4f6fedf9b693fa4210ac759c",
+      "after_sha256": "ce2ce575d8dee989d8ea766dea3b497fe8ada9cc4f6fedf9b693fa4210ac759c",
+      "bytes_after": 9476,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/bug-report/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1b3ee55fa19780c291f2f535a053be3aa2089a3dddbed55280ec9c100210e2b1",
+      "after_sha256": "1b3ee55fa19780c291f2f535a053be3aa2089a3dddbed55280ec9c100210e2b1",
+      "bytes_after": 2324,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/changelog/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "a6ac81374cdc0ac319de4515210ecf20c3a4a966a9519a7e6aaae148e8735482",
+      "after_sha256": "a6ac81374cdc0ac319de4515210ecf20c3a4a966a9519a7e6aaae148e8735482",
+      "bytes_after": 4433,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/code-review/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "addec5fe3a3e408f56eee800010d7249ab1dcf47f25e7d4cdbeba85aabc58e95",
+      "after_sha256": "addec5fe3a3e408f56eee800010d7249ab1dcf47f25e7d4cdbeba85aabc58e95",
+      "bytes_after": 2633,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/concurrency-analysis/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "0c12977203b3d9fa771948c80733fb1e81158fdadb0423720c533cb12b6ae853",
+      "after_sha256": "0c12977203b3d9fa771948c80733fb1e81158fdadb0423720c533cb12b6ae853",
+      "bytes_after": 1779,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/debugging-analysis/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1e347f99baa25023bf20347d8cfe348f105e3f12b020c742490e2414019cf502",
+      "after_sha256": "1e347f99baa25023bf20347d8cfe348f105e3f12b020c742490e2414019cf502",
+      "bytes_after": 1620,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/design-review/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "890be8dc95e41e46c483147d14385811c00da8d5801f36649c9700c84fb25a17",
+      "after_sha256": "890be8dc95e41e46c483147d14385811c00da8d5801f36649c9700c84fb25a17",
+      "bytes_after": 3270,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/design-system/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ad9c1f18cc7e8acdb3a7588538f1850ce73583823e3192e931fe31b47b268ae8",
+      "after_sha256": "ad9c1f18cc7e8acdb3a7588538f1850ce73583823e3192e931fe31b47b268ae8",
+      "bytes_after": 17853,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/estimate/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "76b0d98d3e575f29963831f2f79d13cad2c7b4495ff39380265ec80156ece006",
+      "after_sha256": "76b0d98d3e575f29963831f2f79d13cad2c7b4495ff39380265ec80156ece006",
+      "bytes_after": 6428,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/framework-engineering/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "97cb002af395b546a84d1bf8f89dbefdaa464d8c2193b8e4a31f99743566f90e",
+      "after_sha256": "97cb002af395b546a84d1bf8f89dbefdaa464d8c2193b8e4a31f99743566f90e",
+      "bytes_after": 2193,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/gate-check/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9318a307e53d26a2d1a45bef147f92f818ea7ae4fbe86d031d0153dd6a6df30c",
+      "after_sha256": "9318a307e53d26a2d1a45bef147f92f818ea7ae4fbe86d031d0153dd6a6df30c",
+      "bytes_after": 9323,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/hotfix/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bc635c9f6f86a06ca2a9aeb0562e75b4a4c3da91a58a0c08e6b0aafde84c1e2b",
+      "after_sha256": "bc635c9f6f86a06ca2a9aeb0562e75b4a4c3da91a58a0c08e6b0aafde84c1e2b",
+      "bytes_after": 2960,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/launch-checklist/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "2aa9b89a57ed6e21bd30a5b2c778f12c96f470fb15a692e10ac75d0b5e64cee2",
+      "after_sha256": "2aa9b89a57ed6e21bd30a5b2c778f12c96f470fb15a692e10ac75d0b5e64cee2",
+      "bytes_after": 7654,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/localize/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "f9214e423b0b4e8ca0ef60989d8ddb8f593fdd48c77e732e6818d8cff1ebfc4f",
+      "after_sha256": "f9214e423b0b4e8ca0ef60989d8ddb8f593fdd48c77e732e6818d8cff1ebfc4f",
+      "bytes_after": 3188,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/map-systems/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "85a31705c4184c2924733fce1d831084bca370bf37338d7bd32c785cd0a8f589",
+      "after_sha256": "85a31705c4184c2924733fce1d831084bca370bf37338d7bd32c785cd0a8f589",
+      "bytes_after": 11381,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/milestone-review/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "cfbab54188650c3ce7b0e93632a754bd7d17d4419d77f2139a10ebb1c62e602a",
+      "after_sha256": "cfbab54188650c3ce7b0e93632a754bd7d17d4419d77f2139a10ebb1c62e602a",
+      "bytes_after": 2572,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/onboard/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "39f011ef2ebf427f74197e48d4389c8872db467ba6b27edd30d3a3a4e05d7a2a",
+      "after_sha256": "39f011ef2ebf427f74197e48d4389c8872db467ba6b27edd30d3a3a4e05d7a2a",
+      "bytes_after": 2255,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/patch-notes/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "5ebd5b076b6a60f758b8848fec5f4e263c17e9d9dc74515c1e5527e981aa5b36",
+      "after_sha256": "5ebd5b076b6a60f758b8848fec5f4e263c17e9d9dc74515c1e5527e981aa5b36",
+      "bytes_after": 3930,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/perf-profile/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "fc93ffbd06599ed3eb03bf7d31baeb185bb43cfc11bcdb02c2b9a1d04f28cd05",
+      "after_sha256": "fc93ffbd06599ed3eb03bf7d31baeb185bb43cfc11bcdb02c2b9a1d04f28cd05",
+      "bytes_after": 3664,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/playtest-report/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "17d98a878b3ecaea1f1269a2d6c9a3aa585a2adf19285dd295a04ada5309ed7f",
+      "after_sha256": "17d98a878b3ecaea1f1269a2d6c9a3aa585a2adf19285dd295a04ada5309ed7f",
+      "bytes_after": 2271,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/production-validation/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "868b3287238ec960fb34e1990c51448fc374bf3e583bc724c754ad749bcb6d57",
+      "after_sha256": "868b3287238ec960fb34e1990c51448fc374bf3e583bc724c754ad749bcb6d57",
+      "bytes_after": 1714,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/project-stage-detect/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "6eb74d147d458cd1e02dfa7192fdd957d18bdafdaaf67d1f6e1a9c55babee095",
+      "after_sha256": "6eb74d147d458cd1e02dfa7192fdd957d18bdafdaaf67d1f6e1a9c55babee095",
+      "bytes_after": 6103,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/prototype/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "71dc38c108bce1740e18f9f875460323dbdf5242dfee93f35f334c755c7605a4",
+      "after_sha256": "71dc38c108bce1740e18f9f875460323dbdf5242dfee93f35f334c755c7605a4",
+      "bytes_after": 3517,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/release-checklist/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "cbe4d334efa1a59f75943537d73e3de75d462a5b2cfbb3864445eb7a25ef3e39",
+      "after_sha256": "cbe4d334efa1a59f75943537d73e3de75d462a5b2cfbb3864445eb7a25ef3e39",
+      "bytes_after": 5943,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/repository-discovery/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "112e3e2f5e1bea2867d01820bf557296e72227d58300abf63dab22041666640e",
+      "after_sha256": "112e3e2f5e1bea2867d01820bf557296e72227d58300abf63dab22041666640e",
+      "bytes_after": 2184,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/retrospective/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "fa9de8f3d76250d2c9778c9db8aefe2ccb146a78031fafeff84104ed1f68f367",
+      "after_sha256": "fa9de8f3d76250d2c9778c9db8aefe2ccb146a78031fafeff84104ed1f68f367",
+      "bytes_after": 5714,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/reverse-document/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "133839df766a6c16e3f71a43ce763b47422de5980f760fc88bfcd4076f2fd69a",
+      "after_sha256": "133839df766a6c16e3f71a43ce763b47422de5980f760fc88bfcd4076f2fd69a",
+      "bytes_after": 8846,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/scope-check/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "a8ee43a21bcc29ac40b71464f590fb633f1ad5befd6368b41f0722efa54ca666",
+      "after_sha256": "a8ee43a21bcc29ac40b71464f590fb633f1ad5befd6368b41f0722efa54ca666",
+      "bytes_after": 2975,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/setup-engine/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "6f3f152a6041c515ffbba2edd6aeec4841339fc11ba3fdad73de0991d68c6a8c",
+      "after_sha256": "6f3f152a6041c515ffbba2edd6aeec4841339fc11ba3fdad73de0991d68c6a8c",
+      "bytes_after": 11684,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "status": "MODIFIED",
+      "before_sha256": "4b94bee124bd68fb40b9cbb441b8b71b2374f14df10bb3fe7252f374979ccda4",
+      "after_sha256": "0ef70316cd6d3cf36c2330e059612a462ef2e415ebd58bcffbe051fa42afc006",
+      "bytes_after": 8273,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/sprint-plan/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7293ff5219645ab41c4f1e91893377fe58a7b078b7e356a47c58ba4592040c02",
+      "after_sha256": "7293ff5219645ab41c4f1e91893377fe58a7b078b7e356a47c58ba4592040c02",
+      "bytes_after": 3020,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/start/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7c8620fbe2e1ed99f9420be0120aa2eaecf35c04f0035733084bc8ed0ce48369",
+      "after_sha256": "7c8620fbe2e1ed99f9420be0120aa2eaecf35c04f0035733084bc8ed0ce48369",
+      "bytes_after": 7330,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/team-audio/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "260bf50925a080285dd847f2497c4335f014becadb521d53a8499fec6a0f642c",
+      "after_sha256": "260bf50925a080285dd847f2497c4335f014becadb521d53a8499fec6a0f642c",
+      "bytes_after": 3384,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/team-combat/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "18625e28937ab457960e3daaec745b369f4237d080719fb399937e272f80294c",
+      "after_sha256": "18625e28937ab457960e3daaec745b369f4237d080719fb399937e272f80294c",
+      "bytes_after": 3761,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/team-level/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "834743d57e605f29484ea751626a6041f0d674b49f932fd8be738d2e097062fc",
+      "after_sha256": "834743d57e605f29484ea751626a6041f0d674b49f932fd8be738d2e097062fc",
+      "bytes_after": 4202,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/team-narrative/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7bd2e1be4e2f3dfd36ac8482ab354b698204e4cbdcf45cc70d37025912219174",
+      "after_sha256": "7bd2e1be4e2f3dfd36ac8482ab354b698204e4cbdcf45cc70d37025912219174",
+      "bytes_after": 3695,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/team-polish/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "421bb9248c309932031079a4322c44444ee850d1a122b1c05f602d47260e2efb",
+      "after_sha256": "421bb9248c309932031079a4322c44444ee850d1a122b1c05f602d47260e2efb",
+      "bytes_after": 3957,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/team-release/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "dd8ccc92195c4e8ecbbea7a3482ae5d8b87ba252f697a84ddff1b015a8225bde",
+      "after_sha256": "dd8ccc92195c4e8ecbbea7a3482ae5d8b87ba252f697a84ddff1b015a8225bde",
+      "bytes_after": 3917,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/team-ui/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3aaf26005a235f608706f2743214c85174b585c904c1f612e8abef151b680c79",
+      "after_sha256": "3aaf26005a235f608706f2743214c85174b585c904c1f612e8abef151b680c79",
+      "bytes_after": 3545,
+      "mode_after": "0o644"
+    },
+    {
+      "path": ".opencode/skills/tech-debt/SKILL.md",
+      "status": "UNCHANGED",
+      "before_sha256": "506b3525d34d3bba8fa88448b8a20f1f5776cd58913d164065ce55d9e7c9ed71",
+      "after_sha256": "506b3525d34d3bba8fa88448b8a20f1f5776cd58913d164065ce55d9e7c9ed71",
+      "bytes_after": 3204,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "AGENTS.md",
+      "status": "MODIFIED",
+      "before_sha256": "514cb84adac576be2df283f62a7a26fc22ebbfb9e08bdf6745710b0ff0f95509",
+      "after_sha256": "78e77806bb04a4855873082c50087555a8cb57d81480e64f2c40c922062282aa",
+      "bytes_after": 2614,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "AUDIT-AND-REPAIR-REPORT.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b5a0d3931ef3debf9d00274dcc85fa7e792a7c833e15ebbda35ebdc76b2a4b20",
+      "after_sha256": "b5a0d3931ef3debf9d00274dcc85fa7e792a7c833e15ebbda35ebdc76b2a4b20",
+      "bytes_after": 28185,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "LICENSE",
+      "status": "UNCHANGED",
+      "before_sha256": "9bbb866e7d1383e1b8ebb8c7f773096cadea6961b4269ada4587c7db261a717e",
+      "after_sha256": "9bbb866e7d1383e1b8ebb8c7f773096cadea6961b4269ada4587c7db261a717e",
+      "bytes_after": 1077,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "OPENCODE.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bb7bb4fbf8363e00b90079e942ace1177b84ab6722a94fab4acceb54780611cb",
+      "after_sha256": "bb7bb4fbf8363e00b90079e942ace1177b84ab6722a94fab4acceb54780611cb",
+      "bytes_after": 2426,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "README.md",
+      "status": "MODIFIED",
+      "before_sha256": "cb3fb89d6b8be8f7e840804253bfed367e8ad753e24dc12a8ad71c1ba2b5b96d",
+      "after_sha256": "ad632140ae9a9cf3f0b9fbdac090a5903271eb819f37cbabf21713e6eda4c93d",
+      "bytes_after": 11128,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "change_model.sh",
+      "status": "UNCHANGED",
+      "before_sha256": "110c67f9d434f2545e29b4ec29f8cfd5b893a18c60ed6762da060f40618fe549",
+      "after_sha256": "110c67f9d434f2545e29b4ec29f8cfd5b893a18c60ed6762da060f40618fe549",
+      "bytes_after": 378,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/COLLABORATIVE-DESIGN-PRINCIPLE.md",
+      "status": "UNCHANGED",
+      "before_sha256": "6a1f6b4425b0c74c819897ce90e0d87d42e7bacef0f037d592b9357974328e82",
+      "after_sha256": "6a1f6b4425b0c74c819897ce90e0d87d42e7bacef0f037d592b9357974328e82",
+      "bytes_after": 22883,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/WORKFLOW-GUIDE.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7152a98a80ed98bc751b137d130c0a8ab1f1196b54f276382da2e74febe72a14",
+      "after_sha256": "7152a98a80ed98bc751b137d130c0a8ab1f1196b54f276382da2e74febe72a14",
+      "bytes_after": 62670,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/README.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3bce281fc20e9ff2f6c7e7c30e23995e5610b386dc0f5f2e88f5330bdf7006a6",
+      "after_sha256": "3bce281fc20e9ff2f6c7e7c30e23995e5610b386dc0f5f2e88f5330bdf7006a6",
+      "bytes_after": 3032,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/VERSION.md",
+      "status": "UNCHANGED",
+      "before_sha256": "32052cc7ec20abbad8ddda0a031920c684d59df0347640d3952af45364372713",
+      "after_sha256": "32052cc7ec20abbad8ddda0a031920c684d59df0347640d3952af45364372713",
+      "bytes_after": 3034,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/breaking-changes.md",
+      "status": "UNCHANGED",
+      "before_sha256": "55f59bfcdbd3871467babfa7d7344ded2db45b9ad279568746d240eb92f72410",
+      "after_sha256": "55f59bfcdbd3871467babfa7d7344ded2db45b9ad279568746d240eb92f72410",
+      "bytes_after": 5993,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/current-best-practices.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c5393e08b3fa7c1f7106cd09d5f4e4c4f41bf09a846ddc40640b5490f60e1051",
+      "after_sha256": "c5393e08b3fa7c1f7106cd09d5f4e4c4f41bf09a846ddc40640b5490f60e1051",
+      "bytes_after": 7352,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/deprecated-apis.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7f5beb204f3dd580f40f8cd923795f7ddadb880b6dc56d47ac599211d58c089b",
+      "after_sha256": "7f5beb204f3dd580f40f8cd923795f7ddadb880b6dc56d47ac599211d58c089b",
+      "bytes_after": 4015,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/modules/assets.md",
+      "status": "UNCHANGED",
+      "before_sha256": "957f0b3e606e85b02e2ea8df76ace25f4abc27f688e4303c692b485ad4fec290",
+      "after_sha256": "957f0b3e606e85b02e2ea8df76ace25f4abc27f688e4303c692b485ad4fec290",
+      "bytes_after": 4602,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/modules/audio.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b48faf4ca8912a543cf005f0b2ee545242921bdb46aa4de7338311b45f5ccbbe",
+      "after_sha256": "b48faf4ca8912a543cf005f0b2ee545242921bdb46aa4de7338311b45f5ccbbe",
+      "bytes_after": 3710,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/modules/gml-language.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b54e42b92dd0a6256e66f1d9c2afad324d33b590c491e92fd8bd1416a02b1084",
+      "after_sha256": "b54e42b92dd0a6256e66f1d9c2afad324d33b590c491e92fd8bd1416a02b1084",
+      "bytes_after": 4143,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/modules/rooms-layers.md",
+      "status": "UNCHANGED",
+      "before_sha256": "485be8baed9751565b7427b0d98172c674978781ce6477b5363ff3e63342c148",
+      "after_sha256": "485be8baed9751565b7427b0d98172c674978781ce6477b5363ff3e63342c148",
+      "bytes_after": 4658,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/gamemaker/modules/ui-draw-gui.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3db5eb60391ed891273f122b4927776fc0146fe5719c1e8dc7275d55f3b08f68",
+      "after_sha256": "3db5eb60391ed891273f122b4927776fc0146fe5719c1e8dc7275d55f3b08f68",
+      "bytes_after": 4565,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/VERSION.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9e549aebd5ff3632e548cc7b0e8e6036609f3efbc9ff725ee7bf3ecf2936d0ee",
+      "after_sha256": "9e549aebd5ff3632e548cc7b0e8e6036609f3efbc9ff725ee7bf3ecf2936d0ee",
+      "bytes_after": 1805,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/breaking-changes.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e2dfdd06a797db30a9a580f23845609d6e46d49168f4f02add209331b65ca138",
+      "after_sha256": "e2dfdd06a797db30a9a580f23845609d6e46d49168f4f02add209331b65ca138",
+      "bytes_after": 5684,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/current-best-practices.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b5358b7e62d121067d7fdda1282dbdc8f259d2be88b7e71a925fc245a8e6d774",
+      "after_sha256": "b5358b7e62d121067d7fdda1282dbdc8f259d2be88b7e71a925fc245a8e6d774",
+      "bytes_after": 4451,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/deprecated-apis.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e2c3d12e6ef16dc1d60e1b7d931d187c643bfd3f3011ede27760be07d507ef2a",
+      "after_sha256": "e2c3d12e6ef16dc1d60e1b7d931d187c643bfd3f3011ede27760be07d507ef2a",
+      "bytes_after": 2841,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/modules/animation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "5b69006d37a4b6d61df349ba0ada82275323b0586c41af8fa8a9787bf3599e8b",
+      "after_sha256": "5b69006d37a4b6d61df349ba0ada82275323b0586c41af8fa8a9787bf3599e8b",
+      "bytes_after": 2943,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/modules/audio.md",
+      "status": "UNCHANGED",
+      "before_sha256": "a60cf3682cb3125b139a45f60cc32556af95eaf8ec3fa464f93c29ba066de5f5",
+      "after_sha256": "a60cf3682cb3125b139a45f60cc32556af95eaf8ec3fa464f93c29ba066de5f5",
+      "bytes_after": 2679,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/modules/input.md",
+      "status": "UNCHANGED",
+      "before_sha256": "8febabdde6901bdd8381aff65d9e0e370e60939b64193763aec9b0be4edfceaa",
+      "after_sha256": "8febabdde6901bdd8381aff65d9e0e370e60939b64193763aec9b0be4edfceaa",
+      "bytes_after": 2887,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/modules/navigation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bf69a354e4661dc36f020e161207a77f1b06df8db031fcd3be4cfc165fdb9d03",
+      "after_sha256": "bf69a354e4661dc36f020e161207a77f1b06df8db031fcd3be4cfc165fdb9d03",
+      "bytes_after": 3609,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/modules/networking.md",
+      "status": "UNCHANGED",
+      "before_sha256": "36a640e462767ccb1ce0670cacad1988596468a0a627fe92d5be74d32255a327",
+      "after_sha256": "36a640e462767ccb1ce0670cacad1988596468a0a627fe92d5be74d32255a327",
+      "bytes_after": 2742,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/modules/physics.md",
+      "status": "UNCHANGED",
+      "before_sha256": "35d56c9c90ced9805c5803bc02020482a8b39bd1d90cb8d6982306616f1980f1",
+      "after_sha256": "35d56c9c90ced9805c5803bc02020482a8b39bd1d90cb8d6982306616f1980f1",
+      "bytes_after": 2991,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/modules/rendering.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7479f5fa3e5a1b771aa3c30a10111f3e9aec6253f71de22c1fd98ab956947a6d",
+      "after_sha256": "7479f5fa3e5a1b771aa3c30a10111f3e9aec6253f71de22c1fd98ab956947a6d",
+      "bytes_after": 2747,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/godot/modules/ui.md",
+      "status": "UNCHANGED",
+      "before_sha256": "aefb79e6048d2e2a65776267de0633698b0c765c519a962c87f171471207e209",
+      "after_sha256": "aefb79e6048d2e2a65776267de0633698b0c765c519a962c87f171471207e209",
+      "bytes_after": 3225,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/PLUGINS.md",
+      "status": "UNCHANGED",
+      "before_sha256": "52bc507412d06861150d4ecef16ff1331d10b8dfcf0a7dd01fa63c427e3ea8c9",
+      "after_sha256": "52bc507412d06861150d4ecef16ff1331d10b8dfcf0a7dd01fa63c427e3ea8c9",
+      "bytes_after": 9091,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/VERSION.md",
+      "status": "UNCHANGED",
+      "before_sha256": "49ec92bc677692dacee1c86d434d45db491dbd4f2165a0c2b049b5f5ffe7309b",
+      "after_sha256": "49ec92bc677692dacee1c86d434d45db491dbd4f2165a0c2b049b5f5ffe7309b",
+      "bytes_after": 3065,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/breaking-changes.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bbac1eac7af6ceea107d895b41e2f82f559a22e00e764b55d2459647535d35fa",
+      "after_sha256": "bbac1eac7af6ceea107d895b41e2f82f559a22e00e764b55d2459647535d35fa",
+      "bytes_after": 4449,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/current-best-practices.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1893ff19044eff2c04fdfcf94ce56e41ce1021ff78e617d37001695aaa472452",
+      "after_sha256": "1893ff19044eff2c04fdfcf94ce56e41ce1021ff78e617d37001695aaa472452",
+      "bytes_after": 8176,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/deprecated-apis.md",
+      "status": "UNCHANGED",
+      "before_sha256": "cadbde48cf93f2936939629fcc9492fe384d193c1c51a664a3807bd3f6cc3bed",
+      "after_sha256": "cadbde48cf93f2936939629fcc9492fe384d193c1c51a664a3807bd3f6cc3bed",
+      "bytes_after": 4807,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/modules/animation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e1726b74d7a902acd37682a6b9513ab64ba2563553c676d4afb32f92b0c961b4",
+      "after_sha256": "e1726b74d7a902acd37682a6b9513ab64ba2563553c676d4afb32f92b0c961b4",
+      "bytes_after": 6858,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/modules/audio.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1c6d8fccf9fd0289397554f1cbaa0d3036a2520ba7846c1c465715238aa8e312",
+      "after_sha256": "1c6d8fccf9fd0289397554f1cbaa0d3036a2520ba7846c1c465715238aa8e312",
+      "bytes_after": 6427,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/modules/input.md",
+      "status": "UNCHANGED",
+      "before_sha256": "d62078e6d701dec67bd5d26b71532c7fcf39994d337fcd92f802a627d4a71948",
+      "after_sha256": "d62078e6d701dec67bd5d26b71532c7fcf39994d337fcd92f802a627d4a71948",
+      "bytes_after": 7973,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/modules/navigation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "9ddf1f32d9c074308326c19b05f35cd0e9d3714bf33b6f59e22a73dd790b99b9",
+      "after_sha256": "9ddf1f32d9c074308326c19b05f35cd0e9d3714bf33b6f59e22a73dd790b99b9",
+      "bytes_after": 7675,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/modules/networking.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3cf917d8a6dd61c9ded692f76bd26f77d3d269112ee0bcc6f9c5c71f07f41979",
+      "after_sha256": "3cf917d8a6dd61c9ded692f76bd26f77d3d269112ee0bcc6f9c5c71f07f41979",
+      "bytes_after": 7929,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/modules/physics.md",
+      "status": "UNCHANGED",
+      "before_sha256": "bd5315be0ce5485fdb890f7afd1d0ba011753c420d85d29684e11d817f9c79bb",
+      "after_sha256": "bd5315be0ce5485fdb890f7afd1d0ba011753c420d85d29684e11d817f9c79bb",
+      "bytes_after": 6543,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/modules/rendering.md",
+      "status": "UNCHANGED",
+      "before_sha256": "c61d6ac4bfbe7bd7be4f47acef4db935c2cf046bf8f2d4d71b0956a4f1aa77f6",
+      "after_sha256": "c61d6ac4bfbe7bd7be4f47acef4db935c2cf046bf8f2d4d71b0956a4f1aa77f6",
+      "bytes_after": 6080,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/modules/ui.md",
+      "status": "UNCHANGED",
+      "before_sha256": "4041921af282fb11ad134427818aa4278e924da866696e0f0f494fc4abcef722",
+      "after_sha256": "4041921af282fb11ad134427818aa4278e924da866696e0f0f494fc4abcef722",
+      "bytes_after": 8074,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/plugins/addressables.md",
+      "status": "UNCHANGED",
+      "before_sha256": "223e50432e406909373fb39a031a3c950c0bde037f7e458bf37536aed438ec47",
+      "after_sha256": "223e50432e406909373fb39a031a3c950c0bde037f7e458bf37536aed438ec47",
+      "bytes_after": 8483,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/plugins/cinemachine.md",
+      "status": "UNCHANGED",
+      "before_sha256": "304c056e87576dac3a9e63f7b66f5e5e056b91e63313de1bf7930bb322b58283",
+      "after_sha256": "304c056e87576dac3a9e63f7b66f5e5e056b91e63313de1bf7930bb322b58283",
+      "bytes_after": 7577,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unity/plugins/dots-entities.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ccfb727b3108fbbbf4eef71037649a53581e7f84fee6da39ac67155d02902845",
+      "after_sha256": "ccfb727b3108fbbbf4eef71037649a53581e7f84fee6da39ac67155d02902845",
+      "bytes_after": 9591,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/PLUGINS.md",
+      "status": "UNCHANGED",
+      "before_sha256": "e8329dac93b340a2c66eb77fa6b6c5cde2ded547b7901ef495b6fd78286a223b",
+      "after_sha256": "e8329dac93b340a2c66eb77fa6b6c5cde2ded547b7901ef495b6fd78286a223b",
+      "bytes_after": 8278,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/VERSION.md",
+      "status": "UNCHANGED",
+      "before_sha256": "b4297413a9adb2f7c5606dfb76fc65973c2a66a7f9b9f9dc6b43aabbdb0546e8",
+      "after_sha256": "b4297413a9adb2f7c5606dfb76fc65973c2a66a7f9b9f9dc6b43aabbdb0546e8",
+      "bytes_after": 3011,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/breaking-changes.md",
+      "status": "UNCHANGED",
+      "before_sha256": "27f33c4d661209332d0db1ecca34aad2a984fb65b049c9da72d851f241372dc3",
+      "after_sha256": "27f33c4d661209332d0db1ecca34aad2a984fb65b049c9da72d851f241372dc3",
+      "bytes_after": 4886,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/current-best-practices.md",
+      "status": "UNCHANGED",
+      "before_sha256": "82b7ce2a1c58c838ab97e96e1d9b15c8fef37bc2021e1f90f28e3e85c48d4dc2",
+      "after_sha256": "82b7ce2a1c58c838ab97e96e1d9b15c8fef37bc2021e1f90f28e3e85c48d4dc2",
+      "bytes_after": 8957,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/deprecated-apis.md",
+      "status": "UNCHANGED",
+      "before_sha256": "fdd64ab5958b6afcd4ed6e440d27c65dfd35de9a2acc19e88aa215f2fd32e33e",
+      "after_sha256": "fdd64ab5958b6afcd4ed6e440d27c65dfd35de9a2acc19e88aa215f2fd32e33e",
+      "bytes_after": 5288,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/modules/animation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "41c3745c14416bc1b76ca4c0b3aa2506aa397ba814b0e5e91a6b8f5063d584b0",
+      "after_sha256": "41c3745c14416bc1b76ca4c0b3aa2506aa397ba814b0e5e91a6b8f5063d584b0",
+      "bytes_after": 7022,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/modules/audio.md",
+      "status": "UNCHANGED",
+      "before_sha256": "cf84564c8226c36d3179c8990a9f68c43b8496baeec20223c4895523e7689b54",
+      "after_sha256": "cf84564c8226c36d3179c8990a9f68c43b8496baeec20223c4895523e7689b54",
+      "bytes_after": 6580,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/modules/input.md",
+      "status": "UNCHANGED",
+      "before_sha256": "730fb97d8b7aa696f825e31121b20306d4782e4140733a2a13412043ec01db21",
+      "after_sha256": "730fb97d8b7aa696f825e31121b20306d4782e4140733a2a13412043ec01db21",
+      "bytes_after": 7624,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/modules/navigation.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3634e2532e4256c19e75d8455a528cced76c34222684c9c08a2efe09992ba675",
+      "after_sha256": "3634e2532e4256c19e75d8455a528cced76c34222684c9c08a2efe09992ba675",
+      "bytes_after": 7756,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/modules/networking.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ac1bb6fbcfc72d8e2d00d6924a227cf51037c1f0a0733c3817ea854af988424c",
+      "after_sha256": "ac1bb6fbcfc72d8e2d00d6924a227cf51037c1f0a0733c3817ea854af988424c",
+      "bytes_after": 9397,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/modules/physics.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ca69a1273bf26bb6feac3175c091770ee97ca95e360027f3a45eca31eadb6ef4",
+      "after_sha256": "ca69a1273bf26bb6feac3175c091770ee97ca95e360027f3a45eca31eadb6ef4",
+      "bytes_after": 6815,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/modules/rendering.md",
+      "status": "UNCHANGED",
+      "before_sha256": "d512b17594317483a7fd72a3a7ef6638e70043c7a2b5ea11b3b577b746a8db88",
+      "after_sha256": "d512b17594317483a7fd72a3a7ef6638e70043c7a2b5ea11b3b577b746a8db88",
+      "bytes_after": 7512,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/modules/ui.md",
+      "status": "UNCHANGED",
+      "before_sha256": "47a7ef07e7c3f56add83cf7c0cc0f22669299052bad4f2279e45d01837f88961",
+      "after_sha256": "47a7ef07e7c3f56add83cf7c0cc0f22669299052bad4f2279e45d01837f88961",
+      "bytes_after": 7299,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/plugins/common-ui.md",
+      "status": "UNCHANGED",
+      "before_sha256": "3649ffca6c1574daab3f9a8a60e54d971abb32d155a25dc9ec30083056fc47b7",
+      "after_sha256": "3649ffca6c1574daab3f9a8a60e54d971abb32d155a25dc9ec30083056fc47b7",
+      "bytes_after": 10081,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/plugins/gameplay-ability-system.md",
+      "status": "UNCHANGED",
+      "before_sha256": "fc592775ed4b5ba044124090bfce13360f90b1d5c8ccd66d197eb2e55110175f",
+      "after_sha256": "fc592775ed4b5ba044124090bfce13360f90b1d5c8ccd66d197eb2e55110175f",
+      "bytes_after": 10600,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/plugins/gameplay-camera-system.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1126fd6539e4cc7d16b57276b15429b85d61b59b5ea0384b9e5815fb2a6740a9",
+      "after_sha256": "1126fd6539e4cc7d16b57276b15429b85d61b59b5ea0384b9e5815fb2a6740a9",
+      "bytes_after": 7194,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/engine-reference/unreal/plugins/pcg.md",
+      "status": "UNCHANGED",
+      "before_sha256": "83646144da44467ad226419aed370582cf9eb91ed246f0bd46fe8c33e926b749",
+      "after_sha256": "83646144da44467ad226419aed370582cf9eb91ed246f0bd46fe8c33e926b749",
+      "bytes_after": 7524,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/examples/README.md",
+      "status": "UNCHANGED",
+      "before_sha256": "7428e6af5e9ac928ef4549f86cc82e8c1fb88098341d3531e68c889507c2e822",
+      "after_sha256": "7428e6af5e9ac928ef4549f86cc82e8c1fb88098341d3531e68c889507c2e822",
+      "bytes_after": 8031,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/examples/reverse-document-workflow-example.md",
+      "status": "UNCHANGED",
+      "before_sha256": "407ab12e5314a8267298c5bac95b82c6722459846c721aece2d07c9b9da112e7",
+      "after_sha256": "407ab12e5314a8267298c5bac95b82c6722459846c721aece2d07c9b9da112e7",
+      "bytes_after": 4046,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/examples/session-design-crafting-system.md",
+      "status": "UNCHANGED",
+      "before_sha256": "fe1f796d3b2fba4d2718e5ff74eecbd6bbc9aa8117d913bb9dab878f77f96ca5",
+      "after_sha256": "fe1f796d3b2fba4d2718e5ff74eecbd6bbc9aa8117d913bb9dab878f77f96ca5",
+      "bytes_after": 12026,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/examples/session-implement-combat-damage.md",
+      "status": "UNCHANGED",
+      "before_sha256": "ab5fdacee94910f73a4b61de57f7b9bebe8d934d515b326301cb380b566af740",
+      "after_sha256": "ab5fdacee94910f73a4b61de57f7b9bebe8d934d515b326301cb380b566af740",
+      "bytes_after": 10273,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/examples/session-scope-crisis-decision.md",
+      "status": "UNCHANGED",
+      "before_sha256": "1c370f93e9ff0a14865e63082d1151326fcc91d86fa890c2c8a61c46af42de48",
+      "after_sha256": "1c370f93e9ff0a14865e63082d1151326fcc91d86fa890c2c8a61c46af42de48",
+      "bytes_after": 14566,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/REPORT.ar.md",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "6315246f9fe093b6335fd52011c69b06d1eee1ea4127866feaa9837c03a19055",
+      "bytes_after": 20319,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/REPRODUCTION.md",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "d44696cec5a63cfae5a8d41c18ce3c6730b5b07f0e4ec9d522dbca20d43538ae",
+      "bytes_after": 1372,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/UPGRADE-INSTRUCTIONS-FOCUSED.md",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "ce14dc6ac60793fa785ff932d3388cf7004eee80f2c30e8d92f211cefdbae53e",
+      "bytes_after": 12090,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/baseline-negative-tests.patch",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "bc20c776894a146134750ed19f56a183464c6d7c77535a95ee22969353a58a80",
+      "bytes_after": 5473,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/baseline-node.txt",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "1b2ab5c16a2d799fd356b27764c1a8b3b7f37dee2ca7c3051c0f274262f6dd4f",
+      "bytes_after": 7037,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/baseline-python.txt",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "e9d1b7d3ff8e92024753e849d57257d3cca5e9bd40db140fd910b1cc13d428af",
+      "bytes_after": 5584,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/change-manifest.json",
+      "status": "ADDED",
+      "after_sha256": null,
+      "note": "This manifest does not hash itself. Archive hash covers its bytes."
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/environment.json",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "b73def9baeff5a232cb7cd4fcad152af141fe1b042abb716d6ddadafe6a11261",
+      "bytes_after": 955,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/findings.json",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "e6647a1d430eb59bc959b0289c43da9f2858a81407adf851555c767d872786d2",
+      "bytes_after": 13612,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/fingerprint-after.json",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "b1ff25f508fe2b3f559712d58b6dab331caf9a28d70551a94d999f0d11678bda",
+      "bytes_after": 121,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/green-node-final.txt",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "b1605ff0da8b2b16c723a869d5a633eb1bafc74915c73cd026f95ce0ab76916e",
+      "bytes_after": 9501,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/green-python-final.txt",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "b2610e4561f05dc0ed5f7176c05c7ffa6e482f317febac8bc22089a5710a4842",
+      "bytes_after": 6878,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/inventory-after.json",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "03b3bf9b00509579f4edbef2946355c3f66d0c4884d084f096eca2e8be68af7c",
+      "bytes_after": 35047,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/inventory-before.json",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "cd7575c2ff3f800d7bb974287a62b68d31e843d36ac24a26f03f223be9332a9a",
+      "bytes_after": 18491,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/original-files.json",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "5e69833f3a9c2447eda40136ed7bc76c92819e3196f3c1104fe1b611787747c7",
+      "bytes_after": 50396,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/red-node.txt",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "cdfd93d6f30f2fb3457d9ca8db5edb87e1240a705f0797c4bdb8635221df5546",
+      "bytes_after": 2851,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/red-python.txt",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "8589849a24d372cdde48b065c947343b9c22d77e504066b59b6aa5d11e11c130",
+      "bytes_after": 11588,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/static-validation.json",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "827c605c398c6255677577d21f3682bd557ea4e6a17d6f27248cf46d38939822",
+      "bytes_after": 3632,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/2026-09-28-followup/unconfigured-check.txt",
+      "status": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "c70e1ea8507ec42a9ddf8be39d306e31cdd35308872c7ad0160457e8a863ea79",
+      "bytes_after": 193,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/baseline-reproductions.json",
+      "status": "UNCHANGED",
+      "before_sha256": "210722c821c6aa8d9253c7f813f8b3a4dccc710d9cf6cd10f86550d6f1259507",
+      "after_sha256": "210722c821c6aa8d9253c7f813f8b3a4dccc710d9cf6cd10f86550d6f1259507",
+      "bytes_after": 715,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/change-manifest.json",
+      "status": "UNCHANGED",
+      "before_sha256": "a27821ef00b951b1ab14aea60a4823769b6be3e760d4684bfc39554a148b7e40",
+      "after_sha256": "a27821ef00b951b1ab14aea60a4823769b6be3e760d4684bfc39554a148b7e40",
+      "bytes_after": 113781,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/environment.json",
+      "status": "UNCHANGED",
+      "before_sha256": "5f1be08b76b669783875d3df5fbef834d92592e6502f44e4ecd94dd0ec451efb",
+      "after_sha256": "5f1be08b76b669783875d3df5fbef834d92592e6502f44e4ecd94dd0ec451efb",
+      "bytes_after": 390,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/findings.json",
+      "status": "UNCHANGED",
+      "before_sha256": "ae9d63e05725f38ff211e3cffe31c9dcec61f7a98700c9f0b0c8f3ca09a37fe6",
+      "after_sha256": "ae9d63e05725f38ff211e3cffe31c9dcec61f7a98700c9f0b0c8f3ca09a37fe6",
+      "bytes_after": 30748,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/node-tests.txt",
+      "status": "UNCHANGED",
+      "before_sha256": "a452bc9b2adf397d04748c0596600f24009aaf6b3f9a77ace933fea469970273",
+      "after_sha256": "a452bc9b2adf397d04748c0596600f24009aaf6b3f9a77ace933fea469970273",
+      "bytes_after": 7030,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/original-inventory.json",
+      "status": "UNCHANGED",
+      "before_sha256": "622dd1a35b59f1f9e0dc593831cdcc36adb14804f4ca6613756ccfc30ce47926",
+      "after_sha256": "622dd1a35b59f1f9e0dc593831cdcc36adb14804f4ca6613756ccfc30ce47926",
+      "bytes_after": 41831,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/python-tests.txt",
+      "status": "UNCHANGED",
+      "before_sha256": "5b1d2346a67b1a4d180b6f7a067c1b9165745efa5b7b0b4df44ca89d47357025",
+      "after_sha256": "5b1d2346a67b1a4d180b6f7a067c1b9165745efa5b7b0b4df44ca89d47357025",
+      "bytes_after": 5584,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "docs/skill-audit/static-validation.json",
+      "status": "UNCHANGED",
+      "before_sha256": "ce8c3c2018b8c5684c7ecff881ca0c24278880a1dea0d4aeaabee27f0a3080dc",
+      "after_sha256": "ce8c3c2018b8c5684c7ecff881ca0c24278880a1dea0d4aeaabee27f0a3080dc",
+      "bytes_after": 3546,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "opencode.json",
+      "status": "UNCHANGED",
+      "before_sha256": "163fbc5114ae8129887c45d89ae71d3da9b92a8a5955eed72bc9fa9a07fb59bd",
+      "after_sha256": "163fbc5114ae8129887c45d89ae71d3da9b92a8a5955eed72bc9fa9a07fb59bd",
+      "bytes_after": 182,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "tests/skill-system/audit-gate.test.mjs",
+      "status": "MODIFIED",
+      "before_sha256": "122faad10e5e02214e98789e74db439263657586ccd0cf827fce7e99c5ca606e",
+      "after_sha256": "80cb24dc2df055068f7b4e30b137545ba459bbf3592c93c32b3cd4994e6e8c52",
+      "bytes_after": 14245,
+      "mode_after": "0o644"
+    },
+    {
+      "path": "tests/skill-system/test_repairs.py",
+      "status": "MODIFIED",
+      "before_sha256": "8b3592f09e65c0192bae4a7e3fcf76d298f62f0da34b7e00efc5ebad00006b5b",
+      "after_sha256": "5ae94ce31e94d7c1619aceb6c498551b28019ea0fa93b4b726a12612caf80697",
+      "bytes_after": 20553,
+      "mode_after": "0o644"
+    }
+  ]
+}

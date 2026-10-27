@@ -1,0 +1,56 @@
+[
+  {
+    "name": "cli-inventory",
+    "command": [
+      "node",
+      ".opencode/scripts/skill-audit.mjs",
+      "inventory"
+    ],
+    "actual_exit": 0,
+    "expected_exit": 0,
+    "status": "PASS"
+  },
+  {
+    "name": "cli-fingerprint",
+    "command": [
+      "node",
+      ".opencode/scripts/skill-audit.mjs",
+      "fingerprint",
+      ".opencode/skills/skill-audit-repair/SKILL.md",
+      ".opencode/rules/skill-integrity.md"
+    ],
+    "actual_exit": 0,
+    "expected_exit": 0,
+    "status": "PASS"
+  },
+  {
+    "name": "cli-unconfigured-gate",
+    "command": [
+      "node",
+      ".opencode/scripts/skill-audit.mjs",
+      "check",
+      ".opencode/skills/skill-audit-repair/SKILL.md"
+    ],
+    "actual_exit": 2,
+    "expected_exit": 2,
+    "status": "PASS_EXPECTED_BLOCK"
+  },
+  {
+    "name": "Node syntax: .opencode/lib/audit-gate.mjs",
+    "actual_exit": 0,
+    "status": "PASS",
+    "diagnostics": ""
+  },
+  {
+    "name": "Node syntax: .opencode/scripts/skill-audit.mjs",
+    "actual_exit": 0,
+    "status": "PASS",
+    "diagnostics": ""
+  },
+  {
+    "name": "Node syntax: .opencode/plugins/skill-integrity.js",
+    "actual_exit": 0,
+    "status": "PASS",
+    "diagnostics": ""
+  }
+]

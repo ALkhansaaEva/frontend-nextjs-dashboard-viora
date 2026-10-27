@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { QueryErrorNotice } from '@/shared/components/ui/QueryState';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Key, ShieldX, ShieldCheck, Plus, Trash2 } from 'lucide-react';
@@ -39,13 +40,13 @@ export default function UserPermissionsPage() {
   const [overrideReason, setOverrideReason] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
-  const { data: effectivePermissions = [], isLoading: permsLoading } = useQuery({
+  const { data: effectivePermissions = [], isLoading: permsLoading, isError: permsIsError, error: permsError, refetch: permsRefetch } = useQuery({
     queryKey: ['user-effective-permissions', userId],
     queryFn: () => adminService.getUserEffectivePermissions(userId),
     staleTime: 15000,
   });
 
-  const { data: overrides = [], isLoading: overridesLoading } = useQuery({
+  const { data: overrides = [], isLoading: overridesLoading, isError: overridesIsError, error: overridesError, refetch: overridesRefetch } = useQuery({
     queryKey: ['user-permission-overrides', userId],
     queryFn: () => adminService.getUserPermissionOverrides(userId),
     staleTime: 15000,
@@ -83,6 +84,13 @@ export default function UserPermissionsPage() {
   });
 
   if (permsLoading || overridesLoading) return <PageSkeleton />;
+  if (permsIsError || overridesIsError) {
+    return (
+      <div className="space-y-6">
+        <QueryErrorNotice error={permsError ?? overridesError} onRetry={() => { permsRefetch(); overridesRefetch(); }} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

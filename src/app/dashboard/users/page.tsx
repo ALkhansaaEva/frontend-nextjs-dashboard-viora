@@ -64,14 +64,14 @@ export default function UsersPage() {
     const url = new URL(window.location.href);
     url.searchParams.set('search', query);
     url.searchParams.set('page', '1');
-    window.history.pushState({}, '', url);
-  }, []);
+    router.push(`${url.pathname}?${url.searchParams.toString()}`);
+  }, [router]);
 
   const handlePageChange = useCallback((newPage: number) => {
     const url = new URL(window.location.href);
     url.searchParams.set('page', newPage.toString());
-    window.history.pushState({}, '', url);
-  }, []);
+    router.push(`${url.pathname}?${url.searchParams.toString()}`);
+  }, [router]);
 
   const handleViewUser = useCallback((userId: string) => {
     router.push(`/dashboard/users/${userId}`);
@@ -124,7 +124,9 @@ export default function UsersPage() {
     {
       key: 'roles',
       header: t('roles'),
-      render: (user) => <UserRolesCell userId={user.id} />,
+      render: (user) => (
+        <UserRolesCell userId={user.immutableUserId || user.id} />
+      ),
     },
     {
       key: 'createdAt',
@@ -147,7 +149,7 @@ export default function UsersPage() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => handleViewUser(user.id)}
+          onClick={() => handleViewUser(user.immutableUserId || user.id)}
           className="gap-1.5"
         >
           <Eye className="w-4 h-4" />

@@ -65,7 +65,7 @@ export const useAdjustBalance = () => {
 };
 
 export const useUserWallet = (userId: string) => {
-  return useQuery<Wallet>({
+  return useQuery<Wallet | null>({
     queryKey: ['user-wallet', userId],
     queryFn: () => usersService.getUserWallet(userId),
     enabled: !!userId,

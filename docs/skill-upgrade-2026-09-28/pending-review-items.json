@@ -1,0 +1,54 @@
+{
+  "purpose": "Audit follow-up record, not a competing project task ledger or scheduled automation",
+  "review_mode": "AT_NEXT_RELEVANT_WORKFLOW_CHECKPOINT",
+  "items": [
+    {
+      "id": "HOST",
+      "task": "OpenCode load/global collision integration",
+      "status": "BLOCKED_OR_NOT_TESTED",
+      "owner": null,
+      "next_review_trigger": "When installed OpenCode and exact effective configuration are available",
+      "auto_execute": false
+    },
+    {
+      "id": "LANG",
+      "task": "Rust/Lua version-matched runtime checks",
+      "status": "BLOCKED_OR_NOT_TESTED",
+      "owner": null,
+      "next_review_trigger": "When the actual matching toolchains and project fixtures are available",
+      "auto_execute": false
+    },
+    {
+      "id": "MERMAID",
+      "task": "Real parser/render verification",
+      "status": "BLOCKED_OR_NOT_TESTED",
+      "owner": null,
+      "next_review_trigger": "When the approved Mermaid renderer is available",
+      "auto_execute": false
+    },
+    {
+      "id": "SEMANTIC",
+      "task": "Actual LSP/semantic tool evaluation",
+      "status": "BLOCKED_OR_NOT_TESTED",
+      "owner": null,
+      "next_review_trigger": "When installed host schemas and a target codebase are available",
+      "auto_execute": false
+    },
+    {
+      "id": "OS",
+      "task": "Platform-specific process tests",
+      "status": "BLOCKED_OR_NOT_TESTED",
+      "owner": null,
+      "next_review_trigger": "Before use on a non-tested OS/runtime",
+      "auto_execute": false
+    },
+    {
+      "id": "DOMAIN",
+      "task": "Task-specific full dependency closure",
+      "status": "BLOCKED_OR_NOT_TESTED",
+      "owner": null,
+      "next_review_trigger": "Before relying on a domain skill in the actual project",
+      "auto_execute": false
+    }
+  ]
+}

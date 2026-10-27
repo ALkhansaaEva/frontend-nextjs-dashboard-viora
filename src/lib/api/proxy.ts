@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-fastify-nestjs-viora.vercel.app/v1';
+import { apiBaseUrl } from './base-url';
 
 /**
  * Auth token refresh helper
  */
-async function refreshAuthToken(request: NextRequest): Promise<{ accessToken: string; refreshToken: string } | null> {
+async function refreshAuthToken(request: NextRequest, baseUrl: string): Promise<{ accessToken: string; refreshToken: string } | null> {
   try {
     // Try to get refresh token from multiple sources
     let refreshToken = request.cookies.get('refreshToken')?.value;
@@ -28,7 +27,6 @@ async function refreshAuthToken(request: NextRequest): Promise<{ accessToken: st
       return null;
     }
 
-    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
     const refreshUrl = `${baseUrl}/auth/refresh`;
 
     console.log('[AUTH] Attempting token refresh...');
@@ -97,6 +95,18 @@ export async function proxyRequest(
   request: NextRequest,
   { params }: { params: { path: string[] } }
 ) {
+  const apiBase = apiBaseUrl();
+  if (!apiBase) {
+    return NextResponse.json(
+      {
+        statusCode: 503,
+        message:
+          'Backend API is not configured. Set NEXT_PUBLIC_API_URL (for example https://api.example.com/v1) and restart the server.',
+      },
+      { status: 503 },
+    );
+  }
+
   let targetUrl = '';
   let response: Response;
   let attempts = 0;
@@ -116,9 +126,8 @@ export async function proxyRequest(
       const pathStr = Array.isArray(path) ? path.join('/') : path;
       const search = request.nextUrl.search;
       
-      const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
       const cleanPath = pathStr.startsWith('/') ? pathStr.slice(1) : pathStr;
-      targetUrl = `${baseUrl}/${cleanPath}${search}`;
+      targetUrl = `${apiBase}/${cleanPath}${search}`;
 
       console.log(`[PROXY] ${request.method} ${request.nextUrl.pathname} -> ${targetUrl} (attempt ${attempts})`);
 
@@ -158,7 +167,7 @@ export async function proxyRequest(
       if (response.status === 401 && attempts === 1 && !request.nextUrl.pathname.includes('/auth/')) {
         console.log('[PROXY] Got 401, attempting token refresh...');
         
-        const newTokens = await refreshAuthToken(request);
+        const newTokens = await refreshAuthToken(request, apiBase);
         
         if (newTokens) {
           console.log('[PROXY] Token refreshed, retrying request...');
@@ -223,15 +232,17 @@ export async function proxyRequest(
           headers: { 'Content-Type': response.headers.get('Content-Type') || 'text/plain', ...Object.fromEntries(proxyHeaders) },
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`[PROXY ERROR] ${request.method} failed:`, error);
+      const errorName = error instanceof Error ? error.name : '';
+      const errorMessage = error instanceof Error ? error.message : 'Unknown proxy error';
       
       // Only retry on network errors, not on HTTP errors
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      if (errorName === 'TypeError' && errorMessage.includes('fetch')) {
         console.log('[PROXY] Network error, last attempt:', attempts === MAX_ATTEMPTS);
         if (attempts === MAX_ATTEMPTS) {
           return NextResponse.json(
-            { message: 'Network error. Please check your connection.', error: error.message },
+            { message: 'Network error. Please check your connection.', error: errorMessage },
             { status: 502 }
           );
         }
@@ -243,7 +254,7 @@ export async function proxyRequest(
       return NextResponse.json(
         { 
           message: 'Proxy Error', 
-          error: error.message,
+          error: errorMessage,
           path: request.nextUrl.pathname
         }, 
         { status: 502 }

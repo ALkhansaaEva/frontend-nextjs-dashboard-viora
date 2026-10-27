@@ -1,0 +1,135 @@
+{
+  "scope": "Entire original file inventory and local structural/syntax checks. NOT blanket semantic approval or installed OpenCode integration.",
+  "errors": [],
+  "checks": [
+    {
+      "check": "skills: preserved exact public path set",
+      "count": 43,
+      "status": "PASS"
+    },
+    {
+      "check": "agents: preserved exact public path set",
+      "count": 59,
+      "status": "PASS"
+    },
+    {
+      "check": "commands: preserved exact public path set",
+      "count": 43,
+      "status": "PASS"
+    },
+    {
+      "check": "rules: preserved exact public path set",
+      "count": 12,
+      "status": "PASS"
+    },
+    {
+      "check": "hooks: preserved exact public path set",
+      "count": 8,
+      "status": "PASS"
+    },
+    {
+      "check": "skills frontmatter: safe YAML, duplicate keys, required fields; skills name/path + wrapper",
+      "count": 43,
+      "status": "PASS"
+    },
+    {
+      "check": "agents frontmatter: safe YAML, duplicate keys, required fields; skills name/path + wrapper",
+      "count": 59,
+      "status": "PASS"
+    },
+    {
+      "check": "commands frontmatter: safe YAML, duplicate keys, required fields; skills name/path + wrapper",
+      "count": 43,
+      "status": "PASS"
+    },
+    {
+      "check": "syntax only: .opencode/hooks/detect-gaps.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/hooks/log-agent.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/hooks/pre-compact.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/hooks/session-start.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/hooks/session-stop.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/hooks/validate-assets.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/hooks/validate-commit.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/hooks/validate-push.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/lib/audit-gate.mjs",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/plugins/skill-integrity.js",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: .opencode/scripts/skill-audit.mjs",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: change_model.sh",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "syntax only: tests/skill-system/audit-gate.test.mjs",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "check": "baseline UTF-8 source inventory",
+      "count": 307,
+      "status": "PASS"
+    },
+    {
+      "check": "machine validation against current downloadable OpenCode JSON schema",
+      "status": "NOT RUN",
+      "reason": "Web schema reviewed; schema download to runtime unavailable (DNS/download failure). No remote schema validation claim."
+    },
+    {
+      "check": "installed OpenCode end-to-end host integration",
+      "status": "NOT RUN",
+      "reason": "opencode executable not present; tests invoke the exported adapter using controlled fixtures only."
+    }
+  ],
+  "review_local_links": [
+    {
+      "file": ".opencode/docs/templates/release-notes.md",
+      "line": 101,
+      "target": "link",
+      "assessment": "Unchanged release-notes template placeholder, not an active dependency; preserved."
+    }
+  ],
+  "status": "PASS_FOR_LISTED_LOCAL_CHECKS"
+}

@@ -1,0 +1,133 @@
+test_agent_log_duplicate_key_rejected (test_repairs.HookTests.test_agent_log_duplicate_key_rejected) ... ok
+test_agent_log_injection_rejected (test_repairs.HookTests.test_agent_log_injection_rejected) ... ok
+test_agent_log_malformed_input_rejected (test_repairs.HookTests.test_agent_log_malformed_input_rejected) ... ok
+test_agent_log_symlink_refused (test_repairs.HookTests.test_agent_log_symlink_refused) ... ok
+test_agent_log_write_failure_reported (test_repairs.HookTests.test_agent_log_write_failure_reported) ... ok
+test_asset_outside_repo_rejected (test_repairs.HookTests.test_asset_outside_repo_rejected) ... ok
+test_compound_commit_without_spaces_is_refused (test_repairs.HookTests.test_compound_commit_without_spaces_is_refused) ... ok
+test_deleted_staged_file_not_read (test_repairs.HookTests.test_deleted_staged_file_not_read) ... ok
+test_duplicate_json_keys_block (test_repairs.HookTests.test_duplicate_json_keys_block) ... ok
+test_invalid_asset_json_reports_failure (test_repairs.HookTests.test_invalid_asset_json_reports_failure) ... ok
+test_invalid_index_valid_worktree_blocked (test_repairs.HookTests.test_invalid_index_valid_worktree_blocked) ... ok
+test_large_applicable_blob_blocks_before_validation (test_repairs.HookTests.test_large_applicable_blob_blocks_before_validation) ... ok
+test_large_unrelated_asset_is_not_content_validated (test_repairs.HookTests.test_large_unrelated_asset_is_not_content_validated) ... ok
+test_malformed_envelope_blocks (test_repairs.HookTests.test_malformed_envelope_blocks) ... ok
+test_missing_command_blocks (test_repairs.HookTests.test_missing_command_blocks) ... ok
+test_no_staged_files (test_repairs.HookTests.test_no_staged_files) ... ok
+test_noncommit_command_does_not_execute (test_repairs.HookTests.test_noncommit_command_does_not_execute) ... ok
+test_nonstandard_json_constant_blocks (test_repairs.HookTests.test_nonstandard_json_constant_blocks) ... ok
+test_repair_precompact_does_not_report_clean_on_git_failure (test_repairs.HookTests.test_repair_precompact_does_not_report_clean_on_git_failure) ... FAIL
+test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) ... 
+  test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) (hook='session-start.sh') ... FAIL
+  test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) (hook='pre-compact.sh') ... FAIL
+  test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) (hook='session-stop.sh') ... FAIL
+test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) ... FAIL
+test_session_stop_reports_log_failure_and_keeps_state (test_repairs.HookTests.test_session_stop_reports_log_failure_and_keeps_state) ... ok
+test_session_stop_retains_incomplete_state (test_repairs.HookTests.test_session_stop_retains_incomplete_state) ... ok
+test_session_stop_retains_state_when_log_unwritable (test_repairs.HookTests.test_session_stop_retains_state_when_log_unwritable) ... ok
+test_spaces_and_newline_filename (test_repairs.HookTests.test_spaces_and_newline_filename) ... ok
+test_symlink_asset_rejected (test_repairs.HookTests.test_symlink_asset_rejected) ... ok
+test_unconventional_project_is_not_declared_new (test_repairs.HookTests.test_unconventional_project_is_not_declared_new) ... ok
+test_valid_agent_log_omits_other_payload_fields (test_repairs.HookTests.test_valid_agent_log_omits_other_payload_fields) ... ok
+test_valid_index_invalid_worktree_allowed (test_repairs.HookTests.test_valid_index_invalid_worktree_allowed) ... ok
+test_wrapped_git_command_refused (test_repairs.HookTests.test_wrapped_git_command_refused) ... ok
+test_backup_manifest_and_originals_retained (test_repairs.ModelTests.test_backup_manifest_and_originals_retained) ... ok
+test_body_examples_preserved (test_repairs.ModelTests.test_body_examples_preserved) ... ok
+test_concurrent_user_edit_not_overwritten_by_rollback (test_repairs.ModelTests.test_concurrent_user_edit_not_overwritten_by_rollback) ... Update failed. Inspect retained originals and manifest: /tmp/tmpelptv31h/copy/.opencode/model-change-backups/20260927T222458Z-a18a226a092f48cd90c6a81c618f3ff3
+ok
+test_dry_run_has_no_writes (test_repairs.ModelTests.test_dry_run_has_no_writes) ... ok
+test_duplicate_model_field_preflight_changes_nothing (test_repairs.ModelTests.test_duplicate_model_field_preflight_changes_nothing) ... ok
+test_inherited_models_remain_inherited (test_repairs.ModelTests.test_inherited_models_remain_inherited) ... ok
+test_injected_mid_apply_failure_rolls_back (test_repairs.ModelTests.test_injected_mid_apply_failure_rolls_back) ... Update failed. Inspect retained originals and manifest: /tmp/tmp4uqmh75o/copy/.opencode/model-change-backups/20260927T222459Z-76d685c3fe0940c9801ee1669699103a
+ok
+test_invalid_config_preflight_changes_nothing (test_repairs.ModelTests.test_invalid_config_preflight_changes_nothing) ... ok
+test_nonstandard_config_constants_refused_preflight (test_repairs.ModelTests.test_nonstandard_config_constants_refused_preflight) ... ok
+test_rejects_shell_and_sed_metacharacters_without_changes (test_repairs.ModelTests.test_rejects_shell_and_sed_metacharacters_without_changes) ... ok
+test_repair_model_update_preserves_crlf (test_repairs.ModelTests.test_repair_model_update_preserves_crlf) ... ok
+test_symlink_agent_rejected_without_partial_change (test_repairs.ModelTests.test_symlink_agent_rejected_without_partial_change) ... ok
+test_updates_all_existing_model_fields_not_just_first (test_repairs.ModelTests.test_updates_all_existing_model_fields_not_just_first) ... ok
+test_distribution_does_not_self_approve (test_repairs.StructureTests.test_distribution_does_not_self_approve) ... ok
+test_every_skill_has_a_real_command (test_repairs.StructureTests.test_every_skill_has_a_real_command) ... ok
+test_exact_requested_rule_present (test_repairs.StructureTests.test_exact_requested_rule_present) ... ok
+test_no_conflicting_agent_identity_copies_in_json (test_repairs.StructureTests.test_no_conflicting_agent_identity_copies_in_json) ... ok
+test_permission_default_is_not_unrestricted (test_repairs.StructureTests.test_permission_default_is_not_unrestricted) ... ok
+test_runtime_instruction_paths_exist (test_repairs.StructureTests.test_runtime_instruction_paths_exist) ... ok
+
+======================================================================
+FAIL: test_repair_precompact_does_not_report_clean_on_git_failure (test_repairs.HookTests.test_repair_precompact_does_not_report_clean_on_git_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/work/opencode-game-studio-main/tests/skill-system/test_repairs.py", line 138, in test_repair_precompact_does_not_report_clean_on_git_failure
+    self.assertNotIn('(no uncommitted changes)',result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '(no uncommitted changes)' unexpectedly found in '=== SESSION STATE BEFORE COMPACTION ===\nTimestamp: Sun Sep 27 22:24:53 UTC 2026\n\n## No active session state file found\nConsider maintaining production/session-state/active.md for better recovery.\n\n## Files Modified (git working tree)\n  (no uncommitted changes)\n\n## Design Docs — Work In Progress\n  (no WIP markers found in design docs)\n\n## Recovery Instructions\nAfter compaction, read production/session-state/active.md and verify it against current files; it may be partial or stale.\nThen read any files listed above that are being actively worked on.\n=== END SESSION STATE ===\n'
+
+======================================================================
+FAIL: test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) (hook='session-start.sh')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/work/opencode-game-studio-main/tests/skill-system/test_repairs.py", line 130, in test_repair_session_helpers_reject_symlink_checkpoint
+    self.assertEqual(result.returncode,2,result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : === Opencode Game Studios — Session Context ===
+Branch: HEAD
+
+Recent commits:
+
+=== ACTIVE SESSION STATE DETECTED ===
+A previous session left state at: production/session-state/active.md
+Inspect this checkpoint and verify its revision, scope and unresolved work before resuming.
+
+Quick summary:
+PRIVATE-CANARY-MUST-NOT-PRINT=== END SESSION STATE PREVIEW ===
+===================================
+
+
+======================================================================
+FAIL: test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) (hook='pre-compact.sh')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/work/opencode-game-studio-main/tests/skill-system/test_repairs.py", line 130, in test_repair_session_helpers_reject_symlink_checkpoint
+    self.assertEqual(result.returncode,2,result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : === SESSION STATE BEFORE COMPACTION ===
+Timestamp: Sun Sep 27 22:24:53 UTC 2026
+
+## Active Session State (from production/session-state/active.md)
+PRIVATE-CANARY-MUST-NOT-PRINT
+## Files Modified (git working tree)
+New untracked files:
+  - private.txt
+  - production/session-state/active.md
+
+## Design Docs — Work In Progress
+  (no WIP markers found in design docs)
+
+## Recovery Instructions
+After compaction, read production/session-state/active.md and verify it against current files; it may be partial or stale.
+Then read any files listed above that are being actively worked on.
+=== END SESSION STATE ===
+
+
+======================================================================
+FAIL: test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) (hook='session-stop.sh')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/work/opencode-game-studio-main/tests/skill-system/test_repairs.py", line 130, in test_repair_session_helpers_reject_symlink_checkpoint
+    self.assertEqual(result.returncode,2,result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : 
+
+======================================================================
+FAIL: test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/work/opencode-game-studio-main/tests/skill-system/test_repairs.py", line 133, in test_repair_session_helpers_reject_symlink_checkpoint
+    if log.exists():self.assertNotIn('PRIVATE-CANARY',log.read_text())
+                    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'PRIVATE-CANARY' unexpectedly found in '## Archived Session State: 20260927_222453\nPRIVATE-CANARY-MUST-NOT-PRINT---\n\n'
+
+----------------------------------------------------------------------
+Ran 48 tests in 22.192s
+
+FAILED (failures=5)

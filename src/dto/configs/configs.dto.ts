@@ -1,10 +1,14 @@
 import { z } from 'zod';
 
 export const FeatureFlagSchema = z.object({
+  id: z.string().optional(),
   key: z.string(),
   enabled: z.boolean(),
-  value: z.string().optional(),
-  description: z.string().optional(),
+  rolloutPercent: z.number().int().min(0).max(100).nullable().optional(),
+  conditions: z.unknown().nullable().optional(),
+  description: z.string().nullable().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 export type FeatureFlag = z.infer<typeof FeatureFlagSchema>;

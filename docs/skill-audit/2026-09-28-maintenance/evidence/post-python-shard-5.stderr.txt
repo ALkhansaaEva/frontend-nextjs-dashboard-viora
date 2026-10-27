@@ -1,0 +1,16 @@
+test_asset_outside_repo_rejected (test_repairs.HookTests.test_asset_outside_repo_rejected) ... ok
+test_maintenance_design_aggregate_limit_blocks (test_repairs.HookTests.test_maintenance_design_aggregate_limit_blocks) ... ok
+test_maintenance_design_namespace_entry_limit_blocks (test_repairs.HookTests.test_maintenance_design_namespace_entry_limit_blocks) ... ok
+test_no_staged_files (test_repairs.HookTests.test_no_staged_files) ... ok
+test_repair_log_fifo_rejected_without_hanging (test_repairs.HookTests.test_repair_log_fifo_rejected_without_hanging) ... ok
+test_session_stop_retains_state_when_log_unwritable (test_repairs.HookTests.test_session_stop_retains_state_when_log_unwritable) ... ok
+test_body_examples_preserved (test_repairs.ModelTests.test_body_examples_preserved) ... ok
+test_rejects_shell_and_sed_metacharacters_without_changes (test_repairs.ModelTests.test_rejects_shell_and_sed_metacharacters_without_changes) ... ok
+test_revision_unsupported_root_yaml_rejected_without_changes (test_repairs.ModelTests.test_revision_unsupported_root_yaml_rejected_without_changes) ... ok
+test_maintenance_locale_and_prototype_contracts (test_repairs.StructureTests.test_maintenance_locale_and_prototype_contracts) ... ok
+test_revision_policy_blocks_every_unapproved_state (test_repairs.StructureTests.test_revision_policy_blocks_every_unapproved_state) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 13.895s
+
+OK

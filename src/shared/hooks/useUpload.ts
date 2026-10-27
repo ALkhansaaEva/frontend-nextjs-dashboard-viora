@@ -3,19 +3,21 @@
 import { useState, useRef, useCallback } from 'react';
 import { mediaService } from '@/services/media.service';
 import { UPLOAD_CONFIG } from '@/shared/config/upload';
+import { mediaPublicUrl } from '@/shared/lib/media-url';
 import type { UploadProfile } from '@/shared/config/upload';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://backend-fastify-nestjs-viora.vercel.app/v1';
-const API_ORIGIN = API_BASE.replace(/\/v1\/?$/, '');
-
-function toDisplayUrl(path: string): string {
-  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('//')) {
-    return path;
-  }
-  if (path.startsWith('/')) {
-    return path;
-  }
-  return `${API_ORIGIN}/v1/media/proxy/${path}`;
+/**
+ * `api-client` rejects with a plain `{ message, statusCode, code }` object,
+ * NOT an `Error`, so an `instanceof Error` check always fell through to the
+ * generic "Upload failed" and hid the backend's real reason (e.g.
+ * "Unsupported file extension: .jfif"). Read `message` off whatever we get.
+ */
+function errorMessage(err: unknown): string {
+  if (typeof err === 'string' && err) return err;
+  const message = (err as { message?: string } | null)?.message;
+  return message && message !== 'Request failed with status code 400'
+    ? message
+    : 'Upload failed';
 }
 
 export interface UseUploadReturn {
@@ -37,9 +39,19 @@ export function useUpload(profile: UploadProfile): UseUploadReturn {
   const handleFile = useCallback(async (file: File): Promise<string | null> => {
     setError(null);
 
-    if (!cfg.acceptMime.includes(file.type as any)) {
-      const msg = `Unsupported file type: ${file.type}. Allowed: ${cfg.accept}`;
-      setError(msg);
+// The backend gates on the file *extension* plus magic bytes and never
+    // trusts the client Content-Type. `file.type` is browser-reported and
+    // frequently absent or odd ("" , "image/pjpeg", "image/x-ms-bmp"), so
+    // matching it against an exact MIME list rejected files the server would
+    // happily accept. Gate on the extension instead and let the server be
+    // the authority on content.
+    const ext = file.name.slice(file.name.lastIndexOf('.') + 1).toLowerCase();
+    const acceptedExts = cfg.accept
+      .split(',')
+      .map((entry) => entry.trim().replace(/^\./, '').toLowerCase())
+      .filter(Boolean);
+    if (!ext || !acceptedExts.includes(ext)) {
+      setError(`Unsupported file type .${ext || '?'}. Accepted: ${cfg.accept}`);
       return null;
     }
 
@@ -57,15 +69,14 @@ export function useUpload(profile: UploadProfile): UseUploadReturn {
         cfg.bucket,
         { fileKind: cfg.fileKind, filePurpose: cfg.filePurpose },
       );
-      return toDisplayUrl(uploaded.path);
+      return mediaPublicUrl(uploaded) || null;
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Upload failed';
-      setError(msg);
+      setError(errorMessage(err));
       return null;
     } finally {
       setIsUploading(false);
     }
-  }, [profile]);
+  }, [cfg.accept, cfg.bucket, cfg.fileKind, cfg.filePurpose, cfg.maxSize]);
 
   const trigger = useCallback(() => {
     inputRef.current?.click();

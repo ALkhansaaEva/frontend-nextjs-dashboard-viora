@@ -12,10 +12,15 @@ export interface User {
   avatar?: string;
 }
 
+/**
+ * Mirrors backend `Wallet` entity (modules/wallet/entities/wallet.entity.ts).
+ * The historical gold/gems split does not exist on the backend — the sole
+ * canonical currency is GAME_CURRENCY, transported as a numeric(30,0) string
+ * so large amounts never pass through a JS number and lose precision.
+ */
 export interface Wallet {
   userId: string;
-  gold: number;
-  gems: number;
+  gameCurrency: string;
 }
 
 export interface Role {
@@ -46,15 +51,24 @@ export interface Permission {
 
 export interface Report {
   id: string;
-  reporterId: string;
-  reportedUserId: string;
-  reason: string;
-  status: 'pending' | 'investigating' | 'resolved' | 'dismissed';
+  reporterUserId: string;
+  targetUserId: string;
+  category: string;
+  description: string;
+  status: 'open' | 'investigating' | 'resolved' | 'dismissed';
   createdAt: string;
   updatedAt: string;
-  reporter?: User;
-  reportedUser?: User;
+  reporterUser?: User;
+  targetUser?: User;
   evidence?: ReportEvidence[];
+  actions?: ReportAction[];
+}
+
+export interface ReportAction {
+  id: string;
+  action: 'escalate' | 'dismiss' | 'warn' | 'sanction';
+  note?: string;
+  createdAt: string;
 }
 
 export interface ReportEvidence {
@@ -69,23 +83,23 @@ export interface ReportEvidence {
 
 export interface SupportTicket {
   id: string;
-  userId: string;
+  ticketNumber?: string;
+  requesterUserId: string;
   subject: string;
-  description: string;
-  status: 'open' | 'in_progress' | 'resolved' | 'closed';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  message?: string;
+  category?: string;
+  status: 'open' | 'in_progress' | 'waiting_on_user' | 'resolved' | 'closed';
   createdAt: string;
   updatedAt: string;
   user?: User;
   messages?: TicketMessage[];
-  assignee?: User;
 }
 
 export interface TicketMessage {
   id: string;
   ticketId: string;
-  userId: string;
-  content: string;
+  senderUserId: string;
+  message: string;
   isInternal: boolean;
   createdAt: string;
   user?: User;
@@ -127,6 +141,41 @@ export interface HealthMetrics {
     registeredGames: number;
     registeredRooms: number;
   };
+  /** Rolling average HTTP response duration (backend-sampled), present on newer backends. */
+  http?: {
+    avgResponseMs: number;
+  };
+}
+
+/** GET /health/ready — verbatim shape from src/modules/common/controllers/health.controller.ts */
+export interface HealthReadyResponse {
+  status: 'ok' | 'degraded';
+  checks: {
+    database: 'up' | 'down';
+    redis: 'up' | 'down';
+  };
+}
+
+/** GET /health/system — verbatim shape from health.controller.ts#getSystemMetrics */
+export interface SystemHealthMetrics {
+  generatedAt: string;
+  uptime: number;
+  memory: { rss: number; heapTotal: number; heapUsed: number; external: number };
+  redis: {
+    connected: boolean;
+    enabled: boolean;
+    memory?: unknown;
+    keyspace?: unknown;
+    consecutiveFailures: number;
+    lastPingMs: number | null;
+  };
+  rbac: { cacheHitRate: number; cacheMissRate: number; totalHits: number; totalMisses: number };
+  pubsub: { registeredUsers: number; registeredGames: number; registeredRooms: number; isRedisEnabled: boolean };
+  capacity: Record<string, unknown>;
+  queues?: unknown;
+  system?: unknown;
+  /** Nakama connectivity probe — null when the backend does not expose it. */
+  nakama?: { connected: boolean } | null;
 }
 
 export interface AuthLoginResponse {
@@ -195,11 +244,16 @@ export interface AssignRoleRequest {
   roleCode: string;
 }
 
+/** Mirrors backend `AdjustBalanceDto` (modules/admin/dto/admin-payloads.dto.ts)
+ * exactly — POST /admin/users/:id/balance. */
 export interface AdjustBalanceRequest {
-  currency: 'gold' | 'gems';
+  currency: 'GAME_CURRENCY';
+  /** Positive integer string — backend rejects anything else. */
   amount: string;
   action: 'add' | 'deduct';
   reason: string;
+  /** Optional client idempotency key; backend generates one if omitted. */
+  operationId?: string;
 }
 
 export interface CreateReportRequest {
@@ -260,41 +314,31 @@ export interface StrikeRequest {
   reason: string;
 }
 
-export interface CreateStoreItemRequest {
-  code: string;
-  type: string;
-  slot: string;
-  scope: string;
-  title: Record<string, string>;
-  priceGems?: number;
-  priceCoins?: number;
-  rarity?: string;
-  isActive?: boolean;
-}
-
-export interface CreateStoreBundleRequest {
-  name: Record<string, string>;
-  price: string;
-  currency: 'gold' | 'gems';
-  items: { gold?: string; items: string[] };
-  isActive?: boolean;
-}
+// CreateStoreItemRequest / CreateStoreBundleRequest used to live here with
+// fabricated priceGems/priceCoins/gold fields that never matched the real
+// backend Store DTOs. The real, Zod-validated versions now live at
+// src/dto/store/item.dto.ts (imported via '@/dto/store') — do not recreate
+// a second definition here.
 
 export interface DashboardStats {
   totalUsers: number;
   activeReports: number;
   openTickets: number;
-  activeSanctions: number;
+  /** Platform-wide active sanctions from GET /moderation/sanctions/active-count; null only if the call fails. */
+  activeSanctions: number | null;
   totalMatches?: number;
   activeRooms?: number;
   totalGifts?: number;
   totalAchievements?: number;
   storeItems?: number;
-  dailyActiveUsers?: number;
+  /** Users with a successful login in the last 24h from GET /admin/users/daily-active-count; null only if the call fails. */
+  dailyActiveUsers?: number | null;
   newUsersToday?: number;
   revenueToday?: number;
   totalRevenue?: number;
-  avgResponseTime?: number;
-  systemLoad?: number;
+  /** Rolling average HTTP response time from GET /health/metrics (http.avgResponseMs); null if unavailable. */
+  avgResponseTime?: number | null;
+  /** Derived from real heap memory usage (heapUsed/heapTotal) when /health/metrics succeeds, else null. */
+  systemLoad?: number | null;
   onlineUsers?: number;
 }

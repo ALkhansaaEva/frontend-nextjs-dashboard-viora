@@ -1,18 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { Package, Gem, Coins, Image, Play, Volume2 } from 'lucide-react';
+import { Package, Coins, Volume2 } from 'lucide-react';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Button } from '@/shared/components/ui/Button';
+import { formatIntegerString } from '@/shared/lib/money';
 import type { StoreItem } from '@/services/store.service';
+import { storeItemTypeLabel } from '@/shared/lib/store-item-types';
+import { MediaPreview } from '@/shared/components/media/MediaPreview';
 
-const typeLabels: Record<string, string> = {
-  ludo_cover: 'Ludo Cover', dice: 'Dice', chess_piece: 'Chess Piece', room_theme: 'Room Theme',
-  room_wallpaper: 'Room Wallpaper', room_mic_skin: 'Mic Skin', domino_board: 'Domino Board',
-  domino_tile_face: 'Tile Face', domino_tile_back: 'Tile Back', avatar_frame: 'Avatar Frame',
-  profile_background: 'Profile BG', profile_frame: 'Profile Frame', profile_avatar: 'Profile Avatar',
-  ludo_board: 'Ludo Board', ludo_dice: 'Ludo Dice', ludo_tokens: 'Ludo Tokens', badge: 'Badge', avatar: 'Avatar'
-};
+// Matches the backend canonical item types (see @/dto/store's ITEM_TYPES).
 
 const rarityColors: Record<string, string> = {
   common: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
@@ -33,8 +29,11 @@ function isAudio(kind: string, purpose: string): boolean {
 }
 
 function AssetPreview({ url, kind, purpose }: { url: string; kind: string; purpose: string }) {
-  const [errored, setErrored] = useState(false);
-
+  // Audio keeps a real <audio controls> player: the dashboard genuinely plays
+  // sfx/music assets, so that is the one case where a native element beats a
+  // placeholder. Everything visual goes through the shared renderer, which
+  // knows how to show animated raster, video and SVG, and labels the
+  // player-driven formats (lottie/rive/svga) instead of faking a still.
   if (isAudio(kind, purpose)) {
     return (
       <div className="relative group">
@@ -45,40 +44,12 @@ function AssetPreview({ url, kind, purpose }: { url: string; kind: string; purpo
     );
   }
 
-  if (kind === 'lottie' || kind === 'rive') {
-    return (
-      <div className="relative w-full aspect-square bg-gray-100 dark:bg-gray-700 rounded overflow-hidden flex items-center justify-center">
-        {errored ? (
-          <Play className="w-8 h-8 text-gray-400" />
-        ) : (
-          <img
-            src={url}
-            alt=""
-            className="w-full h-full object-contain"
-            onError={() => setErrored(true)}
-          />
-        )}
-        <span className="absolute bottom-1 right-1 text-[10px] px-1.5 py-0.5 bg-black/60 text-white rounded">
-          {kind}
-        </span>
-      </div>
-    );
-  }
-
   return (
-    <div className="relative w-full aspect-square bg-gray-100 dark:bg-gray-700 rounded overflow-hidden">
-      {errored ? (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Image className="w-8 h-8 text-gray-400" />
-        </div>
-      ) : (
-        <img
-          src={url}
-          alt=""
-          className="w-full h-full object-contain"
-          onError={() => setErrored(true)}
-        />
-      )}
+    <div className="relative w-full aspect-square bg-gray-100 dark:bg-gray-700 rounded overflow-hidden flex items-center justify-center">
+      <MediaPreview url={url} showFormatHint className="w-full h-full object-contain" />
+      <span className="absolute bottom-1 right-1 text-[10px] px-1.5 py-0.5 bg-black/60 text-white rounded">
+        {kind}
+      </span>
     </div>
   );
 }
@@ -98,22 +69,12 @@ export function ItemDetailContent({
       {/* Header with image */}
       <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
         <div className="w-20 h-20 shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-xl overflow-hidden flex items-center justify-center">
-          {mainAsset ? (
-            <img
-              src={mainAsset.url}
-              alt=""
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).className = 'hidden';
-                const parent = (e.target as HTMLImageElement).parentElement;
-                if (parent) {
-                  const fallback = parent.querySelector('.detail-img-fallback');
-                  if (fallback) fallback.classList.remove('hidden');
-                }
-              }}
-            />
-          ) : null}
-          <Package className={`w-10 h-10 text-gray-400 ${mainAsset ? 'hidden detail-img-fallback' : ''}`} />
+          {!mainAsset && <Package className="w-10 h-10 text-gray-400" />}
+          <MediaPreview
+            url={mainAsset?.url}
+            alt=""
+            className="w-full h-full object-contain"
+          />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -129,11 +90,11 @@ export function ItemDetailContent({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
           <p className="text-xs text-gray-500 mb-1">Type</p>
-          <p className="font-medium">{typeLabels[item.type] || item.type}</p>
+          <p className="font-medium">{storeItemTypeLabel(item.type)}</p>
         </div>
         <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
           <p className="text-xs text-gray-500 mb-1">Slot</p>
-          <p className="font-medium">{typeLabels[item.slot] || item.slot}</p>
+          <p className="font-medium">{storeItemTypeLabel(item.slot)}</p>
         </div>
         <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
           <p className="text-xs text-gray-500 mb-1">Scope</p>
@@ -147,21 +108,13 @@ export function ItemDetailContent({
 
       {/* Pricing */}
       <div className="flex flex-wrap items-center gap-3">
-        {item.priceGems > 0 && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-            <Gem className="w-5 h-5 text-purple-500" />
-            <span className="font-bold text-purple-700 dark:text-purple-300">{item.priceGems}</span>
-            <span className="text-sm text-purple-600 dark:text-purple-400">Gems</span>
+        {item.priceGameCurrency != null ? (
+          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
+            <Coins className="w-5 h-5 text-emerald-500" />
+            <span className="font-bold text-emerald-700 dark:text-emerald-300">{formatIntegerString(item.priceGameCurrency)}</span>
+            <span className="text-sm text-emerald-600 dark:text-emerald-400">GAME_CURRENCY</span>
           </div>
-        )}
-        {item.priceCoins > 0 && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-            <Coins className="w-5 h-5 text-yellow-500" />
-            <span className="font-bold text-yellow-700 dark:text-yellow-300">{item.priceCoins}</span>
-            <span className="text-sm text-yellow-600 dark:text-yellow-400">Coins</span>
-          </div>
-        )}
-        {item.priceGems === 0 && item.priceCoins === 0 && (
+        ) : (
           <Badge variant="success">Free</Badge>
         )}
         <Badge variant={item.isActive ? 'success' : 'default'} className="ml-auto">

@@ -1,0 +1,15 @@
+test_deleted_staged_file_not_read (test_repairs.HookTests.test_deleted_staged_file_not_read) ... ok
+test_maintenance_design_c1_controls_block_before_output (test_repairs.HookTests.test_maintenance_design_c1_controls_block_before_output) ... ok
+test_maintenance_design_preview_caps_matching_lines (test_repairs.HookTests.test_maintenance_design_preview_caps_matching_lines) ... ok
+test_nonstandard_json_constant_blocks (test_repairs.HookTests.test_nonstandard_json_constant_blocks) ... ok
+test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) ... ok
+test_symlink_asset_rejected (test_repairs.HookTests.test_symlink_asset_rejected) ... ok
+test_dry_run_has_no_writes (test_repairs.ModelTests.test_dry_run_has_no_writes) ... ok
+test_revision_crlf_model_before_other_fields (test_repairs.ModelTests.test_revision_crlf_model_before_other_fields) ... ok
+test_updates_all_existing_model_fields_not_just_first (test_repairs.ModelTests.test_updates_all_existing_model_fields_not_just_first) ... ok
+test_maintenance_release_claims_not_fabricated (test_repairs.StructureTests.test_maintenance_release_claims_not_fabricated) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 8.868s
+
+OK

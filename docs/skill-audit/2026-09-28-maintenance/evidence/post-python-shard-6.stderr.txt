@@ -1,0 +1,16 @@
+test_compound_commit_without_spaces_is_refused (test_repairs.HookTests.test_compound_commit_without_spaces_is_refused) ... ok
+test_maintenance_design_at_input_limit_has_bounded_excerpt (test_repairs.HookTests.test_maintenance_design_at_input_limit_has_bounded_excerpt) ... ok
+test_maintenance_design_oversize_blocks_before_output (test_repairs.HookTests.test_maintenance_design_oversize_blocks_before_output) ... ok
+test_noncommit_command_does_not_execute (test_repairs.HookTests.test_noncommit_command_does_not_execute) ... ok
+test_repair_precompact_does_not_report_clean_on_git_failure (test_repairs.HookTests.test_repair_precompact_does_not_report_clean_on_git_failure) ... ok
+test_spaces_and_newline_filename (test_repairs.HookTests.test_spaces_and_newline_filename) ... ok
+test_concurrent_user_edit_not_overwritten_by_rollback (test_repairs.ModelTests.test_concurrent_user_edit_not_overwritten_by_rollback) ... ok
+test_repair_model_update_preserves_crlf (test_repairs.ModelTests.test_repair_model_update_preserves_crlf) ... ok
+test_symlink_agent_rejected_without_partial_change (test_repairs.ModelTests.test_symlink_agent_rejected_without_partial_change) ... ok
+test_maintenance_metrics_require_evidence (test_repairs.StructureTests.test_maintenance_metrics_require_evidence) ... ok
+test_runtime_instruction_paths_exist (test_repairs.StructureTests.test_runtime_instruction_paths_exist) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 7.665s
+
+OK

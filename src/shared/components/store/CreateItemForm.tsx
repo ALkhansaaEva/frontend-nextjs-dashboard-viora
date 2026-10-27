@@ -1,21 +1,15 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { Loader2, Package, Coins, Gem, Image, Palette } from 'lucide-react';
+import { useState } from 'react';
+import { Loader2, Package, Coins, Image, Palette, CalendarClock, type LucideIcon } from 'lucide-react';
 import { Select } from '@/shared/components/ui/Select';
 import { Input } from '@/shared/components/ui/Input';
 import { Button } from '@/shared/components/ui/Button';
 import { AssetForm, StoreAssetData, defaultAssetData } from './AssetForm';
 import { ITEM_TYPES, RARITIES, SCOPES, GAME_TYPES } from '@/dto/store';
 import { cn } from '@/shared/lib/utils';
+import { storeItemTypeLabel } from '@/shared/lib/store-item-types';
 
-const typeLabels: Record<string, string> = {
-  ludo_cover: 'Ludo Cover', dice: 'Dice', chess_piece: 'Chess Piece', room_theme: 'Room Theme',
-  room_wallpaper: 'Room Wallpaper', room_mic_skin: 'Mic Skin', domino_board: 'Domino Board',
-  domino_tile_face: 'Tile Face', domino_tile_back: 'Tile Back', avatar_frame: 'Avatar Frame',
-  profile_background: 'Profile BG', profile_frame: 'Profile Frame', profile_avatar: 'Profile Avatar',
-  ludo_board: 'Ludo Board', ludo_dice: 'Ludo Dice', ludo_tokens: 'Ludo Tokens', badge: 'Badge', avatar: 'Avatar'
-};
 
 export type NewStoreItemData = {
   code: string;
@@ -27,34 +21,62 @@ export type NewStoreItemData = {
   titleAr: string;
   descriptionEn: string;
   descriptionAr: string;
-  priceGems: number;
-  priceCoins: number;
+  priceGameCurrency: string;
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
   isStackable: boolean;
-  defaultExpiryHours: number;
+defaultExpiryHours: number;
   isActive: boolean;
+  /** Edit-only (UpdateItemDto) — see the comment on UpdateStoreItemSchema. */
+  displayPriority: number;
+  isLimitedTime: boolean;
+  availabilityStartsAt: string;
+  availabilityEndsAt: string;
 };
+
+/**
+ * `datetime-local` inputs speak `YYYY-MM-DDTHH:mm` in the operator's own
+ * timezone; the API speaks full ISO 8601 UTC (`@IsDateString()`). These two
+ * helpers are the only place that conversion lives, so the round trip
+ * edit → save → reload shows the same wall-clock time again.
+ */
+function toLocalInputValue(iso: string | null | undefined): string {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+    + `T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+/** Empty input means "clear the column" → `null`, which the DTO passes through. */
+function toIsoOrNull(local: string): string | null {
+  if (!local) return null;
+  const date = new Date(local);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
 
 const defaultItem: NewStoreItemData = {
   code: '',
-  type: 'avatar',
-  slot: 'avatar',
+  type: 'profile_avatar',
+  slot: 'profile_avatar',
   scope: 'profile',
   gameType: '',
   titleEn: '',
   titleAr: '',
   descriptionEn: '',
   descriptionAr: '',
-  priceGems: 0,
-  priceCoins: 0,
+  priceGameCurrency: '',
   rarity: 'common',
   isStackable: false,
   defaultExpiryHours: 0,
   isActive: true,
+  displayPriority: 0,
+  isLimitedTime: false,
+  availabilityStartsAt: '',
+  availabilityEndsAt: '',
 };
 
-interface CreateItemFormProps {
-  onSubmit: (data: {
+export interface StoreItemFormSubmission {
     code: string;
     type: string;
     slot: string;
@@ -62,15 +84,22 @@ interface CreateItemFormProps {
     gameType?: string;
     title: { en: string; ar: string };
     description?: { en: string; ar: string };
-    priceGems?: number;
-    priceCoins?: number;
+    priceGameCurrency: string;
     rarity: 'common' | 'rare' | 'epic' | 'legendary';
-    isStackable?: boolean;
-    defaultExpiryHours?: number;
-    isActive: boolean;
-    assets: StoreAssetData[];
-    styleConfig?: Record<string, unknown>;
-  }) => void;
+isStackable?: boolean;
+  defaultExpiryHours?: number;
+  isActive: boolean;
+  assets?: StoreAssetData[];
+  styleConfig?: Record<string, unknown>;
+  /** Edit-only; only present when the operator changed the value. */
+  displayPriority?: number;
+  isLimitedTime?: boolean;
+  availabilityStartsAt?: string | null;
+  availabilityEndsAt?: string | null;
+}
+
+interface CreateItemFormProps {
+  onSubmit: (data: StoreItemFormSubmission) => void;
   isPending: boolean;
   initialData?: {
     code: string;
@@ -80,19 +109,23 @@ interface CreateItemFormProps {
     gameType?: string;
     title: { en: string; ar: string };
     description?: { en: string; ar: string };
-    priceGems?: number;
-    priceCoins?: number;
+    priceGameCurrency: string;
     rarity: 'common' | 'rare' | 'epic' | 'legendary';
     isStackable?: boolean;
     defaultExpiryHours?: number;
     isActive: boolean;
     assets: StoreAssetData[];
     styleConfig?: Record<string, unknown>;
+    /** Edit-only (UpdateItemDto) — absent on CreateItemDto. */
+    displayPriority?: number | null;
+    isLimitedTime?: boolean | null;
+    availabilityStartsAt?: string | null;
+    availabilityEndsAt?: string | null;
   };
   onCancel?: () => void;
 }
 
-function SectionCard({ icon: Icon, title, children, className }: { icon: any; title: string; children: React.ReactNode; className?: string }) {
+function SectionCard({ icon: Icon, title, children, className }: { icon: LucideIcon; title: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={cn("bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden", className)}>
       <div className="flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -122,12 +155,15 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
       titleAr: initialData.title.ar,
       descriptionEn: initialData.description?.en || '',
       descriptionAr: initialData.description?.ar || '',
-      priceGems: initialData.priceGems || 0,
-      priceCoins: initialData.priceCoins || 0,
+      priceGameCurrency: initialData.priceGameCurrency || '',
       rarity: initialData.rarity,
       isStackable: initialData.isStackable || false,
       defaultExpiryHours: initialData.defaultExpiryHours || 0,
       isActive: initialData.isActive,
+      displayPriority: initialData.displayPriority ?? 0,
+      isLimitedTime: initialData.isLimitedTime ?? false,
+      availabilityStartsAt: toLocalInputValue(initialData.availabilityStartsAt),
+      availabilityEndsAt: toLocalInputValue(initialData.availabilityEndsAt),
     };
   };
 
@@ -153,9 +189,17 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
     };
   };
 
-  const [newItem, setNewItem] = useState<NewStoreItemData>(getInitialItem);
+  // Snapshots of everything this form can persist, taken once at mount. Save is
+  // "dirty" only against these, so reopening the form starts clean, a failed
+  // save leaves the operator's edits (and the enabled button) in place, and
+  // there is no flag that can go stale relative to what was actually stored.
+  // `useState` (not `useRef`) because the baseline is read while rendering.
+  const [baseline] = useState(getInitialItem);
+  const [baselineAssetsJson] = useState(() => JSON.stringify(getInitialAssets()));
+  const [baselineStyleConfigJson] = useState(() => JSON.stringify(getInitialStyleConfig()));
+
+  const [newItem, setNewItem] = useState<NewStoreItemData>(baseline);
   const [newAssets, setNewAssets] = useState<StoreAssetData[]>(getInitialAssets);
-  const initialAssetsJson = useRef(JSON.stringify(getInitialAssets()));
   const [newStyleConfig, setNewStyleConfig] = useState<Record<string, string>>(getInitialStyleConfig);
   const [pendingAsset, setPendingAsset] = useState<StoreAssetData>(defaultAssetData);
 
@@ -170,7 +214,7 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
     if (newStyleConfig.borderRadius) styleConfigObj.borderRadius = parseInt(newStyleConfig.borderRadius) || 8;
     if (newStyleConfig.glowEffect) styleConfigObj.hasGlow = newStyleConfig.glowEffect === 'true';
 
-    const payload: any = {
+    const payload: StoreItemFormSubmission = {
       code: newItem.code,
       type: newItem.type,
       slot: newItem.slot,
@@ -180,26 +224,66 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
       description: (newItem.descriptionEn || newItem.descriptionAr)
         ? { en: newItem.descriptionEn, ar: newItem.descriptionAr || newItem.descriptionEn }
         : undefined,
-      priceGems: newItem.priceGems || undefined,
-      priceCoins: newItem.priceCoins || undefined,
+      priceGameCurrency: newItem.priceGameCurrency,
       rarity: newItem.rarity,
-      isStackable: newItem.isStackable || undefined,
-      defaultExpiryHours: newItem.defaultExpiryHours || undefined,
+      // NOT `|| undefined`: that drops a legitimate falsy value, so turning
+      // stackability OFF or clearing the expiry to 0 never reached the API and
+      // the saved item silently kept its old value. `undefined` alone means
+      // "leave untouched"; false/0 are real values the backend accepts.
+      isStackable: newItem.isStackable,
+      defaultExpiryHours: newItem.defaultExpiryHours,
       isActive: newItem.isActive,
       styleConfig: Object.keys(styleConfigObj).length > 0 ? styleConfigObj : undefined
     };
 
     // Only send assets if modified (avoids backend deleting+recreating unchanged ones)
-    if (JSON.stringify(finalAssets) !== initialAssetsJson.current) {
+    if (JSON.stringify(finalAssets) !== baselineAssetsJson) {
       payload.assets = finalAssets;
+    }
+
+    // The four availability/ordering keys exist only on UpdateItemDto, so they
+    // are edit-only — and each is sent only when the operator actually moved
+    // it, so a price rename can never overwrite availability that changed
+    // elsewhere. `null` clears the nullable date columns; omitting a key would
+    // leave the stored value in place.
+    if (isEditing) {
+      const base = baseline;
+      if (newItem.displayPriority !== base.displayPriority) {
+        payload.displayPriority = newItem.displayPriority;
+      }
+      if (newItem.isLimitedTime !== base.isLimitedTime) {
+        payload.isLimitedTime = newItem.isLimitedTime;
+      }
+      if (newItem.availabilityStartsAt !== base.availabilityStartsAt) {
+        payload.availabilityStartsAt = toIsoOrNull(newItem.availabilityStartsAt);
+      }
+      if (newItem.availabilityEndsAt !== base.availabilityEndsAt) {
+        payload.availabilityEndsAt = toIsoOrNull(newItem.availabilityEndsAt);
+      }
     }
 
     onSubmit(payload);
   };
 
-  const isValid = newItem.code && newItem.titleEn && !isPending;
+  // Four small JSON compares — cheap enough to run every render, and avoiding a
+  // memo here keeps this a single source of truth for "does the stored contract
+  // differ from the form".
+  const isDirty =
+    JSON.stringify(newItem) !== JSON.stringify(baseline)
+    || JSON.stringify(newAssets) !== baselineAssetsJson
+    || JSON.stringify(newStyleConfig) !== baselineStyleConfigJson
+    || !!pendingAsset.url;
+
   const hasPendingAsset = !!pendingAsset.url;
   const hasAnyAsset = newAssets.length > 0 || hasPendingAsset;
+  const hasValidPrice = /^(0|[1-9][0-9]*)$/.test(newItem.priceGameCurrency);
+const isValid =
+    newItem.code &&
+    newItem.titleEn &&
+    hasValidPrice &&
+    !isPending &&
+    isDirty &&
+    (isEditing || hasAnyAsset);
 
   return (
     <div className="space-y-5 max-h-[75vh] overflow-y-auto pr-1">
@@ -226,10 +310,12 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
             placeholder="وصف العنصر بالعربي" />
           <Select label="Type *" value={newItem.type}
             onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
-            options={ITEM_TYPES.map(t => ({ value: t, label: typeLabels[t] || t }))} />
-          <Select label="Slot *" value={newItem.slot}
+            options={ITEM_TYPES.map(t => ({ value: t, label: storeItemTypeLabel(t) }))} />
+          {/* Backend has no `slot` enum (free-text @IsString() on CreateItemDto,
+              no documented value set) — a free-text input, not a copy of Type's options. */}
+          <Input label="Slot * (free text — no backend enum)" value={newItem.slot}
             onChange={(e) => setNewItem({ ...newItem, slot: e.target.value })}
-            options={ITEM_TYPES.map(t => ({ value: t, label: typeLabels[t] || t }))} />
+            placeholder="e.g. dice, cover, avatar_frame" />
           <Select label="Scope *" value={newItem.scope}
             onChange={(e) => setNewItem({ ...newItem, scope: e.target.value as NewStoreItemData['scope'] })}
             options={SCOPES.map(s => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} />
@@ -242,14 +328,11 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
         </div>
       </SectionCard>
 
-      <SectionCard icon={Gem} title="Pricing & Availability">
+      <SectionCard icon={Coins} title="Pricing & Availability">
         <div className="grid sm:grid-cols-2 gap-4">
-          <Input label="Price (Gems)" type="number" value={newItem.priceGems}
-            onChange={(e) => setNewItem({ ...newItem, priceGems: parseInt(e.target.value) || 0 })}
-            icon={<Gem className="w-4 h-4 text-purple-500" />} />
-          <Input label="Price (Coins)" type="number" value={newItem.priceCoins}
-            onChange={(e) => setNewItem({ ...newItem, priceCoins: parseInt(e.target.value) || 0 })}
-            icon={<Coins className="w-4 h-4 text-yellow-500" />} />
+          <Input label="Price (GAME_CURRENCY)" inputMode="numeric" value={newItem.priceGameCurrency}
+            onChange={(e) => setNewItem({ ...newItem, priceGameCurrency: e.target.value.replace(/[^0-9]/g, '') })}
+            icon={<Coins className="w-4 h-4 text-emerald-500" />} />
           <div className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={newItem.isStackable}
@@ -274,25 +357,57 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
         <AssetForm assets={newAssets} onChange={setNewAssets} pendingAsset={pendingAsset} onPendingChange={setPendingAsset} />
       </SectionCard>
 
-      <SectionCard icon={Palette} title="Style Configuration">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Input label="Primary Color" value={newStyleConfig.primaryColor || ''}
-            onChange={(e) => setNewStyleConfig({ ...newStyleConfig, primaryColor: e.target.value })}
-            placeholder="#FFD700" />
-          <Input label="Secondary Color" value={newStyleConfig.secondaryColor || ''}
-            onChange={(e) => setNewStyleConfig({ ...newStyleConfig, secondaryColor: e.target.value })}
-            placeholder="#FFA500" />
-          <Input label="Border Radius" value={newStyleConfig.borderRadius || ''}
-            onChange={(e) => setNewStyleConfig({ ...newStyleConfig, borderRadius: e.target.value })}
-            placeholder="8" />
-          <label className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg cursor-pointer self-end">
-            <input type="checkbox" checked={newStyleConfig.glowEffect === 'true'}
-              onChange={(e) => setNewStyleConfig({ ...newStyleConfig, glowEffect: e.target.checked ? 'true' : 'false' })}
-              className="w-4 h-4 rounded border-gray-300 text-violet-600" />
-            <span className="text-sm font-medium">Glow Effect</span>
-          </label>
-        </div>
-      </SectionCard>
+      {/* Edit-only, mirroring the backend split: these four are declared on
+          UpdateItemDto and NOT on CreateItemDto, so on create they would be
+          silently stripped by the whitelist pipe. */}
+      {isEditing && (
+        <SectionCard icon={CalendarClock} title="Availability & Ordering (edit only)">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input label="Display Priority" type="number" value={newItem.displayPriority}
+              onChange={(e) => setNewItem({ ...newItem, displayPriority: parseInt(e.target.value) || 0 })}
+              placeholder="0" />
+            <label className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg cursor-pointer self-end">
+              <input type="checkbox" checked={newItem.isLimitedTime}
+                onChange={(e) => setNewItem({ ...newItem, isLimitedTime: e.target.checked })}
+                className="w-4 h-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500" />
+              <span className="text-sm font-medium">Time limited</span>
+            </label>
+            <Input label="Available From" type="datetime-local" value={newItem.availabilityStartsAt}
+              onChange={(e) => setNewItem({ ...newItem, availabilityStartsAt: e.target.value })} />
+            <Input label="Available Until" type="datetime-local" value={newItem.availabilityEndsAt}
+              onChange={(e) => setNewItem({ ...newItem, availabilityEndsAt: e.target.value })} />
+            <p className="text-xs text-gray-500 sm:col-span-2">
+              Leave a date empty to clear it. Times are your browser&apos;s local time and are
+              stored as UTC.
+            </p>
+          </div>
+        </SectionCard>
+      )}
+
+      {/* styleConfig is create-only: backend UpdateItemDto has no such field,
+          so the section is hidden on edit rather than collecting input the
+          PATCH would reject. */}
+      {!isEditing && (
+        <SectionCard icon={Palette} title="Style Configuration">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Input label="Primary Color" value={newStyleConfig.primaryColor || ''}
+              onChange={(e) => setNewStyleConfig({ ...newStyleConfig, primaryColor: e.target.value })}
+              placeholder="#FFD700" />
+            <Input label="Secondary Color" value={newStyleConfig.secondaryColor || ''}
+              onChange={(e) => setNewStyleConfig({ ...newStyleConfig, secondaryColor: e.target.value })}
+              placeholder="#FFA500" />
+            <Input label="Border Radius" value={newStyleConfig.borderRadius || ''}
+              onChange={(e) => setNewStyleConfig({ ...newStyleConfig, borderRadius: e.target.value })}
+              placeholder="8" />
+            <label className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg cursor-pointer self-end">
+              <input type="checkbox" checked={newStyleConfig.glowEffect === 'true'}
+                onChange={(e) => setNewStyleConfig({ ...newStyleConfig, glowEffect: e.target.checked ? 'true' : 'false' })}
+                className="w-4 h-4 rounded border-gray-300 text-violet-600" />
+              <span className="text-sm font-medium">Glow Effect</span>
+            </label>
+          </div>
+        </SectionCard>
+      )}
 
       <div className="flex gap-3">
         {isEditing && onCancel && (
@@ -304,9 +419,11 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
           {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           {isPending
             ? (isEditing ? 'Updating...' : 'Creating...')
-            : hasAnyAsset
-              ? (isEditing ? 'Update Item' : 'Create Item')
-              : 'Add at least one asset'}
+            : !isDirty
+              ? 'No changes to save'
+              : !hasAnyAsset && !isEditing
+                ? 'Add at least one asset'
+                : (isEditing ? 'Update Item' : 'Create Item')}
         </Button>
       </div>
     </div>

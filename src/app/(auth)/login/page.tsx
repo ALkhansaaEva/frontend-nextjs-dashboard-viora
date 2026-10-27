@@ -1,92 +1,318 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn, KeyRound, ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
 import { Input } from '@/shared/components/ui/Input';
 import { useAuthStore } from '@/store';
+import { authService } from '@/services';
 
+type Mode = 'password' | 'otp' | 'forgot' | 'reset';
+
+const OAUTH_PROVIDERS = [
+  { id: 'google', label: 'Google', url: () => authService.getGoogleOAuthUrl() },
+  { id: 'facebook', label: 'Facebook', url: () => authService.getFacebookOAuthUrl() },
+] as const;
+
+/**
+ * Sign-in is four small steps of one contract, not four pages:
+ *   password → POST /auth/email/login
+ *   otp      → POST /auth/email/request-otp then /auth/email/verify-otp (session)
+ *   forgot   → POST /auth/forgot-password (always a generic confirmation)
+ *   reset    → POST /auth/reset-password with the emailed recovery token
+ * OAuth initiation asks the backend for the provider URL instead of building one
+ * client-side, so a provider that is not configured fails visibly here.
+ */
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isAuthenticated, clearAuth, error: storeError, isLoading: storeLoading } = useAuthStore();
+  const login = useAuthStore((state) => state.login);
+  const loginWithOtp = useAuthStore((state) => state.loginWithOtp);
+  const storeLoading = useAuthStore((state) => state.isLoading);
+  const storeError = useAuthStore((state) => state.error);
+
+  const [mode, setMode] = useState<Mode>('password');
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [devCode, setDevCode] = useState('');
+  const [email, setEmail] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
 
-  const checkAuth = useCallback(() => {
-    if (!isAuthenticated) return;
-    const expiry = typeof window !== 'undefined' ? localStorage.getItem('tokenExpiry') : null;
-    if (expiry && Date.now() < parseInt(expiry)) {
-      router.replace('/dashboard');
-    } else {
-      clearAuth();
-    }
-  }, [isAuthenticated, router, clearAuth]);
+  const disabled = busy || storeLoading;
 
-  useEffect(() => { checkAuth(); }, [checkAuth]);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  function go(next: Mode) {
+    setMode(next);
     setError('');
+    setNotice('');
+    setDevCode('');
+  }
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
+  async function submitPassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError('');
+    const form = new FormData(event.currentTarget);
+    const value = String(form.get('email') ?? '').trim();
+    const password = String(form.get('password') ?? '');
+    setBusy(true);
     try {
-      await login(email, password);
+      await login(value, password);
       router.replace('/dashboard');
     } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : err && typeof err === 'object' && 'message' in err
-            ? String((err as { message: string }).message)
-            : 'Login failed';
-      setError(message);
+      setError(err instanceof Error ? err.message : 'Sign-in failed');
+    } finally {
+      setBusy(false);
     }
-  };
+  }
 
-  const displayError = error || storeError;
+  async function submitOtp(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError('');
+    const form = new FormData(event.currentTarget);
+    const value = String(form.get('email') ?? '').trim();
+    const token = String(form.get('token') ?? '').trim();
+    setBusy(true);
+    try {
+      await loginWithOtp(value, token);
+      router.replace('/dashboard');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'That code could not be verified');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function requestOtp() {
+    if (!email.trim()) {
+      setError('Enter your email address first.');
+      return;
+    }
+    setBusy(true);
+    setError('');
+    try {
+      await authService.requestEmailOTP(email.trim());
+      setOtpSent(true);
+      setNotice('If that address belongs to an account, a sign-in code has been sent.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Could not request a code');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function submitForgot(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError('');
+    const value = String(new FormData(event.currentTarget).get('email') ?? '').trim();
+    setBusy(true);
+    try {
+      const response = await authService.forgotPassword(value);
+      setNotice(response.message || 'If that email is registered, a reset email has been sent.');
+      setEmail(value);
+      // The backend returns a recovery code only while dev autoconfirm is on.
+      if (response._dev_recovery_code) setDevCode(response._dev_recovery_code);
+      setMode('reset');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Could not request a reset');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function submitReset(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError('');
+    const form = new FormData(event.currentTarget);
+    const value = String(form.get('email') ?? '').trim();
+    const token = String(form.get('token') ?? '').trim();
+    const newPassword = String(form.get('newPassword') ?? '');
+    if (newPassword.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+    setBusy(true);
+    try {
+      await authService.resetPassword(value, token, newPassword);
+      setNotice('Password updated. Sign in with the new password.');
+      setEmail(value);
+      setDevCode('');
+      setMode('password');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Could not reset the password');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function startOAuth(provider: (typeof OAUTH_PROVIDERS)[number]) {
+    setBusy(true);
+    setError('');
+    try {
+      window.location.assign(await provider.url());
+    } catch {
+      setError(`${provider.label} sign-in is not configured on this environment.`);
+      setBusy(false);
+    }
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Viora Admin</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">Sign in to your account</p>
+    <div className="flex min-h-[100dvh] items-center justify-center bg-gray-50 px-3 py-6 sm:px-4 dark:bg-gray-900">
+      <div className="w-full max-w-md" dir="ltr">
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xl sm:rounded-2xl sm:p-8 dark:border-gray-700 dark:bg-gray-800">
+          <div className="mb-6 text-center sm:mb-8">
+            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">Viora Admin</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              {mode === 'forgot'
+                ? 'Reset your password'
+                : mode === 'reset'
+                  ? 'Choose a new password'
+                  : mode === 'otp'
+                    ? 'Sign in with a one-time code'
+                    : 'Sign in to your account'}
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input name="email" type="email" placeholder="admin@example.com" className="pl-10" required />
+          {mode === 'password' && (
+            <>
+              <form onSubmit={submitPassword} className="space-y-4 sm:space-y-6">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Input id="email" name="email" type="email" autoComplete="email" placeholder="admin@example.com" className="pl-10" defaultValue={email} required />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Input id="password" name="password" type="password" autoComplete="current-password" placeholder="••••••••" className="pl-10" required />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-sm">
+                  <button type="button" className="text-blue-600 hover:underline dark:text-blue-400" onClick={() => go('otp')}>
+                    Use a one-time code
+                  </button>
+                  <button type="button" className="text-blue-600 hover:underline dark:text-blue-400" onClick={() => go('forgot')}>
+                    Forgot password?
+                  </button>
+                </div>
+
+                <Button type="submit" className="w-full" disabled={disabled}>
+                  {disabled ? (
+                    <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <>
+                      <LogIn className="w-5 h-5 mr-2" />
+                      Sign In
+                    </>
+                  )}
+                </Button>
+              </form>
+
+              <div className="mt-6 space-y-2">
+                <div className="flex items-center gap-3 text-xs text-gray-400">
+                  <span className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+                  or continue with
+                  <span className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+                </div>
+                {OAUTH_PROVIDERS.map((provider) => (
+                  <Button key={provider.id} type="button" variant="outline" className="w-full" disabled={disabled} onClick={() => void startOAuth(provider)}>
+                    {provider.label}
+                  </Button>
+                ))}
               </div>
-            </div>
+            </>
+          )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input name="password" type="password" placeholder="••••••••" className="pl-10" required />
+          {mode === 'otp' && (
+            <form onSubmit={submitOtp} className="space-y-4 sm:space-y-6">
+              <div>
+                <label htmlFor="otp-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input id="otp-email" name="email" type="email" autoComplete="email" placeholder="admin@example.com" className="pl-10" value={email} onChange={(event) => setEmail(event.target.value)} required />
+                </div>
               </div>
-            </div>
-
-            {displayError && <p className="text-sm text-red-600 dark:text-red-400">{displayError}</p>}
-
-            <Button type="submit" className="w-full" disabled={storeLoading}>
-              {storeLoading ? (
-                <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
-              ) : (
-                <>
-                  <LogIn className="w-5 h-5 mr-2" />
-                  Sign In
-                </>
+              {otpSent && (
+                <div>
+                  <label htmlFor="otp-token" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">One-time code</label>
+                  <div className="relative">
+                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Input id="otp-token" name="token" inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className="pl-10" maxLength={6} required />
+                  </div>
+                </div>
               )}
-            </Button>
-          </form>
+              <div className="flex gap-3">
+                <Button type="button" variant="outline" className="flex-1" disabled={disabled} onClick={() => void requestOtp()}>
+                  Send code
+                </Button>
+                <Button type="submit" className="flex-1" disabled={disabled || !otpSent}>
+                  Sign In
+                </Button>
+              </div>
+              <button type="button" className="flex items-center gap-1 text-sm text-blue-600 hover:underline dark:text-blue-400" onClick={() => go('password')}>
+                <ArrowLeft className="w-4 h-4" /> Password sign-in
+              </button>
+            </form>
+          )}
+
+          {mode === 'forgot' && (
+            <form onSubmit={submitForgot} className="space-y-4 sm:space-y-6">
+              <div>
+                <label htmlFor="forgot-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input id="forgot-email" name="email" type="email" autoComplete="email" placeholder="admin@example.com" className="pl-10" defaultValue={email} required />
+                </div>
+              </div>
+              <Button type="submit" className="w-full" disabled={disabled}>
+                Send reset email
+              </Button>
+              <button type="button" className="flex items-center gap-1 text-sm text-blue-600 hover:underline dark:text-blue-400" onClick={() => go('password')}>
+                <ArrowLeft className="w-4 h-4" /> Back to sign in
+              </button>
+            </form>
+          )}
+
+          {mode === 'reset' && (
+            <form onSubmit={submitReset} className="space-y-4 sm:space-y-6">
+              <div>
+                <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                <Input id="reset-email" name="email" type="email" autoComplete="email" className="pl-1" defaultValue={email} required />
+              </div>
+              <div>
+                <label htmlFor="reset-token" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recovery token</label>
+                <Input id="reset-token" name="token" autoComplete="one-time-code" placeholder="From the reset email" required />
+              </div>
+              <div>
+                <label htmlFor="reset-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input id="reset-password" name="newPassword" type="password" autoComplete="new-password" className="pl-10" minLength={6} required />
+                </div>
+              </div>
+              <Button type="submit" className="w-full" disabled={disabled}>
+                Update password
+              </Button>
+              <button type="button" className="flex items-center gap-1 text-sm text-blue-600 hover:underline dark:text-blue-400" onClick={() => go('password')}>
+                <ArrowLeft className="w-4 h-4" /> Back to sign in
+              </button>
+            </form>
+          )}
+
+          {(error || storeError) && (
+            <p role="alert" className="mt-4 text-sm text-red-600 dark:text-red-400">{error || storeError}</p>
+          )}
+          {notice && !error && (
+            <p role="status" className="mt-4 text-sm text-emerald-600 dark:text-emerald-400">{notice}</p>
+          )}
+          {devCode && (
+            <p className="mt-2 text-xs text-gray-500">
+              Development recovery code: <span className="font-mono">{devCode}</span>
+            </p>
+          )}
         </div>
       </div>
     </div>

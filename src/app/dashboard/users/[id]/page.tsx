@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { QueryErrorNotice, asApiError } from '@/shared/components/ui/QueryState';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import Image from 'next/image';
-import { ArrowLeft, Shield, Coins, Key, Ban, MicOff, Package, ShoppingCart, Backpack, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Shield, Coins, Key, Ban, Package, ShoppingCart, Backpack, ExternalLink } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
 import { Badge } from '@/shared/components/ui/Badge';
@@ -16,6 +16,7 @@ import { usersService, adminService } from '@/services';
 import { useLanguage } from '@/components/language-context';
 import { PageSkeleton } from '@/components/skeletons';
 import { useHasPermission } from '@/hooks';
+import { formatIntegerString } from '@/shared/lib/money';
 
 const statusColors: Record<string, 'success' | 'warning' | 'danger'> = {
   active: 'success',
@@ -31,20 +32,26 @@ export default function UserDetailPage() {
   const userId = params.id as string;
 
   const hasPermission = useHasPermission();
-  const canManageRoles = hasPermission('manage_roles');
-  const canAdjustBalance = hasPermission('adjust_balance');
-  const canBanUser = hasPermission('global_ban');
-  const canMuteUser = hasPermission('global_mute');
-  
+  // Canonical backend permissions — legacy bitmask codes ('manage_roles',
+  // 'adjust_balance', 'global_ban', 'global_mute') are no longer granted
+  // under canonical RBAC. AdminController's role assign/revoke require
+  // admin.write; balance adjust requires wallet.write; PATCH
+  // /admin/users/:id/status (the only account-status op the backend exposes)
+  // requires users.write. There is no account-level mute — muting is a
+  // room-scoped operation.
+  const canManageRoles = hasPermission('admin.write');
+  const canAdjustBalance = hasPermission('wallet.write');
+  const canUpdateStatus = hasPermission('users.write');
+
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [showBalanceModal, setShowBalanceModal] = useState(false);
   const [confirmRevokeRole, setConfirmRevokeRole] = useState<string | null>(null);
+  const [confirmStatusChange, setConfirmStatusChange] = useState<'active' | 'banned' | null>(null);
   const [balanceAction, setBalanceAction] = useState<'add' | 'deduct'>('add');
   const [balanceAmount, setBalanceAmount] = useState('');
-  const [balanceCurrency, setBalanceCurrency] = useState<'gold' | 'gems'>('gold');
   const [selectedRole, setSelectedRole] = useState('');
 
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['user', userId],
     queryFn: () => usersService.getUserById(userId),
     staleTime: 30000,
@@ -85,8 +92,8 @@ export default function UserDetailPage() {
 
   const derivedPermissions = useMemo(() => {
     const perms = new Set<string>();
-    userRoles.forEach((role: any) => {
-      (role.permissions || []).forEach((p: string) => {
+    userRoles.forEach((role) => {
+      (role.permissions ?? []).forEach((p) => {
         if (p === '*') perms.add('*');
         else perms.add(p);
       });
@@ -112,7 +119,7 @@ export default function UserDetailPage() {
 
   const adjustBalanceMutation = useMutation({
     mutationFn: () => usersService.adjustBalance(userId, {
-      currency: balanceCurrency === 'gold' ? 'gold' : 'gems',
+      currency: 'GAME_CURRENCY',
       amount: balanceAmount.toString(),
       action: balanceAction,
       reason: 'Admin adjustment',
@@ -121,6 +128,15 @@ export default function UserDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['user', userId] });
       setShowBalanceModal(false);
       setBalanceAmount('');
+    },
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: (status: 'active' | 'banned') => usersService.updateStatus(userId, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', userId] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setConfirmStatusChange(null);
     },
   });
 
@@ -143,6 +159,14 @@ export default function UserDetailPage() {
 
   if (isLoading) {
     return <PageSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <div className="space-y-6">
+        <QueryErrorNotice error={error} onRetry={() => refetch()} />
+      </div>
+    );
   }
 
   if (!user) {
@@ -169,15 +193,12 @@ export default function UserDetailPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
-{user.avatar ? (
-                <div className="w-16 h-16 rounded-full overflow-hidden">
-                  <Image src={user.avatar} alt={user.nickname || 'User'} width={64} height={64} className="w-full h-full object-cover" />
-                </div>
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                  <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{(user.nickname || 'U')[0]?.toUpperCase()}</span>
-                </div>
-              )}
+              {/* The User entity has no avatar column; the avatar lives on
+                  UserProfile.avatarUrl, which the admin user payloads do not
+                  reliably carry, so the initial fallback is the only render. */}
+              <div className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{(user.nickname || 'U')[0]?.toUpperCase()}</span>
+              </div>
               <div>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.nickname || 'Unknown'}</p>
                 <Badge variant={statusColors[user.status] || 'default'}>{t(user.status)}</Badge>
@@ -188,8 +209,16 @@ export default function UserDetailPage() {
               <p className="text-gray-900 dark:text-white">{user.email}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">ID</p>
-              <p className="text-gray-900 dark:text-white font-mono text-sm">{user.id}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Immutable User ID</p>
+              <p className="text-gray-900 dark:text-white font-mono text-sm">
+                {user.immutableUserId || '—'}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Internal UUID</p>
+              <p className="text-gray-900 dark:text-white font-mono text-sm break-all">
+                {user.id}
+              </p>
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">{t('createdAt')}</p>
@@ -265,34 +294,34 @@ export default function UserDetailPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{t('gold')}</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{user.wallet?.gold?.toLocaleString() || 0}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{t('gems')}</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{user.wallet?.gems?.toLocaleString() || 0}</span>
+                <span className="text-gray-600 dark:text-gray-400">GAME_CURRENCY</span>
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {formatIntegerString(user.wallet?.gameCurrency)}
+                </span>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {(canBanUser || canMuteUser) && (
+        {canUpdateStatus && (
           <Card>
             <CardHeader>
               <CardTitle>{t('moderation')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {canBanUser && (
-                <Button variant="danger" className="w-full">
-                  <Ban className="w-4 h-4 mr-2" />
-                  {t('ban')}
-                </Button>
-              )}
-              {canMuteUser && (
-                <Button variant="outline" className="w-full">
-                  <MicOff className="w-4 h-4 mr-2" />
-                  {t('mute')}
-                </Button>
+              <Button
+                variant="danger"
+                className="w-full"
+                isLoading={statusMutation.isPending}
+                onClick={() => setConfirmStatusChange(user.status === 'banned' ? 'active' : 'banned')}
+              >
+                <Ban className="w-4 h-4 mr-2" />
+                {user.status === 'banned' ? 'Unban' : t('ban')}
+              </Button>
+              {statusMutation.isError && (
+                <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+                  {asApiError(statusMutation.error).message || 'Status update failed.'}
+                </p>
               )}
             </CardContent>
           </Card>
@@ -329,7 +358,7 @@ export default function UserDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto">
-                {inventory.slice(0, 30).map((item: any, idx: number) => (
+                {inventory.slice(0, 30).map((item, idx) => (
                   <div key={item.id || idx} className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
                     <p className="text-xs font-medium text-gray-900 dark:text-white truncate">{item.name || item.itemId || `Item #${idx + 1}`}</p>
                     {item.quantity && <p className="text-xs text-gray-500">x{item.quantity}</p>}
@@ -350,7 +379,7 @@ export default function UserDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2 max-h-48 overflow-y-auto">
-                {purchases.slice(0, 20).map((purchase: any, idx: number) => (
+                {purchases.slice(0, 20).map((purchase, idx) => (
                   <div key={purchase.id || idx} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm">
                     <span className="text-gray-900 dark:text-white font-medium truncate">{purchase.itemName || purchase.itemId || `Purchase #${idx + 1}`}</span>
                     <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
@@ -373,7 +402,7 @@ export default function UserDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {loadout.map((item: any, idx: number) => (
+                {loadout.map((item, idx) => (
                   <div key={item.slot || item.id || idx} className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
                     <p className="text-xs font-medium text-gray-900 dark:text-white truncate">
                       {item.name || item.itemId || item.slot || `Slot #${idx + 1}`}
@@ -411,15 +440,6 @@ export default function UserDetailPage() {
 
       <Modal isOpen={showBalanceModal} onClose={() => setShowBalanceModal(false)} title={t('adjustBalance')}>
         <Select
-          value={balanceCurrency}
-          onChange={(e) => setBalanceCurrency(e.target.value as 'gold' | 'gems')}
-          options={[
-            { value: 'gold', label: t('gold') },
-            { value: 'gems', label: t('gems') },
-          ]}
-          className="w-full mb-4"
-        />
-        <Select
           value={balanceAction}
           onChange={(e) => setBalanceAction(e.target.value as 'add' | 'deduct')}
           options={[
@@ -451,6 +471,23 @@ export default function UserDetailPage() {
         variant="danger"
         onConfirm={() => {
           if (confirmRevokeRole) handleRevokeRole(confirmRevokeRole);
+        }}
+      />
+
+      <ConfirmDialog
+        open={!!confirmStatusChange}
+        onOpenChange={(open) => !open && setConfirmStatusChange(null)}
+        title={confirmStatusChange === 'banned' ? t('ban') : 'Unban'}
+        message={
+          confirmStatusChange === 'banned'
+            ? `Ban ${user.nickname || user.email}? The user will no longer be able to sign in.`
+            : `Lift the ban on ${user.nickname || user.email}? The account returns to active.`
+        }
+        confirmText={t('confirm')}
+        cancelText={t('cancel')}
+        variant="danger"
+        onConfirm={() => {
+          if (confirmStatusChange) statusMutation.mutate(confirmStatusChange);
         }}
       />
     </div>

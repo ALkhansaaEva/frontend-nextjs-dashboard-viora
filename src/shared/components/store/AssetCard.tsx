@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Pencil, Image } from 'lucide-react';
+import { X, Pencil } from 'lucide-react';
 import { Select } from '@/shared/components/ui/Select';
 import { FileUpload } from '@/shared/components/upload/FileUpload';
 import type { StoreAssetData } from './AssetForm';
+import { MediaPreview } from '@/shared/components/media/MediaPreview';
 
 const ASSET_KINDS = [
   { value: 'image', label: 'Image' },
@@ -117,26 +118,15 @@ export function AssetCard({ asset, onRemove, onEdit }: AssetCardProps) {
 
   return (
     <div className="flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded-lg border">
-      {asset.kind === 'audio' ? (
-        <Image className="w-4 h-4 text-blue-500 shrink-0" />
-      ) : (
-        <>
-          <img
-            src={asset.url}
-            alt=""
-            className="w-8 h-8 object-contain rounded shrink-0"
-            onError={(e) => {
-              (e.target as HTMLImageElement).className = 'hidden';
-              const parent = (e.target as HTMLImageElement).parentElement;
-              if (parent) {
-                const fallback = parent.querySelector('.asset-img-fallback');
-                if (fallback) fallback.classList.remove('hidden');
-              }
-            }}
-          />
-          <Image className="w-4 h-4 text-blue-500 shrink-0 hidden asset-img-fallback" />
-        </>
-      )}
+      {/* One shared renderer: audio and player-driven formats get the icon,
+          raster/video/animated assets render and fall back safely. */}
+      <div className="w-8 h-8 rounded shrink-0 overflow-hidden flex items-center justify-center">
+        <MediaPreview
+          url={asset.url}
+          showFormatHint
+          className="w-8 h-8 object-contain rounded"
+        />
+      </div>
       <span className="text-sm font-medium">{asset.kind}</span>
       <span className="text-xs text-gray-500">• {asset.purpose}</span>
       <span className="text-xs text-gray-400">• {asset.platform}</span>

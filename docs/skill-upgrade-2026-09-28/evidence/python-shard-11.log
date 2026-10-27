@@ -1,0 +1,13 @@
+test_conventional_detector_recognizes_requested_language_extensions (test_upgrade_contracts.UpgradeContracts.test_conventional_detector_recognizes_requested_language_extensions) ... ok
+test_existing_skills_reference_authoritative_contract (test_upgrade_contracts.UpgradeContracts.test_existing_skills_reference_authoritative_contract) ... ok
+test_governance_includes_new_mandatory_sources (test_upgrade_contracts.UpgradeContracts.test_governance_includes_new_mandatory_sources) ... ok
+test_language_profiles_do_not_claim_tool_installation (test_upgrade_contracts.UpgradeContracts.test_language_profiles_do_not_claim_tool_installation) ... ok
+test_policy_loaded_once_without_replacing_existing_instructions (test_upgrade_contracts.UpgradeContracts.test_policy_loaded_once_without_replacing_existing_instructions) ... ok
+test_shared_policy_distinguishes_execution_from_checkbox (test_upgrade_contracts.UpgradeContracts.test_shared_policy_distinguishes_execution_from_checkbox) ... ok
+test_start_does_not_force_a_game_engine_on_other_projects (test_upgrade_contracts.UpgradeContracts.test_start_does_not_force_a_game_engine_on_other_projects) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.716s
+
+OK
+SHARD_RESULT={"ids": ["test_upgrade_contracts.UpgradeContracts.test_conventional_detector_recognizes_requested_language_extensions", "test_upgrade_contracts.UpgradeContracts.test_existing_skills_reference_authoritative_contract", "test_upgrade_contracts.UpgradeContracts.test_governance_includes_new_mandatory_sources", "test_upgrade_contracts.UpgradeContracts.test_language_profiles_do_not_claim_tool_installation", "test_upgrade_contracts.UpgradeContracts.test_policy_loaded_once_without_replacing_existing_instructions", "test_upgrade_contracts.UpgradeContracts.test_shared_policy_distinguishes_execution_from_checkbox", "test_upgrade_contracts.UpgradeContracts.test_start_does_not_force_a_game_engine_on_other_projects"], "run": 7, "failures": 0, "errors": 0, "skipped": 0, "success": true}

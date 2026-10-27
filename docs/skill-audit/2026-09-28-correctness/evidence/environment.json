@@ -1,0 +1,20 @@
+{
+  "recorded_at_utc": "2026-09-27T23:16:53.551233+00:00",
+  "review_date_asia_tokyo": "2026-09-28",
+  "versions": {
+    "python3": "Python 3.13.5",
+    "node": "v22.16.0",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)",
+    "git": "git version 2.47.3"
+  },
+  "host_tools": {
+    "opencode": null,
+    "bun": null
+  },
+  "original_archive": {
+    "name": "opencode-game-studio(1).zip",
+    "bytes": 846585,
+    "sha256": "dbc1492eda3d647c1cfafb5f6e0d8f7972be1acb75cd2ac4b55d63ee568bfeff"
+  },
+  "runtime_integration": "NOT RUN: OpenCode and Bun are not installed; game engines and providers not exercised."
+}

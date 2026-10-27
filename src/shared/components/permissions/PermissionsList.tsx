@@ -270,7 +270,8 @@ export function PermissionsList({ permissions: initialPermissions, isLoading: in
             label="Permission Code"
             value={newPermission.code}
             onChange={(e) => setNewPermission({ ...newPermission, code: e.target.value })}
-            placeholder="e.g., manage_bans"
+            placeholder="e.g., users.read, rooms.write"
+            error={newPermission.code && !/^[a-z][a-z0-9_]*\.(read|write|execute|delete)$/.test(newPermission.code) ? 'Format: gateway.operation (e.g., users.read)' : undefined}
           />
           <Input
             label={t('name') || 'Display Name'}
@@ -295,7 +296,7 @@ export function PermissionsList({ permissions: initialPermissions, isLoading: in
                   },
                 });
               }}
-              disabled={!newPermission.code || !newPermission.name || createPermissionMutation.isPending}
+              disabled={!newPermission.code || !newPermission.name || !/^[a-z][a-z0-9_]*\.(read|write|execute|delete)$/.test(newPermission.code) || createPermissionMutation.isPending}
             >
               {createPermissionMutation.isPending ? 'Creating...' : 'Create Permission'}
             </Button>

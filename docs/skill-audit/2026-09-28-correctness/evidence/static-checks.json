@@ -1,0 +1,49 @@
+[
+  {
+    "check": "agent frontmatter",
+    "status": "PASS",
+    "count": 59
+  },
+  {
+    "check": "skill frontmatter",
+    "status": "PASS",
+    "count": 43
+  },
+  {
+    "check": "command frontmatter",
+    "status": "PASS",
+    "count": 43
+  },
+  {
+    "check": "active JSON syntax",
+    "status": "PASS"
+  },
+  {
+    "check": "Python AST",
+    "status": "PASS"
+  },
+  {
+    "check": "Bash syntax",
+    "status": "PASS",
+    "count": 9
+  },
+  {
+    "check": "original file preservation",
+    "status": "PASS",
+    "original_files": 326,
+    "modified": [
+      "README.md",
+      "tests/skill-system/test_repairs.py",
+      ".opencode/scripts/change-model.py",
+      ".opencode/docs/hooks-reference.md",
+      ".opencode/docs/engineering-workflow.md",
+      ".opencode/hooks/pre-compact.sh",
+      ".opencode/agents/skill-auditor.md",
+      ".opencode/rules/skill-integrity.md",
+      ".opencode/docs/templates/skill-audit-report.md",
+      ".opencode/skills/skill-audit-repair/SKILL.md"
+    ],
+    "deleted": [],
+    "byte_identical_originals": 316
+  }
+]

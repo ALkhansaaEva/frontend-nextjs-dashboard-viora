@@ -1,0 +1,22 @@
+{
+  "shard": 3,
+  "test_ids": [
+    "test_repairs.HookTests.test_agent_log_symlink_refused",
+    "test_repairs.HookTests.test_large_applicable_blob_blocks_before_validation",
+    "test_repairs.HookTests.test_maintenance_design_fifo_blocks_without_hanging",
+    "test_repairs.HookTests.test_malformed_envelope_blocks",
+    "test_repairs.HookTests.test_repair_checkpoint_size_bound",
+    "test_repairs.HookTests.test_session_stop_reports_log_failure_and_keeps_state",
+    "test_repairs.HookTests.test_wrapped_git_command_refused",
+    "test_repairs.ModelTests.test_invalid_config_preflight_changes_nothing",
+    "test_repairs.ModelTests.test_revision_quoted_multiline_model_rejected_without_changes",
+    "test_repairs.StructureTests.test_maintenance_exact_source_first_loop_present",
+    "test_repairs.StructureTests.test_permission_default_is_not_unrestricted"
+  ],
+  "tests": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 7.376,
+  "exit_code": 0
+}

@@ -1,0 +1,2 @@
+BLOCKED: Audit registry missing, malformed, context UNCONFIGURED, or obsolete schema (version 2 required); perform a read-only bootstrap audit
+EXIT=2 (expected 2 for unconfigured distribution)

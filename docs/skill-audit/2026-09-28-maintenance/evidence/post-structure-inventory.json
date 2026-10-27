@@ -1,0 +1,1898 @@
+{
+  "yaml_library_version": "6.0.3",
+  "parsed_files": 145,
+  "errors": [],
+  "records": [
+    {
+      "path": ".opencode/skills/architecture-decision/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/asset-audit/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/balance-check/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/brainstorm/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/bug-report/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/changelog/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "context",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/code-review/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/concurrency-analysis/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/skills/debugging-analysis/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/skills/design-review/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/design-system/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/estimate/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/framework-engineering/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/skills/gate-check/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/hotfix/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/launch-checklist/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/localize/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/map-systems/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/milestone-review/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/onboard/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/patch-notes/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/perf-profile/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/playtest-report/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/production-validation/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/skills/project-stage-detect/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/prototype/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/release-checklist/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/repository-discovery/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/skills/retrospective/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "context",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/reverse-document/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/scope-check/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "context",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/setup-engine/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/skills/sprint-plan/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "context",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/start/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/team-audio/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/team-combat/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/team-level/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/team-narrative/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/team-polish/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/team-release/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/team-ui/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/skills/tech-debt/SKILL.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": [
+        "allowed-tools",
+        "argument-hint",
+        "user-invocable"
+      ]
+    },
+    {
+      "path": ".opencode/agents/accessibility-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/ai-programmer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/analytics-engineer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/art-director.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/audio-director.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/backend-programmer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/community-manager.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/concurrency-reviewer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/creative-director.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/devops-engineer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/economy-designer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/engine-programmer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/game-designer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/gamemaker-assets-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/gamemaker-gml-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/gamemaker-networking-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/gamemaker-performance-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/gamemaker-shader-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/gamemaker-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/gamemaker-ui-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/gameplay-programmer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/godot-gdextension-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/godot-gdscript-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/godot-shader-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/godot-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/lead-programmer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/level-designer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/live-ops-designer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/localization-lead.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/narrative-director.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/network-programmer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/performance-analyst.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/producer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/project-discovery.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/prototyper.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/qa-lead.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/qa-tester.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/release-manager.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/security-engineer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/skill-auditor.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/sound-designer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/systems-designer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/technical-artist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/technical-director.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/tools-programmer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/ue-blueprint-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/ue-gas-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/ue-replication-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/ue-umg-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/ui-programmer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/unity-addressables-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/unity-dots-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/unity-shader-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/unity-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/unity-ui-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/unreal-specialist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/ux-designer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/world-builder.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/agents/writer.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/architecture-decision.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/asset-audit.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/balance-check.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/brainstorm.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/bug-report.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/changelog.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/code-review.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/concurrency-analysis.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/debugging-analysis.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/design-review.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/design-system.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/estimate.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/framework-engineering.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/gate-check.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/hotfix.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/launch-checklist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/localize.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/map-systems.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/milestone-review.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/onboard.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/patch-notes.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/perf-profile.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/playtest-report.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/production-validation.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/project-stage-detect.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/prototype.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/release-checklist.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/repository-discovery.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/retrospective.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/reverse-document.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/scope-check.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/setup-engine.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/skill-audit-repair.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/sprint-plan.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/start.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/team-audio.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/team-combat.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/team-level.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/team-narrative.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/team-polish.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/team-release.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/team-ui.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    },
+    {
+      "path": ".opencode/commands/tech-debt.md",
+      "parse": "PASS",
+      "unknown_skill_fields_ignored_by_host": []
+    }
+  ],
+  "explicit_references": [
+    {
+      "consumer": ".opencode/skills/brainstorm/SKILL.md",
+      "literal_reference": ".opencode/docs/templates/game-concept.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/concurrency-analysis/SKILL.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/debugging-analysis/SKILL.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/design-system/SKILL.md",
+      "literal_reference": ".opencode/docs/templates/game-design-document.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/framework-engineering/SKILL.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/gate-check/SKILL.md",
+      "literal_reference": ".opencode/docs/technical-preferences.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/hotfix/SKILL.md",
+      "agent": "lead-programmer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/hotfix/SKILL.md",
+      "agent": "qa-tester",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/hotfix/SKILL.md",
+      "agent": "producer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/map-systems/SKILL.md",
+      "literal_reference": ".opencode/docs/templates/systems-index.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/onboard/SKILL.md",
+      "literal_reference": ".opencode/agents/",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/production-validation/SKILL.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/project-stage-detect/SKILL.md",
+      "literal_reference": ".opencode/docs/templates/project-stage-report.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/repository-discovery/SKILL.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/repository-discovery/SKILL.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/repository-discovery/SKILL.md",
+      "literal_reference": ".opencode/docs/engineering-roles.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/reverse-document/SKILL.md",
+      "literal_reference": ".opencode/docs/templates/design-doc-from-implementation.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/reverse-document/SKILL.md",
+      "literal_reference": ".opencode/docs/templates/architecture-doc-from-code.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/reverse-document/SKILL.md",
+      "literal_reference": ".opencode/docs/templates/concept-doc-from-prototype.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/setup-engine/SKILL.md",
+      "literal_reference": ".opencode/docs/technical-preferences.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "literal_reference": ".opencode/docs/audit-runtime.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "literal_reference": ".opencode/docs/templates/skill-audit-report.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "literal_reference": ".opencode/audit/registry.json",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/start/SKILL.md",
+      "literal_reference": ".opencode/docs/technical-preferences.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-audio/SKILL.md",
+      "agent": "audio-director",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-audio/SKILL.md",
+      "agent": "sound-designer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-audio/SKILL.md",
+      "agent": "technical-artist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-audio/SKILL.md",
+      "agent": "gameplay-programmer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-combat/SKILL.md",
+      "agent": "game-designer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-combat/SKILL.md",
+      "agent": "gameplay-programmer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-combat/SKILL.md",
+      "agent": "ai-programmer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-combat/SKILL.md",
+      "agent": "technical-artist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-combat/SKILL.md",
+      "agent": "sound-designer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-combat/SKILL.md",
+      "agent": "qa-tester",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-combat/SKILL.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-level/SKILL.md",
+      "agent": "narrative-director",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-level/SKILL.md",
+      "agent": "world-builder",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-level/SKILL.md",
+      "agent": "level-designer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-level/SKILL.md",
+      "agent": "systems-designer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-level/SKILL.md",
+      "agent": "art-director",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-level/SKILL.md",
+      "agent": "qa-tester",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-narrative/SKILL.md",
+      "agent": "narrative-director",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-narrative/SKILL.md",
+      "agent": "writer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-narrative/SKILL.md",
+      "agent": "world-builder",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-narrative/SKILL.md",
+      "agent": "level-designer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-narrative/SKILL.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-polish/SKILL.md",
+      "agent": "performance-analyst",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-polish/SKILL.md",
+      "agent": "technical-artist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-polish/SKILL.md",
+      "agent": "sound-designer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-polish/SKILL.md",
+      "agent": "qa-tester",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-polish/SKILL.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-release/SKILL.md",
+      "agent": "release-manager",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-release/SKILL.md",
+      "agent": "qa-lead",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-release/SKILL.md",
+      "agent": "devops-engineer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-release/SKILL.md",
+      "agent": "producer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-release/SKILL.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-ui/SKILL.md",
+      "agent": "ux-designer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-ui/SKILL.md",
+      "agent": "ui-programmer",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-ui/SKILL.md",
+      "agent": "art-director",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/skills/team-ui/SKILL.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/ai-programmer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/analytics-engineer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/art-director.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/audio-director.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/backend-programmer.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/backend-programmer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/community-manager.md",
+      "literal_reference": ".opencode/docs/templates/incident-response.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/concurrency-reviewer.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/creative-director.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/devops-engineer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/economy-designer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/engine-programmer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/game-designer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/gamemaker-specialist.md",
+      "agent": "gamemaker-gml-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/gamemaker-specialist.md",
+      "agent": "gamemaker-performance-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/gamemaker-specialist.md",
+      "agent": "gamemaker-shader-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/gamemaker-specialist.md",
+      "agent": "gamemaker-assets-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/gamemaker-specialist.md",
+      "agent": "gamemaker-ui-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/gamemaker-specialist.md",
+      "agent": "gamemaker-networking-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/gameplay-programmer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/godot-specialist.md",
+      "agent": "godot-gdscript-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/godot-specialist.md",
+      "agent": "godot-shader-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/godot-specialist.md",
+      "agent": "godot-gdextension-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/lead-programmer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/level-designer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/live-ops-designer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/localization-lead.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/narrative-director.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/network-programmer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/performance-analyst.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/producer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/project-discovery.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/prototyper.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/qa-lead.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/qa-tester.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/release-manager.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/skill-auditor.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/skill-auditor.md",
+      "literal_reference": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/sound-designer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/systems-designer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/technical-artist.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/technical-director.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/tools-programmer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/ui-programmer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/unity-specialist.md",
+      "agent": "unity-dots-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/unity-specialist.md",
+      "agent": "unity-shader-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/unity-specialist.md",
+      "agent": "unity-addressables-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/unity-specialist.md",
+      "agent": "unity-ui-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/unreal-specialist.md",
+      "agent": "ue-gas-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/unreal-specialist.md",
+      "agent": "ue-blueprint-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/unreal-specialist.md",
+      "agent": "ue-replication-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/unreal-specialist.md",
+      "agent": "ue-umg-specialist",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/ux-designer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/world-builder.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/agents/writer.md",
+      "literal_reference": ".opencode/docs/engineering-workflow.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/architecture-decision.md",
+      "literal_reference": ".opencode/skills/architecture-decision/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/architecture-decision.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/asset-audit.md",
+      "literal_reference": ".opencode/skills/asset-audit/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/asset-audit.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/balance-check.md",
+      "literal_reference": ".opencode/skills/balance-check/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/balance-check.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/brainstorm.md",
+      "literal_reference": ".opencode/skills/brainstorm/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/brainstorm.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/bug-report.md",
+      "literal_reference": ".opencode/skills/bug-report/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/bug-report.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/changelog.md",
+      "literal_reference": ".opencode/skills/changelog/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/changelog.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/code-review.md",
+      "literal_reference": ".opencode/skills/code-review/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/code-review.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/concurrency-analysis.md",
+      "literal_reference": ".opencode/skills/concurrency-analysis/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/concurrency-analysis.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/debugging-analysis.md",
+      "literal_reference": ".opencode/skills/debugging-analysis/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/debugging-analysis.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/design-review.md",
+      "literal_reference": ".opencode/skills/design-review/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/design-review.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/design-system.md",
+      "literal_reference": ".opencode/skills/design-system/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/design-system.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/estimate.md",
+      "literal_reference": ".opencode/skills/estimate/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/estimate.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/framework-engineering.md",
+      "literal_reference": ".opencode/skills/framework-engineering/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/framework-engineering.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/gate-check.md",
+      "literal_reference": ".opencode/skills/gate-check/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/gate-check.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/hotfix.md",
+      "literal_reference": ".opencode/skills/hotfix/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/hotfix.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/launch-checklist.md",
+      "literal_reference": ".opencode/skills/launch-checklist/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/launch-checklist.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/localize.md",
+      "literal_reference": ".opencode/skills/localize/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/localize.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/map-systems.md",
+      "literal_reference": ".opencode/skills/map-systems/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/map-systems.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/milestone-review.md",
+      "literal_reference": ".opencode/skills/milestone-review/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/milestone-review.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/onboard.md",
+      "literal_reference": ".opencode/skills/onboard/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/onboard.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/patch-notes.md",
+      "literal_reference": ".opencode/skills/patch-notes/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/patch-notes.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/perf-profile.md",
+      "literal_reference": ".opencode/skills/perf-profile/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/perf-profile.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/playtest-report.md",
+      "literal_reference": ".opencode/skills/playtest-report/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/playtest-report.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/production-validation.md",
+      "literal_reference": ".opencode/skills/production-validation/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/production-validation.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/project-stage-detect.md",
+      "literal_reference": ".opencode/skills/project-stage-detect/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/project-stage-detect.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/prototype.md",
+      "literal_reference": ".opencode/skills/prototype/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/prototype.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/release-checklist.md",
+      "literal_reference": ".opencode/skills/release-checklist/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/release-checklist.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/repository-discovery.md",
+      "literal_reference": ".opencode/skills/repository-discovery/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/repository-discovery.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/retrospective.md",
+      "literal_reference": ".opencode/skills/retrospective/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/retrospective.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/reverse-document.md",
+      "literal_reference": ".opencode/skills/reverse-document/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/reverse-document.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/scope-check.md",
+      "literal_reference": ".opencode/skills/scope-check/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/scope-check.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/setup-engine.md",
+      "literal_reference": ".opencode/skills/setup-engine/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/setup-engine.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/skill-audit-repair.md",
+      "literal_reference": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/sprint-plan.md",
+      "literal_reference": ".opencode/skills/sprint-plan/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/sprint-plan.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/start.md",
+      "literal_reference": ".opencode/skills/start/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/start.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-audio.md",
+      "literal_reference": ".opencode/skills/team-audio/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-audio.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-combat.md",
+      "literal_reference": ".opencode/skills/team-combat/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-combat.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-level.md",
+      "literal_reference": ".opencode/skills/team-level/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-level.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-narrative.md",
+      "literal_reference": ".opencode/skills/team-narrative/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-narrative.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-polish.md",
+      "literal_reference": ".opencode/skills/team-polish/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-polish.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-release.md",
+      "literal_reference": ".opencode/skills/team-release/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-release.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-ui.md",
+      "literal_reference": ".opencode/skills/team-ui/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/team-ui.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/tech-debt.md",
+      "literal_reference": ".opencode/skills/tech-debt/SKILL.md",
+      "exists": true
+    },
+    {
+      "consumer": ".opencode/commands/tech-debt.md",
+      "literal_reference": ".opencode/rules/skill-integrity.md",
+      "exists": true
+    }
+  ],
+  "unresolved_explicit_references": [],
+  "scope_note": "Explicit path/delegation checks only; does not prove complete semantic dependency closure or actual host resolution."
+}

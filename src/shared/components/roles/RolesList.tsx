@@ -373,8 +373,8 @@ export function RolesList({ roles: initialRoles, isLoading: initialLoading, refe
                 onEdit={openEditModal}
                 onDelete={handleDelete}
                 onClick={handleViewRole}
-                onAssignPermission={openManageModal as any}
-                onAssignUser={openAssignUserModalFn as any}
+                onAssignPermission={() => openManageModal(role)}
+                onAssignUser={() => openAssignUserModalFn(role)}
                 userCount={roleUserCounts?.[role.code]}
               />
             </motion.div>

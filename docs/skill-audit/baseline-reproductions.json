@@ -1,0 +1,27 @@
+[
+  {
+    "case": "model switch aborts after first edit",
+    "exit_code": 1,
+    "agents_updated": 1,
+    "stdout": "\ud83d\udd04 Change model to: test/example\n\n\ud83d\udcdd Updating .opencode/agents/*.md...\n  \u2713 accessibility-specialist.md\n"
+  },
+  {
+    "case": "session stop removes unfinished state",
+    "exit_code": 0,
+    "active_state_exists_after": false
+  },
+  {
+    "case": "invalid index with valid worktree incorrectly accepted",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "case": "agent name newline creates forged log line",
+    "exit_code": 0,
+    "log_lines": [
+      "20260927_214803 | Agent invoked: game-designer",
+      "FORGED AUDIT LINE"
+    ],
+    "jq_available": true
+  }
+]

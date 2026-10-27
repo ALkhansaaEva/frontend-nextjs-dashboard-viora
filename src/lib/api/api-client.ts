@@ -1,11 +1,12 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { isMfaRequiredError, requestMfaStepUp } from '@/lib/auth/mfa-gate';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-fastify-nestjs-viora.vercel.app/v1';
 const PROXY_BASE_URL = '/api/proxy';
 
-const isDev = process.env.NODE_ENV === 'development';
-
-const BASE_URL = isDev ? PROXY_BASE_URL : API_BASE_URL;
+// ponytail: same-origin proxy in every env. The gateway only allowlists its
+// own origins (no ACAO for the dashboard host), so direct browser calls fail
+// CORS; the proxy also persists httpOnly session cookies server-side.
+const BASE_URL = PROXY_BASE_URL;
 
 const REQUEST_TIMEOUT = 10000;
 const MAX_RETRIES = 2;
@@ -20,6 +21,15 @@ interface ApiError {
 interface ApiResponse<T> {
   data: T;
   message?: string;
+}
+
+export interface RefreshedAuthSession {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+  user?: { id: string; email: string };
+  roles?: string[];
+  permissions?: string[];
 }
 
 interface CustomAxiosConfig extends InternalAxiosRequestConfig {
@@ -56,14 +66,17 @@ export const ValidationUtils = {
 };
 
 export class ApiClient {
+  // No default Content-Type. A bodyless request (every DELETE, and any GET with
+  // query params) must not claim `application/json`: Fastify's JSON parser then
+  // rejects the empty body with FST_ERR_CTP_EMPTY_JSON_BODY -> 400, so the
+  // delete never happens. Axios sets `application/json` itself for object
+  // bodies and lets the browser set the multipart boundary for FormData, which
+  // is exactly the per-request behaviour this client needs.
   private client = axios.create({
     timeout: REQUEST_TIMEOUT,
-    headers: {
-      'Content-Type': 'application/json',
-    },
   });
 
-  private refreshPromise: Promise<string> | null = null;
+  private refreshPromise: Promise<RefreshedAuthSession> | null = null;
 
   constructor() {
     this.setupInterceptors();
@@ -83,26 +96,25 @@ export class ApiClient {
           const tokenExpiry = localStorage.getItem('tokenExpiry');
           const refreshToken = localStorage.getItem('refreshToken');
           
-          if (tokenExpiry && refreshToken) {
+          const isRefreshRequest = config.url?.includes('/auth/refresh') ?? false;
+          const isAuthRequest = config.url?.includes('/auth/') ?? false;
+
+          if (!isRefreshRequest && !isAuthRequest && tokenExpiry && refreshToken) {
             const expiryTime = parseInt(tokenExpiry);
             const timeUntilExpiry = expiryTime - Date.now();
             
             if (timeUntilExpiry < 5 * 60 * 1000 && timeUntilExpiry > 0) {
-              this.refreshToken().catch(() => {});
+              this.refreshAuthSession().catch(() => {});
             }
             
             if (timeUntilExpiry <= 0) {
-              this.refreshToken().catch(() => {});
+              this.refreshAuthSession().catch(() => {});
             }
           }
           
           const token = localStorage.getItem('accessToken');
           if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
-          }
-          const storedRefreshToken = localStorage.getItem('refreshToken');
-          if (storedRefreshToken && config.headers) {
-            config.headers['x-refresh-token'] = storedRefreshToken;
           }
         }
         
@@ -127,16 +139,34 @@ export class ApiClient {
 
         const isAuthRequest = originalRequest?.url?.includes('/auth/') ?? false;
 
+        if (isMfaRequiredError(error)) {
+          requestMfaStepUp();
+        }
+
         if (error.response?.status === 401 && originalRequest && retryCount < MAX_RETRIES && !isAuthRequest) {
           originalRequest._retryCount = retryCount + 1;
 
           try {
-            const newToken = await this.refreshToken();
+            const { accessToken: newToken } = await this.refreshAuthSession();
             if (originalRequest.headers) {
               originalRequest.headers.Authorization = `Bearer ${newToken}`;
             }
             return this.client(originalRequest);
           } catch {
+            // A concurrent refresh may have already rotated the tokens while
+            // this request was failing — retry once with whatever is current
+            // in storage before declaring the session dead.
+            const currentToken =
+              typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+            const sentToken = originalRequest.headers?.Authorization
+              ? String(originalRequest.headers.Authorization).replace(/^Bearer\s+/i, '')
+              : null;
+            if (currentToken && currentToken !== sentToken) {
+              if (originalRequest.headers) {
+                originalRequest.headers.Authorization = `Bearer ${currentToken}`;
+              }
+              return this.client(originalRequest);
+            }
             this.clearTokens();
             if (typeof window !== 'undefined') {
               window.location.href = '/login';
@@ -162,7 +192,7 @@ export class ApiClient {
     );
   }
 
-  private async refreshToken(): Promise<string> {
+  public async refreshAuthSession(): Promise<RefreshedAuthSession> {
     if (this.refreshPromise) {
       return this.refreshPromise;
     }
@@ -175,17 +205,22 @@ export class ApiClient {
 
       try {
         const baseUrl = BASE_URL;
-        const response = await axios.post<ApiResponse<{
-          accessToken: string;
-          refreshToken: string;
-          expiresIn: number;
-        }>>(
+        const response = await axios.post<ApiResponse<RefreshedAuthSession>>(
           `${baseUrl}/auth/refresh`,
           { refreshToken },
           { timeout: 10000 }
         );
 
-        const { accessToken, refreshToken: newRefreshToken, expiresIn } = response.data.data || response.data;
+        const session = (response.data.data || response.data) as RefreshedAuthSession;
+
+        // Account-switch guard: if the stored refresh token changed while this
+        // request was in flight (logout/login as another account), discard the
+        // stale response instead of overwriting the newer session's tokens.
+        if (localStorage.getItem('refreshToken') !== refreshToken) {
+          throw new Error('Authentication session changed during refresh');
+        }
+
+        const { accessToken, refreshToken: newRefreshToken, expiresIn } = session;
         
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', newRefreshToken);
@@ -199,16 +234,15 @@ export class ApiClient {
           }));
         }
         
-        return accessToken;
+        return session;
       } catch (error) {
+        // A failed refresh must NOT wipe the session here: refresh calls are
+        // fire-and-forget from the request interceptor and can race with a
+        // concurrent successful refresh (token rotation makes the loser's
+        // token invalid). The authoritative path is the 401 response
+        // interceptor, which retries with fresh/current tokens and only
+        // clears the session when the request is genuinely unauthenticated.
         console.error('[API] Token refresh failed:', error);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('tokenExpiry');
-        
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
-        }
         throw error;
       }
     })();
@@ -225,25 +259,42 @@ export class ApiClient {
       return { message: 'Request cancelled', statusCode: 0, code: 'CANCELLED' };
     }
     if (error.response) {
-      const data: any = error.response.data;
-      const errPayload = data && typeof data === 'object' && 'error' in data
-        ? data.error
-        : data;
+      const data =
+        error.response.data && typeof error.response.data === 'object'
+          ? (error.response.data as unknown as Record<string, unknown>)
+          : {};
+      const nestedError = data.error;
+      const errPayload =
+        nestedError && typeof nestedError === 'object'
+          ? (nestedError as Record<string, unknown>)
+          : data;
+      const backendMessage =
+        typeof errPayload.message === 'string'
+          ? errPayload.message
+          : typeof data.message === 'string'
+            ? data.message
+            : undefined;
+      const backendCode =
+        typeof errPayload.code === 'string'
+          ? errPayload.code
+          : typeof data.code === 'string'
+            ? data.code
+            : undefined;
       const statusMessages: Record<number, string> = {
         400: 'Invalid request. Please check your input.',
         403: 'You do not have permission to perform this action.',
         404: 'The requested resource was not found.',
         409: 'Conflict. The resource already exists or is in an invalid state.',
-        422: errPayload?.message || 'Validation failed. Please check your input.',
+        422: backendMessage || 'Validation failed. Please check your input.',
         429: 'Too many requests. Please wait and try again.',
         500: 'Server error. Please try again later.',
         502: 'Service temporarily unavailable. Please try again.',
         503: 'Service is under maintenance. Please try again later.',
       };
       return {
-        message: errPayload?.message || data?.message || statusMessages[error.response.status] || error.message || 'An error occurred',
+        message: backendMessage || statusMessages[error.response.status] || error.message || 'An error occurred',
         statusCode: error.response.status,
-        code: errPayload?.code || data?.code,
+        code: backendCode,
       };
     }
     if (error.request) {
@@ -296,7 +347,7 @@ export class ApiClient {
 
   private unwrap<T>(data: unknown): T {
     if (data && typeof data === 'object' && 'success' in data && 'data' in data) {
-      return (data as any).data as T;
+      return (data as Record<string, unknown>).data as T;
     }
     return data as T;
   }

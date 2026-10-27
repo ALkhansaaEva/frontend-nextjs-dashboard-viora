@@ -317,9 +317,125 @@ export const API_CONTRACT: Record<string, Record<string, RouteDefinition>> = {
   health: {
     'root':               { path: '/', method: 'GET', auth: false, summary: 'Health check and API info' },
     'health':             { path: '/health', method: 'GET', auth: false, summary: 'Liveness check' },
-    'ready':              { path: '/health/ready', method: 'GET', auth: false, summary: 'Readiness check' },
-    'metrics':            { path: '/health/metrics', method: 'GET', auth: false, summary: 'System metrics' },
-    'redis':              { path: '/health/redis', method: 'GET', auth: false, summary: 'Redis report' },
-    'system':             { path: '/health/system', method: 'GET', auth: false, summary: 'Full system metrics' },
+    // NOTE: /health/ready, /health/metrics, /health/redis, /health/system, /health/reset-circuits
+    // all require admin.read (or admin.write for reset-circuits) per health.controller.ts — auth:false
+    // below is historical and inaccurate; kept until the whole health section is retyped in Phase 2G.
+    'ready':              { path: '/health/ready', method: 'GET', auth: true, summary: 'Readiness check for DB + Redis (503 with checks body when degraded)' },
+    'metrics':            { path: '/health/metrics', method: 'GET', auth: true, summary: 'Basic system metrics' },
+    'redis':              { path: '/health/redis', method: 'GET', auth: true, summary: 'Redis observability report' },
+    'system':             { path: '/health/system', method: 'GET', auth: true, summary: 'Full system metrics dashboard' },
+    'reset-circuits':     { path: '/health/reset-circuits', method: 'POST', auth: true, summary: 'Reset all circuit breakers (admin.write, high-risk)' },
+  },
+
+  // ── Rule Engine / Nodes / Reward Bundle V2 / Campaigns (modules/gameplay-events) ──
+  // Achievements = RuleDefinition.kind='ACHIEVEMENT', Tasks = kind='TASK'. There is NO
+  // /admin/achievements or /admin/tasks route — do not construct one.
+  rules: {
+    'list':               { path: '/admin/rules', method: 'GET', auth: true, summary: 'Paginated Admin catalog (?kind=&state=&definitionKey=&limit=&offset=)' },
+    'detail':             { path: '/admin/rules/:id', method: 'GET', auth: true, summary: 'Full authoring detail for one RuleDefinition' },
+    'versions':           { path: '/admin/rules/by-key/:definitionKey', method: 'GET', auth: true, summary: 'Version history for a definitionKey, newest first' },
+    'nodes':              { path: '/admin/rules/nodes', method: 'GET', auth: true, summary: 'List Node Registry (TRIGGER/CONDITION/LOGIC/COUNTER/AGGREGATION/WINDOW/ACTION)' },
+    'create':             { path: '/admin/rules', method: 'POST', auth: true, summary: 'Create draft RuleDefinition' },
+    'validate':           { path: '/admin/rules/:id/validate', method: 'POST', auth: true, summary: 'DRAFT -> VALIDATED' },
+    'validate-graph':     { path: '/admin/rules/validate-graph', method: 'POST', auth: true, summary: 'Dry-validate a graph without persisting' },
+    'preview':            { path: '/admin/rules/:id/preview', method: 'POST', auth: true, summary: 'Simulate against a sample event' },
+    'publish':            { path: '/admin/rules/:id/publish', method: 'POST', auth: true, summary: 'VALIDATED -> PUBLISHED' },
+    'disable':            { path: '/admin/rules/:id/disable', method: 'POST', auth: true, summary: 'PUBLISHED -> DISABLED' },
+    'rollback':           { path: '/admin/rules/:key/rollback/:version', method: 'POST', auth: true, summary: 'Roll back to a prior version' },
+    'progress':           { path: '/progress', method: 'GET', auth: true, summary: 'Self-service progress query (?kind=TASK|ACHIEVEMENT&limit&offset)' },
+  },
+
+  rewardBundles: {
+    'validate':           { path: '/admin/reward-bundles/validate', method: 'POST', auth: true, summary: 'Validate a RewardBundleV2 (cross-checks store items/badges)' },
+    'dry-run':            { path: '/admin/reward-bundles/dry-run', method: 'POST', auth: true, summary: 'Legacy -> V2 migration dry-run' },
+    'apply':              { path: '/admin/reward-bundles/apply', method: 'POST', auth: true, summary: 'Execute legacy -> V2 migration' },
+    'resolve':            { path: '/admin/reward-bundles/resolve', method: 'POST', auth: true, summary: 'Resolve migration ambiguity with explicit bindings' },
+  },
+
+  gameplayEvents: {
+    'dead-letters':       { path: '/admin/gameplay-events/dead-letters', method: 'GET', auth: true, summary: 'List dead-lettered gameplay events' },
+    'replay':             { path: '/admin/gameplay-events/:id/replay', method: 'POST', auth: true, summary: 'Replay a dead-lettered event' },
+  },
+
+  campaigns: {
+    'list':               { path: '/admin/campaigns', method: 'GET', auth: true, summary: 'List campaigns' },
+    'create':             { path: '/admin/campaigns', method: 'POST', auth: true, summary: 'Create draft campaign' },
+    'schedule':           { path: '/admin/campaigns/:id/schedule', method: 'POST', auth: true, summary: 'draft -> scheduled' },
+    'update-status':      { path: '/admin/campaigns/:id/status', method: 'PATCH', auth: true, summary: 'Arbitrary status transition' },
+  },
+
+  // ── Agents / Distribution / Commissions (modules/agents) ──
+  agents: {
+    'list':               { path: '/admin/agents', method: 'GET', auth: true, summary: 'List agents' },
+    'create':             { path: '/admin/agents', method: 'POST', auth: true, summary: 'Create agent profile' },
+    'set-status':         { path: '/admin/agents/:agentId/status', method: 'PATCH', auth: true, summary: 'Status transition (active/held/suspended/closed)' },
+    'fund':               { path: '/admin/agents/:agentId/fund', method: 'POST', auth: true, summary: 'Platform -> Agent (requires Idempotency-Key header)' },
+    'sales':              { path: '/admin/agents/:agentId/sales', method: 'POST', auth: true, summary: 'Agent -> Player (requires Idempotency-Key header)' },
+    'redemptions':        { path: '/admin/agents/:agentId/redemptions', method: 'POST', auth: true, summary: 'Agent -> Platform (requires Idempotency-Key header)' },
+    'reverse-transfer':   { path: '/admin/agents/transfers/:transferId/reverse', method: 'POST', auth: true, summary: 'Reverse a transfer (requires Idempotency-Key header)' },
+    'commission-policy':  { path: '/admin/agents/policies/commission', method: 'POST', auth: true, summary: 'Create draft AgentCommissionPolicy' },
+    'limit-policy':       { path: '/admin/agents/policies/limits', method: 'POST', auth: true, summary: 'Create draft limit policy' },
+    'publish-policy':     { path: '/admin/agents/policies/:kind/:policyId/publish', method: 'POST', auth: true, summary: 'kind: commission|limit' },
+  },
+
+  agentTopups: {
+    'list':               { path: '/agents/topups', method: 'GET', auth: true, summary: 'Self-service: agent lists own topups' },
+    'submit':             { path: '/agents/topups', method: 'POST', auth: true, summary: 'Self-service: submit topup + payment proof (multipart)' },
+    'proof-scan':         { path: '/admin/agent-topups/:topupId/proof-scan/:state', method: 'POST', auth: true, summary: 'state: clean|rejected|error' },
+    'review':             { path: '/admin/agent-topups/:topupId/review', method: 'POST', auth: true, summary: 'decision: approve|reject|manual_review' },
+    'settle':             { path: '/admin/agent-topups/:topupId/settle', method: 'POST', auth: true, summary: 'Settle an approved topup' },
+  },
+
+  agentGovernance: {
+    'get-agent':          { path: '/admin/agent-governance/agents/:agentId', method: 'GET', auth: true, summary: 'Governance detail for an agent' },
+    'create-case':        { path: '/admin/agent-governance/agents/:agentId/cases', method: 'POST', auth: true, summary: 'Open a governance case' },
+    'add-violation':      { path: '/admin/agent-governance/cases/:caseId/violations', method: 'POST', auth: true, summary: '' },
+    'add-sanction':       { path: '/admin/agent-governance/cases/:caseId/sanctions', method: 'POST', auth: true, summary: '' },
+    'revoke-sanction':    { path: '/admin/agent-governance/sanctions/:sanctionId/revoke', method: 'POST', auth: true, summary: '' },
+    'decide-appeal':      { path: '/admin/agent-governance/appeals/:appealId/decision', method: 'POST', auth: true, summary: '' },
+    'add-risk-signal':    { path: '/admin/agent-governance/agents/:agentId/risk-signals', method: 'POST', auth: true, summary: '' },
+  },
+
+  distribution: {
+    'list-distributors':  { path: '/admin/distribution/distributors', method: 'GET', auth: true, summary: 'Paginated distributor catalog (?status=&userId=&limit=&offset=)' },
+    'get-distributor':    { path: '/admin/distribution/distributors/:id', method: 'GET', auth: true, summary: 'Full MasterDistributorProfile readback' },
+    'get-distributor-agents': { path: '/admin/distribution/distributors/:id/agents', method: 'GET', auth: true, summary: 'Agent assignment history (incl. ended)' },
+    'create-distributor': { path: '/admin/distribution/distributors', method: 'POST', auth: true, summary: 'Create MasterDistributorProfile' },
+    'set-status':         { path: '/admin/distribution/distributors/:id/status', method: 'PATCH', auth: true, summary: 'active|suspended|closed' },
+    'assign-agent':       { path: '/admin/distribution/distributors/:id/agents', method: 'POST', auth: true, summary: 'Assign an agent under this distributor' },
+    'set-capabilities':   { path: '/admin/distribution/agents/:id/capabilities', method: 'PATCH', auth: true, summary: 'capabilities[]/restrictions[]' },
+    'fund-distributor':   { path: '/admin/distribution/distributors/:id/fund', method: 'POST', auth: true, summary: 'Platform -> Distributor' },
+    'create-rate':        { path: '/admin/distribution/rates', method: 'POST', auth: true, summary: 'Create draft ExchangeRatePolicy' },
+    'approve-rate':       { path: '/admin/distribution/rates/:id/approve', method: 'POST', auth: true, summary: 'draft/pending_approval -> active' },
+    'settle-cashout':     { path: '/admin/distribution/cashouts/:id/settle', method: 'POST', auth: true, summary: '' },
+    'release-cashout':    { path: '/admin/distribution/cashouts/:id/release', method: 'POST', auth: true, summary: 'target: REJECTED|CANCELLED|EXPIRED' },
+  },
+
+  // ── Financial / Reconciliation (modules/wallet, modules/reconciliation) ──
+  financialReconciliation: {
+    'findings':           { path: '/admin/financial-reconciliation/findings', method: 'GET', auth: true, summary: 'List open findings (reports.read)' },
+    'run':                { path: '/admin/financial-reconciliation/run', method: 'POST', auth: true, summary: 'Execute a reconciliation run (reports.execute + financial.execute)' },
+  },
+
+  currencyDisplay: {
+    'get':                { path: '/admin/currency-display', method: 'GET', auth: true, summary: 'Currency display metadata (admin.read)' },
+    'update':             { path: '/admin/currency-display', method: 'PUT', auth: true, summary: 'Update display metadata only, never balances (configs.write)' },
+  },
+
+  // ── Progression (modules/game, modules/rooms) ──
+  progressionPolicy: {
+    'get':                { path: '/admin/progression-policy', method: 'GET', auth: true, summary: '?policyType=USER_LEVEL|ROOM_LEVEL|CHAT_LEVEL' },
+    'draft':              { path: '/admin/progression-policy/draft', method: 'POST', auth: true, summary: 'Create draft ProgressionLevelPolicy' },
+    'activate':           { path: '/admin/progression-policy/:id/activate', method: 'POST', auth: true, summary: 'draft -> active (four-eyes audited)' },
+  },
+
+  progressionTracks: {
+    'create':             { path: '/admin/progression-tracks', method: 'POST', auth: true, summary: 'Create ProgressionTrackVersion' },
+    'publish':            { path: '/admin/progression-tracks/:id/publish', method: 'POST', auth: true, summary: 'DRAFT -> PUBLISHED' },
+  },
+
+  roomLevelPolicy: {
+    'get':                { path: '/admin/room-level-policy', method: 'GET', auth: true, summary: 'List room level configs' },
+    'replace':            { path: '/admin/room-level-policy', method: 'PUT', auth: true, summary: 'Full replace {levels: RoomLevelPolicyInput[]}' },
   },
 };

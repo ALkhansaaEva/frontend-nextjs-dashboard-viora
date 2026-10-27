@@ -1,0 +1,22 @@
+{
+  "shard": 2,
+  "test_ids": [
+    "test_repairs.HookTests.test_agent_log_malformed_input_rejected",
+    "test_repairs.HookTests.test_invalid_index_valid_worktree_blocked",
+    "test_repairs.HookTests.test_maintenance_design_document_count_limit_blocks",
+    "test_repairs.HookTests.test_maintenance_design_utf8_and_no_marker_advisories_preserved",
+    "test_repairs.HookTests.test_repair_checkpoint_parent_symlink_rejected",
+    "test_repairs.HookTests.test_revision_compaction_rejects_design_parent_symlink",
+    "test_repairs.HookTests.test_valid_index_invalid_worktree_allowed",
+    "test_repairs.ModelTests.test_injected_mid_apply_failure_rolls_back",
+    "test_repairs.ModelTests.test_revision_quoted_model_key_rejected_without_changes",
+    "test_repairs.StructureTests.test_exact_requested_rule_present",
+    "test_repairs.StructureTests.test_no_conflicting_agent_identity_copies_in_json"
+  ],
+  "tests": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 8.907,
+  "exit_code": 0
+}

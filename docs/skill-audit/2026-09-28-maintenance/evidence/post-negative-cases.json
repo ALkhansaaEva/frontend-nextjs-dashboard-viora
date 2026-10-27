@@ -1,0 +1,16 @@
+[
+  {
+    "case": "design_control",
+    "returncode": 2,
+    "stdout_bytes": 0,
+    "control_exposed": false,
+    "log_created": false
+  },
+  {
+    "case": "design_oversize",
+    "returncode": 2,
+    "stdout_bytes": 0,
+    "control_exposed": false,
+    "log_created": false
+  }
+]

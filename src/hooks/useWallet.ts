@@ -8,7 +8,7 @@ interface WalletTransaction {
   id: string;
   userId: string;
   type: 'credit' | 'debit';
-  currency: 'gold' | 'gems';
+  currency: 'GAME_CURRENCY';
   amount: string;
   balanceAfter: string;
   reason: string;

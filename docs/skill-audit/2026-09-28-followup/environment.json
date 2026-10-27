@@ -1,0 +1,15 @@
+{
+  "task_date_Asia_Tokyo": "2026-09-28",
+  "test_timestamps": "UTC as emitted in logs (may be 2026-09-27 while task date in Tokyo is 2026-09-28)",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.13.5",
+  "node": "v22.16.0",
+  "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)",
+  "git": "git version 2.47.3",
+  "opencode_executable": null,
+  "original_zip_sha256": "89098bb372ae1c08d5a7d1d96a59883efdd37cb87c35c7d1685e99bb105ab21e",
+  "original_request_txt_sha256": "f4534ddbbd2400c254ef38656dc660f2f0bd2e600a3835b58cca3d35fda55d2c",
+  "external_schema_machine_validation": "NOT RUN: web schema reviewed, direct download unavailable; no substitute schema or version assumption",
+  "installed_host_integration": "NOT RUN: unavailable OpenCode executable; plugin unit tests use controlled fixtures",
+  "engine_or_production_execution": "NOT RUN / outside this package-repair validation scope; no deployment performed"
+}

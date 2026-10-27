@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store';
 import { can } from '@/lib/auth/permissions';
@@ -15,18 +15,14 @@ export function AuthGuard({ children, loadingComponent }: AuthGuardProps) {
   const { isAuthenticated, isLoading } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
-  const [checked, setChecked] = useState(false);
-
   useEffect(() => {
     if (isLoading) return;
     if (!isAuthenticated) {
       router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
-      return;
     }
-    setChecked(true);
   }, [isAuthenticated, isLoading, pathname, router]);
 
-  if (isLoading || !checked) {
+  if (isLoading || !isAuthenticated) {
     return (
       loadingComponent ?? (
         <div className="flex items-center justify-center min-h-screen">
@@ -35,8 +31,6 @@ export function AuthGuard({ children, loadingComponent }: AuthGuardProps) {
       )
     );
   }
-
-  if (!isAuthenticated) return null;
 
   return <>{children}</>;
 }

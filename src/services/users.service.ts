@@ -12,6 +12,32 @@ interface BackendUsersResponse {
   totalPages?: number;
 }
 
+interface BackendUserRecord {
+  id: string;
+  immutableUserId?: string | null;
+  immutable_user_id?: string | null;
+  email?: string;
+  nickname?: string | null;
+  global_nickname?: string | null;
+  avatar_url?: string | null;
+  avatar?: string | null;
+  status?: string;
+  created_at?: string;
+  createdAt?: string;
+}
+
+interface BackendWalletRecord {
+  userId?: string;
+  gameCurrency?: string | number;
+  game_currency?: string | number;
+}
+
+interface BackendUserDetailResponse {
+  user?: BackendUserRecord;
+  wallet?: BackendWalletRecord | null;
+  roles?: string[];
+}
+
 function normalizeUsersResponse(response: unknown): PaginatedResponse<UserResponse> {
   const raw = response as BackendUsersResponse;
   const data = raw.users || raw.data || [];
@@ -19,6 +45,7 @@ function normalizeUsersResponse(response: unknown): PaginatedResponse<UserRespon
   const mapped = data.map((user: Record<string, unknown>) => {
     const normalized = {
       id: user.id,
+      immutableUserId: user.immutableUserId ?? user.immutable_user_id ?? null,
       email: user.email ?? '',
       nickname: user.nickname || user.global_nickname || (user.email as string || '').split('@')[0] || '',
       avatar: user.avatar_url || user.avatar,
@@ -54,11 +81,13 @@ export const usersService = {
   },
 
   async getUserById(id: string): Promise<UserResponse> {
-    const response = await apiClient.get<any>(`/admin/users/${id}`);
+    const response = await apiClient.get<BackendUserDetailResponse>(`/admin/users/${id}`);
     const userRecord = response?.user;
     if (!userRecord?.id) throw new Error('User not found');
     const mapped = UserResponseSchema.parse({
       id: userRecord.id,
+      immutableUserId:
+        userRecord.immutableUserId ?? userRecord.immutable_user_id ?? null,
       email: userRecord.email ?? '',
       nickname: userRecord.nickname ?? userRecord.global_nickname ?? userRecord.email?.split('@')[0],
       avatar: userRecord.avatar_url ?? userRecord.avatar,
@@ -66,10 +95,12 @@ export const usersService = {
       createdAt: userRecord.created_at ?? userRecord.createdAt ?? new Date().toISOString(),
       wallet: response.wallet ? {
         userId: response.wallet.userId ?? id,
-        gold: response.wallet.gold ?? 0,
-        gems: response.wallet.gems ?? 0,
+        gameCurrency: String(response.wallet.gameCurrency ?? response.wallet.game_currency ?? '0'),
       } : undefined,
-      roles: (response.roles ?? []).map((code: string) => ({ id: code, code })),
+      // `roles` from GET /admin/users/:id are role CODES ("USER", "ADMIN"), but
+      // UserResponseSchema's RoleSchema demands a uuid `id` — mapping them made
+      // the whole record fail validation and the detail page error out. Role
+      // details are read through getUserRoleDetails() instead.
     });
     return mapped;
   },
@@ -81,9 +112,20 @@ export const usersService = {
 
   async getUserRoleDetails(id: string): Promise<RoleResponse[]> {
     const roleCodes = await this.getUserRoles(id);
-    const rolesResponse = await apiClient.get<{ roles: RoleResponse[] }>('/admin/roles');
-    const allRoles = rolesResponse.roles || [];
-    return allRoles.filter(r => roleCodes.includes(r.code));
+    // GET /admin/roles returns a BARE ARRAY of RoleResponseDto (admin.controller
+    // `getAllRoles`), not `{ roles: [...] }`.
+    const response = await apiClient.get<RoleResponse[]>('/admin/roles');
+    const allRoles = Array.isArray(response) ? response : [];
+    return allRoles.filter((role) => roleCodes.includes(role.code));
+  },
+
+  /**
+   * PATCH /admin/users/:id/status — admin.service.updateUserStatus accepts
+   * exactly `active | suspended | banned` (users.write). The route param accepts
+   * either the immutable numeric user id or the internal UUID.
+   */
+  async updateStatus(id: string, status: UserResponse['status']): Promise<void> {
+    await apiClient.patch(`/admin/users/${id}/status`, { status });
   },
 
   async assignRole(id: string, roleCode: string): Promise<void> {
@@ -99,16 +141,17 @@ export const usersService = {
     return apiClient.post<Wallet>(`/admin/users/${id}/balance`, validated);
   },
 
-  async getUserWallet(id: string): Promise<Wallet> {
-    const userResponse = await apiClient.get<any>(`/admin/users/${id}`);
+  /**
+   * Returns `null` (not a fake zero balance) when the user has no wallet row
+   * yet — GET /admin/users/:id's `wallet` is only present once one exists.
+   */
+  async getUserWallet(id: string): Promise<Wallet | null> {
+    const userResponse = await apiClient.get<BackendUserDetailResponse>(`/admin/users/${id}`);
     const w = userResponse?.wallet;
-    if (!w) {
-      return { userId: id, gold: 0, gems: 0 };
-    }
+    if (!w) return null;
     return {
       userId: w.userId ?? id,
-      gold: typeof w.gold === 'number' ? w.gold : parseInt(String(w.gold ?? '0')),
-      gems: typeof w.gems === 'number' ? w.gems : parseInt(String(w.gems ?? '0')),
+      gameCurrency: String(w.gameCurrency ?? w.game_currency ?? '0'),
     };
   },
 };

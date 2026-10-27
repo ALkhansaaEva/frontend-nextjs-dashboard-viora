@@ -1,0 +1,22 @@
+{
+  "shard": 6,
+  "test_ids": [
+    "test_repairs.HookTests.test_compound_commit_without_spaces_is_refused",
+    "test_repairs.HookTests.test_maintenance_design_at_input_limit_has_bounded_excerpt",
+    "test_repairs.HookTests.test_maintenance_design_oversize_blocks_before_output",
+    "test_repairs.HookTests.test_noncommit_command_does_not_execute",
+    "test_repairs.HookTests.test_repair_precompact_does_not_report_clean_on_git_failure",
+    "test_repairs.HookTests.test_spaces_and_newline_filename",
+    "test_repairs.ModelTests.test_concurrent_user_edit_not_overwritten_by_rollback",
+    "test_repairs.ModelTests.test_repair_model_update_preserves_crlf",
+    "test_repairs.ModelTests.test_symlink_agent_rejected_without_partial_change",
+    "test_repairs.StructureTests.test_maintenance_metrics_require_evidence",
+    "test_repairs.StructureTests.test_runtime_instruction_paths_exist"
+  ],
+  "tests": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 7.665,
+  "exit_code": 0
+}

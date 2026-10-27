@@ -1,17 +1,17 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import { QueryErrorNotice } from '@/shared/components/ui/QueryState';
 import { useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
-import { Badge } from '@/shared/components/ui/Badge';
 import { reportsService } from '@/services';
 import { useLanguage } from '@/components/language-context';
 import { TableSkeleton } from '@/components/skeletons';
 import { useHasPermission } from '@/hooks';
-import type { Report, TakeActionRequest } from '@/types';
-import type { UpdateReportStatusRequest } from '@/dto/reports/reports.dto';
+import type { Report } from '@/types';
+import type { UpdateReportStatusRequest, ReportActionRequest } from '@/dto/reports/reports.dto';
 import { ReportsFiltersSection } from './sections/ReportsFiltersSection';
 import { ReportsListSection } from './sections/ReportsListSection';
 import { ReportDetailSection } from './sections/ReportDetailSection';
@@ -21,34 +21,56 @@ export default function ReportsPage() {
   const { t } = useLanguage();
   const queryClient = useQueryClient();
   const hasPermission = useHasPermission();
-  const canManageReports = hasPermission('manage_reports');
+  // Canonical backend permission (ReportsController mutation routes require
+  // reports.execute; 'manage_reports' is a legacy bitmask code the backend
+  // no longer grants under canonical RBAC) — see BACKEND_CAPABILITY_REGISTRY.
+  const canManageReports = hasPermission('reports.execute');
 
-  const page = parseInt(searchParams.get('page') || '1', 10);
+  const LIMIT = 10;
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1);
   const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '');
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || '');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['reports', page, statusFilter],
+  // ponytail: backend GET /reports has no search param — filter the loaded
+  // page client-side instead of inventing an unsupported query param.
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['reports', page, statusFilter, categoryFilter],
     queryFn: () =>
       reportsService.getReports({
-        page,
-        limit: 10,
+        limit: LIMIT,
+        offset: (page - 1) * LIMIT,
         status: statusFilter || undefined,
+        category: categoryFilter || undefined,
       }),
     staleTime: 30000,
   });
+
+  const reports = useMemo(() => data?.reports ?? [], [data?.reports]);
+
+  const visibleReports = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return reports;
+    return reports.filter((r) =>
+      [r.id, r.reporterUserId, r.targetUserId, r.category, r.description, r.reporterUser?.nickname, r.targetUser?.nickname]
+        .filter((v): v is string => typeof v === 'string')
+        .some((v) => v.toLowerCase().includes(q)),
+    );
+  }, [reports, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil((data?.total ?? 0) / LIMIT));
 
   const takeActionMutation = useMutation({
     mutationFn: ({
       reportId,
       action,
-      reason,
+      note,
     }: {
       reportId: string;
-      action: TakeActionRequest['action'];
-      reason: string;
-    }) => reportsService.takeAction(reportId, { action, reason }),
+      action: ReportActionRequest['action'];
+      note: string;
+    }) => reportsService.takeAction(reportId, { action, note }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reports'] });
       setSelectedReport(null);
@@ -68,23 +90,47 @@ export default function ReportsPage() {
     },
   });
 
+  const assignMutation = useMutation({
+    mutationFn: ({ reportId, assignedUserId }: { reportId: string; assignedUserId: string }) =>
+      reportsService.assignReport(reportId, assignedUserId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
+    },
+  });
+
+  // One filter change resets paging; the backend paginates from offset 0.
+  const pushFilter = useCallback((key: 'status' | 'category', value: string) => {
+    const url = new URL(window.location.href);
+    if (value) {
+      url.searchParams.set(key, value);
+    } else {
+      url.searchParams.delete(key);
+    }
+    url.searchParams.set('page', '1');
+    window.history.pushState({}, '', url);
+  }, []);
+
   const handlePageChange = useCallback((newPage: number) => {
     const url = new URL(window.location.href);
     url.searchParams.set('page', newPage.toString());
     window.history.pushState({}, '', url);
   }, []);
 
-  const handleStatusChange = useCallback((status: string) => {
-    setStatusFilter(status);
-    const url = new URL(window.location.href);
-    if (status) {
-      url.searchParams.set('status', status);
-    } else {
-      url.searchParams.delete('status');
-    }
-    url.searchParams.set('page', '1');
-    window.history.pushState({}, '', url);
-  }, []);
+  const handleStatusChange = useCallback(
+    (status: string) => {
+      setStatusFilter(status);
+      pushFilter('status', status);
+    },
+    [pushFilter]
+  );
+
+  const handleCategoryChange = useCallback(
+    (category: string) => {
+      setCategoryFilter(category);
+      pushFilter('category', category);
+    },
+    [pushFilter]
+  );
 
   const handleUpdateStatus = useCallback(
     (status: UpdateReportStatusRequest['status']) => {
@@ -96,13 +142,37 @@ export default function ReportsPage() {
   );
 
   const handleTakeAction = useCallback(
-    (action: TakeActionRequest['action'], reason: string) => {
+    (action: ReportActionRequest['action'], note: string) => {
       if (selectedReport) {
-        takeActionMutation.mutate({ reportId: selectedReport.id, action, reason });
+        takeActionMutation.mutate({ reportId: selectedReport.id, action, note });
       }
     },
     [selectedReport, takeActionMutation]
   );
+
+  const handleAssign = useCallback(
+    (assignedUserId: string) => {
+      if (selectedReport && assignedUserId) {
+        assignMutation.mutate({ reportId: selectedReport.id, assignedUserId });
+      }
+    },
+    [selectedReport, assignMutation]
+  );
+
+  if (isError) {
+
+    return (
+
+      <div className="space-y-6">
+
+        <QueryErrorNotice error={error} onRetry={() => refetch()} />
+
+      </div>
+
+    );
+
+  }
+
 
   if (isLoading) {
     return (
@@ -123,36 +193,33 @@ export default function ReportsPage() {
             {t('reports')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Monitor and process community violations through your high-precision radar.
+            Review, assign and resolve community reports.
           </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="outline" className="px-3 py-1 border-primary/20 bg-primary/5 text-primary">
-            Active Monitoring: ON
-          </Badge>
         </div>
       </div>
 
       <ReportsFiltersSection
         searchQuery={searchQuery}
         statusFilter={statusFilter}
+        categoryFilter={categoryFilter}
         onSearchChange={setSearchQuery}
         onStatusChange={handleStatusChange}
+        onCategoryChange={handleCategoryChange}
       />
 
-      <ReportsListSection reports={data?.data || []} onSelectReport={setSelectedReport} />
+      <ReportsListSection reports={visibleReports} onSelectReport={setSelectedReport} />
 
-      {data && data.total > 0 && (
+      {(data?.total ?? 0) > 0 && (
         <div className="flex items-center justify-between px-2 pt-4">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Scanning page {data.page} of {data.totalPages}
+            Scanning page {page} of {totalPages}
           </p>
           <div className="flex gap-2">
             <Button
               variant="outline"
               size="sm"
-              disabled={data.page <= 1}
-              onClick={() => handlePageChange(data.page - 1)}
+              disabled={page <= 1}
+              onClick={() => handlePageChange(page - 1)}
               className="rounded-xl border-gray-200 dark:border-gray-800"
             >
               <ChevronLeft className="w-4 h-4 mr-1" />
@@ -161,8 +228,8 @@ export default function ReportsPage() {
             <Button
               variant="outline"
               size="sm"
-              disabled={data.page >= data.totalPages}
-              onClick={() => handlePageChange(data.page + 1)}
+              disabled={page >= totalPages}
+              onClick={() => handlePageChange(page + 1)}
               className="rounded-xl border-gray-200 dark:border-gray-800"
             >
               Next
@@ -175,10 +242,12 @@ export default function ReportsPage() {
       <ReportDetailSection
         report={selectedReport}
         canManageReports={canManageReports}
+        isAssigning={assignMutation.isPending}
         onUpdateStatus={handleUpdateStatus}
         onTakeAction={handleTakeAction}
+        onAssign={handleAssign}
         onClose={() => setSelectedReport(null)}
       />
     </div>
   );
-}
+}

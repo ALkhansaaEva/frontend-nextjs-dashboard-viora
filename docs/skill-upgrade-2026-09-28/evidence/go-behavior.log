@@ -1,0 +1,10 @@
+=== RUN   TestSum
+=== RUN   TestSum/empty
+=== RUN   TestSum/positive
+=== RUN   TestSum/negative
+--- PASS: TestSum (0.00s)
+    --- PASS: TestSum/empty (0.00s)
+    --- PASS: TestSum/positive (0.00s)
+    --- PASS: TestSum/negative (0.00s)
+PASS
+ok  	example.invalid/skill-audit-fixture	0.004s

@@ -36,15 +36,6 @@ function getInitialTheme(): Theme {
   return 'system';
 }
 
-function getInitialResolvedTheme(): 'light' | 'dark' {
-  if (typeof window === 'undefined') return 'light';
-  const theme = getInitialTheme();
-  if (theme === 'system') {
-    return getSystemTheme();
-  }
-  return theme;
-}
-
 function applyTheme(theme: 'light' | 'dark') {
   if (typeof document === 'undefined') return;
   
@@ -61,8 +52,8 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme);
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(getInitialResolvedTheme);
-  const [mounted, setMounted] = useState(false);
+  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(getSystemTheme);
+  const resolvedTheme = theme === 'system' ? systemTheme : theme;
 
   const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
@@ -87,41 +78,19 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   }), [theme, resolvedTheme, setTheme, toggleTheme, isDark]);
 
   useEffect(() => {
-    const initialTheme = getInitialTheme();
-    const resolved = initialTheme === 'system' ? getSystemTheme() : initialTheme;
-    
-    setThemeState(initialTheme);
-    setResolvedTheme(resolved);
-    applyTheme(resolved);
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-
-    let newResolved: 'light' | 'dark';
-    if (theme === 'system') {
-      newResolved = getSystemTheme();
-    } else {
-      newResolved = theme;
-    }
-
-    setResolvedTheme(newResolved);
-    applyTheme(newResolved);
+    applyTheme(resolvedTheme);
 
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       
       const handler = (e: MediaQueryListEvent) => {
-        const systemTheme = e.matches ? 'dark' : 'light';
-        setResolvedTheme(systemTheme);
-        applyTheme(systemTheme);
+        setSystemTheme(e.matches ? 'dark' : 'light');
       };
       
       mediaQuery.addEventListener('change', handler);
       return () => mediaQuery.removeEventListener('change', handler);
     }
-  }, [theme, mounted]);
+  }, [theme, resolvedTheme]);
 
   return (
     <ThemeContext.Provider value={value}>

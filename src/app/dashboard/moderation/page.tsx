@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { QueryErrorNotice } from '@/shared/components/ui/QueryState';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Shield, Ban, MessageSquare, AlertTriangle, User, Search, Plus,
@@ -10,7 +11,21 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui
 import { Badge } from '@/shared/components/ui/Badge';
 import { healthService, moderationService, adminService, roomsService } from '@/services';
 import { useLanguage } from '@/components/language-context';
+
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === 'object') {
+    const record = error as Record<string, unknown>;
+    if (typeof record.message === 'string') return record.message;
+    if (record.error && typeof record.error === 'object') {
+      const nested = record.error as Record<string, unknown>;
+      if (typeof nested.message === 'string') return nested.message;
+    }
+  }
+  return '';
+}
 import { useAuthStore } from '@/store';
+import { useHasPermission } from '@/hooks/usePermissions';
 import { PageSkeleton } from '@/components/skeletons';
 import type { Sanction, User as UserType } from '@/types';
 
@@ -52,6 +67,9 @@ export default function ModerationPage() {
   const { t, isRTL } = useLanguage();
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
+  const hasPermission = useHasPermission();
+  const canApplySanction = hasPermission('moderation.execute');
+  const canManageRooms = hasPermission('rooms.write') || hasPermission('manage_all_rooms');
 
   const [activeTab, setActiveTab] = useState<'sanctions' | 'rooms'>('sanctions');
 
@@ -70,35 +88,37 @@ export default function ModerationPage() {
   const [roomId, setRoomId] = useState('');
   const [roomActionUserId, setRoomActionUserId] = useState('');
   const [roomActionType, setRoomActionType] = useState<string>('ban');
+  const [roomMuteType, setRoomMuteType] = useState<'chat' | 'mic' | 'all'>('all');
+  const [roomActionReason, setRoomActionReason] = useState('');
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats, isLoading: statsLoading, isError: statsIsError, error: statsError, refetch: statsRefetch } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: () => healthService.getDashboardStats(),
     staleTime: 30000,
   });
 
-  const { data: searchResults } = useQuery({
+  const { data: searchResults, isError: searchIsError } = useQuery({
     queryKey: ['user-search2', userSearch],
     queryFn: () => adminService.searchUsers({ search: userSearch, email: userSearch, limit: 8 }),
     enabled: userSearch.length >= 3,
   });
 
-  const { data: userSanctions, isLoading: sanctionsLoading } = useQuery({
+  const { data: userSanctions, isLoading: sanctionsLoading, isError: sanctionsIsError } = useQuery({
     queryKey: ['user-sanctions', selectedUserId],
     queryFn: () => moderationService.getActiveSanctions(selectedUserId),
     enabled: selectedUserId.length > 0,
   });
 
-  const { data: roomBans } = useQuery({
+  const { data: roomBans, isError: roomBansIsError } = useQuery({
     queryKey: ['room-bans', roomId],
     queryFn: () => roomsService.getBans(roomId),
-    enabled: roomId.length > 0,
+    enabled: roomId.length > 0 && canManageRooms,
   });
 
-  const { data: roomMutes } = useQuery({
+  const { data: roomMutes, isError: roomMutesIsError } = useQuery({
     queryKey: ['room-mutes', roomId],
     queryFn: () => roomsService.getMutes(roomId),
-    enabled: roomId.length > 0,
+    enabled: roomId.length > 0 && canManageRooms,
   });
 
   const applySanction = useMutation({
@@ -114,8 +134,8 @@ export default function ModerationPage() {
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       queryClient.invalidateQueries({ queryKey: ['user-sanctions'] });
     },
-    onError: (err: any) => {
-      const msg = err?.message || err?.error?.message || '';
+    onError: (err: unknown) => {
+      const msg = errorMessage(err);
       setStatusMsg({
         type: 'error',
         text: isRTL
@@ -133,11 +153,17 @@ export default function ModerationPage() {
 
   const handleRoomAction = useMutation({
     mutationFn: async () => {
-      if (roomActionType === 'ban') return roomsService.banUser(roomId, roomActionUserId);
-      return roomsService.muteUser(roomId, roomActionUserId);
+      if (roomActionType === 'ban') {
+        return roomsService.banUser(roomId, roomActionUserId, roomActionReason.trim() || undefined);
+      }
+      return roomsService.muteUser(roomId, roomActionUserId, {
+        muteType: roomMuteType,
+        reason: roomActionReason.trim() || undefined,
+      });
     },
     onSuccess: () => {
       setRoomActionUserId('');
+      setRoomActionReason('');
       queryClient.invalidateQueries({ queryKey: ['room-bans', roomId] });
       queryClient.invalidateQueries({ queryKey: ['room-mutes', roomId] });
     },
@@ -146,6 +172,13 @@ export default function ModerationPage() {
   const isValidUuid = UUID_REGEX.test(userId);
 
   if (statsLoading) return <PageSkeleton />;
+  if (statsIsError) {
+    return (
+      <div className="space-y-6">
+        <QueryErrorNotice error={statsError} onRetry={() => statsRefetch()} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -213,11 +246,13 @@ export default function ModerationPage() {
           {isRTL ? 'عقوبات النظام' : 'System Sanctions'}
         </button>
         <button onClick={() => setActiveTab('rooms')}
+          disabled={!canManageRooms}
+          title={!canManageRooms ? 'Requires rooms.write' : undefined}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
             activeTab === 'rooms'
               ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-          }`}>
+          } disabled:cursor-not-allowed disabled:opacity-50`}>
           {isRTL ? 'إدارة الغرف' : 'Room Moderation'}
         </button>
       </div>
@@ -226,6 +261,7 @@ export default function ModerationPage() {
       {activeTab === 'sanctions' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Apply Sanction + User Search */}
+          {canApplySanction ? (
           <Card className="border border-gray-200 dark:border-gray-700">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
@@ -251,7 +287,10 @@ export default function ModerationPage() {
                     ))}
                   </div>
                 )}
-                {userSearch.length >= 3 && searchResults && searchResults.data.length === 0 && (
+                {userSearch.length >= 3 && searchIsError && (
+                  <p className="text-xs text-red-500 mt-1">{isRTL ? 'فشل البحث' : 'Search request failed'}</p>
+                )}
+                {userSearch.length >= 3 && !searchIsError && searchResults && searchResults.data.length === 0 && (
                   <p className="text-xs text-gray-400 mt-1">{isRTL ? 'لا توجد نتائج' : 'No results'}</p>
                 )}
               </div>
@@ -319,6 +358,19 @@ export default function ModerationPage() {
               <p className="text-xs text-gray-400">{isRTL ? `بواسطة: ${user?.email || '-'}` : `By: ${user?.email || '-'}`}</p>
             </CardContent>
           </Card>
+          ) : (
+            <Card className="border border-gray-200 dark:border-gray-700">
+              <CardContent className="py-10 text-center">
+                <Shield className="mx-auto mb-3 h-8 w-8 text-gray-300" />
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                  {isRTL ? 'عرض فقط' : 'Read-only moderation access'}
+                </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  {isRTL ? 'تطبيق العقوبات يتطلب moderation.execute.' : 'Applying sanctions requires moderation.execute.'}
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* User Sanctions Viewer */}
           <Card className="border border-gray-200 dark:border-gray-700">
@@ -338,7 +390,10 @@ export default function ModerationPage() {
                     <p className="text-sm font-mono text-gray-600 dark:text-gray-400 truncate">{selectedUserId}</p>
                   </div>
                   {sanctionsLoading && <p className="text-sm text-gray-400 text-center py-4">{isRTL ? 'جارٍ التحميل...' : 'Loading...'}</p>}
-                  {!sanctionsLoading && userSanctions && userSanctions.length === 0 && (
+                  {!sanctionsLoading && sanctionsIsError && (
+                  <p className="text-xs text-red-500">{isRTL ? 'فشل تحميل العقوبات' : 'Failed to load sanctions'}</p>
+                )}
+                {!sanctionsLoading && !sanctionsIsError && userSanctions && userSanctions.length === 0 && (
                     <div className="text-center py-8">
                       <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-2" />
                       <p className="text-sm text-gray-400">{isRTL ? 'لا توجد عقوبات نشطة' : 'No active sanctions'}</p>
@@ -376,7 +431,7 @@ export default function ModerationPage() {
       )}
 
       {/* ── ROOM MODERATION ── */}
-      {activeTab === 'rooms' && (
+      {activeTab === 'rooms' && canManageRooms && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="border border-gray-200 dark:border-gray-700">
             <CardHeader className="pb-3">
@@ -410,7 +465,7 @@ export default function ModerationPage() {
                     <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
                       {isRTL ? 'نوع الإجراء' : 'Action Type'}
                     </label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                       {ROOM_ACTION_TYPES.map(at => {
                         const Icon = at.icon;
                         return (
@@ -427,11 +482,43 @@ export default function ModerationPage() {
                       })}
                     </div>
                   </div>
+                  {roomActionType === 'mute' && (
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                        {isRTL ? 'نطاق الكتم' : 'Mute Scope'}
+                      </label>
+                      <select
+                        value={roomMuteType}
+                        onChange={(event) => setRoomMuteType(event.target.value as 'chat' | 'mic' | 'all')}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                      >
+                        <option value="chat">{isRTL ? 'الدردشة فقط' : 'Chat only'}</option>
+                        <option value="mic">{isRTL ? 'الميكروفون فقط' : 'Microphone only'}</option>
+                        <option value="all">{isRTL ? 'الدردشة والميكروفون' : 'Chat and microphone'}</option>
+                      </select>
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                      {isRTL ? 'السبب (اختياري)' : 'Reason (optional)'}
+                    </label>
+                    <textarea
+                      value={roomActionReason}
+                      onChange={(event) => setRoomActionReason(event.target.value)}
+                      rows={2}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 outline-none resize-none"
+                    />
+                  </div>
                   <button onClick={() => handleRoomAction.mutate()}
                     disabled={!roomActionUserId || handleRoomAction.isPending}
                     className="w-full py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm">
                     {handleRoomAction.isPending ? (isRTL ? 'جارٍ...' : 'Executing...') : (isRTL ? 'تطبيق' : 'Execute')}
                   </button>
+                  {handleRoomAction.isError && (
+                    <p role="alert" className="text-xs text-red-500">
+                      {handleRoomAction.error instanceof Error ? handleRoomAction.error.message : (isRTL ? 'فشل تنفيذ الإجراء' : 'Action failed')}
+                    </p>
+                  )}
                 </>
               )}
             </CardContent>
@@ -452,11 +539,14 @@ export default function ModerationPage() {
                   <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-2">
                     {isRTL ? 'المحظورون' : 'Bans'} ({roomBans?.length ?? 0})
                   </p>
-                  {roomBans && roomBans.length > 0 ? (
+                  {roomBansIsError && (
+                    <p className="p-2 text-xs text-red-500">{isRTL ? 'فشل تحميل الحظر' : 'Failed to load bans'}</p>
+                  )}
+                  {!roomBansIsError && roomBans && roomBans.length > 0 ? (
                     <div className="space-y-2">
-                      {roomBans.map((b: any, i: number) => (
+                      {roomBans.map((b, i) => (
                         <div key={i} className="p-2.5 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 flex items-center justify-between text-sm">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">{b.targetUserId || b.userId || b.id}</span>
+                          <span className="font-medium text-gray-700 dark:text-gray-300">{b.userId || b.id}</span>
                           <span className="text-xs text-gray-400">{b.reason || '-'}</span>
                         </div>
                       ))}
@@ -469,11 +559,14 @@ export default function ModerationPage() {
                   <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-2">
                     {isRTL ? 'المكتومون' : 'Mutes'} ({roomMutes?.length ?? 0})
                   </p>
-                  {roomMutes && roomMutes.length > 0 ? (
+                  {roomMutesIsError && (
+                    <p className="p-2 text-xs text-red-500">{isRTL ? 'فشل تحميل الكتم' : 'Failed to load mutes'}</p>
+                  )}
+                  {!roomMutesIsError && roomMutes && roomMutes.length > 0 ? (
                     <div className="space-y-2">
-                      {roomMutes.map((m: any, i: number) => (
+                      {roomMutes.map((m, i) => (
                         <div key={i} className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 flex items-center justify-between text-sm">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">{m.targetUserId || m.userId || m.id}</span>
+                          <span className="font-medium text-gray-700 dark:text-gray-300">{m.userId || m.id}</span>
                           <span className="text-xs text-gray-400">{m.reason || '-'}</span>
                         </div>
                       ))}

@@ -14,9 +14,11 @@ export interface MFAEnrollResponse {
 export const authService = {
   async login(credentials: LoginRequest): Promise<AuthLoginResponse> {
     const validated = LoginSchema.parse(credentials);
-    const raw = await apiClient.post<any>('/auth/email/login', validated);
-    const data = (raw && typeof raw === 'object' && 'success' in raw && 'data' in raw) ? raw.data : raw;
-    return data as AuthLoginResponse;
+    const raw = await apiClient.post<AuthLoginResponse | { success: boolean; data: AuthLoginResponse }>(
+      '/auth/email/login',
+      validated,
+    );
+    return 'success' in raw ? raw.data : raw;
   },
 
   async register(credentials: RegisterRequest): Promise<AuthLoginResponse> {
@@ -28,9 +30,34 @@ export const authService = {
     await apiClient.post('/auth/email/request-otp', { email });
   },
 
-  async verifyEmailOTP(email: string, otp: string): Promise<void> {
-    const validated = OTPVerifySchema.parse({ email, otp });
-    await apiClient.post('/auth/email/verify-otp', validated);
+  async verifyEmailOTP(email: string, token: string): Promise<AuthLoginResponse> {
+    const validated = OTPVerifySchema.parse({ email, token });
+    const raw = await apiClient.post<AuthLoginResponse | { success: boolean; data: AuthLoginResponse }>(
+      '/auth/email/verify-otp',
+      validated,
+    );
+    return 'success' in raw ? raw.data : raw;
+  },
+
+  async forgotPassword(email: string): Promise<{
+    message: string;
+    /** Present only while the backend runs with dev autoconfirm enabled. */
+    _dev_recovery_code?: string;
+    _dev_note?: string;
+  }> {
+    return apiClient.post('/auth/forgot-password', { email });
+  },
+
+  async resetPassword(
+    email: string,
+    token: string,
+    newPassword: string,
+  ): Promise<AuthLoginResponse> {
+    const raw = await apiClient.post<AuthLoginResponse | { success: boolean; data: AuthLoginResponse }>(
+      '/auth/reset-password',
+      { email, token, newPassword },
+    );
+    return 'success' in raw ? raw.data : raw;
   },
 
   async refreshToken(refreshToken: string): Promise<{
@@ -65,17 +92,13 @@ export const authService = {
     await apiClient.post('/auth/phone/request-otp', { phone });
   },
 
-  async verifyPhoneOTP(phone: string, otp: string): Promise<void> {
-    const validated = OTPVerifySchema.parse({ phone, otp });
+  async verifyPhoneOTP(phone: string, token: string): Promise<void> {
+    const validated = OTPVerifySchema.parse({ phone, token });
     await apiClient.post('/auth/phone/verify-otp', validated);
   },
 
   async enrollMFA(): Promise<MFAEnrollResponse> {
     return apiClient.post<MFAEnrollResponse>('/auth/mfa/enroll');
-  },
-
-  async verifyEnableMFA(code: string): Promise<void> {
-    await apiClient.post('/auth/mfa/verify-enable', { code });
   },
 
   async getGoogleOAuthUrl(): Promise<string> {
@@ -87,6 +110,15 @@ export const authService = {
     return apiClient.post<AuthLoginResponse>('/auth/google/callback', { code, redirectUri });
   },
 
+  /** Redeems the backend's opaque single-use OAuth handoff id for a session. */
+  async redeemGoogleHandoff(handoff: string): Promise<AuthLoginResponse> {
+    const raw = await apiClient.post<AuthLoginResponse | { success: boolean; data: AuthLoginResponse }>(
+      '/auth/google/session',
+      { handoff },
+    );
+    return 'success' in raw ? raw.data : raw;
+  },
+
   async getFacebookOAuthUrl(): Promise<string> {
     const response = await apiClient.get<OAuthUrlResponse>('/auth/facebook/url');
     return response.url;
@@ -96,12 +128,72 @@ export const authService = {
     return apiClient.post<AuthLoginResponse>('/auth/facebook/callback', { code, redirectUri });
   },
 
-  async linkProvider(provider: string, code: string): Promise<void> {
-    await apiClient.post('/auth/link-provider', { provider, code });
+  // POST /auth/link-provider takes only the provider; the backend resolves the
+  // provider identity from the authenticated request, not from a client code.
+  async linkProvider(provider: string): Promise<void> {
+    await apiClient.post('/auth/link-provider', { provider });
   },
 
   async registerFCMToken(token: string): Promise<void> {
     await apiClient.post('/auth/devices/fcm-token', { token });
+  },
+
+  // ── MFA ────────────────────────────────────────────────────────────────
+  async mfaFactors(): Promise<{ all?: unknown[]; totp?: unknown[]; phone?: unknown[] }> {
+    return apiClient.get('/auth/mfa/factors');
+  },
+
+  async mfaChallenge(factorId: string): Promise<{ challengeId: string }> {
+    return apiClient.post('/auth/mfa/challenge', { factorId });
+  },
+
+  async mfaVerifyEnable(
+    factorId: string,
+    code: string,
+  ): Promise<{
+    message: string;
+    session?: { accessToken: string; refreshToken: string; expiresIn?: number };
+  }> {
+    return apiClient.post('/auth/mfa/verify-enable', { factorId, code });
+  },
+
+  async mfaDisable(factorId: string): Promise<{ message: string }> {
+    return apiClient.post('/auth/mfa/disable', { factorId });
+  },
+
+  // ── Account deletion (self-service) ────────────────────────────────────
+  async accountDeletionStatus(): Promise<Record<string, unknown>> {
+    return apiClient.get('/auth/account/deletion');
+  },
+
+  async requestAccountDeletion(reason?: string): Promise<Record<string, unknown>> {
+    return apiClient.post('/auth/account/deletion', {
+      confirmation: 'DELETE_MY_ACCOUNT',
+      ...(reason ? { reason } : {}),
+    });
+  },
+
+  async cancelAccountDeletion(): Promise<Record<string, unknown>> {
+    return apiClient.delete('/auth/account/deletion');
+  },
+
+  // ── Connected devices ──────────────────────────────────────────────────
+  async listDevices(): Promise<{ devices: Array<Record<string, unknown>> }> {
+    return apiClient.get('/auth/devices');
+  },
+
+  async registerDevice(payload: {
+    platform: 'android' | 'ios' | 'web';
+    devicePublicId?: string;
+    appVersion?: string;
+    osVersion?: string;
+    model?: string;
+  }): Promise<Record<string, unknown>> {
+    return apiClient.post('/auth/devices', payload);
+  },
+
+  async revokeDevice(deviceId: string): Promise<{ changed?: boolean }> {
+    return apiClient.delete(`/auth/devices/${deviceId}`);
   },
 };
 

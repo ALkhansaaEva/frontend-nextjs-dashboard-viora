@@ -1,0 +1,138 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "check": "No symlinks or external linked files in delivery",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "Bash syntax for all shell helpers and model wrapper",
+      "status": "PASS",
+      "details": {
+        "files": 9,
+        "failures": []
+      }
+    },
+    {
+      "check": "Node syntax for all JavaScript/ESM modules",
+      "status": "PASS",
+      "details": {
+        "files": 4,
+        "failures": []
+      }
+    },
+    {
+      "check": "Python syntax without generating bytecode files",
+      "status": "PASS",
+      "details": {
+        "files": 3,
+        "failures": []
+      }
+    },
+    {
+      "check": "Strict JSON syntax, not official OpenCode schema validation",
+      "status": "PASS",
+      "details": {
+        "files": 8,
+        "failures": []
+      }
+    },
+    {
+      "check": "Frontmatter syntax and intended local name/mode/description contracts",
+      "status": "PASS",
+      "details": {
+        "parsed": 156,
+        "failures": [],
+        "legacy_ignored_metadata_files": 37,
+        "note": "Legacy unsupported skill metadata is preserved but explicitly documented as non-enforcement; full official schema validation was not run."
+      }
+    },
+    {
+      "check": "Each canonical skill has exactly one explicit command wrapper",
+      "status": "PASS",
+      "details": {
+        "skills": 43,
+        "commands": 43
+      }
+    },
+    {
+      "check": "No self-issued approvals shipped",
+      "status": "PASS",
+      "details": {
+        "schema_version": 1,
+        "context_id": "UNCONFIGURED",
+        "records": {}
+      }
+    },
+    {
+      "check": "Unconfigured audit gate fails closed as designed",
+      "status": "PASS",
+      "details": {
+        "exit_code": 2,
+        "stderr": "BLOCKED: Audit registry missing, malformed, or context UNCONFIGURED; perform a read-only bootstrap audit"
+      }
+    },
+    {
+      "check": "Inventory tool does not claim semantic approval",
+      "status": "PASS",
+      "details": {
+        "exit_code": 0,
+        "status": "INVENTORY_ONLY_NOT_SEMANTIC_APPROVAL",
+        "items": 122
+      }
+    },
+    {
+      "check": "Every original file retained",
+      "status": "PASS",
+      "details": {
+        "original_files": 228,
+        "missing": []
+      }
+    },
+    {
+      "check": "Original MIT license byte-for-byte preserved",
+      "status": "PASS",
+      "details": {
+        "sha256": "9bbb866e7d1383e1b8ebb8c7f773096cadea6961b4269ada4587c7db261a717e"
+      }
+    },
+    {
+      "check": "All engine references explicitly unverified",
+      "status": "PASS",
+      "details": {
+        "files": 55
+      }
+    },
+    {
+      "check": "README delivery report exists",
+      "status": "PASS",
+      "details": "Report is part of the archive"
+    },
+    {
+      "check": "Local Markdown link scan",
+      "status": "INFORMATIONAL",
+      "details": {
+        "unresolved_links": [
+          {
+            "file": ".opencode/docs/templates/release-notes.md",
+            "target": "link"
+          }
+        ],
+        "note": "Some relative references may be examples or project-to-be-created paths, not installed dependencies; each is listed for review."
+      }
+    }
+  ],
+  "counts": {
+    "agents": 59,
+    "skills": 43,
+    "commands": 43,
+    "rules": 12,
+    "shell_helpers": 8
+  },
+  "limits": [
+    "No installed OpenCode-host integration run",
+    "No complete official OpenCode JSON-schema validation",
+    "No engine/API or provider runtime validation"
+  ]
+}

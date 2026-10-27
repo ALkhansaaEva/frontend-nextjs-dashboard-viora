@@ -18,7 +18,9 @@ export type RegisterRequest = z.infer<typeof RegisterSchema>;
 export const OTPVerifySchema = z.object({
   email: z.string().email().optional(),
   phone: z.string().optional(),
-  otp: z.string().length(6),
+  // The backend names this field `token` for both email and phone OTP
+  // (EmailOtpVerifyDto / OtpVerifyDto); `otp` was rejected as missing.
+  token: z.string().length(6),
 });
 
 export type OTPVerifyRequest = z.infer<typeof OTPVerifySchema>;

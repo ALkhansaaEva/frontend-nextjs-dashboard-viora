@@ -4,23 +4,13 @@ import { useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Bell, CheckCheck, Eye, Clock } from 'lucide-react';
 import { useNotifications, useMarkNotificationRead, useMarkAllNotificationsRead } from '@/hooks';
+import type { Notification } from '@/services/notifications.service';
 import { useLanguage } from '@/components/language-context';
 import { TableSkeleton } from '@/components/skeletons';
 import { Card, CardHeader, CardTitle, CardContent } from '@/shared/components/ui/Card';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Button } from '@/shared/components/ui/Button';
 import { DataTable, type Column } from '@/shared/components/ui/DataTable';
-
-interface Notification {
-  id: string;
-  userId: string;
-  type: string;
-  title: string;
-  message: string;
-  data?: Record<string, unknown>;
-  isRead: boolean;
-  createdAt: string;
-}
 
 export default function NotificationsPage() {
   const searchParams = useSearchParams();
@@ -107,7 +97,7 @@ export default function NotificationsPage() {
       header: t('message'),
       render: (notification) => (
         <span className="text-gray-600 dark:text-gray-400 max-w-md truncate">
-          {notification.message}
+          {notification.body || notification.message}
         </span>
       ),
     },
@@ -161,6 +151,10 @@ export default function NotificationsPage() {
             {t('markAllRead')}
           </Button>
         </div>
+      </div>
+
+      <div className="rounded-xl border border-sky-300 bg-sky-50 p-3 text-sm text-sky-900 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-100">
+        This is your authenticated notification inbox. The backend does not expose an admin broadcast composer on this route.
       </div>
 
       <Card>

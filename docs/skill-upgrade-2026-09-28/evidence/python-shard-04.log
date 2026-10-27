@@ -1,0 +1,14 @@
+test_repair_checkpoint_control_characters_rejected (test_repairs.HookTests.test_repair_checkpoint_control_characters_rejected) ... ok
+test_repair_checkpoint_fifo_rejected_without_hanging (test_repairs.HookTests.test_repair_checkpoint_fifo_rejected_without_hanging) ... ok
+test_repair_checkpoint_parent_symlink_rejected (test_repairs.HookTests.test_repair_checkpoint_parent_symlink_rejected) ... ok
+test_repair_checkpoint_size_bound (test_repairs.HookTests.test_repair_checkpoint_size_bound) ... ok
+test_repair_checkpoint_utf8_preserved (test_repairs.HookTests.test_repair_checkpoint_utf8_preserved) ... ok
+test_repair_log_fifo_rejected_without_hanging (test_repairs.HookTests.test_repair_log_fifo_rejected_without_hanging) ... ok
+test_repair_precompact_does_not_report_clean_on_git_failure (test_repairs.HookTests.test_repair_precompact_does_not_report_clean_on_git_failure) ... ok
+test_repair_session_helpers_reject_symlink_checkpoint (test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 15.462s
+
+OK
+SHARD_RESULT={"ids": ["test_repairs.HookTests.test_repair_checkpoint_control_characters_rejected", "test_repairs.HookTests.test_repair_checkpoint_fifo_rejected_without_hanging", "test_repairs.HookTests.test_repair_checkpoint_parent_symlink_rejected", "test_repairs.HookTests.test_repair_checkpoint_size_bound", "test_repairs.HookTests.test_repair_checkpoint_utf8_preserved", "test_repairs.HookTests.test_repair_log_fifo_rejected_without_hanging", "test_repairs.HookTests.test_repair_precompact_does_not_report_clean_on_git_failure", "test_repairs.HookTests.test_repair_session_helpers_reject_symlink_checkpoint"], "run": 8, "failures": 0, "errors": 0, "skipped": 0, "success": true}

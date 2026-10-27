@@ -1,0 +1,392 @@
+{
+  "note": "No installation approval or blanket semantic certification. Unchanged bodies retain historical reports, not fresh runtime approval.",
+  "skills": [
+    {
+      "skill": "architecture-decision",
+      "path": ".opencode/skills/architecture-decision/SKILL.md",
+      "sha256": "2c0370893b191d0c6081e626be45a8664a19b6db13d35a466efdd6d89ca9d3c3",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "asset-audit",
+      "path": ".opencode/skills/asset-audit/SKILL.md",
+      "sha256": "3a7e935e0b152324d7ba15203602e90abc75390e33cde691e9303a7f9b241ae4",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "balance-check",
+      "path": ".opencode/skills/balance-check/SKILL.md",
+      "sha256": "5698b9aee687f536b7ad83ccd2657e06437454623ca79eeff4f6aee9e0f31a2e",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "brainstorm",
+      "path": ".opencode/skills/brainstorm/SKILL.md",
+      "sha256": "4811433ccde575904c44534cc5ee06ada45da86e55d0e4343450c8a81de9ad86",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "bug-report",
+      "path": ".opencode/skills/bug-report/SKILL.md",
+      "sha256": "1b3ee55fa19780c291f2f535a053be3aa2089a3dddbed55280ec9c100210e2b1",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "changelog",
+      "path": ".opencode/skills/changelog/SKILL.md",
+      "sha256": "ba9ecbe6986aa2759139ebbe868b3ff39387023ab56f5febceb1048ca1a1db73",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "code-review",
+      "path": ".opencode/skills/code-review/SKILL.md",
+      "sha256": "d9225af542c78974570caf3044c77547a3f66907dab1de47c4315a9b724cc33b",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "concurrency-analysis",
+      "path": ".opencode/skills/concurrency-analysis/SKILL.md",
+      "sha256": "63a913b3ef9c24fd45c3e79101ca91d24cef685329a919eae3f0bc53eb9f15b5",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "debugging-analysis",
+      "path": ".opencode/skills/debugging-analysis/SKILL.md",
+      "sha256": "cfc24a00f6c627cfb0a53e2970ec405b7fe3fb20274f7c36abc52024bce292f9",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "design-review",
+      "path": ".opencode/skills/design-review/SKILL.md",
+      "sha256": "d5ea8e85e8d9fb954da7f4ac3c28bb670ee9f56370e9f9ac0cd1d004808682ec",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "design-system",
+      "path": ".opencode/skills/design-system/SKILL.md",
+      "sha256": "4fb6c30ffe17fad179d3d4c432614fe650bb673bc953fce2adab0bf702503b2c",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "estimate",
+      "path": ".opencode/skills/estimate/SKILL.md",
+      "sha256": "adc95979d51946e857040df784ac48279798a0e37f75cf9d9f558f02579556d5",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "framework-engineering",
+      "path": ".opencode/skills/framework-engineering/SKILL.md",
+      "sha256": "048648b1a2dac5b1b437d9728fb01a3418f529ac192f9344ed2863636ca4b997",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "gate-check",
+      "path": ".opencode/skills/gate-check/SKILL.md",
+      "sha256": "8ba78b84df8f1cde4370a2bb2ffe847be15f091d2086bcd910ac186f6d10a5c7",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "hotfix",
+      "path": ".opencode/skills/hotfix/SKILL.md",
+      "sha256": "e8e61dd868133ed2ab0ec490392e46d005e7d82588a31773f4db2f446220d174",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "launch-checklist",
+      "path": ".opencode/skills/launch-checklist/SKILL.md",
+      "sha256": "fee94843d2d17ef6bd0de369a38d9cbadef8fd28521be6b31e165b255779a9bc",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "localize",
+      "path": ".opencode/skills/localize/SKILL.md",
+      "sha256": "fe9c232e11eb9f7ae235b03b546c8eb4edecbef19d4d140d54dbfd07b454f83e",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "map-systems",
+      "path": ".opencode/skills/map-systems/SKILL.md",
+      "sha256": "6de3d69995bd8928d17f112a0ba23801b04a1518212bd3e222b8ea73647946e7",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "milestone-review",
+      "path": ".opencode/skills/milestone-review/SKILL.md",
+      "sha256": "05052202bc4f175559412d0c128b632580d6432804a881ea6760e1165b9611e7",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "onboard",
+      "path": ".opencode/skills/onboard/SKILL.md",
+      "sha256": "39f011ef2ebf427f74197e48d4389c8872db467ba6b27edd30d3a3a4e05d7a2a",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "patch-notes",
+      "path": ".opencode/skills/patch-notes/SKILL.md",
+      "sha256": "99262a414177273bb979f55e27c8b9c584aa542a0c0c08c08f5df60c0ecaea42",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "perf-profile",
+      "path": ".opencode/skills/perf-profile/SKILL.md",
+      "sha256": "145d32c4ff64caf3c544c2c9eac635c46bd024317f92af9b353e847f5174b6cc",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "playtest-report",
+      "path": ".opencode/skills/playtest-report/SKILL.md",
+      "sha256": "17d98a878b3ecaea1f1269a2d6c9a3aa585a2adf19285dd295a04ada5309ed7f",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "production-validation",
+      "path": ".opencode/skills/production-validation/SKILL.md",
+      "sha256": "a2fa014473c5eba4e92a8a48a9abb695b0314f71b74f58fb202a24dd08bfb26c",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "project-stage-detect",
+      "path": ".opencode/skills/project-stage-detect/SKILL.md",
+      "sha256": "7f7fba725f6aa5f5facbf248c2493e8b8395add23c4c4a009cc062642e18cffb",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "prototype",
+      "path": ".opencode/skills/prototype/SKILL.md",
+      "sha256": "b1d28537c25e88b84f95b836bce7288b19d6bd7295317f76585ed74a61208c12",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "release-checklist",
+      "path": ".opencode/skills/release-checklist/SKILL.md",
+      "sha256": "1000571c7f76045da3518575a02feec995fa9170e7d7130e5ca172c4ceb8f99a",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "repository-discovery",
+      "path": ".opencode/skills/repository-discovery/SKILL.md",
+      "sha256": "8e7379196f54452bf94ffc3ef46fc27eceec2887d5deb3dee2b1b7751b6d644c",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "retrospective",
+      "path": ".opencode/skills/retrospective/SKILL.md",
+      "sha256": "ccd4b468cd88deaa5addec5e200bbe0d53185970dff7d4c454c5584a0c9fef89",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "reverse-document",
+      "path": ".opencode/skills/reverse-document/SKILL.md",
+      "sha256": "c73ee4a41ac7600fd127a2e693a640384183f5979bcd49d8d76d8ce61088ee31",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "scope-check",
+      "path": ".opencode/skills/scope-check/SKILL.md",
+      "sha256": "64a8afc26a303a09cd35b6a50b22bf2f0bfd5195f9d8e73e6ffeda1a38368c9c",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "setup-engine",
+      "path": ".opencode/skills/setup-engine/SKILL.md",
+      "sha256": "53f3197fc71e166bd23f31e8691c982f47f55f8b2d83d17832d55de97cd1ef6b",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "skill-audit-repair",
+      "path": ".opencode/skills/skill-audit-repair/SKILL.md",
+      "sha256": "a8563256ff47ab71f8b2fd9625a7b59bd1f899e3266e4936f95d86a6be99fb73",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "sprint-plan",
+      "path": ".opencode/skills/sprint-plan/SKILL.md",
+      "sha256": "ee65073c32c61e409f0856d1eb04ab59c71b4a242cca931f64371fe100180bf3",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "start",
+      "path": ".opencode/skills/start/SKILL.md",
+      "sha256": "4d1b407d27bd08cf5356d992ee6829f25edaa96ce617a6e6184205f19dd5a4f9",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "team-audio",
+      "path": ".opencode/skills/team-audio/SKILL.md",
+      "sha256": "95425bfa4658303f5903f58b318ebbcb0ec0ab4bc374f030da162d57c1d35f0b",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "team-combat",
+      "path": ".opencode/skills/team-combat/SKILL.md",
+      "sha256": "6a987f9a00f7aa48249b417bb7dd52092c8f784613facadd39bfcb3f1e0c73f9",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "team-level",
+      "path": ".opencode/skills/team-level/SKILL.md",
+      "sha256": "9e6ec7c64f7f001021cbbedbc1e0cc4063a58ec4ccdbf77fb724a07df1cf82f3",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "team-narrative",
+      "path": ".opencode/skills/team-narrative/SKILL.md",
+      "sha256": "fee27790147179759e0d32b38c2f52687c30e1d8cdbd8dfebfcfd5fd80dfe8d0",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "team-polish",
+      "path": ".opencode/skills/team-polish/SKILL.md",
+      "sha256": "1b27e53ca5f37407d9facadeef2854585d392af3102a1593fb06b3b7ab570436",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "team-release",
+      "path": ".opencode/skills/team-release/SKILL.md",
+      "sha256": "3432df0e9295c50f0aa9c74bcac1b52af05f0b8fd29c584f5e3ae61e388ef618",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "team-ui",
+      "path": ".opencode/skills/team-ui/SKILL.md",
+      "sha256": "a44183631c845fe354d444e3d9724b3e100b1786a818b923ba974078cc87f85c",
+      "source_review_this_revision": "STRUCTURAL_CHECK_ONLY_PRIOR_SOURCE_AUDIT_RETAINED",
+      "changed": false,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    },
+    {
+      "skill": "tech-debt",
+      "path": ".opencode/skills/tech-debt/SKILL.md",
+      "sha256": "249e5d67c91461bf3b18c57c65e77a37904d6c32d1c4efccab235f8ee5ca3664",
+      "source_review_this_revision": "TARGETED_BODY_AND_AFFECTED_CONTRACT_REVIEW",
+      "changed": true,
+      "host_execution": "NOT_RUN",
+      "use_status": "BLOCKED_PENDING_INSTALLED_HOST_AND_REQUIRED_CLOSURE_REVIEW"
+    }
+  ]
+}

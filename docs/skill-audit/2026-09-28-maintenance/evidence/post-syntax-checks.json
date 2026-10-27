@@ -1,0 +1,95 @@
+[
+  {
+    "path": "change_model.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/hooks/session-stop.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/hooks/validate-commit.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/hooks/pre-compact.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/hooks/validate-push.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/hooks/detect-gaps.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/hooks/session-start.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/hooks/validate-assets.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/hooks/log-agent.sh",
+    "check": "bash -n",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/scripts/hook-checks.py",
+    "check": "ast.parse",
+    "exit": 0
+  },
+  {
+    "path": ".opencode/scripts/change-model.py",
+    "check": "ast.parse",
+    "exit": 0
+  },
+  {
+    "path": "tests/skill-system/test_repairs.py",
+    "check": "ast.parse",
+    "exit": 0
+  },
+  {
+    "path": ".opencode/scripts/skill-audit.mjs",
+    "check": "node --check",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/lib/audit-gate.mjs",
+    "check": "node --check",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "tests/skill-system/audit-gate.test.mjs",
+    "check": "node --check",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": ".opencode/plugins/skill-integrity.js",
+    "check": "node --check",
+    "exit": 0,
+    "stderr": ""
+  }
+]

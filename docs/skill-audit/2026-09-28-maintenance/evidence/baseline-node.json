@@ -1,0 +1,9 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "tests/skill-system/audit-gate.test.mjs"
+  ],
+  "returncode": 0,
+  "duration_seconds": 0.376
+}

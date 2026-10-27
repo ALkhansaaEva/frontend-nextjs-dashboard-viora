@@ -1,75 +1,78 @@
 import apiClient from './api.client';
 
-interface DailyLoginStatus {
-  streak: number;
-  lastClaimedAt?: string;
-  canClaim: boolean;
-  reward?: {
-    currency: 'gold' | 'gems';
-    amount: number;
-  };
-}
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  progress: number;
-  target: number;
-  reward: {
-    currency: 'gold' | 'gems';
-    amount: number;
-  };
-  isCompleted: boolean;
-  isClaimed: boolean;
-  expiresAt?: string;
-}
-
-interface LeaderboardEntry {
+/**
+ * Meta-Game / Ranking — modules/meta-game/meta-game.controller.ts (`/meta-game`).
+ * The ONLY real routes on this controller are the ranking/leaderboard ones
+ * below. There is no `daily-login` or `tasks` route anywhere on the backend
+ * (confirmed by a full controller sweep) — a `getDailyLogin`/`getTasks` pair
+ * used to live here calling endpoints that do not exist and would always
+ * 404. Removed rather than left silently broken; "Tasks" as a concept is a
+ * real backend feature but lives entirely under RuleAdminController
+ * (kind=TASK, see /dashboard/meta/tasks) — a different route and a
+ * different data model, not this one.
+ */
+export interface LeaderboardEntry {
   rank: number;
   userId: string;
-  score: number;
-  user?: {
-    id: string;
-    nickname: string;
-    avatar?: string;
-  };
+  gameType: string;
+  currentRating: number;
+  highestRating: number;
+  seasonHighestRating: number;
+  seasonId: string | null;
+  wins: number;
+  losses: number;
+  draws: number;
+  forfeits: number;
+  streak: number;
+  totalGames: number;
+  winRate: number;
+  tier: string;
+  updatedAt: string;
 }
 
-interface UserRank {
-  rank: number;
-  score: number;
-  totalPlayers: number;
+type BackendLeaderboardEntry = Omit<LeaderboardEntry, 'rank'>;
+
+interface LeaderboardResponse {
+  leaderboard: BackendLeaderboardEntry[];
+  total: number;
+}
+
+export interface UserRank {
+  userId: string;
+  gameType: string;
+  currentRating: number;
+  highestRating: number;
+  seasonHighestRating: number;
+  seasonId: string | null;
+  wins: number;
+  losses: number;
+  draws: number;
+  forfeits: number;
+  streak: number;
+  totalGames: number;
+  winRate: number;
+  currentStreak: number;
+  tier: string;
 }
 
 export const metaGameService = {
-  async getDailyLogin(): Promise<DailyLoginStatus> {
-    return apiClient.get<DailyLoginStatus>('/meta-game/daily-login');
-  },
-
-  async claimDailyLogin(): Promise<void> {
-    await apiClient.post('/meta-game/daily-login/claim');
-  },
-
-  async getTasks(): Promise<Task[]> {
-    const response = await apiClient.get<Task[] | { data: Task[] }>('/meta-game/tasks');
-    if (Array.isArray(response)) return response;
-    return (response as { data: Task[] }).data || [];
-  },
-
-  async claimTask(taskId: string): Promise<void> {
-    await apiClient.post(`/meta-game/tasks/${taskId}/claim`);
-  },
-
-  async getLeaderboard(gameType: string): Promise<LeaderboardEntry[]> {
-    const response = await apiClient.get<LeaderboardEntry[] | { data: LeaderboardEntry[] }>(
-      `/meta-game/ranking/${gameType}/leaderboard`
+  /** GET meta-game/ranking/:gameType/leaderboard. */
+  async getLeaderboard(
+    gameType: string,
+    limit = 50,
+    offset = 0,
+  ): Promise<LeaderboardEntry[]> {
+    const response = await apiClient.get<LeaderboardResponse>(
+      `/meta-game/ranking/${gameType}/leaderboard`,
+      { params: { limit, offset } },
     );
-    if (Array.isArray(response)) return response;
-    return (response as { data: LeaderboardEntry[] }).data || [];
+    return response.leaderboard.map((entry, index) => ({
+      ...entry,
+      rank: offset + index + 1,
+    }));
   },
 
+  /** GET meta-game/ranking/:gameType/user/:userId. */
   async getUserRank(gameType: string, userId: string): Promise<UserRank> {
     return apiClient.get<UserRank>(`/meta-game/ranking/${gameType}/user/${userId}`);
   },

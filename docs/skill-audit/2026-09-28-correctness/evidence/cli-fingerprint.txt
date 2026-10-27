@@ -1,0 +1,8 @@
+$ node .opencode/scripts/skill-audit.mjs fingerprint .opencode/skills/skill-audit-repair/SKILL.md .opencode/rules/skill-integrity.md
+
+{
+  ".opencode/skills/skill-audit-repair/SKILL.md": "b7e9845a725c1e3d572b16376f73bd9b8eeed73b3bb5ae095045698b2524424e",
+  ".opencode/rules/skill-integrity.md": "5f5287fd69e7fe53e4cd535a2a6f013ef855284b67932aebbb247593a9da6b83"
+}
+
+EXIT: 0

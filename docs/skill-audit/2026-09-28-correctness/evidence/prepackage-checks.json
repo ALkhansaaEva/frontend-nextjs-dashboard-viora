@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "checks": [
+    "All 326 original-file final hashes match manifest",
+    "All internal README/current report relative links resolve",
+    "New JSON evidence parses",
+    "No __pycache__, pyc or updater backup artifacts in delivery",
+    "Focused patch reconstructs all original-file final bytes in disposable copy"
+  ],
+  "originals": 326,
+  "modified": 10,
+  "unchanged": 316,
+  "removed": 0,
+  "new_evidence_files_before_this_record": 23,
+  "registry": "UNCHANGED_UNCONFIGURED",
+  "runtime_integration": "NOT_RUN"
+}

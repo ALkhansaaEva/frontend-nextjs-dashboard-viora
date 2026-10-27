@@ -1,0 +1,1044 @@
+[
+  {
+    "finding": "M01",
+    "path": ".opencode/rules/skill-integrity.md",
+    "line_before_this_edit": 19,
+    "old": "## Required audit",
+    "new": "## Source-first maintenance loop\n\n**INSPECT → VALIDATE → DETECT → CORRECT → REVIEW → VERIFY → USE**\n\nInspection is permitted while use is blocked. Repair the source under authorization,\nthen re-audit its affected consumers; do not create an overlapping replacement or\nnew dependency on an unreliable definition. Keep reviewed/corrected/uncertain status\nseparate from runtime approval.\n\n## Portable execution and evidence\n\nTool names in legacy skill prose describe capabilities, not guaranteed host APIs.\nUse the actual installed tool schema. `AskUserQuestion` means the available question\ncapability or a plain-text question; `Task` means an available, audited delegation\ncapability. Never invent a call, imply a subagent ran, or bypass an unavailable tool.\nUnknown SKILL.md metadata is not permission enforcement or automatic command execution.\n\nResolve repository paths, source locale, build pipeline, standards and acceptance\ncriteria from the actual project before applying a template. Listed paths, example\nmetrics, capacity buffers and platform checklists are starting points, not evidence\nthat the project uses them. Do not impose optional dependencies or infrastructure.\nCounts are not coverage, effort, completed behavior or readiness. Report unknowns,\nzero/absent denominators and missing measurements explicitly; do not fill a template\nwith invented facts, owners, approvals, test results or performance gains.\n\nReuse answers and approval already given for the same scoped operation. Collaborative\nquestions capture missing material decisions, not repeated consent for an authorized\nedit. Provide concise evidence and options, not a mandatory full analysis transcript.\nSuggestions do not authorize subsequent features. Only one writer may mutate shared\nfiles; parallel work must be isolated read-only analysis/tests with separate resources.\n\n## Required audit"
+  },
+  {
+    "finding": "M02",
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "line_before_this_edit": 21,
+    "old": "3. **Check naming conventions**:",
+    "new": "3. **Check the project's verified naming conventions** (the following are examples, not mandatory defaults):"
+  },
+  {
+    "finding": "M02",
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "line_before_this_edit": 24,
+    "old": "   - All files must be lowercase with underscores",
+    "new": "   - Apply lowercase/underscore naming only if required by the actual asset pipeline"
+  },
+  {
+    "finding": "M02",
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "line_before_this_edit": 26,
+    "old": "4. **Check file standards**:",
+    "new": "4. **Check verified platform/importer file standards**. Example checks below apply only when required; do not assume power-of-two dimensions or formats are universal:"
+  },
+  {
+    "finding": "M02",
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "line_before_this_edit": 33,
+    "old": "5. **Check for orphaned assets** by searching code for references to each\n   asset file.",
+    "new": "5. **Identify potentially unreferenced assets** by checking code, scenes, import\n   metadata, resource registries, bundles and dynamic loading conventions. Absence\n   from a text search is not proof of an orphan and never authorizes deletion."
+  },
+  {
+    "finding": "M02",
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "line_before_this_edit": 66,
+    "old": "## Orphaned Assets (no code references found)",
+    "new": "## Potentially Unreferenced Assets (confirm runtime/resource references)"
+  },
+  {
+    "finding": "M02",
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "line_before_this_edit": 52,
+    "old": "[CLEAN / MINOR ISSUES / NEEDS ATTENTION]",
+    "new": "[CLEAN / MINOR ISSUES / NEEDS ATTENTION / UNVERIFIED]"
+  },
+  {
+    "finding": "M02",
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Read-only audit. Report checked scope, evidence and unavailable checks. CLEAN is limited to the applicable checks actually completed; do not infer a clean pipeline from filenames alone."
+  },
+  {
+    "finding": "M03",
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "line_before_this_edit": 20,
+    "old": "   - [ ] Cyclomatic complexity under 10 per method\n   - [ ] No method exceeds 40 lines (excluding data declarations)\n   - [ ] Dependencies are injected (no static singletons for game state)",
+    "new": "   - [ ] Complexity follows verified project standards; a value above 10 is only a review heuristic unless adopted as a requirement\n   - [ ] Method length remains maintainable; 40 lines is not a universal rejection threshold\n   - [ ] Dependencies and state ownership follow the existing framework's verified patterns"
+  },
+  {
+    "finding": "M03",
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "line_before_this_edit": 24,
+    "old": "   - [ ] Systems expose interfaces (not concrete class dependencies)",
+    "new": "   - [ ] Interfaces or concrete dependencies are appropriate; do not add abstractions without a demonstrated need"
+  },
+  {
+    "finding": "M03",
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "line_before_this_edit": 30,
+    "old": "   - [ ] Events/signals used for cross-system communication",
+    "new": "   - [ ] Cross-system communication follows verified ownership and contracts, whether direct calls, events or signals"
+  },
+  {
+    "finding": "M03",
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "line_before_this_edit": 42,
+    "old": "   - [ ] No allocations in hot paths (update loops)",
+    "new": "   - [ ] Measured hot-path allocation costs satisfy relevant budgets; static patterns are candidates, not proven bottlenecks"
+  },
+  {
+    "finding": "M03",
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "line_before_this_edit": 52,
+    "old": "### Standards Compliance: [X/6 passing]",
+    "new": "### Standards Compliance: [X/Y applicable checks passing; blocked checks listed]"
+  },
+  {
+    "finding": "M03",
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "line_before_this_edit": 73,
+    "old": "[APPROVED / APPROVED WITH SUGGESTIONS / CHANGES REQUIRED]",
+    "new": "[APPROVED / APPROVED WITH SUGGESTIONS / CHANGES REQUIRED / BLOCKED]"
+  },
+  {
+    "finding": "M03",
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Apply only relevant standards for the detected framework and requested scope. SOLID is a design lens, not authority to rewrite working systems. Missing required evidence yields BLOCKED, not approval."
+  },
+  {
+    "finding": "M04",
+    "path": ".opencode/skills/design-review/SKILL.md",
+    "line_before_this_edit": 18,
+    "old": "4. **Evaluate against the Design Document Standard checklist**:",
+    "new": "4. **Identify the document type and use its actual project template**. The\n   following eight-section checklist is for a system GDD, not a game concept,\n   pillars document or every design artifact. Mark genuinely inapplicable sections\n   N/A with reasons; evaluate meaningful content, not just headings:"
+  },
+  {
+    "finding": "M04",
+    "path": ".opencode/skills/design-review/SKILL.md",
+    "line_before_this_edit": 34,
+    "old": "   - Are dependencies bidirectional (does the other system know about this one)?",
+    "new": "   - Are dependency and dependent references consistent? Reciprocal documentation does not require bidirectional runtime coupling."
+  },
+  {
+    "finding": "M04",
+    "path": ".opencode/skills/design-review/SKILL.md",
+    "line_before_this_edit": 51,
+    "old": "### Completeness: [X/8 sections present]",
+    "new": "### Completeness: [X/Y applicable sections supported; N/A and missing evidence listed]"
+  },
+  {
+    "finding": "M04",
+    "path": ".opencode/skills/design-review/SKILL.md",
+    "line_before_this_edit": 72,
+    "old": "     - If it does NOT exist, add to Recommendations:",
+    "new": "     - Only if it does NOT exist and the verdict is APPROVED, add to Recommendations:"
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Before all subcommands, discover the actual source locale, target locales, table locations, localization framework, plural/gender rules, fallback behavior and placeholder grammar. Preserve existing keys, translations and project conventions. Scan/validate/status are read-only; extract proposes a diff, not an automatic rewrite."
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "line_before_this_edit": 23,
+    "old": "     - Strings with positional placeholders (`%s`, `%d`) instead of named ones (`{playerName}`)",
+    "new": "     - Placeholders incompatible with the detected localization grammar or required argument reordering; positional placeholders are not inherently invalid"
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "line_before_this_edit": 44,
+    "old": "     - Orphaned keys (translation exists but nothing references the key in code)",
+    "new": "     - Potentially unused keys; check dynamic keys, scenes and resource references before classifying them as orphaned"
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "line_before_this_edit": 49,
+    "old": "   - Per locale: count translated, untranslated, and stale (source changed since translation)",
+    "new": "   - Per locale: count translated/untranslated; infer staleness only from source-version or translation-history evidence, otherwise report UNKNOWN"
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "line_before_this_edit": 58,
+    "old": "   | en (source) | [N] | [N] | 0 | 0 | 100% |",
+    "new": "   | [verified source locale] | [N] | [verified count] | [N] | [N or UNKNOWN] | [measured %, or N/A if total is zero] |"
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "line_before_this_edit": 65,
+    "old": "   - [N] orphaned keys (can be cleaned up)",
+    "new": "   - [N] potentially unused keys (requires resource/dynamic-use verification; no deletion authorized)"
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "line_before_this_edit": 69,
+    "old": "- English (en) is always the source locale",
+    "new": "- Use the verified project source locale; do not assume English or create a replacement locale"
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "line_before_this_edit": 70,
+    "old": "- Every string table entry must include a translator comment explaining context",
+    "new": "- Preserve the table format; provide translator context in supported comments/metadata without inventing schema fields"
+  },
+  {
+    "finding": "M05",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "line_before_this_edit": 72,
+    "old": "- Character limits must be defined per-UI-element and enforced automatically",
+    "new": "- Validate actual UI constraints with the existing tooling; distinguish length checks from rendered fit and do not introduce unrequested automation"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 24,
+    "old": "   - `_process()` / `Update()` / `Tick()` functions — list all and estimate cost",
+    "new": "   - `_process()` / `Update()` / `Tick()` functions — identify relevant candidates; report cost only from measurements or an explicit workload model"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 57,
+    "old": "| Metric | Budget | Estimated Current | Status |",
+    "new": "| Metric | Verified Budget | Measured / Modeled / UNKNOWN | Evidence / Status |"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 59,
+    "old": "| Frame time | [16.67ms] | [estimate] | [OK/WARNING/OVER] |",
+    "new": "| Frame time | [target or UNKNOWN] | [value and method or UNKNOWN] | [evidence; OK/WARNING/OVER only with comparable evidence, otherwise UNVERIFIED] |"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 60,
+    "old": "| Memory | [target] | [estimate] | [OK/WARNING/OVER] |",
+    "new": "| Memory | [target or UNKNOWN] | [value and method or UNKNOWN] | [evidence; OK/WARNING/OVER only with comparable evidence, otherwise UNVERIFIED] |"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 61,
+    "old": "| Load time | [target] | [estimate] | [OK/WARNING/OVER] |",
+    "new": "| Load time | [target or UNKNOWN] | [value and method or UNKNOWN] | [evidence; OK/WARNING/OVER only with comparable evidence, otherwise UNVERIFIED] |"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 62,
+    "old": "| Draw calls | [target] | [estimate] | [OK/WARNING/OVER] |",
+    "new": "| Draw calls | [target or UNKNOWN] | [value and method or UNKNOWN] | [evidence; OK/WARNING/OVER only with comparable evidence, otherwise UNVERIFIED] |"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 73,
+    "old": "      - Expected gain: [estimate]",
+    "new": "      - Gain: [measured result, supported model with assumptions, or UNKNOWN]"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 77,
+    "old": "### Quick Wins (< 1 hour each)",
+    "new": "### Candidate Small Changes (effort unverified unless supported)"
+  },
+  {
+    "finding": "M06",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "line_before_this_edit": 89,
+    "old": "- Recommendations must include estimated impact — \"make it faster\" is not actionable",
+    "new": "- Recommendations must state evidence and a validation method; unknown impact remains UNKNOWN rather than an invented gain"
+  },
+  {
+    "finding": "M07",
+    "path": ".opencode/skills/prototype/SKILL.md",
+    "line_before_this_edit": 26,
+    "old": "5. **Implement the prototype** in the isolated directory. Every file must begin\n   with:",
+    "new": "5. **Implement the prototype** in the isolated directory. Mark code as a\n   prototype using comments valid for its language; preserve shebangs, encoding\n   declarations and required file headers. For JSON, binary assets or other formats\n   without comments, put the marker in the prototype README instead. C-style example:"
+  },
+  {
+    "finding": "M07",
+    "path": ".opencode/skills/prototype/SKILL.md",
+    "line_before_this_edit": 38,
+    "old": "   - Skip error handling",
+    "new": "   - Simplify nonessential polish, but retain critical input validation, resource limits, cleanup and security-sensitive error handling"
+  },
+  {
+    "finding": "M08",
+    "path": ".opencode/skills/scope-check/SKILL.md",
+    "line_before_this_edit": 63,
+    "old": "4. **Output the scope check** with a clear verdict:\n   - **On Track**: Scope within 10% of original\n   - **Minor Creep**: 10-25% scope increase — manageable with adjustments\n   - **Significant Creep**: 25-50% scope increase — need to cut or extend timeline\n   - **Out of Control**: >50% scope increase — stop and re-plan",
+    "new": "4. **Output an evidence-based verdict**: WITHIN APPROVED SCOPE, APPROVED CHANGE,\n   UNAPPROVED EXPANSION, or UNVERIFIED. Separate authorization from schedule risk.\n   Item counts are not comparable effort: one large addition can dominate many\n   small tasks. Use risk thresholds only if the project adopted and justified them."
+  },
+  {
+    "finding": "M08",
+    "path": ".opencode/skills/scope-check/SKILL.md",
+    "line_before_this_edit": 69,
+    "old": "- Scope creep is additions without corresponding cuts or timeline extensions",
+    "new": "- Scope creep is unapproved expansion relative to the agreed baseline; cuts or extra time do not themselves authorize new features"
+  },
+  {
+    "finding": "M08",
+    "path": ".opencode/skills/scope-check/SKILL.md",
+    "line_before_this_edit": 72,
+    "old": "- Always quantify scope changes — \"it feels bigger\" is not actionable, \"+35% items\" is",
+    "new": "- Quantify supported raw counts and comparable effort separately. With an empty/unknown baseline, percentages are N/A/UNKNOWN; never divide by zero or infer effort from item count."
+  },
+  {
+    "finding": "M09",
+    "path": ".opencode/skills/sprint-plan/SKILL.md",
+    "line_before_this_edit": 71,
+    "old": "For `status`:",
+    "new": "For `update`:\n\n5. Read the exact current sprint before editing. Preserve task IDs, completed work,\n   approvals, history and unrelated user changes. Apply only requested/approved\n   deltas; do not regenerate the plan or silently add future features. Reconcile\n   remaining capacity, dependencies, blocked work and acceptance criteria from\n   evidence. Show the scoped diff and retain the existing sprint identity.\n\nFor `status` (read-only):"
+  },
+  {
+    "finding": "M09",
+    "path": ".opencode/skills/sprint-plan/SKILL.md",
+    "line_before_this_edit": 35,
+    "old": "- Buffer (20%): [Y days reserved for unplanned work]",
+    "new": "- Buffer: [verified project policy or explicit proposal; not an assumed 20%]"
+  },
+  {
+    "finding": "M09",
+    "path": ".opencode/skills/sprint-plan/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Resolve new/update/status before any write. Use actual capacity and compatible effort units; report UNKNOWN rather than inventing velocity, completion percentages or ETAs. A zero task denominator produces N/A, not division by zero."
+  },
+  {
+    "finding": "M10",
+    "path": ".opencode/skills/tech-debt/SKILL.md",
+    "line_before_this_edit": 40,
+    "old": "   - Score each item by: `(impact_if_unfixed * frequency_of_encounter) / fix_effort`",
+    "new": "   - Use `(impact_if_unfixed * frequency_of_encounter) / fix_effort` only when\n     all factors have a documented numeric scale and effort is positive and\n     comparable. Otherwise rank qualitatively with evidence and uncertainty;\n     do not calculate using S/M/L/XL or divide by zero."
+  },
+  {
+    "finding": "M10",
+    "path": ".opencode/skills/tech-debt/SKILL.md",
+    "line_before_this_edit": 62,
+    "old": "Total items: [N] | Estimated total effort: [T-shirt sizes summed]",
+    "new": "Total items: [N] | Effort: [distribution by size; sum only calibrated compatible numeric units]"
+  },
+  {
+    "finding": "M10",
+    "path": ".opencode/skills/tech-debt/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Scan findings are candidates: FIXME markers, file size and age do not alone prove bugs, debt or obsolete dependencies. Verify impact and current project/version requirements before recommending a repair."
+  },
+  {
+    "finding": "M11",
+    "path": ".opencode/skills/changelog/SKILL.md",
+    "line_before_this_edit": 22,
+    "old": "2. **Read the git log** since the last tag or release:\n   ```\n   git log --oneline [last-tag]..HEAD\n   ```\n   If no tags exist, read the full log or a reasonable recent range (last 100\n   commits).",
+    "new": "2. **Resolve the exact release interval** before reading changes. For a named\n   released version, resolve its target tag/commit and the preceding release on\n   that release history; inspect `[base]..[target]`, not `[last-tag]..HEAD`.\n   Use HEAD only for explicitly unreleased work. For a sprint, use its actual\n   boundaries and task attribution. Record resolved commit IDs. If no base is\n   known, report the limitation; a last-100-commits sample is partial, not a full\n   release. Inspect relevant diffs and verification records, not commit titles alone."
+  },
+  {
+    "finding": "M11",
+    "path": ".opencode/skills/patch-notes/SKILL.md",
+    "line_before_this_edit": 18,
+    "old": "   - Run `git log` between the previous release tag and current tag/HEAD",
+    "new": "   - Resolve and record the exact base and target commits for this version, following the audited changelog release-interval contract; HEAD is only for explicitly unreleased notes"
+  },
+  {
+    "finding": "M11",
+    "path": ".opencode/skills/patch-notes/SKILL.md",
+    "line_before_this_edit": 32,
+    "old": "   - \"Refactored damage calculation pipeline\" → \"Improved hit detection accuracy\"\n   - \"Fixed null reference in inventory manager\" → \"Fixed a crash when opening inventory\"\n   - \"Reduced GC allocations in combat loop\" → \"Improved combat performance\"",
+    "new": "   - \"Refactored damage calculation pipeline\" → omit unless a player-visible change is independently verified; refactoring does not prove improved hit detection\n   - \"Fixed null reference in inventory manager\" → describe only the verified crash condition, not an invented trigger\n   - \"Reduced GC allocations in combat loop\" → claim smoother/faster play only when measured; otherwise keep this as an internal change"
+  },
+  {
+    "finding": "M11",
+    "path": ".opencode/skills/patch-notes/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Every shipped behavior, balance value, rationale and performance claim must be traceable to the selected release evidence. Missing data remains unknown. Developer commentary is a labeled draft, not an invented quotation or attributed approval."
+  },
+  {
+    "finding": "M11",
+    "path": ".opencode/skills/changelog/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Only the resolved release range establishes inclusion. Design documents and commit titles are supporting context, not proof that functionality shipped or tests passed. Preserve verified reasons; mark absent design rationale unknown."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-audio/SKILL.md",
+    "line_before_this_edit": 33,
+    "old": "Always provide full context in each agent's prompt (feature description, existing audio assets, design doc references).",
+    "new": "Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-audio/SKILL.md",
+    "line_before_this_edit": 27,
+    "old": "Use the Task tool to spawn each team member as a subagent:",
+    "new": "Use the installed delegation capability only for the needed, audited team members:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-combat/SKILL.md",
+    "line_before_this_edit": 10,
+    "old": "**Decision Points:** At each phase transition, use `AskUserQuestion` to present\nthe user with the subagent's proposals as selectable options. Write the agent's\nfull analysis in conversation, then capture the decision with concise labels.\nThe user must approve before moving to the next phase.",
+    "new": "**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host\ncapabilities, scoped approval and one-writer execution. Present concise findings\nand ask only for unresolved material decisions; reuse approval already given.\nDelegate only needed subtasks to available agents whose definitions and dependencies\nhave passed review. If delegation is unavailable, report that limitation; never\nclaim an agent ran or fabricate its result."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-combat/SKILL.md",
+    "line_before_this_edit": 35,
+    "old": "Always provide full context in each agent's prompt (design doc path, relevant code files, constraints). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 3 agents can run simultaneously).",
+    "new": "Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-combat/SKILL.md",
+    "line_before_this_edit": 27,
+    "old": "Use the Task tool to spawn each team member as a subagent:",
+    "new": "Use the installed delegation capability only for the needed, audited team members:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-combat/SKILL.md",
+    "line_before_this_edit": 52,
+    "old": "Delegate in parallel:",
+    "new": "Delegate sequentially for shared-file writes; isolated read-only analysis may run in parallel:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-combat/SKILL.md",
+    "line_before_this_edit": 51,
+    "old": "Implementation (parallel where possible)",
+    "new": "Implementation (one writer; isolated read-only work may overlap)"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-level/SKILL.md",
+    "line_before_this_edit": 36,
+    "old": "Always provide full context in each agent's prompt (game concept, pillars, existing level docs, narrative docs).",
+    "new": "Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-level/SKILL.md",
+    "line_before_this_edit": 28,
+    "old": "Use the Task tool to spawn each team member as a subagent:",
+    "new": "Use the installed delegation capability only for the needed, audited team members:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "line_before_this_edit": 10,
+    "old": "**Decision Points:** At each phase transition, use `AskUserQuestion` to present\nthe user with the subagent's proposals as selectable options. Write the agent's\nfull analysis in conversation, then capture the decision with concise labels.\nThe user must approve before moving to the next phase.",
+    "new": "**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host\ncapabilities, scoped approval and one-writer execution. Present concise findings\nand ask only for unresolved material decisions; reuse approval already given.\nDelegate only needed subtasks to available agents whose definitions and dependencies\nhave passed review. If delegation is unavailable, report that limitation; never\nclaim an agent ran or fabricate its result."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "line_before_this_edit": 31,
+    "old": "Always provide full context in each agent's prompt (narrative brief, lore dependencies, character profiles). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 2 agents can run simultaneously).",
+    "new": "Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "line_before_this_edit": 25,
+    "old": "Use the Task tool to spawn each team member as a subagent:",
+    "new": "Use the installed delegation capability only for the needed, audited team members:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "line_before_this_edit": 44,
+    "old": "Delegate in parallel:",
+    "new": "Delegate sequentially for shared-file writes; isolated read-only analysis may run in parallel:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-polish/SKILL.md",
+    "line_before_this_edit": 10,
+    "old": "**Decision Points:** At each phase transition, use `AskUserQuestion` to present\nthe user with the subagent's proposals as selectable options. Write the agent's\nfull analysis in conversation, then capture the decision with concise labels.\nThe user must approve before moving to the next phase.",
+    "new": "**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host\ncapabilities, scoped approval and one-writer execution. Present concise findings\nand ask only for unresolved material decisions; reuse approval already given.\nDelegate only needed subtasks to available agents whose definitions and dependencies\nhave passed review. If delegation is unavailable, report that limitation; never\nclaim an agent ran or fabricate its result."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-polish/SKILL.md",
+    "line_before_this_edit": 31,
+    "old": "Always provide full context in each agent's prompt (target feature/area, performance budgets, known issues). Launch independent agents in parallel where the pipeline allows it (e.g., Phases 3 and 4 can run simultaneously).",
+    "new": "Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-polish/SKILL.md",
+    "line_before_this_edit": 25,
+    "old": "Use the Task tool to spawn each team member as a subagent:",
+    "new": "Use the installed delegation capability only for the needed, audited team members:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "line_before_this_edit": 10,
+    "old": "**Decision Points:** At each phase transition, use `AskUserQuestion` to present\nthe user with the subagent's proposals as selectable options. Write the agent's\nfull analysis in conversation, then capture the decision with concise labels.\nThe user must approve before moving to the next phase.",
+    "new": "**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host\ncapabilities, scoped approval and one-writer execution. Present concise findings\nand ask only for unresolved material decisions; reuse approval already given.\nDelegate only needed subtasks to available agents whose definitions and dependencies\nhave passed review. If delegation is unavailable, report that limitation; never\nclaim an agent ran or fabricate its result."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "line_before_this_edit": 31,
+    "old": "Always provide full context in each agent's prompt (version number, milestone status, known issues). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 3 agents can run simultaneously).",
+    "new": "Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "line_before_this_edit": 25,
+    "old": "Use the Task tool to spawn each team member as a subagent:",
+    "new": "Use the installed delegation capability only for the needed, audited team members:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "line_before_this_edit": 51,
+    "old": "Delegate in parallel:",
+    "new": "Delegate sequentially for shared-file writes; isolated read-only analysis may run in parallel:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "line_before_this_edit": 10,
+    "old": "**Decision Points:** At each phase transition, use `AskUserQuestion` to present\nthe user with the subagent's proposals as selectable options. Write the agent's\nfull analysis in conversation, then capture the decision with concise labels.\nThe user must approve before moving to the next phase.",
+    "new": "**Decision Points:** Follow `.opencode/rules/skill-integrity.md` for actual host\ncapabilities, scoped approval and one-writer execution. Present concise findings\nand ask only for unresolved material decisions; reuse approval already given.\nDelegate only needed subtasks to available agents whose definitions and dependencies\nhave passed review. If delegation is unavailable, report that limitation; never\nclaim an agent ran or fabricate its result."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "line_before_this_edit": 29,
+    "old": "Always provide full context in each agent's prompt (feature requirements, existing UI patterns, platform targets). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 4 review agents can run simultaneously).",
+    "new": "Provide only the verified context needed for each approved subtask. Sequence all shared-file writes; parallelism is limited to isolated read-only analysis/tests with separate resources."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "line_before_this_edit": 24,
+    "old": "Use the Task tool to spawn each team member as a subagent:",
+    "new": "Use the installed delegation capability only for the needed, audited team members:"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "line_before_this_edit": 61,
+    "old": "Delegate in parallel:",
+    "new": "Delegate sequentially for shared-file writes; isolated read-only analysis may run in parallel:"
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "A team or producer recommendation is not deployment authorization. Report READY only for the exact tested artifact, environment and applicable criteria; required missing checks are BLOCKED. Deployment and monitoring require explicit scope and real configured tooling/owners. Do not promise background monitoring or treat an agent role as a human sign-off."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-polish/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Apply only the requested polish scope and verified performance/accessibility targets. Examples such as camera shake or ambient effects are not authorization to add new features. Readiness concerns the reviewed feature/build, not the entire game by inference."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Respect established narrative intent, including deliberately unresolved mysteries. Do not invent canon or force a true answer where none is defined. Dialogue limits come from the actual presentation/localization constraints, not a universal character count."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Validate only the actual supported input/platform targets, including touch where relevant. Do not impose gamepad support on a touch-only product. Keep authoritative business state in its existing owner; local presentation state may remain in UI."
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/hotfix/SKILL.md",
+    "line_before_this_edit": 14,
+    "old": "   - **S2 (Major)**: Significant feature broken, workaround exists — hotfix within 24 hours",
+    "new": "   - **S2 (Major)**: Significant feature broken, workaround exists — use the project's actual incident priority and response target, not an assumed 24-hour SLA"
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/hotfix/SKILL.md",
+    "line_before_this_edit": 47,
+    "old": "3. **Create the hotfix branch** (if git is initialized):\n   ```\n   git checkout -b hotfix/[short-name] [release-tag-or-main]\n   ```",
+    "new": "3. **Prepare the hotfix branch only under the approved change scope**. Resolve\n   the exact affected deployed revision and actual release/branching policy first.\n   Preserve all unrelated work; do not switch a dirty worktree or assume `main`\n   is the affected release. Use a verified available branch/worktree procedure and\n   a collision-free name. Do not execute unresolved placeholder commands."
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/hotfix/SKILL.md",
+    "line_before_this_edit": 62,
+    "old": "   - `subagent_type: producer` — Approve deployment timing and communication plan",
+    "new": "   - `subagent_type: producer` — Recommend timing and communication; actual deployment authorization must come from the authorized user/operator"
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/hotfix/SKILL.md",
+    "line_before_this_edit": 69,
+    "old": "- Hotfix branches merge to BOTH the release branch AND the development branch",
+    "new": "- Identify required backports from actual supported branches; perform merges/cherry-picks only when explicitly authorized and validated, not unconditionally"
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/hotfix/SKILL.md",
+    "line_before_this_edit": 70,
+    "old": "- All hotfixes require a post-incident review within 48 hours",
+    "new": "- Follow the actual incident-review policy; a proposed deadline is not an existing SLA"
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/hotfix/SKILL.md",
+    "line_before_this_edit": 71,
+    "old": "- If the fix is complex enough to need more than 4 hours, escalate to technical-director for a scope decision",
+    "new": "- Escalate material uncertainty or scope growth under the actual incident policy; do not invent a four-hour threshold or promise delivery timing"
+  },
+  {
+    "finding": "M14",
+    "path": ".opencode/skills/launch-checklist/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Before applying this checklist, resolve the exact build/release, supported targets,\nchannels, threat model and adopted acceptance criteria. \"All\" means those verified\nproject targets, not every platform in this template. Checklist items are candidates:\nmark inapplicable items N/A with a reason and required unavailable evidence BLOCKED.\nRecord actual commands/results, build identity and dates for checked items; invoking\nanother skill or finding a file is not proof that its checks passed. TODO/FIXME and\nlogging searches yield candidates, not confirmed release blockers. Verify relevant\ncurrent official platform/legal requirements; no agent supplies legal certification.\nDo not add analytics, autoscaling, encryption, SDKs or other infrastructure merely\nbecause this template lists them. Preserve verified project policies over example\nwarning budgets, soak durations, response times and on-call windows. No deployment,\npublication, external communication or genuine sign-off is authorized by this audit."
+  },
+  {
+    "finding": "M14",
+    "path": ".opencode/skills/release-checklist/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Before applying this checklist, resolve the exact build/release, supported targets,\nchannels, threat model and adopted acceptance criteria. \"All\" means those verified\nproject targets, not every platform in this template. Checklist items are candidates:\nmark inapplicable items N/A with a reason and required unavailable evidence BLOCKED.\nRecord actual commands/results, build identity and dates for checked items; invoking\nanother skill or finding a file is not proof that its checks passed. TODO/FIXME and\nlogging searches yield candidates, not confirmed release blockers. Verify relevant\ncurrent official platform/legal requirements; no agent supplies legal certification.\nDo not add analytics, autoscaling, encryption, SDKs or other infrastructure merely\nbecause this template lists them. Preserve verified project policies over example\nwarning budgets, soak durations, response times and on-call windows. No deployment,\npublication, external communication or genuine sign-off is authorized by this audit."
+  },
+  {
+    "finding": "M15",
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "line_before_this_edit": 18,
+    "old": "Normalize the system name to kebab-case for the filename (e.g., \"combat system\"\nbecomes `combat-system`).",
+    "new": "Normalize the system name to a single kebab-case filename stem (e.g., \"combat\nsystem\" becomes `combat-system`). Require `^[a-z0-9]+(-[a-z0-9]+)*$`, at most\n64 characters, and reject separators, traversal and collisions. Resolve the\nactual existing document before any write; never derive a path from unchecked input."
+  },
+  {
+    "finding": "M15",
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "line_before_this_edit": 87,
+    "old": "Once the user confirms, **immediately** create the GDD file with empty section\nheaders. This ensures incremental writes have a target.",
+    "new": "For a genuinely new, authorized document only, create the skeleton after confirming\nthat the path does not already exist. If a GDD already exists, never recreate its\nskeleton: preserve completed sections, approvals and user edits, identify missing\nsections, and resume with scoped edits. Recheck the current file before each write."
+  },
+  {
+    "finding": "M15",
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "line_before_this_edit": 410,
+    "old": "  - If design-review was skipped: Status → \"Designed\" (pending review)",
+    "new": "  - If design-review was skipped: Status → \"Designed\" only when all required content and dependencies are resolved; otherwise retain \"In Design\""
+  },
+  {
+    "finding": "M15",
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Use the canonical skill-integrity rule for portable tools and existing approval. Provisional interfaces and unresolved material conflicts must remain explicitly provisional; a filled template alone does not establish design completion. Do not discard an existing GDD to satisfy this template."
+  },
+  {
+    "finding": "M16",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "line_before_this_edit": 13,
+    "old": "Two modes:",
+    "new": "Three modes:"
+  },
+  {
+    "finding": "M16",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "line_before_this_edit": 17,
+    "old": "- **`next`**: `/map-systems next` — Pick the highest-priority undesigned system\n  from the index and hand off to `/design-system` (Phase 6).",
+    "new": "- **`next`**: `/map-systems next` — Pick the highest-priority undesigned system\n  from the index and hand off to `/design-system` (Phase 6).\n- **System name**: Resolve the exact existing index entry and use Phase 6; unknown\n  names are reported, not silently added or converted into a new scope."
+  },
+  {
+    "finding": "M16",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "line_before_this_edit": 66,
+    "old": "For each explicit system, identify the **hidden systems** it implies. Games always\nneed more systems than the concept doc mentions. Use this inference pattern:",
+    "new": "For each explicit system, propose possible supporting responsibilities. These are\nhypotheses, not mandatory systems: inventory need not have equipment, crafting need\nnot have failure, and an open world need not have fast travel. Verify need and reuse\nexisting boundaries before proposing new systems. Examples to evaluate:"
+  },
+  {
+    "finding": "M16",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "line_before_this_edit": 115,
+    "old": "- **UI dependencies**: Every gameplay system has a corresponding UI system that\n  depends on it (but UI is designed after the gameplay system)",
+    "new": "- **UI dependencies**: Map presentation dependencies only where the actual system needs them; do not require a separate UI system for every mechanic"
+  },
+  {
+    "finding": "M16",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "line_before_this_edit": 124,
+    "old": "5. **Polish**: Meta-systems, tutorials, analytics, accessibility",
+    "new": "5. **Other responsibilities**: Place tutorials, analytics and accessibility according to actual requirements and dependency order; accessibility is not automatically deferred to polish"
+  },
+  {
+    "finding": "M16",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "line_before_this_edit": 138,
+    "old": "- Any systems with no dependents (leaf nodes — lower risk, can be designed late)",
+    "new": "- Leaf systems: few dependents do not prove low implementation, product or security risk"
+  },
+  {
+    "finding": "M16",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "line_before_this_edit": 152,
+    "old": "- **MVP**: Systems mentioned in the concept's \"Required for MVP\" section, plus their\n  Foundation-layer dependencies",
+    "new": "- **MVP**: Systems in the approved MVP scope plus the full transitive closure of their hard dependencies, regardless of the heuristic layer label"
+  },
+  {
+    "finding": "M15",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "line_before_this_edit": 239,
+    "old": "- Creates a file skeleton immediately",
+    "new": "- Creates a skeleton only for a new document; otherwise preserves and resumes the existing GDD"
+  },
+  {
+    "finding": "M17",
+    "path": ".opencode/skills/project-stage-detect/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "First discover actual manifests, source roots and tracking locations; the directories below are examples. Classification is a heuristic, not a phase-gate approval. Verify persisted stage provenance and report conflicts rather than blindly trusting stale stage.txt. Missing template paths do not prove missing project work."
+  },
+  {
+    "finding": "M17",
+    "path": ".opencode/skills/project-stage-detect/SKILL.md",
+    "line_before_this_edit": 59,
+    "old": "- Estimate test coverage (rough heuristic)",
+    "new": "- Report coverage only from an actual coverage report with revision/scope; test-file counts do not establish coverage"
+  },
+  {
+    "finding": "M17",
+    "path": ".opencode/skills/project-stage-detect/SKILL.md",
+    "line_before_this_edit": 64,
+    "old": "if it exists, use its value (explicit override from `/gate-check`). Otherwise,",
+    "new": "if it exists, report its value and provenance separately from observed evidence. Otherwise,"
+  },
+  {
+    "finding": "M17",
+    "path": ".opencode/skills/project-stage-detect/SKILL.md",
+    "line_before_this_edit": 103,
+    "old": "- Tests: [X%] ([coverage estimate])",
+    "new": "- Tests: [measured coverage with source/revision, or UNKNOWN; never inferred from file count]"
+  },
+  {
+    "finding": "M18",
+    "path": ".opencode/skills/estimate/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Ground estimates in explicit scope, assumptions and comparable units. Historical velocity is completed effort per interval, not merely planned-versus-actual ratio. If evidence cannot support numeric ranges, state UNKNOWN and the missing inputs; do not fabricate history, effort ratios or precision to fill the template."
+  },
+  {
+    "finding": "M18",
+    "path": ".opencode/skills/retrospective/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Resolve the actual sprint/milestone boundaries; the legacy two-week context snippet is not the requested period. Keep effort units comparable, guard zero/unknown denominators, and distinguish completed acceptance criteria from commits. TODO counts are marker trends, not a measurement of debt. Unknown owners, durations and deadlines remain unassigned/unknown, not invented facts."
+  },
+  {
+    "finding": "M19",
+    "path": ".opencode/skills/reverse-document/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Inspect an existing destination before writing; preserve approved documentation and make only the scoped update. Distinguish observed code behavior, user-confirmed intent, inferred hypotheses and proposed changes. Unknown intent may remain explicitly unknown in a draft; do not invent it or silently correct implementation through documentation. Preserve source revision and actual verification status."
+  },
+  {
+    "finding": "M19",
+    "path": ".opencode/skills/reverse-document/SKILL.md",
+    "line_before_this_edit": 128,
+    "old": "`templates/design-doc-from-implementation.md`",
+    "new": "`.opencode/docs/templates/design-doc-from-implementation.md`"
+  },
+  {
+    "finding": "M19",
+    "path": ".opencode/skills/reverse-document/SKILL.md",
+    "line_before_this_edit": 129,
+    "old": "`templates/architecture-doc-from-code.md`",
+    "new": "`.opencode/docs/templates/architecture-doc-from-code.md`"
+  },
+  {
+    "finding": "M19",
+    "path": ".opencode/skills/reverse-document/SKILL.md",
+    "line_before_this_edit": 130,
+    "old": "`templates/concept-doc-from-prototype.md`",
+    "new": "`.opencode/docs/templates/concept-doc-from-prototype.md`"
+  },
+  {
+    "finding": "M19",
+    "path": ".opencode/skills/reverse-document/SKILL.md",
+    "line_before_this_edit": 168,
+    "old": "date: 2026-02-13\nverified-by: [User name]",
+    "new": "date: [actual generation date]\nverified-by: [actual reviewer, or UNVERIFIED]"
+  },
+  {
+    "finding": "M20",
+    "path": ".opencode/skills/setup-engine/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Before any recommendation or write, perform the project/version discovery described in section 6. A requested version is a target, not an installed version. Retain existing engine, languages, build pipeline, import tooling and conventions; example stacks below are proposals only, not proof that optional packages (such as Addressables or GDExtension) are installed or needed."
+  },
+  {
+    "finding": "M20",
+    "path": ".opencode/skills/setup-engine/SKILL.md",
+    "line_before_this_edit": 16,
+    "old": "Three modes:",
+    "new": "Four modes (recognize `refresh` before interpreting an engine name):"
+  },
+  {
+    "finding": "M20",
+    "path": ".opencode/skills/setup-engine/SKILL.md",
+    "line_before_this_edit": 20,
+    "old": "- **No args**: `/setup-engine` — fully guided mode (engine recommendation + version)",
+    "new": "- **No args**: `/setup-engine` — guided mode, unless existing project evidence already resolves the choice\n- **Refresh**: `/setup-engine refresh` — use section 10 without changing the installed engine/version"
+  },
+  {
+    "finding": "M20",
+    "path": ".opencode/skills/setup-engine/SKILL.md",
+    "line_before_this_edit": 73,
+    "old": "- If no version provided, use WebSearch to find the latest stable release:",
+    "new": "- If no version is provided, retain the verified installed/pinned version. Only for a new choice or an explicitly requested upgrade, verify the suitable stable release using official sources:"
+  },
+  {
+    "finding": "M20",
+    "path": ".opencode/skills/setup-engine/SKILL.md",
+    "line_before_this_edit": 267,
+    "old": "Engine Setup Complete",
+    "new": "Engine Setup Result (complete only if required project verification passed)"
+  },
+  {
+    "finding": "M20",
+    "path": ".opencode/skills/setup-engine/SKILL.md",
+    "line_before_this_edit": 289,
+    "old": "- NEVER guess an engine version — always verify via WebSearch or user confirmation",
+    "new": "- NEVER guess an installed engine version: verify project/tool evidence; user confirmation establishes a requested target, not compatibility"
+  },
+  {
+    "finding": "M17",
+    "path": ".opencode/skills/start/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Resolve actual manifests and source roots before the template-path checks below. A missing src/ directory or unfilled technical-preferences template does not prove the project is empty or has no engine. Reuse existing user answers and skip questions already resolved by the request or inspected project; report unknowns rather than redirecting on an incomplete scan."
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Discover the actual project lifecycle and accepted criteria first; these game-studio phase definitions are a template, not authority to impose new architecture, directories or platforms. Use PASS/CONCERNS/FAIL/BLOCKED: any required unavailable or unverified check yields BLOCKED. N/A needs an applicability reason, not missing runtime access. A skill invocation, heading count or file presence is not evidence its validation passed."
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "line_before_this_edit": 32,
+    "old": "**When a gate passes**, write the new stage name to `production/stage.txt`",
+    "new": "**Only when the gate passes and the stage update is authorized**, write the new stage name to `production/stage.txt`"
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "line_before_this_edit": 54,
+    "old": "- [ ] Game concept has been reviewed (`/design-review` verdict not MAJOR REVISION NEEDED)",
+    "new": "- [ ] Applicable concept review is APPROVED for the current revision; a missing review or unresolved required revision is not a pass"
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "line_before_this_edit": 67,
+    "old": "- [ ] GDD(s) pass design review (8 required sections present)",
+    "new": "- [ ] GDD(s) have evidenced design-review approval for the current revision; eight headings alone do not demonstrate quality"
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "line_before_this_edit": 126,
+    "old": "- [ ] Release checklist completed (`/release-checklist` or `/launch-checklist` run)",
+    "new": "- [ ] Applicable release-checklist evidence passes for the exact build; merely running a checklist skill is insufficient"
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "line_before_this_edit": 153,
+    "old": "- For design review checks: `Read` the GDD and check for the 8 required sections",
+    "new": "- For design review checks: verify meaningful applicable content and current review evidence, not merely headings"
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "line_before_this_edit": 204,
+    "old": "### Verdict: [PASS / CONCERNS / FAIL]",
+    "new": "### Verdict: [PASS / CONCERNS / FAIL / BLOCKED]"
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "line_before_this_edit": 206,
+    "old": "- **CONCERNS**: Minor gaps exist but can be addressed during the next phase",
+    "new": "- **CONCERNS**: Only non-required improvements remain; required unverified checks are BLOCKED, not minor gaps"
+  },
+  {
+    "finding": "M21",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "line_before_this_edit": 254,
+    "old": "**Never** block a user from advancing — the verdict is advisory. Document the risks\nand let the user decide whether to proceed despite concerns.",
+    "new": "The user may make a separate project-stage decision, but do not relabel a failed\nor blocked review PASS, bypass the skill-integrity gate, or infer deployment\npermission. Record any authorized override and its unresolved risks separately;\nonly the verified PASS path above may be presented as a passed gate."
+  },
+  {
+    "finding": "M22",
+    "path": ".opencode/skills/brainstorm/SKILL.md",
+    "insert_after": "frontmatter",
+    "new": "Use prior answers and existing concept work. Proposed market fit, player motivation and scope are hypotheses until supported; cited frameworks do not validate a specific audience. Preserve unknown/open sections instead of inventing answers to fill every template section. An existing engine is not replaced by a brainstorming recommendation. Use the canonical portable question/approval protocol."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "line_before_this_edit": 46,
+    "old": "### Phase 2: World Foundation (parallel)",
+    "new": "### Phase 2: World Foundation (one writer for shared files)"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "line_before_this_edit": 49,
+    "old": "Ensure all lines are under 120 characters, use named placeholders for variables, and are localization-ready.",
+    "new": "Use the actual UI length/fit constraints and localization placeholder grammar; do not impose a universal 120-character limit."
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "line_before_this_edit": 63,
+    "old": "- Check that all mysteries have documented \"true answers\"",
+    "new": "- Check established canon and explicitly intentional ambiguity; only require true answers where the approved narrative defines them"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-polish/SKILL.md",
+    "line_before_this_edit": 54,
+    "old": "### Phase 3: Visual Polish (parallel with Phase 2)",
+    "new": "### Phase 3: Visual Polish (sequence shared-file writes after Phase 2)"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-polish/SKILL.md",
+    "line_before_this_edit": 62,
+    "old": "### Phase 4: Audio Polish (parallel with Phase 2)",
+    "new": "### Phase 4: Audio Polish (sequence shared-file writes)"
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "line_before_this_edit": 43,
+    "old": "- Output: release authorization with scope confirmation",
+    "new": "- Output: readiness recommendation and scope confirmation; obtain actual operator authorization separately before deployment"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "line_before_this_edit": 59,
+    "old": "Delegate (can run in parallel with Phase 3 if resources available):",
+    "new": "Delegate (parallel only for isolated read-only checks with separate resources; no shared-file writes):"
+  },
+  {
+    "finding": "M13",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "line_before_this_edit": 77,
+    "old": "- Monitor for 48 hours post-release",
+    "new": "- Define the actual approved post-release monitoring window, responsible operator and configured monitoring system; no implicit background agent execution"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "line_before_this_edit": 40,
+    "old": "- Specify interaction patterns: how does keyboard/mouse AND gamepad navigate this?",
+    "new": "- Specify interaction patterns for the verified supported devices (touch, keyboard/mouse, gamepad or others as applicable)"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "line_before_this_edit": 58,
+    "old": "- Support both input methods (keyboard/mouse + gamepad)",
+    "new": "- Support the actual approved input targets without introducing unrequested platforms"
+  },
+  {
+    "finding": "M12",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "line_before_this_edit": 65,
+    "old": "Test keyboard-only and gamepad-only navigation.",
+    "new": "Test each supported navigation method separately, including touch where applicable."
+  },
+  {
+    "finding": "M17",
+    "path": ".opencode/docs/templates/project-stage-report.md",
+    "line_before_this_edit": 19,
+    "old": "## Completeness Overview",
+    "new": "## Evidence and Metric Interpretation\n\nEach percentage needs a defined denominator and an actual evidence source/revision.\nWith absent measurements or incomplete inventory, report UNKNOWN; a zero denominator\nis N/A. Source/test-file counts do not establish implemented completeness or coverage.\nStage labels are diagnostic and do not certify a passed phase gate. Listed directory\npaths are examples; map them to the inspected repository instead of assuming layout.\n\n## Completeness Overview"
+  },
+  {
+    "finding": "M17",
+    "path": ".opencode/docs/templates/project-stage-report.md",
+    "line_before_this_edit": 71,
+    "old": "- **Status**: [X%] coverage (estimated)",
+    "new": "- **Status**: [measured coverage and source/revision, or UNKNOWN]"
+  },
+  {
+    "finding": "M17",
+    "path": ".opencode/docs/templates/project-stage-report.md",
+    "line_before_this_edit": 74,
+    "old": "[X%] (estimated)",
+    "new": "[measured coverage with evidence, or UNKNOWN]"
+  },
+  {
+    "finding": "M15",
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "line_before_this_edit": 394,
+    "old": "> **GDD Complete: [System Name]**",
+    "new": "> **GDD Status: [Complete / In Design / In Review / BLOCKED] — [System Name]**"
+  },
+  {
+    "finding": "M15",
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "line_before_this_edit": 424,
+    "old": "- Status: Complete (or In Review if design-review was run)",
+    "new": "- Status: Complete only if required content/dependency checks passed; otherwise In Design, In Review or BLOCKED with exact gaps"
+  },
+  {
+    "finding": "M15",
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "line_before_this_edit": 426,
+    "old": "- Sections: All 8 written",
+    "new": "- Sections: [actual completed/applicable count and unresolved sections]"
+  },
+  {
+    "finding": "M18",
+    "path": ".opencode/skills/estimate/SKILL.md",
+    "line_before_this_edit": 32,
+    "old": "   - Calculate historical velocity (planned vs actual)",
+    "new": "   - Calculate historical velocity from completed effort per interval; report planned-vs-actual as a separate completion/estimation metric"
+  },
+  {
+    "finding": "M18",
+    "path": ".opencode/skills/estimate/SKILL.md",
+    "line_before_this_edit": 152,
+    "old": "- Always give a range (optimistic / expected / pessimistic), never a single\n  number. Single-point estimates create false precision.",
+    "new": "- Give a supported range (optimistic / expected / pessimistic) when estimable; otherwise report UNKNOWN and the missing evidence rather than inventing a range."
+  },
+  {
+    "finding": "M18",
+    "path": ".opencode/skills/retrospective/SKILL.md",
+    "line_before_this_edit": 40,
+    "old": "   - Note whether technical debt is growing or shrinking",
+    "new": "   - Report marker-count changes only; verify underlying issues before inferring whether technical debt is growing or shrinking"
+  },
+  {
+    "finding": "M18",
+    "path": ".opencode/skills/retrospective/SKILL.md",
+    "line_before_this_edit": 157,
+    "old": "- Every action item must have an owner and a deadline",
+    "new": "- Record confirmed owners/deadlines; otherwise label them proposed or unassigned, not agreed commitments"
+  },
+  {
+    "finding": "M22",
+    "path": ".opencode/skills/brainstorm/SKILL.md",
+    "line_before_this_edit": 195,
+    "old": "   `.opencode/docs/templates/game-concept.md`. Fill in ALL sections from the\n   brainstorm conversation, including the MDA analysis, player motivation\n   profile, and flow state design sections.",
+    "new": "   `.opencode/docs/templates/game-concept.md`. Fill supported sections from the\n   conversation; mark missing decisions/open questions explicitly. MDA, motivation\n   and flow-state analysis are design hypotheses, not measured validation."
+  },
+  {
+    "finding": "M23",
+    "path": ".opencode/docs/audit-runtime.md",
+    "line_before_this_edit": 149,
+    "old": "## Local validation",
+    "new": "## Optional design-preview bounds\n\n`pre-compact.sh` uses the existing `hook-checks.py` reader for both the checkpoint\nand design WIP preview. Design text is UTF-8, regular, unlinked and at most 1 MiB\nper file; the scan caps directory entries (4096), Markdown files (256), total input\n(8 MiB), rendered matching lines (100) and excerpt output (32 KiB plus a summary).\nLong matching lines are explicitly excerpted. Unsafe text, controls, special files,\nunreadable data or exceeded input limits block before preview/logging rather than\nclaiming a clean scan. No markers is not design completeness or secret redaction.\nThe filesystem can still change between checks; this is not a hostile-filesystem\nsandbox. Other Git/status output is not covered by the design-preview output cap.\n\n## Local validation"
+  }
+]

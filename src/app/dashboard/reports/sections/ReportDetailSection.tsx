@@ -1,52 +1,104 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertTriangle, Ban } from 'lucide-react';
+import { AlertTriangle, Ban, UserCheck } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Input } from '@/shared/components/ui/Input';
 import { Modal } from '@/shared/components/ui/Modal';
+import { UserSelector } from '@/shared/components/ui/UserSelector';
 import type { Report } from '@/types';
-import type { UpdateReportStatusRequest } from '@/dto/reports/reports.dto';
+import type { UpdateReportStatusRequest, ReportActionRequest } from '@/dto/reports/reports.dto';
+
+type ReportAction = ReportActionRequest['action'];
 
 interface ReportDetailSectionProps {
   report: Report | null;
   canManageReports: boolean;
+  isAssigning?: boolean;
   onUpdateStatus: (status: UpdateReportStatusRequest['status']) => void;
-  onTakeAction: (action: 'warn' | 'mute' | 'ban' | 'dismiss', reason: string) => void;
+  onTakeAction: (action: ReportAction, note: string) => void;
+  onAssign: (assignedUserId: string) => void;
   onClose: () => void;
 }
 
-const statusColors: Record<string, 'warning' | 'info' | 'success' | 'default'> = {
-  pending: 'warning',
+const statusColors: Record<UpdateReportStatusRequest['status'], 'warning' | 'info' | 'success' | 'default'> = {
+  open: 'warning',
   investigating: 'info',
   resolved: 'success',
   dismissed: 'default',
 };
 
+/**
+ * Holds the pending assignee. The modal stays mounted between reports, so this
+ * is remounted per report id — that resets the selection without an effect.
+ */
+function AssignPanel({
+  isAssigning,
+  onAssign,
+}: {
+  isAssigning?: boolean;
+  onAssign: (assignedUserId: string) => void;
+}) {
+  const [assigneeId, setAssigneeId] = useState('');
+
+  return (
+    // No divider here — the Executive Decisions block below owns the rule.
+    <div className="pt-6">
+      <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
+        Assign Investigator
+      </p>
+      <div className="flex items-end gap-2">
+        <div className="flex-1">
+          <UserSelector
+            value={assigneeId}
+            onChange={setAssigneeId}
+            disabled={isAssigning}
+            placeholder="Search a user to assign this report"
+          />
+        </div>
+        <Button
+          onClick={() => onAssign(assigneeId)}
+          disabled={!assigneeId || isAssigning}
+          variant="outline"
+        >
+          <UserCheck className="w-4 h-4 mr-1.5" />
+          {isAssigning ? 'Assigning...' : 'Assign'}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function ReportDetailSection({
   report,
   canManageReports,
+  isAssigning,
   onUpdateStatus,
   onTakeAction,
+  onAssign,
   onClose,
 }: ReportDetailSectionProps) {
   const [showActionModal, setShowActionModal] = useState(false);
-  const [actionType, setActionType] = useState<'warn' | 'mute' | 'ban' | 'dismiss'>('warn');
-  const [actionReason, setActionReason] = useState('');
+  const [actionType, setActionType] = useState<ReportAction>('warn');
+  const [actionNote, setActionNote] = useState('');
 
   if (!report) return null;
 
-  const handleOpenActionModal = (action: typeof actionType) => {
+  const handleOpenActionModal = (action: ReportAction) => {
     setActionType(action);
     setShowActionModal(true);
   };
 
   const handleConfirmAction = () => {
-    onTakeAction(actionType, actionReason);
+    onTakeAction(actionType, actionNote);
     setShowActionModal(false);
-    setActionReason('');
+    setActionNote('');
   };
+
+  const isOpen = report.status === 'open';
+  const isInvestigating = report.status === 'investigating';
+  const isFinal = report.status === 'resolved' || report.status === 'dismissed';
 
   return (
     <>
@@ -59,10 +111,10 @@ export function ReportDetailSection({
               </label>
               <div className="flex items-center gap-2">
                 <p className="font-bold text-gray-900 dark:text-white">
-                  {report.reporter?.nickname || 'Anonymous'}
+                  {report.reporterUser?.nickname || 'Anonymous'}
                 </p>
                 <Badge variant="outline" className="text-[10px] py-0">
-                  {report.reporterId.slice(0, 8)}
+                  {report.reporterUserId.slice(0, 8)}
                 </Badge>
               </div>
             </div>
@@ -71,9 +123,9 @@ export function ReportDetailSection({
                 Target (Reported)
               </label>
               <div className="flex items-center gap-2">
-                <p className="font-bold">{report.reportedUser?.nickname || 'Unidentified'}</p>
+                <p className="font-bold">{report.targetUser?.nickname || 'Unidentified'}</p>
                 <Badge variant="outline" className="text-[10px] py-0 border-red-500/20 text-red-500">
-                  {report.reportedUserId.slice(0, 8)}
+                  {report.targetUserId.slice(0, 8)}
                 </Badge>
               </div>
             </div>
@@ -85,20 +137,28 @@ export function ReportDetailSection({
                 <AlertTriangle className="w-4 h-4" />
                 Violation Context
               </h4>
-              <Badge variant={statusColors[report.status]}>{report.status}</Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-[10px] py-0 uppercase">
+                  {report.category}
+                </Badge>
+                <Badge variant={statusColors[report.status]}>{report.status}</Badge>
+              </div>
             </div>
             <div className="p-6 rounded-3xl bg-gray-900 text-gray-100 font-mono text-sm leading-relaxed border border-primary/10 shadow-inner">
-              {report.reason ||
-                'The reported node has performed an undefined operation. Further inspection of evidence is recommended.'}
+              {report.description || <span className="text-gray-500">No description was provided with this report.</span>}
             </div>
           </div>
+
+          {canManageReports && (
+            <AssignPanel key={report.id} isAssigning={isAssigning} onAssign={onAssign} />
+          )}
 
           <div className="pt-6 border-t border-gray-100 dark:border-gray-800">
             <label className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 block">
               Executive Decisions
             </label>
             <div className="flex flex-wrap gap-2">
-              {canManageReports && report.status === 'pending' && (
+              {canManageReports && isOpen && (
                 <>
                   <Button size="sm" onClick={() => onUpdateStatus('investigating')} className="bg-primary hover:bg-primary/90">
                     Initiate Investigation
@@ -107,10 +167,13 @@ export function ReportDetailSection({
                     size="sm"
                     variant="outline"
                     className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 border-red-200 dark:border-red-900"
-                    onClick={() => handleOpenActionModal('ban')}
+                    onClick={() => handleOpenActionModal('sanction')}
                   >
                     <Ban className="w-4 h-4 mr-1.5" />
-                    Instant Ban
+                    Instant Sanction
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleOpenActionModal('escalate')}>
+                    Escalate
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => onUpdateStatus('dismissed')}>
                     Dismiss Intel
@@ -118,13 +181,22 @@ export function ReportDetailSection({
                 </>
               )}
 
-              {canManageReports && report.status === 'investigating' && (
+              {canManageReports && isInvestigating && (
                 <>
                   <Button size="sm" onClick={() => onUpdateStatus('resolved')} className="bg-emerald-600 hover:bg-emerald-700">
-                    Finalize & Resolve
+                    Finalize &amp; Resolve
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => handleOpenActionModal('warn')}>
                     Issue Warning
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 border-red-200 dark:border-red-900"
+                    onClick={() => handleOpenActionModal('sanction')}
+                  >
+                    <Ban className="w-4 h-4 mr-1.5" />
+                    Instant Sanction
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => onUpdateStatus('dismissed')}>
                     False Alarm
@@ -132,7 +204,7 @@ export function ReportDetailSection({
                 </>
               )}
 
-              {['resolved', 'dismissed'].includes(report.status) && (
+              {isFinal && (
                 <p className="text-sm text-gray-500 italic">This incident file has been archived and finalized.</p>
               )}
 
@@ -158,8 +230,8 @@ export function ReportDetailSection({
 
           <Input
             label="Action Justification"
-            value={actionReason}
-            onChange={(e) => setActionReason(e.target.value)}
+            value={actionNote}
+            onChange={(e) => setActionNote(e.target.value)}
             placeholder="State the reason for this decision..."
             className="bg-transparent"
           />
@@ -168,7 +240,7 @@ export function ReportDetailSection({
             <Button
               className="flex-1 bg-red-600 hover:bg-red-700"
               onClick={handleConfirmAction}
-              disabled={!actionReason}
+              disabled={!actionNote}
             >
               Confirm Execution
             </Button>

@@ -1,0 +1,14 @@
+test_distribution_does_not_self_approve (test_repairs.StructureTests.test_distribution_does_not_self_approve) ... ok
+test_every_skill_has_a_real_command (test_repairs.StructureTests.test_every_skill_has_a_real_command) ... ok
+test_exact_requested_rule_present (test_repairs.StructureTests.test_exact_requested_rule_present) ... ok
+test_maintenance_exact_source_first_loop_present (test_repairs.StructureTests.test_maintenance_exact_source_first_loop_present) ... ok
+test_maintenance_gate_keeps_required_unknowns_blocked (test_repairs.StructureTests.test_maintenance_gate_keeps_required_unknowns_blocked) ... ok
+test_maintenance_locale_and_prototype_contracts (test_repairs.StructureTests.test_maintenance_locale_and_prototype_contracts) ... ok
+test_maintenance_metrics_require_evidence (test_repairs.StructureTests.test_maintenance_metrics_require_evidence) ... ok
+test_maintenance_release_claims_not_fabricated (test_repairs.StructureTests.test_maintenance_release_claims_not_fabricated) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.004s
+
+OK
+SHARD_RESULT={"ids": ["test_repairs.StructureTests.test_distribution_does_not_self_approve", "test_repairs.StructureTests.test_every_skill_has_a_real_command", "test_repairs.StructureTests.test_exact_requested_rule_present", "test_repairs.StructureTests.test_maintenance_exact_source_first_loop_present", "test_repairs.StructureTests.test_maintenance_gate_keeps_required_unknowns_blocked", "test_repairs.StructureTests.test_maintenance_locale_and_prototype_contracts", "test_repairs.StructureTests.test_maintenance_metrics_require_evidence", "test_repairs.StructureTests.test_maintenance_release_claims_not_fabricated"], "run": 8, "failures": 0, "errors": 0, "skipped": 0, "success": true}

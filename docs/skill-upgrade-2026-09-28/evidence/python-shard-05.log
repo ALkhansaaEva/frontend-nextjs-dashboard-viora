@@ -1,0 +1,14 @@
+test_revision_compaction_preserves_normal_wip_advisory (test_repairs.HookTests.test_revision_compaction_preserves_normal_wip_advisory) ... ok
+test_revision_compaction_rejects_design_file_symlink (test_repairs.HookTests.test_revision_compaction_rejects_design_file_symlink) ... ok
+test_revision_compaction_rejects_design_parent_symlink (test_repairs.HookTests.test_revision_compaction_rejects_design_parent_symlink) ... ok
+test_session_stop_reports_log_failure_and_keeps_state (test_repairs.HookTests.test_session_stop_reports_log_failure_and_keeps_state) ... ok
+test_session_stop_retains_incomplete_state (test_repairs.HookTests.test_session_stop_retains_incomplete_state) ... ok
+test_session_stop_retains_state_when_log_unwritable (test_repairs.HookTests.test_session_stop_retains_state_when_log_unwritable) ... ok
+test_spaces_and_newline_filename (test_repairs.HookTests.test_spaces_and_newline_filename) ... ok
+test_symlink_asset_rejected (test_repairs.HookTests.test_symlink_asset_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 13.334s
+
+OK
+SHARD_RESULT={"ids": ["test_repairs.HookTests.test_revision_compaction_preserves_normal_wip_advisory", "test_repairs.HookTests.test_revision_compaction_rejects_design_file_symlink", "test_repairs.HookTests.test_revision_compaction_rejects_design_parent_symlink", "test_repairs.HookTests.test_session_stop_reports_log_failure_and_keeps_state", "test_repairs.HookTests.test_session_stop_retains_incomplete_state", "test_repairs.HookTests.test_session_stop_retains_state_when_log_unwritable", "test_repairs.HookTests.test_spaces_and_newline_filename", "test_repairs.HookTests.test_symlink_asset_rejected"], "run": 8, "failures": 0, "errors": 0, "skipped": 0, "success": true}

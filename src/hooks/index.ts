@@ -1,12 +1,9 @@
 export { useUsers, useUser, useUserRoles, useAssignRole, useRevokeRole, useAdjustBalance, useUserWallet } from './useUsers';
-export { useRooms, useRoom, useRoomMembers, useRoomBans, useRoomMutes, useRoomKicks, useRoomModerators, useCreateRoom, useKickUser, useBanUser, useUnbanUser, useMuteUser, useUnmuteUser, useCloseRoom, useReopenRoom } from './useRooms';
-export { useReports, useReport, useAddEvidence, useTakeAction, useUpdateReportStatus, useAssignReport } from './useReports';
-export { useTickets, useTicket, useCreateTicket, useReplyTicket, useUpdateTicketStatus, useAssignTicket, useAddTicketNote } from './useTickets';
+export { useRooms, useRoom, useRoomBans, useRoomMutes, useRoomKicks, useKickUser, useBanUser, useUnbanUser, useMuteUser, useUnmuteUser, useUpdateRoom, useDeleteRoom, useRoomRoundJoinRequests, useCreateRoomRound, useCancelRoomRound, type UpdateRoomInput } from './useRooms';
 export { useHasPermission, useHasAnyPermission, useHasAllPermissions, useUserPermissions, useCanAccessSection } from './usePermissions';
 export { usePermissions, useRoles, useRole, useRolePermissions, useCreateRole, useUpdateRole, useDeleteRole, useCreatePermission, useDeletePermission, useAssignPermission, useRevokePermission, useAdminUsers, useAdminUser, useAssignRoleToUser, useRevokeRoleFromUser, useSetRoleAsDefault } from './useAdmin';
 export { useWallet, useWalletTransactions } from './useWallet';
 export { useNotifications, useMarkNotificationRead, useMarkAllNotificationsRead } from './useNotifications';
 export { useMatches, useMatch, useMatchChat, useCreatePrivateMatch, useJoinMatchByCode, useMatchInvites, useAcceptMatchInvite, useDeclineMatchInvite } from './useMatches';
-export { useFriends, useMessages, useSendFriendRequest, useAcceptFriendRequest, useRejectFriendRequest, useBlockUser as useSocialBlockUser, useUnblockUser as useSocialUnblockUser, useMuteUser as useSocialMuteUser, useUnmuteUser as useSocialUnmuteUser } from './useSocial';
-export { useDailyLogin, useClaimDailyLogin, useTasks, useClaimTask, useLeaderboard, useUserRank } from './useMetaGame';
+export { useLeaderboard, useUserRank } from './useMetaGame';
 export { useAuth, useCurrentUser, usePermissions as useAuthPermissions, useRoles as useAuthRoles, useGlobalCapabilities, useCan, useHasAny, useHasAll, useCapability, useIsAuthenticated } from './useAuth';

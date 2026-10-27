@@ -1,0 +1,1370 @@
+[
+  {
+    "path": ".opencode/agents/accessibility-specialist.md",
+    "bytes": 6081,
+    "lines": 126,
+    "sha256": "db0f66bc3c392dcd81b163cc26fb055ebd3cb503ee6e8c8b25ea0686eacf14f4"
+  },
+  {
+    "path": ".opencode/agents/ai-programmer.md",
+    "bytes": 4569,
+    "lines": 93,
+    "sha256": "e46e2022aeb6f15db96ef8950158bb159fb9b5f0858e83e217281907de6b6c33"
+  },
+  {
+    "path": ".opencode/agents/analytics-engineer.md",
+    "bytes": 4687,
+    "lines": 99,
+    "sha256": "f32ddabafdc1cab70ce6a21a06d3060de7234b83341a570d04d2b5f8a403ee7d"
+  },
+  {
+    "path": ".opencode/agents/art-director.md",
+    "bytes": 5226,
+    "lines": 116,
+    "sha256": "48c394ad6a7e1f013c43f0a2a982907f607b0bcd33d28545174e072daa6f429b"
+  },
+  {
+    "path": ".opencode/agents/audio-director.md",
+    "bytes": 5101,
+    "lines": 114,
+    "sha256": "488d988f62ab563d12f180e26734d592a7f811f9f08924c8435d0acdd49ad8f3"
+  },
+  {
+    "path": ".opencode/agents/community-manager.md",
+    "bytes": 7498,
+    "lines": 155,
+    "sha256": "9af1791f5c184eb1a3cd8b87d9249e6f9d2989b47854f96e5e587d54d50445b3"
+  },
+  {
+    "path": ".opencode/agents/creative-director.md",
+    "bytes": 12639,
+    "lines": 246,
+    "sha256": "13e587b2dd948967358c528ca85300e0a0a3b65fadffe2a3ecb472e16b6433fd"
+  },
+  {
+    "path": ".opencode/agents/devops-engineer.md",
+    "bytes": 4386,
+    "lines": 93,
+    "sha256": "2b976658a0315b34eb1d76bbff29106b8658fabeaf29945c77aed90ed0e728d9"
+  },
+  {
+    "path": ".opencode/agents/economy-designer.md",
+    "bytes": 4634,
+    "lines": 99,
+    "sha256": "91c11cb4ff04555681d235aeb6a1f45757e43e36015a4b3d88c52b861ceec152"
+  },
+  {
+    "path": ".opencode/agents/engine-programmer.md",
+    "bytes": 4626,
+    "lines": 93,
+    "sha256": "2e2be0552f0b10b54d95ae0bfd816a2d9ef55900425eba0af315e8ff8e5f6a49"
+  },
+  {
+    "path": ".opencode/agents/game-designer.md",
+    "bytes": 12581,
+    "lines": 236,
+    "sha256": "b97b43d13ce910bf6bf2cec5b1e03e28df9ef21ccdc7e3eed931fbe6822c5976"
+  },
+  {
+    "path": ".opencode/agents/gamemaker-assets-specialist.md",
+    "bytes": 11149,
+    "lines": 246,
+    "sha256": "e37b8e148c48b1c553daa195336a901cc59316895eee7477e5daa096efadd4b2"
+  },
+  {
+    "path": ".opencode/agents/gamemaker-gml-specialist.md",
+    "bytes": 20066,
+    "lines": 392,
+    "sha256": "be7d12e43c5d36fcc609ec58b2c4cfc5d39e01b3fdda9908270871c26b3272ed"
+  },
+  {
+    "path": ".opencode/agents/gamemaker-networking-specialist.md",
+    "bytes": 14739,
+    "lines": 344,
+    "sha256": "ea1ac25a6912c8e28c1bc914e9fe390367c1ae415da271184f6a5cd0fcb65ec1"
+  },
+  {
+    "path": ".opencode/agents/gamemaker-performance-specialist.md",
+    "bytes": 11888,
+    "lines": 253,
+    "sha256": "b69f7bd6075480e71660540dcc884701919304d65814244e4c8a8a1434cf332e"
+  },
+  {
+    "path": ".opencode/agents/gamemaker-shader-specialist.md",
+    "bytes": 11376,
+    "lines": 277,
+    "sha256": "f2552f12b10ab63aa6129ab410fac97ce432ed094e0cacf5ca53ab92733657e7"
+  },
+  {
+    "path": ".opencode/agents/gamemaker-specialist.md",
+    "bytes": 11116,
+    "lines": 196,
+    "sha256": "c6f4c58e6e613a196a64645a24f78089b9070b686cfd2f8922c79b2602405150"
+  },
+  {
+    "path": ".opencode/agents/gamemaker-ui-specialist.md",
+    "bytes": 14122,
+    "lines": 349,
+    "sha256": "f6c9c983683db9870b8247596a4ae81d5d3626fa03da885d75e7bf49ca65a0eb"
+  },
+  {
+    "path": ".opencode/agents/gameplay-programmer.md",
+    "bytes": 5462,
+    "lines": 117,
+    "sha256": "fc54212376e95a4c05de8ef6b80e5d5a57e7e35154c48553dd87797818a3bef2"
+  },
+  {
+    "path": ".opencode/agents/godot-gdextension-specialist.md",
+    "bytes": 12288,
+    "lines": 296,
+    "sha256": "2612eca5fe1a9b5ee216cebe06ce8fb0ef4d2c25ea2fb523041fac86dab85e37"
+  },
+  {
+    "path": ".opencode/agents/godot-gdscript-specialist.md",
+    "bytes": 11556,
+    "lines": 261,
+    "sha256": "3d2880c84e532898aecfb171bc084144fadb9f7cc2c474845fb0c990ca80d0b8"
+  },
+  {
+    "path": ".opencode/agents/godot-shader-specialist.md",
+    "bytes": 11259,
+    "lines": 254,
+    "sha256": "9e8311fbc28472922e34a3379a3aa47f86abb334c79b8490f4e71bbe42d9f724"
+  },
+  {
+    "path": ".opencode/agents/godot-specialist.md",
+    "bytes": 9678,
+    "lines": 182,
+    "sha256": "1a7b7a5d653bc399c57edfd8fcfd3a7edda3454236213b1b7298d2037e998389"
+  },
+  {
+    "path": ".opencode/agents/lead-programmer.md",
+    "bytes": 5189,
+    "lines": 107,
+    "sha256": "202178fcef1c6cbbf763f02607545407d2b4459d39ddb3151e8f30aa32d33f24"
+  },
+  {
+    "path": ".opencode/agents/level-designer.md",
+    "bytes": 5087,
+    "lines": 111,
+    "sha256": "c0b4a847208260b010582a4754031b77436c245e2086cc085443676d08954254"
+  },
+  {
+    "path": ".opencode/agents/live-ops-designer.md",
+    "bytes": 8398,
+    "lines": 169,
+    "sha256": "5df0add926f8222156ec14137bd1bf11b5cb186df50db96cce567736005c2323"
+  },
+  {
+    "path": ".opencode/agents/localization-lead.md",
+    "bytes": 8912,
+    "lines": 187,
+    "sha256": "0603c018d3e153813268044039932524d390ec143f78f32d0a5613e12de602f1"
+  },
+  {
+    "path": ".opencode/agents/narrative-director.md",
+    "bytes": 5576,
+    "lines": 121,
+    "sha256": "747558929c58d158f864c9eaf4d4ec39dd6b7058c0a37a384b0506d0cf7f4965"
+  },
+  {
+    "path": ".opencode/agents/network-programmer.md",
+    "bytes": 4687,
+    "lines": 96,
+    "sha256": "783e9e4bb2bdb8a1336fec82502a405fdd3de6ebd8c653422c3a97394a56da00"
+  },
+  {
+    "path": ".opencode/agents/performance-analyst.md",
+    "bytes": 4742,
+    "lines": 109,
+    "sha256": "63c4dc7e827451ff16ca218b2448fe5497d925dc5e23ab3a26a27bbe7fe25542"
+  },
+  {
+    "path": ".opencode/agents/producer.md",
+    "bytes": 6150,
+    "lines": 144,
+    "sha256": "4f5885ab87280fe36815a20564f911f4a3a35df6f36ed168690ba6370d4527b0"
+  },
+  {
+    "path": ".opencode/agents/prototyper.md",
+    "bytes": 7953,
+    "lines": 200,
+    "sha256": "27c9ce109051f85a45af219a4b8b65392ed0d649f7052d88948b97085c20c7f5"
+  },
+  {
+    "path": ".opencode/agents/qa-lead.md",
+    "bytes": 4814,
+    "lines": 104,
+    "sha256": "4652568cee93d12c4b004c426f2151ab87a0eefa080ff7e0258ce8ce19650766"
+  },
+  {
+    "path": ".opencode/agents/qa-tester.md",
+    "bytes": 4309,
+    "lines": 109,
+    "sha256": "7259128ee02b0b16dc3ea68701256194fc94ab60b5a1ef18eb6a6942abfcdbcb"
+  },
+  {
+    "path": ".opencode/agents/release-manager.md",
+    "bytes": 7605,
+    "lines": 177,
+    "sha256": "8d94f752e9cfd528f097f76975f71acf9f4051b237ebfd69fddb31b91fc301ff"
+  },
+  {
+    "path": ".opencode/agents/security-engineer.md",
+    "bytes": 5918,
+    "lines": 125,
+    "sha256": "947446450c446075e7782f540f7e011433dccd3e547ca4d3580bc4f3ac4fb658"
+  },
+  {
+    "path": ".opencode/agents/sound-designer.md",
+    "bytes": 3914,
+    "lines": 82,
+    "sha256": "17ec534b72d0dbc23f98f5a2da7129fa4206e4ff1fae853d9c9a67525290b5d5"
+  },
+  {
+    "path": ".opencode/agents/systems-designer.md",
+    "bytes": 4584,
+    "lines": 98,
+    "sha256": "1124c7cfa97e9d65cb8951cd313a0f0f006444b7a710147ad13ca284875afae3"
+  },
+  {
+    "path": ".opencode/agents/technical-artist.md",
+    "bytes": 4616,
+    "lines": 98,
+    "sha256": "76422bc5042d461019f6f45ddce74fbed071c74994557083e87397ec8dfe8a90"
+  },
+  {
+    "path": ".opencode/agents/technical-director.md",
+    "bytes": 6354,
+    "lines": 136,
+    "sha256": "848ffdd673208fcbe861036cf3c3b1df00b79408ff699a7a3eb59a878611837b"
+  },
+  {
+    "path": ".opencode/agents/tools-programmer.md",
+    "bytes": 4378,
+    "lines": 91,
+    "sha256": "fcb620be099b44bc7f97313e655b5c4a1a2b8a7b3c97ef45e41ab14d6bc7f877"
+  },
+  {
+    "path": ".opencode/agents/ue-blueprint-specialist.md",
+    "bytes": 7331,
+    "lines": 149,
+    "sha256": "bdc38bce6bd7a76177fc5de34de1d401749c58209f7b07b9e6de322a40fd53ed"
+  },
+  {
+    "path": ".opencode/agents/ue-gas-specialist.md",
+    "bytes": 7282,
+    "lines": 132,
+    "sha256": "10d63ef94e703d833c91a28f6f5b14f2873cdcc56441b99fb51bffd21f1f3a22"
+  },
+  {
+    "path": ".opencode/agents/ue-replication-specialist.md",
+    "bytes": 7627,
+    "lines": 142,
+    "sha256": "dae84411af5725d375c67ed511979f5330de1b8129334de3f94e6f1b763cccc1"
+  },
+  {
+    "path": ".opencode/agents/ue-umg-specialist.md",
+    "bytes": 7790,
+    "lines": 149,
+    "sha256": "08ec0200e976d71be8745c07cdad44f3bd062f42c5dd7d821125addb2e6c9951"
+  },
+  {
+    "path": ".opencode/agents/ui-programmer.md",
+    "bytes": 4467,
+    "lines": 92,
+    "sha256": "962a0e98fa782f1e5195fcf6519a430aba12741aaecd70ab5d27d7900cab6631"
+  },
+  {
+    "path": ".opencode/agents/unity-addressables-specialist.md",
+    "bytes": 8682,
+    "lines": 164,
+    "sha256": "679291d72603a6d1255ab31308743d67d7f44789b43eb5f4244ea7ff8ffa98e7"
+  },
+  {
+    "path": ".opencode/agents/unity-dots-specialist.md",
+    "bytes": 8063,
+    "lines": 147,
+    "sha256": "0b67f9c2aa676fb88bbcd173c70349aa113a7c31f1cb84cd188d12e5731c32d2"
+  },
+  {
+    "path": ".opencode/agents/unity-shader-specialist.md",
+    "bytes": 8994,
+    "lines": 177,
+    "sha256": "af7098c4989c02109ca89b9a00651c7484aebf33cc62dc47edb8fbaef072ff88"
+  },
+  {
+    "path": ".opencode/agents/unity-specialist.md",
+    "bytes": 9703,
+    "lines": 183,
+    "sha256": "3bf02263783200427373cd676e5cfee07ee144428e5f0b8e2b758f607c40e8ba"
+  },
+  {
+    "path": ".opencode/agents/unity-ui-specialist.md",
+    "bytes": 10365,
+    "lines": 216,
+    "sha256": "e7ffb18942ab6a9834457baa74742294958ff674c09c4fdb329629df72172790"
+  },
+  {
+    "path": ".opencode/agents/unreal-specialist.md",
+    "bytes": 9182,
+    "lines": 171,
+    "sha256": "1548f77cad1bdb1e47267f28f3fcb79b793d8a7973da1a8afd0463480bc090f4"
+  },
+  {
+    "path": ".opencode/agents/ux-designer.md",
+    "bytes": 4759,
+    "lines": 108,
+    "sha256": "84f2e33488194786fa5bf17eb1727a780fce305be707e905b2c4a6cb1c3c4b15"
+  },
+  {
+    "path": ".opencode/agents/world-builder.md",
+    "bytes": 4970,
+    "lines": 107,
+    "sha256": "e24980ce0e7e6ddc43f1690964012989a5b3088a0c31dc6033287ff8013cd35b"
+  },
+  {
+    "path": ".opencode/agents/writer.md",
+    "bytes": 4833,
+    "lines": 100,
+    "sha256": "423562680d39e3c6d8a4c7f1121b52b0fa6b94fe9e533811d1c16436e2ee5bb5"
+  },
+  {
+    "path": ".opencode/docs/OPENCODE-local-template.md",
+    "bytes": 1110,
+    "lines": 37,
+    "sha256": "c9b4e14c424c08e8a57a9c469e45838134f22cca23afd108a0186bdbb0dbc39e"
+  },
+  {
+    "path": ".opencode/docs/agent-coordination-map.md",
+    "bytes": 13178,
+    "lines": 277,
+    "sha256": "d7e1d2be2b5c1c7264851832723de564aafc800eeeac507acaeccda7a6f9bf2e"
+  },
+  {
+    "path": ".opencode/docs/agent-roster.md",
+    "bytes": 7277,
+    "lines": 100,
+    "sha256": "36cacb6dabd4783504045a5bba771cea237791e17de9879afa9f75bc44debb91"
+  },
+  {
+    "path": ".opencode/docs/coding-standards.md",
+    "bytes": 1303,
+    "lines": 25,
+    "sha256": "d02c693cbf2001f14dc483b6bf16b67b5586d4820d410fba0078ceefbe1a963e"
+  },
+  {
+    "path": ".opencode/docs/context-management.md",
+    "bytes": 4343,
+    "lines": 107,
+    "sha256": "b3196acd31173f4b9d8df3d4ea164221433c742c9d53f7002c5238beb6d1ae32"
+  },
+  {
+    "path": ".opencode/docs/coordination-rules.md",
+    "bytes": 801,
+    "lines": 13,
+    "sha256": "4a271f923a4aa521dd8513261c4848b1a1920b66e3a7de416029714e86253f91"
+  },
+  {
+    "path": ".opencode/docs/directory-structure.md",
+    "bytes": 1196,
+    "lines": 18,
+    "sha256": "1c07046364c88a3d18aa35eea6d20acff5ba7cf53b79109ef5a268d8bc8066eb"
+  },
+  {
+    "path": ".opencode/docs/hooks-reference/hook-input-schemas.md",
+    "bytes": 2773,
+    "lines": 126,
+    "sha256": "f712d3e66b2f91111b206fbb393b51021e32540d6ce30601254ffe25dd6c611a"
+  },
+  {
+    "path": ".opencode/docs/hooks-reference/post-merge-asset-validation.md",
+    "bytes": 2574,
+    "lines": 84,
+    "sha256": "bdf0b7dd6fb01bbe08c0fe8c0e74035b90f3b44692541d4ba1d353c9823da1fb"
+  },
+  {
+    "path": ".opencode/docs/hooks-reference/post-sprint-retrospective.md",
+    "bytes": 2153,
+    "lines": 78,
+    "sha256": "022cecf8189033ea3b1c3b9e7518ad26a89ea2791b7c91186300536497afd14a"
+  },
+  {
+    "path": ".opencode/docs/hooks-reference/pre-commit-code-quality.md",
+    "bytes": 2131,
+    "lines": 61,
+    "sha256": "d4f6107dd617d1f04e74cffd7c4ab8e04c7c110685c134e17066f1f300333e6a"
+  },
+  {
+    "path": ".opencode/docs/hooks-reference/pre-commit-design-check.md",
+    "bytes": 2201,
+    "lines": 70,
+    "sha256": "6b1e955cf730fec7790e1f0e90c364f92903a58bf1cc9236f34256113235cb84"
+  },
+  {
+    "path": ".opencode/docs/hooks-reference/pre-push-test-gate.md",
+    "bytes": 1997,
+    "lines": 80,
+    "sha256": "2042474932084b5ad21dea9156cc35a11eb56ba7aa9bb18172d4efc0b97d409a"
+  },
+  {
+    "path": ".opencode/docs/hooks-reference.md",
+    "bytes": 1487,
+    "lines": 17,
+    "sha256": "53728ab023eb6dcbea36d2cb8468197e4c0202228c358ac475a3dd966bbbc42d"
+  },
+  {
+    "path": ".opencode/docs/quick-start.md",
+    "bytes": 12630,
+    "lines": 249,
+    "sha256": "b7f12fda70ce4d8ce62261357b113f43fd956a706180c27fce45f159ff63fe31"
+  },
+  {
+    "path": ".opencode/docs/review-workflow.md",
+    "bytes": 292,
+    "lines": 6,
+    "sha256": "5473fff8fd07ed08d9c6c918a251fab3a253ee89c6a99ed208a835146aa134c7"
+  },
+  {
+    "path": ".opencode/docs/rules-reference.md",
+    "bytes": 1217,
+    "lines": 17,
+    "sha256": "9bb8bf9f102fe54ed4ec2d9a3a50d8a4bb99218964c841388f67563caab30a10"
+  },
+  {
+    "path": ".opencode/docs/settings-local-template.md",
+    "bytes": 1379,
+    "lines": 63,
+    "sha256": "9c171879c5fb94d83f5b659aca2955e8f8ce15669c4fa82b3d1d019f3d2ebf29"
+  },
+  {
+    "path": ".opencode/docs/setup-requirements.md",
+    "bytes": 2525,
+    "lines": 80,
+    "sha256": "29f35e6886ca28436bb1af603ae4fcb46b49aca063f0adde1a00781310506849"
+  },
+  {
+    "path": ".opencode/docs/skills-reference.md",
+    "bytes": 3605,
+    "lines": 41,
+    "sha256": "6d2fbf9005abf80e34a2f4537e097f28a572a169520c2985a2ba374322bfef26"
+  },
+  {
+    "path": ".opencode/docs/technical-preferences.md",
+    "bytes": 1471,
+    "lines": 48,
+    "sha256": "6009382a7f0afcd712027c194678a511a821356bcc6703ff0bb20c2195c9578d"
+  },
+  {
+    "path": ".opencode/docs/templates/architecture-decision-record.md",
+    "bytes": 2891,
+    "lines": 127,
+    "sha256": "0a5c81ecf089b5562a325b98fe83e4476cb3e719fbc5fb8ae346655751a58e03"
+  },
+  {
+    "path": ".opencode/docs/templates/architecture-doc-from-code.md",
+    "bytes": 6217,
+    "lines": 266,
+    "sha256": "a171673089d3364d848797fe7c7dd415206e65ba1313fec0c1612d32a1a57ad9"
+  },
+  {
+    "path": ".opencode/docs/templates/art-bible.md",
+    "bytes": 2243,
+    "lines": 80,
+    "sha256": "763d85c3ce5cb297c73603ac48718e4a73bf01b908d2e283693d8f678e71edd6"
+  },
+  {
+    "path": ".opencode/docs/templates/changelog-template.md",
+    "bytes": 1445,
+    "lines": 62,
+    "sha256": "cb4dad3cbc41b1501babe53cc9f00be1311aed39f3ea19f57d77ecc0bb9314b1"
+  },
+  {
+    "path": ".opencode/docs/templates/collaborative-protocols/design-agent-protocol.md",
+    "bytes": 6121,
+    "lines": 157,
+    "sha256": "c5c778e3d9ecb80d224944510c67be99861f9f96b4ac07f6660d06e6e0a971e4"
+  },
+  {
+    "path": ".opencode/docs/templates/collaborative-protocols/implementation-agent-protocol.md",
+    "bytes": 6312,
+    "lines": 152,
+    "sha256": "039218e2c26b0e83bbb7c57f97bfff39659e9c88aca649fae9b506855135db02"
+  },
+  {
+    "path": ".opencode/docs/templates/collaborative-protocols/leadership-agent-protocol.md",
+    "bytes": 7741,
+    "lines": 181,
+    "sha256": "e1fbc30461f18c4ff5f018cdaf04dc868c47e4aa54da79a26885aaba7081e57b"
+  },
+  {
+    "path": ".opencode/docs/templates/concept-doc-from-prototype.md",
+    "bytes": 8239,
+    "lines": 304,
+    "sha256": "67cac0117cdadda7494196edff3d92e2195c660067c7fa2ad4f0055de9165291"
+  },
+  {
+    "path": ".opencode/docs/templates/design-doc-from-implementation.md",
+    "bytes": 5763,
+    "lines": 204,
+    "sha256": "464a3bf7f674d0f82117d5880e6966a0496e14135009747547697c4d5d7f27ab"
+  },
+  {
+    "path": ".opencode/docs/templates/economy-model.md",
+    "bytes": 4482,
+    "lines": 130,
+    "sha256": "22af6a9df657a17e8155a6130d04a8ce04c095e5dcb7ad5c2648449013b35a58"
+  },
+  {
+    "path": ".opencode/docs/templates/faction-design.md",
+    "bytes": 4653,
+    "lines": 166,
+    "sha256": "abe1d5720e68169e349156bbcb42db135ecca25bf1510dda5ddd1deb3980f257"
+  },
+  {
+    "path": ".opencode/docs/templates/game-concept.md",
+    "bytes": 12443,
+    "lines": 316,
+    "sha256": "ecbf63a48ab4d0352cb2a26444a75b973cece5e25beba1b7f54d8efd3ca351a7"
+  },
+  {
+    "path": ".opencode/docs/templates/game-design-document.md",
+    "bytes": 3812,
+    "lines": 116,
+    "sha256": "af6e4ba818fb5275a7b5cd245ae7a7302d54048f1961cab51ab2c173a14e72d6"
+  },
+  {
+    "path": ".opencode/docs/templates/game-pillars.md",
+    "bytes": 12852,
+    "lines": 313,
+    "sha256": "3603610be7704cdee1c421813cd248ce07a410969dc3416aa2b9e4959801d3c8"
+  },
+  {
+    "path": ".opencode/docs/templates/incident-response.md",
+    "bytes": 3943,
+    "lines": 135,
+    "sha256": "8ba68a9ac8a1f404c5fd785b2a3c9287ed52873bb7acf028e6eef1bb6f9dab4c"
+  },
+  {
+    "path": ".opencode/docs/templates/level-design-document.md",
+    "bytes": 3248,
+    "lines": 111,
+    "sha256": "61b48448c070490ebb0bb5214cfbfa3a926683f687dc1f74c83d310dc063aacb"
+  },
+  {
+    "path": ".opencode/docs/templates/milestone-definition.md",
+    "bytes": 2313,
+    "lines": 79,
+    "sha256": "ecdef4e53c02ea9ee954ae0124291fcd9bd3627ef6a444a4fc7878587a101251"
+  },
+  {
+    "path": ".opencode/docs/templates/narrative-character-sheet.md",
+    "bytes": 3197,
+    "lines": 111,
+    "sha256": "b40bb1cb386727a9c506cbbd76f037990e4461315554e0f78f896f0195cc79e2"
+  },
+  {
+    "path": ".opencode/docs/templates/pitch-document.md",
+    "bytes": 3497,
+    "lines": 140,
+    "sha256": "f33c7ec8faefc1d2909184328bbe53ffc00832de52d47eabf07ec418451e1662"
+  },
+  {
+    "path": ".opencode/docs/templates/post-mortem.md",
+    "bytes": 1685,
+    "lines": 69,
+    "sha256": "e7e2ea73be4295761c2a355ab542be620d5b947ca5749ad8efd43abdd9c16390"
+  },
+  {
+    "path": ".opencode/docs/templates/project-stage-report.md",
+    "bytes": 5205,
+    "lines": 199,
+    "sha256": "b78afb205a473f5ab30e6c0c0d4db20a1be907d4d3d38b72ed19a5dc73c8ba8e"
+  },
+  {
+    "path": ".opencode/docs/templates/release-checklist-template.md",
+    "bytes": 3654,
+    "lines": 125,
+    "sha256": "7886ea10821a99cfde3e7b3e3d3688fbc475f39701b79481ec4d5f5466eed11e"
+  },
+  {
+    "path": ".opencode/docs/templates/release-notes.md",
+    "bytes": 2270,
+    "lines": 103,
+    "sha256": "0d3ea9d50eb6a2dd57a042f656fc8fc8918522c6ec9b19d6cd48d36f4b390ecb"
+  },
+  {
+    "path": ".opencode/docs/templates/risk-register-entry.md",
+    "bytes": 1438,
+    "lines": 58,
+    "sha256": "0d4460ea5b5a3b2a87506fab8db2344efbffb9cf39b4ece285025038f9e0ff34"
+  },
+  {
+    "path": ".opencode/docs/templates/sound-bible.md",
+    "bytes": 5141,
+    "lines": 130,
+    "sha256": "9e1e63cbcc751113702d33a2134e05032994cd84a9a70acdf09909ec77f9b087"
+  },
+  {
+    "path": ".opencode/docs/templates/sprint-plan.md",
+    "bytes": 2286,
+    "lines": 75,
+    "sha256": "6ecb4de2c19780cea1fd4dca377cf4e6fc9425bb0e8c75d667fa724e42975a2d"
+  },
+  {
+    "path": ".opencode/docs/templates/systems-index.md",
+    "bytes": 5642,
+    "lines": 146,
+    "sha256": "7ede654c74704230feb88a331f98473b664ade9196dd1abdf6a041c49c683545"
+  },
+  {
+    "path": ".opencode/docs/templates/technical-design-document.md",
+    "bytes": 1969,
+    "lines": 82,
+    "sha256": "8809608a44354cf9f26086e23fa4c4cb3bd0012a8429877e0a92bb4e48dec9e6"
+  },
+  {
+    "path": ".opencode/docs/templates/test-plan.md",
+    "bytes": 2867,
+    "lines": 97,
+    "sha256": "b26cce181e3e7c67b3bc0592e299731a2c457dd43282854e962db8f87e550224"
+  },
+  {
+    "path": ".opencode/hooks/detect-gaps.sh",
+    "bytes": 5913,
+    "lines": 155,
+    "sha256": "14a313671368fe0af703431cd72a918907584c703f3a9bda12f7369b74e74aaa"
+  },
+  {
+    "path": ".opencode/hooks/log-agent.sh",
+    "bytes": 852,
+    "lines": 25,
+    "sha256": "be4f31848eb2f09213078ca6ae718fb8e9a530b759021fafcde613c8a773deec"
+  },
+  {
+    "path": ".opencode/hooks/pre-compact.sh",
+    "bytes": 2619,
+    "lines": 82,
+    "sha256": "1de405a7822a739a2a3c83427125abf683782f92262a4f04a9312b9897f2e02d"
+  },
+  {
+    "path": ".opencode/hooks/session-start.sh",
+    "bytes": 2267,
+    "lines": 75,
+    "sha256": "cf5e571e04ca3cb480f71f7e3d4b2f807972ddaaa9927543e5b105701e2761cb"
+  },
+  {
+    "path": ".opencode/hooks/session-stop.sh",
+    "bytes": 1321,
+    "lines": 43,
+    "sha256": "e8bd8a0364f4a7952c9889b0f66f4e1a28b9be8229e739a34a61a770d63eaa9f"
+  },
+  {
+    "path": ".opencode/hooks/validate-assets.sh",
+    "bytes": 1925,
+    "lines": 58,
+    "sha256": "6002be82184e0462bc6dd0cafa8f93289a6a7736ee51d1d2b0118f11ddc81126"
+  },
+  {
+    "path": ".opencode/hooks/validate-commit.sh",
+    "bytes": 3491,
+    "lines": 101,
+    "sha256": "f0da90b5a6adcac6b60913c6f1379a8074a99270becc87c03f9b3314a548ffb5"
+  },
+  {
+    "path": ".opencode/hooks/validate-push.sh",
+    "bytes": 1539,
+    "lines": 47,
+    "sha256": "b517dab7fa589a92e4aead64fc98194a4b2bb1982dbb126ba0f40008d8676b6b"
+  },
+  {
+    "path": ".opencode/opencode.json",
+    "bytes": 11317,
+    "lines": 303,
+    "sha256": "2ad824650c6bf4c9fcac010406ad4beaf146aac4223f3ffb43f7aa8b725ed0db"
+  },
+  {
+    "path": ".opencode/rules/ai-code.md",
+    "bytes": 678,
+    "lines": 15,
+    "sha256": "0b2ed79ed959c24262ca1b7ae353a78d574019d64eca040293753e165c5adb21"
+  },
+  {
+    "path": ".opencode/rules/data-files.md",
+    "bytes": 1219,
+    "lines": 46,
+    "sha256": "bbc65708e00a98e18278c8331fd4f69ad261a6fdc15cbbb3a96815d0800dab9d"
+  },
+  {
+    "path": ".opencode/rules/design-docs.md",
+    "bytes": 1039,
+    "lines": 18,
+    "sha256": "8e3ea21cd637f39b2fbca4ec1d660c97e0143f1b211466c7b03cf6447a59bfb4"
+  },
+  {
+    "path": ".opencode/rules/engine-code.md",
+    "bytes": 1380,
+    "lines": 37,
+    "sha256": "24e3bc62c96ef2840843721d047ea375726fc57a5ba816faa0432007c23d98f7"
+  },
+  {
+    "path": ".opencode/rules/gameplay-code.md",
+    "bytes": 1025,
+    "lines": 31,
+    "sha256": "94030c94f9f39c669f9292a0e1ab57a8d6fd53d1353485202713c2465098606c"
+  },
+  {
+    "path": ".opencode/rules/narrative.md",
+    "bytes": 755,
+    "lines": 15,
+    "sha256": "be8925e4d9a6242eb7db40fd918bdc94aa6f40e498f9e3aa8d7ffe27ede4a819"
+  },
+  {
+    "path": ".opencode/rules/network-code.md",
+    "bytes": 678,
+    "lines": 15,
+    "sha256": "e75454f6ea2e3892521ab6500865190fe74b28ce90b604e78a7d74a6c08e675e"
+  },
+  {
+    "path": ".opencode/rules/prototype-code.md",
+    "bytes": 1551,
+    "lines": 40,
+    "sha256": "67cf516d0febcb9829407386b4d16b773ea38cc21012fdeb03a53943cc6ed5bd"
+  },
+  {
+    "path": ".opencode/rules/shader-code.md",
+    "bytes": 1933,
+    "lines": 44,
+    "sha256": "c48a60ba3734ac3f75146434e867095eda907f7770cb8c56e28b236d1c751a04"
+  },
+  {
+    "path": ".opencode/rules/test-standards.md",
+    "bytes": 1249,
+    "lines": 42,
+    "sha256": "78c642a6f22a815a990aca02e677d5d7f676524dff59a9a8034f1c7d69b42597"
+  },
+  {
+    "path": ".opencode/rules/ui-code.md",
+    "bytes": 641,
+    "lines": 15,
+    "sha256": "be45904c33e72c717ac56ba2ee760d5a5ec1435a3b84ad4365ca513c91a7a68b"
+  },
+  {
+    "path": ".opencode/skills/architecture-decision/SKILL.md",
+    "bytes": 2502,
+    "lines": 100,
+    "sha256": "2c0370893b191d0c6081e626be45a8664a19b6db13d35a466efdd6d89ca9d3c3"
+  },
+  {
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "bytes": 2338,
+    "lines": 75,
+    "sha256": "786dae49b033de518866286ff1b1cabf09829b3796d309af02e040e8d2e77f7d"
+  },
+  {
+    "path": ".opencode/skills/balance-check/SKILL.md",
+    "bytes": 2411,
+    "lines": 72,
+    "sha256": "5698b9aee687f536b7ad83ccd2657e06437454623ca79eeff4f6aee9e0f31a2e"
+  },
+  {
+    "path": ".opencode/skills/brainstorm/SKILL.md",
+    "bytes": 9476,
+    "lines": 210,
+    "sha256": "ce2ce575d8dee989d8ea766dea3b497fe8ada9cc4f6fedf9b693fa4210ac759c"
+  },
+  {
+    "path": ".opencode/skills/bug-report/SKILL.md",
+    "bytes": 2324,
+    "lines": 75,
+    "sha256": "1b3ee55fa19780c291f2f535a053be3aa2089a3dddbed55280ec9c100210e2b1"
+  },
+  {
+    "path": ".opencode/skills/changelog/SKILL.md",
+    "bytes": 4433,
+    "lines": 133,
+    "sha256": "a6ac81374cdc0ac319de4515210ecf20c3a4a966a9519a7e6aaae148e8735482"
+  },
+  {
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "bytes": 2633,
+    "lines": 74,
+    "sha256": "addec5fe3a3e408f56eee800010d7249ab1dcf47f25e7d4cdbeba85aabc58e95"
+  },
+  {
+    "path": ".opencode/skills/design-review/SKILL.md",
+    "bytes": 3270,
+    "lines": 80,
+    "sha256": "890be8dc95e41e46c483147d14385811c00da8d5801f36649c9700c84fb25a17"
+  },
+  {
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "bytes": 17853,
+    "lines": 496,
+    "sha256": "ad9c1f18cc7e8acdb3a7588538f1850ce73583823e3192e931fe31b47b268ae8"
+  },
+  {
+    "path": ".opencode/skills/estimate/SKILL.md",
+    "bytes": 6428,
+    "lines": 163,
+    "sha256": "76b0d98d3e575f29963831f2f79d13cad2c7b4495ff39380265ec80156ece006"
+  },
+  {
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "bytes": 9251,
+    "lines": 252,
+    "sha256": "b401873622fde08c9a3fe5fa0fe3a90df64f8704dd6a7720761096e7cbfe697d"
+  },
+  {
+    "path": ".opencode/skills/hotfix/SKILL.md",
+    "bytes": 2960,
+    "lines": 70,
+    "sha256": "bc635c9f6f86a06ca2a9aeb0562e75b4a4c3da91a58a0c08e6b0aafde84c1e2b"
+  },
+  {
+    "path": ".opencode/skills/launch-checklist/SKILL.md",
+    "bytes": 7654,
+    "lines": 221,
+    "sha256": "2aa9b89a57ed6e21bd30a5b2c778f12c96f470fb15a692e10ac75d0b5e64cee2"
+  },
+  {
+    "path": ".opencode/skills/localize/SKILL.md",
+    "bytes": 3188,
+    "lines": 70,
+    "sha256": "f9214e423b0b4e8ca0ef60989d8ddb8f593fdd48c77e732e6818d8cff1ebfc4f"
+  },
+  {
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "bytes": 11381,
+    "lines": 292,
+    "sha256": "85a31705c4184c2924733fce1d831084bca370bf37338d7bd32c785cd0a8f589"
+  },
+  {
+    "path": ".opencode/skills/milestone-review/SKILL.md",
+    "bytes": 2572,
+    "lines": 91,
+    "sha256": "cfbab54188650c3ce7b0e93632a754bd7d17d4419d77f2139a10ebb1c62e602a"
+  },
+  {
+    "path": ".opencode/skills/onboard/SKILL.md",
+    "bytes": 2255,
+    "lines": 71,
+    "sha256": "39f011ef2ebf427f74197e48d4389c8872db467ba6b27edd30d3a3a4e05d7a2a"
+  },
+  {
+    "path": ".opencode/skills/patch-notes/SKILL.md",
+    "bytes": 3930,
+    "lines": 120,
+    "sha256": "5ebd5b076b6a60f758b8848fec5f4e263c17e9d9dc74515c1e5527e981aa5b36"
+  },
+  {
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "bytes": 3664,
+    "lines": 93,
+    "sha256": "fc93ffbd06599ed3eb03bf7d31baeb185bb43cfc11bcdb02c2b9a1d04f28cd05"
+  },
+  {
+    "path": ".opencode/skills/playtest-report/SKILL.md",
+    "bytes": 2271,
+    "lines": 77,
+    "sha256": "17d98a878b3ecaea1f1269a2d6c9a3aa585a2adf19285dd295a04ada5309ed7f"
+  },
+  {
+    "path": ".opencode/skills/project-stage-detect/SKILL.md",
+    "bytes": 6103,
+    "lines": 192,
+    "sha256": "6eb74d147d458cd1e02dfa7192fdd957d18bdafdaaf67d1f6e1a9c55babee095"
+  },
+  {
+    "path": ".opencode/skills/prototype/SKILL.md",
+    "bytes": 3517,
+    "lines": 99,
+    "sha256": "71dc38c108bce1740e18f9f875460323dbdf5242dfee93f35f334c755c7605a4"
+  },
+  {
+    "path": ".opencode/skills/release-checklist/SKILL.md",
+    "bytes": 5943,
+    "lines": 166,
+    "sha256": "cbe4d334efa1a59f75943537d73e3de75d462a5b2cfbb3864445eb7a25ef3e39"
+  },
+  {
+    "path": ".opencode/skills/retrospective/SKILL.md",
+    "bytes": 5714,
+    "lines": 158,
+    "sha256": "fa9de8f3d76250d2c9778c9db8aefe2ccb146a78031fafeff84104ed1f68f367"
+  },
+  {
+    "path": ".opencode/skills/reverse-document/SKILL.md",
+    "bytes": 8846,
+    "lines": 262,
+    "sha256": "133839df766a6c16e3f71a43ce763b47422de5980f760fc88bfcd4076f2fd69a"
+  },
+  {
+    "path": ".opencode/skills/scope-check/SKILL.md",
+    "bytes": 2975,
+    "lines": 73,
+    "sha256": "a8ee43a21bcc29ac40b71464f590fb633f1ad5befd6368b41f0722efa54ca666"
+  },
+  {
+    "path": ".opencode/skills/setup-engine/SKILL.md",
+    "bytes": 12162,
+    "lines": 327,
+    "sha256": "20c7fd524c5043f67de8d1c253c48c6da0d341ea8494617766dc4cfb82e02112"
+  },
+  {
+    "path": ".opencode/skills/sprint-plan/SKILL.md",
+    "bytes": 3020,
+    "lines": 108,
+    "sha256": "7293ff5219645ab41c4f1e91893377fe58a7b078b7e356a47c58ba4592040c02"
+  },
+  {
+    "path": ".opencode/skills/start/SKILL.md",
+    "bytes": 7330,
+    "lines": 180,
+    "sha256": "7c8620fbe2e1ed99f9420be0120aa2eaecf35c04f0035733084bc8ed0ce48369"
+  },
+  {
+    "path": ".opencode/skills/team-audio/SKILL.md",
+    "bytes": 3384,
+    "lines": 74,
+    "sha256": "260bf50925a080285dd847f2497c4335f014becadb521d53a8499fec6a0f642c"
+  },
+  {
+    "path": ".opencode/skills/team-combat/SKILL.md",
+    "bytes": 3761,
+    "lines": 74,
+    "sha256": "18625e28937ab457960e3daaec745b369f4237d080719fb399937e272f80294c"
+  },
+  {
+    "path": ".opencode/skills/team-level/SKILL.md",
+    "bytes": 4202,
+    "lines": 89,
+    "sha256": "834743d57e605f29484ea751626a6041f0d674b49f932fd8be738d2e097062fc"
+  },
+  {
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "bytes": 3695,
+    "lines": 67,
+    "sha256": "7bd2e1be4e2f3dfd36ac8482ab354b698204e4cbdcf45cc70d37025912219174"
+  },
+  {
+    "path": ".opencode/skills/team-polish/SKILL.md",
+    "bytes": 3957,
+    "lines": 81,
+    "sha256": "421bb9248c309932031079a4322c44444ee850d1a122b1c05f602d47260e2efb"
+  },
+  {
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "bytes": 3917,
+    "lines": 81,
+    "sha256": "dd8ccc92195c4e8ecbbea7a3482ae5d8b87ba252f697a84ddff1b015a8225bde"
+  },
+  {
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "bytes": 3545,
+    "lines": 70,
+    "sha256": "3aaf26005a235f608706f2743214c85174b585c904c1f612e8abef151b680c79"
+  },
+  {
+    "path": ".opencode/skills/tech-debt/SKILL.md",
+    "bytes": 3204,
+    "lines": 70,
+    "sha256": "506b3525d34d3bba8fa88448b8a20f1f5776cd58913d164065ce55d9e7c9ed71"
+  },
+  {
+    "path": "LICENSE",
+    "bytes": 1077,
+    "lines": 21,
+    "sha256": "9bbb866e7d1383e1b8ebb8c7f773096cadea6961b4269ada4587c7db261a717e"
+  },
+  {
+    "path": "OPENCODE.md",
+    "bytes": 1791,
+    "lines": 56,
+    "sha256": "b1b6327dfc99a50f275811c68c87d656bf3a02cdf338942240c697c0a4422ba9"
+  },
+  {
+    "path": "README.md",
+    "bytes": 7119,
+    "lines": 201,
+    "sha256": "5c1e84673ee172ec8bf4eb095611fc4409a5416d477effbd73d50462ebd2d010"
+  },
+  {
+    "path": "change_model.sh",
+    "bytes": 2200,
+    "lines": 90,
+    "sha256": "d7b3623687e4985da0f1c94a0671259bb82f344c53f5ae7f7f3ae5b1ee49fa81"
+  },
+  {
+    "path": "docs/COLLABORATIVE-DESIGN-PRINCIPLE.md",
+    "bytes": 22403,
+    "lines": 688,
+    "sha256": "7b96644d409b340b1da2e74f0745ecaf348dc4225aea74da2db96cd890711906"
+  },
+  {
+    "path": "docs/WORKFLOW-GUIDE.md",
+    "bytes": 61907,
+    "lines": 1864,
+    "sha256": "bedb74c42616d2848b384e73bb919d7c6b9c45118161ee25feaeb022daa5db72"
+  },
+  {
+    "path": "docs/engine-reference/README.md",
+    "bytes": 2336,
+    "lines": 63,
+    "sha256": "1ecb162b9392fd08c78b9004c64ce590697fdeccd00ef5a0bbe08c31168f951f"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/VERSION.md",
+    "bytes": 2597,
+    "lines": 53,
+    "sha256": "0ff01c0ca82337e18c3ca3f71f3ffb272f673eaba4af472fbae801056e5488ce"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/breaking-changes.md",
+    "bytes": 5595,
+    "lines": 166,
+    "sha256": "4b2795431e4a465078244a1efad0e45930025f095eefd1294986bd4120f6dbbf"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/current-best-practices.md",
+    "bytes": 6954,
+    "lines": 204,
+    "sha256": "fe4c39108d4c469189efb138108ec326df7fae1bfdf4d0ac456635e8f67a785b"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/deprecated-apis.md",
+    "bytes": 3617,
+    "lines": 57,
+    "sha256": "7de6835c7210854b33dca46b46a3bb5a7c065bbcab02598e5383dd89ed57d31f"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/modules/assets.md",
+    "bytes": 4204,
+    "lines": 126,
+    "sha256": "c57be94bf16b5533d303e8af601067b2b6f24217e21db9bb74d85f4cb1507bc1"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/modules/audio.md",
+    "bytes": 3312,
+    "lines": 96,
+    "sha256": "fe0d47f3376178b6352373a4e18724c04ec4f49e3bd603218c37e8faf164ed0d"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/modules/gml-language.md",
+    "bytes": 3745,
+    "lines": 138,
+    "sha256": "20f7f5881636039d2d057d29e99229826802723a6be07145dbdb414a7d9497bd"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/modules/rooms-layers.md",
+    "bytes": 4260,
+    "lines": 133,
+    "sha256": "b2e90a1c34e308fd64b77966d9fee1e474d82de8b02d3da4ef6fa73d39112021"
+  },
+  {
+    "path": "docs/engine-reference/gamemaker/modules/ui-draw-gui.md",
+    "bytes": 4167,
+    "lines": 130,
+    "sha256": "d8b697d2ad6e1921fe19971940715f3788bc71a8bf2944cd7dfa89c5a0fd7307"
+  },
+  {
+    "path": "docs/engine-reference/godot/VERSION.md",
+    "bytes": 1368,
+    "lines": 31,
+    "sha256": "2f8a1d151f32a5b8ffbefb20ffcb22a50504f7e728162e7c8f06f32e9a635b69"
+  },
+  {
+    "path": "docs/engine-reference/godot/breaking-changes.md",
+    "bytes": 5286,
+    "lines": 70,
+    "sha256": "9feee535b59086a9aadec2d2a0ea4be2fd68c390871b8d8e59bd2f887e2689e9"
+  },
+  {
+    "path": "docs/engine-reference/godot/current-best-practices.md",
+    "bytes": 4053,
+    "lines": 101,
+    "sha256": "b298ad871a9183bc36f7e4ca4d017969e250a025cafa33476a511e0d4c8eddf5"
+  },
+  {
+    "path": "docs/engine-reference/godot/deprecated-apis.md",
+    "bytes": 2443,
+    "lines": 43,
+    "sha256": "18c2c13bdc792aa17becc75eb494d83505dc2ead4c168e298dc67a5afbaf7acf"
+  },
+  {
+    "path": "docs/engine-reference/godot/modules/animation.md",
+    "bytes": 2545,
+    "lines": 76,
+    "sha256": "d3390fee0f24e413c8d06a4ece195a5418399355ef31ab560dc83e81fb1d927d"
+  },
+  {
+    "path": "docs/engine-reference/godot/modules/audio.md",
+    "bytes": 2281,
+    "lines": 79,
+    "sha256": "3f3c50c4f56f9d665914aafaa25402bca7da1894e75ae9748ef6f20581bb953b"
+  },
+  {
+    "path": "docs/engine-reference/godot/modules/input.md",
+    "bytes": 2489,
+    "lines": 72,
+    "sha256": "5e371e388ba4ee5d5950cbc63c80e5b5d5faa286a1f67ec74d036c93bbe4e134"
+  },
+  {
+    "path": "docs/engine-reference/godot/modules/navigation.md",
+    "bytes": 3211,
+    "lines": 101,
+    "sha256": "69ccb642551dbf7ecf66b5bacc76bb09a34c1f9f89534bbea9f5c7af42573515"
+  },
+  {
+    "path": "docs/engine-reference/godot/modules/networking.md",
+    "bytes": 2344,
+    "lines": 76,
+    "sha256": "d6281875a560e3b1392bcd4b3368a1654b0cdea0bfc897866979d311f8f248a4"
+  },
+  {
+    "path": "docs/engine-reference/godot/modules/physics.md",
+    "bytes": 2593,
+    "lines": 76,
+    "sha256": "51d304a533147156d2c8b3b03540fd866080eceeed23f0e5d10ff3ad09ac4682"
+  },
+  {
+    "path": "docs/engine-reference/godot/modules/rendering.md",
+    "bytes": 2349,
+    "lines": 59,
+    "sha256": "9058376fa3772c6942a7261f76980d87815c664170c48569b10bf8b8eae0357a"
+  },
+  {
+    "path": "docs/engine-reference/godot/modules/ui.md",
+    "bytes": 2827,
+    "lines": 82,
+    "sha256": "78df3c59b0326f5a13f262662a2308e3b407febf151e6fcc9a14527dfbc315f0"
+  },
+  {
+    "path": "docs/engine-reference/unity/PLUGINS.md",
+    "bytes": 8699,
+    "lines": 250,
+    "sha256": "529387a2c5968ef73765c64664d387aab69804c36501f44997ec58f31de307e9"
+  },
+  {
+    "path": "docs/engine-reference/unity/VERSION.md",
+    "bytes": 2628,
+    "lines": 57,
+    "sha256": "9579f7df53c5ce75e3a84c6054e36faf04c94160a1c3dd111664ff2c0ab6640a"
+  },
+  {
+    "path": "docs/engine-reference/unity/breaking-changes.md",
+    "bytes": 4051,
+    "lines": 154,
+    "sha256": "18552463ef012450a493ec20046e0722bc53b629116caf1b482c0e076aa41391"
+  },
+  {
+    "path": "docs/engine-reference/unity/current-best-practices.md",
+    "bytes": 7778,
+    "lines": 334,
+    "sha256": "cefa35c2ada51adae3587f9286dd2e71a3f0457e5329d3df063527f979a52dc5"
+  },
+  {
+    "path": "docs/engine-reference/unity/deprecated-apis.md",
+    "bytes": 4409,
+    "lines": 156,
+    "sha256": "e72ebe44b37c85aa9bf45123aad31425d3170889b59723ce3420cea2558ba691"
+  },
+  {
+    "path": "docs/engine-reference/unity/modules/animation.md",
+    "bytes": 6460,
+    "lines": 289,
+    "sha256": "a34f5c692dee08f1f1f3d805fd79a14957ca5443ecf6a06e446ec5af5bdd882b"
+  },
+  {
+    "path": "docs/engine-reference/unity/modules/audio.md",
+    "bytes": 6029,
+    "lines": 284,
+    "sha256": "a4b9cc6ea8d8e4d662698cebad19739d5d044440148e05bb37e82098ce971002"
+  },
+  {
+    "path": "docs/engine-reference/unity/modules/input.md",
+    "bytes": 7575,
+    "lines": 356,
+    "sha256": "5763459442ecbbb843b90e6deb8955e76f4dcc5c44ce9911d2300994a1ad390a"
+  },
+  {
+    "path": "docs/engine-reference/unity/modules/navigation.md",
+    "bytes": 7277,
+    "lines": 330,
+    "sha256": "fa9fa5e442a97282c83ab17a86a22b5afd610ab604f7f4c516953d77f32edcc2"
+  },
+  {
+    "path": "docs/engine-reference/unity/modules/networking.md",
+    "bytes": 7531,
+    "lines": 351,
+    "sha256": "bae4446e74e369bc0d854f3f1db0627a2c761a44414cb951d429547e4893be32"
+  },
+  {
+    "path": "docs/engine-reference/unity/modules/physics.md",
+    "bytes": 6145,
+    "lines": 268,
+    "sha256": "695a063419773551158803d264e2fea534cdab8f7638e4a4052af8e3201252b2"
+  },
+  {
+    "path": "docs/engine-reference/unity/modules/rendering.md",
+    "bytes": 5682,
+    "lines": 238,
+    "sha256": "0e92faf290529cf7d01512e40b501fb8fd908a5a65eb24512bd541aef875e47f"
+  },
+  {
+    "path": "docs/engine-reference/unity/modules/ui.md",
+    "bytes": 7676,
+    "lines": 377,
+    "sha256": "eb562e228579a79d5bd7cd90dbfe3b885098f413399a50e56b920811ecd0e34a"
+  },
+  {
+    "path": "docs/engine-reference/unity/plugins/addressables.md",
+    "bytes": 8085,
+    "lines": 378,
+    "sha256": "ccc3ac681104230304f7e8bd8c3c9d8d6bde80f00004dfc36370406ebd3d03cf"
+  },
+  {
+    "path": "docs/engine-reference/unity/plugins/cinemachine.md",
+    "bytes": 7179,
+    "lines": 348,
+    "sha256": "015401a08d7e56729b57d58509ba73c31265134b6b75c33f9fb896e81192571a"
+  },
+  {
+    "path": "docs/engine-reference/unity/plugins/dots-entities.md",
+    "bytes": 9193,
+    "lines": 420,
+    "sha256": "2f25288586c23be8ab02d8d575fa4ec0ffda1bc9b767f60ccbe21d6c7fc7b9e1"
+  },
+  {
+    "path": "docs/engine-reference/unreal/PLUGINS.md",
+    "bytes": 7880,
+    "lines": 210,
+    "sha256": "ec0fd20745bde437c9939f9f665f7cadbe27199d36846029034fcd30630f6db8"
+  },
+  {
+    "path": "docs/engine-reference/unreal/VERSION.md",
+    "bytes": 2574,
+    "lines": 54,
+    "sha256": "7f90ac7a215dde0462fde0d19bcece613479ba7a3cedcdb8a02a37f2e6fc2a4f"
+  },
+  {
+    "path": "docs/engine-reference/unreal/breaking-changes.md",
+    "bytes": 4488,
+    "lines": 150,
+    "sha256": "cd1f975066a060b54a9983fcb016cd6e813193160aa11d5e49e04bd38690ce1f"
+  },
+  {
+    "path": "docs/engine-reference/unreal/current-best-practices.md",
+    "bytes": 8559,
+    "lines": 340,
+    "sha256": "459411160f126bdf5c97e8a8e09da1b412d37292fd2f43571061834a7ba6c787"
+  },
+  {
+    "path": "docs/engine-reference/unreal/deprecated-apis.md",
+    "bytes": 4890,
+    "lines": 170,
+    "sha256": "ae3bfb865c90245bb23a27d848226b15178593f9c1b9ec8dd95c80ae74d7beac"
+  },
+  {
+    "path": "docs/engine-reference/unreal/modules/animation.md",
+    "bytes": 6624,
+    "lines": 292,
+    "sha256": "3ce2c15fe1c9acd7b8f54ee6017f2ae20862cd2d13f8c943763c0ad58d70ddb5"
+  },
+  {
+    "path": "docs/engine-reference/unreal/modules/audio.md",
+    "bytes": 6182,
+    "lines": 289,
+    "sha256": "15f114b522a1844b1ccdadf26d18f0e1638b3e7141b17537cbd20579277ac06b"
+  },
+  {
+    "path": "docs/engine-reference/unreal/modules/input.md",
+    "bytes": 7226,
+    "lines": 288,
+    "sha256": "1575b50e640370b47ec05a9cc5f9c34b25aba03ed3bbfe47270d59651076bdc3"
+  },
+  {
+    "path": "docs/engine-reference/unreal/modules/navigation.md",
+    "bytes": 7358,
+    "lines": 338,
+    "sha256": "e195eac6991736f69ad7e5d450a404acd0092622510d75e812acaf29ae792f81"
+  },
+  {
+    "path": "docs/engine-reference/unreal/modules/networking.md",
+    "bytes": 8999,
+    "lines": 409,
+    "sha256": "2f03d662e32a9086d6b4e1e749c80f65bbe8c0051540cee412a71dfa0d7f1b21"
+  },
+  {
+    "path": "docs/engine-reference/unreal/modules/physics.md",
+    "bytes": 6417,
+    "lines": 283,
+    "sha256": "adf66c28d8ab09603e11afae45c8377e592fac51bf9d101e972272a5c52c972d"
+  },
+  {
+    "path": "docs/engine-reference/unreal/modules/rendering.md",
+    "bytes": 7114,
+    "lines": 297,
+    "sha256": "8a3f52819a56e2a84ffcc08a4c2ee29dc22dd5399f070498efa6e8c9ad0f38b6"
+  },
+  {
+    "path": "docs/engine-reference/unreal/modules/ui.md",
+    "bytes": 6901,
+    "lines": 353,
+    "sha256": "f0fe9ceff467b37f288354983534e84f117d57d0af2030db2b5c9d363770c887"
+  },
+  {
+    "path": "docs/engine-reference/unreal/plugins/common-ui.md",
+    "bytes": 9683,
+    "lines": 389,
+    "sha256": "bb144bcc3832c1067d4fd6d916f8b74b8c72d603ce0c9c6fb8709200e144a76a"
+  },
+  {
+    "path": "docs/engine-reference/unreal/plugins/gameplay-ability-system.md",
+    "bytes": 10202,
+    "lines": 386,
+    "sha256": "f36b5b71aafc3a25e1cb8a481453321b88edff4dbb5baf9be06100bc98e0cefb"
+  },
+  {
+    "path": "docs/engine-reference/unreal/plugins/gameplay-camera-system.md",
+    "bytes": 6796,
+    "lines": 321,
+    "sha256": "ca186aa1ea0c8b6dec160228b8fa2c3e6495b5b1e77ecaca7cce30b0346608a9"
+  },
+  {
+    "path": "docs/engine-reference/unreal/plugins/pcg.md",
+    "bytes": 7126,
+    "lines": 356,
+    "sha256": "b2a38574970e7b69f03e727aaf636523ca7249177151b5bb13af71713c311ee3"
+  },
+  {
+    "path": "docs/examples/README.md",
+    "bytes": 8031,
+    "lines": 199,
+    "sha256": "7428e6af5e9ac928ef4549f86cc82e8c1fb88098341d3531e68c889507c2e822"
+  },
+  {
+    "path": "docs/examples/reverse-document-workflow-example.md",
+    "bytes": 4046,
+    "lines": 121,
+    "sha256": "407ab12e5314a8267298c5bac95b82c6722459846c721aece2d07c9b9da112e7"
+  },
+  {
+    "path": "docs/examples/session-design-crafting-system.md",
+    "bytes": 12026,
+    "lines": 262,
+    "sha256": "fe1f796d3b2fba4d2718e5ff74eecbd6bbc9aa8117d913bb9dab878f77f96ca5"
+  },
+  {
+    "path": "docs/examples/session-implement-combat-damage.md",
+    "bytes": 10273,
+    "lines": 296,
+    "sha256": "ab5fdacee94910f73a4b61de57f7b9bebe8d934d515b326301cb380b566af740"
+  },
+  {
+    "path": "docs/examples/session-scope-crisis-decision.md",
+    "bytes": 14566,
+    "lines": 360,
+    "sha256": "1c370f93e9ff0a14865e63082d1151326fcc91d86fa890c2c8a61c46af42de48"
+  }
+]

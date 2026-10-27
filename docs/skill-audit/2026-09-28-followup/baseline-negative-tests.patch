@@ -1,0 +1,91 @@
+--- a/tests/skill-system/audit-gate.test.mjs
++++ b/tests/skill-system/audit-gate.test.mjs
+@@ -12,7 +12,7 @@
+   const put = (name, data) => {fs.mkdirSync(path.dirname(path.join(root,name)), {recursive:true}); fs.writeFileSync(path.join(root,name),data);};
+   for (const file of [...GOVERNANCE, TARGET]) put(file, `fixture: ${file}\n`);
+   put('reports/proof.md', 'Reviewed fixture behavior for this isolated test.\n');
+-  const registry = {schema_version:1, context_id:'test-context', records:{}};
++  const registry = {schema_version:1, context_id:'test-context', worktree:fs.realpathSync(root), records:{}};
+   const add = file => {registry.records[file] = {
+     status:'VALIDATED', context_id:'test-context', source_sha256:fingerprint(root,file),
+     reviewer:'test fixture', reviewed_at:'2020-01-01T00:00:00Z', scope:'fixture-only',
+@@ -22,7 +22,18 @@
+   };};
+   [...GOVERNANCE,TARGET].forEach(add);
+   const save = () => put('.opencode/audit/registry.json', JSON.stringify(registry));
+-  save(); return {root, put, registry, save, add};
++  const bind = () => {
++    for (const [name, rec] of Object.entries(registry.records)) {
++      const seen = new Set([name]); const queue = [...GOVERNANCE, ...rec.dependencies];
++      while (queue.length) {
++        const dep=queue.pop(); if(seen.has(dep)) continue;
++        seen.add(dep); queue.push(...(registry.records[dep]?.dependencies ?? []));
++      }
++      seen.delete(name);
++      rec.input_sha256=Object.fromEntries([...seen].sort().map(dep=>[dep,fingerprint(root,dep)]));
++    }
++  };
++  bind(); save(); return {root, put, registry, save, add, bind};
+ }
+ test('accepts a fully evidenced fixture and all governance records', t => {
+   const f=fixture(t); assert.equal(assertUsable(f.root,TARGET).checked.length, GOVERNANCE.length+1);
+@@ -63,3 +74,20 @@
+ test('invalid calendar dates must not normalize into valid reviews',t=>{const f=fixture(t);f.registry.records[TARGET].reviewed_at='2020-02-30T00:00:00Z';f.save();assert.throws(()=>assertUsable(f.root,TARGET),/Invalid or future/);});
+ test('leap-day and fractional UTC timestamps are valid',t=>{const f=fixture(t);f.registry.records[TARGET].reviewed_at='2020-02-29T00:00:00.123Z';f.save();assertUsable(f.root,TARGET);});
+ test('loaded OPENCODE overview is mandatory governance',()=>{assert.ok(GOVERNANCE.includes('OPENCODE.md'));});
++
++// Consumer re-validation must not be replaced by re-approving a dependency alone.
++test('repair: refreshed dependency must not revive its stale consumer',t=>{
++  const f=fixture(t); f.put('dependency.md','v1'); f.add('dependency.md');
++  f.registry.records[TARGET].dependencies=['dependency.md']; f.bind(); f.save();
++  assertUsable(f.root,TARGET);
++  f.put('dependency.md','v2 incompatible contract'); f.add('dependency.md'); f.save();
++  assert.throws(()=>assertUsable(f.root,TARGET),/STALE|binding/);
++});
++test('repair: refreshed governance must invalidate consumer snapshots',t=>{
++  const f=fixture(t); f.put(GOVERNANCE[0],'changed operating policy'); f.add(GOVERNANCE[0]); f.save();
++  assert.throws(()=>assertUsable(f.root,TARGET),/STALE|binding/);
++});
++test('repair: copied approval must not authenticate another worktree',t=>{
++  const f=fixture(t); f.registry.worktree=path.join(f.root,'different-project'); f.save();
++  assert.throws(()=>assertUsable(f.root,TARGET),/worktree/);
++});
+--- a/tests/skill-system/test_repairs.py
++++ b/tests/skill-system/test_repairs.py
+@@ -120,6 +120,23 @@
+     def test_large_applicable_blob_blocks_before_validation(self):
+         p=self.asset();p.write_bytes(b' '*(8*1024*1024+1));self.stage()
+         r=self.hook('validate-commit.sh',args=['--staged']);self.assertEqual(r.returncode,2);self.assertIn('too large',r.stderr)
++
++    def test_repair_session_helpers_reject_symlink_checkpoint(self):
++        source=self.repo/'private.txt';source.write_text('PRIVATE-CANARY-MUST-NOT-PRINT')
++        p=self.repo/'production/session-state/active.md';p.parent.mkdir(parents=True);p.symlink_to(source)
++        for hook in ['session-start.sh','pre-compact.sh','session-stop.sh']:
++            with self.subTest(hook=hook):
++                result=self.hook(hook)
++                self.assertEqual(result.returncode,2,result.stdout)
++                self.assertNotIn('PRIVATE-CANARY',result.stdout+result.stderr)
++        log=self.repo/'production/session-logs/session-log.md'
++        if log.exists():self.assertNotIn('PRIVATE-CANARY',log.read_text())
++
++    def test_repair_precompact_does_not_report_clean_on_git_failure(self):
++        shutil.rmtree(self.repo/'.git')
++        result=self.hook('pre-compact.sh')
++        self.assertNotIn('(no uncommitted changes)',result.stdout)
++        self.assertIn('UNVERIFIED',result.stdout)
+ 
+ class ModelTests(unittest.TestCase):
+     def setUp(self):
+@@ -206,6 +223,12 @@
+         p.write_text('{"agent":{},"bad":NaN}')
+         self.assertEqual(self.run_update().returncode,2);self.assertEqual(self.snapshot(),before)
+ 
++    def test_repair_model_update_preserves_crlf(self):
++        p=self.repo/'.opencode/agents/lead-programmer.md'
++        p.write_bytes(p.read_bytes().replace(b'\r\n',b'\n').replace(b'\n',b'\r\n'))
++        result=self.run_update();self.assertEqual(result.returncode,0,result.stderr)
++        self.assertNotIn(b'\n',p.read_bytes().replace(b'\r\n',b''))
++
+ class StructureTests(unittest.TestCase):
+     def test_every_skill_has_a_real_command(self):
+         for skill in (ROOT/'.opencode/skills').glob('*/SKILL.md'):

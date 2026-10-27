@@ -23,6 +23,10 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
+      # Next.js standalone binds to $HOSTNAME, which inside a container is the
+      # container id. The loopback healthcheck then fails with curl exit 7 even
+      # though the app is serving, so pin the bind address instead.
+      - HOSTNAME=0.0.0.0
     env_file:
       - ../.env
     healthcheck:

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Crown, Inbox, Shield, Clock, Search, Trophy, Award } from 'lucide-react';
 import { Card, CardContent } from '@/shared/components/ui/Card';
@@ -8,9 +9,9 @@ import { Button } from '@/shared/components/ui/Button';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Modal } from '@/shared/components/ui/Modal';
 import { Input } from '@/shared/components/ui/Input';
-import { ConfirmDialog } from '@/shared/components/ui/ConfirmDialog';
 import { FileUpload } from '@/shared/components/upload/FileUpload';
 import { PageHeader } from '@/shared/components/ui/PageHeader';
+import { QueryErrorNotice } from '@/shared/components/ui/QueryState';
 import { EmptyState } from '@/shared/components/ui/EmptyState';
 import { ActionButtons } from '@/shared/components/ui/ActionButtons';
 import { ranksService } from '@/services';
@@ -32,18 +33,18 @@ export default function RanksPage() {
   const { t } = useLanguage();
   const queryClient = useQueryClient();
   const hasPermission = useHasPermission();
-  const canManage = hasPermission('manage_roles');
+  const canManage =
+    hasPermission('matches.write') || hasPermission('manage_games');
 
   const [showModal, setShowModal] = useState(false);
   const [editingRank, setEditingRank] = useState<SystemRank | null>(null);
   const [selectedRank, setSelectedRank] = useState<SystemRank | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [form, setForm] = useState({
     code: '', titleEn: '', titleAr: '', descriptionEn: '', descriptionAr: '', priority: 0, badgeIconUrl: '',
   });
 
-  const { data: ranks = [], isLoading, error } = useQuery({
+  const { data: ranks = [], isLoading, isError, error, refetch } = useQuery({
     queryKey: ['system-ranks'],
     queryFn: () => ranksService.getSystemRanks(),
   });
@@ -122,15 +123,32 @@ export default function RanksPage() {
     <div className="space-y-6">
       <PageHeader
         icon={<Crown className="w-6 h-6 text-yellow-500" />}
-        title={t('ranks') || 'System Ranks'}
+        title="System Rank Definitions"
         action={canManage ? { label: t('create') || 'Create Rank', onClick: openCreate, icon: <Plus className="w-4 h-4" /> } : undefined}
       />
 
-      {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-600 dark:text-red-400">{error.message}</p>
+      <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-xl border border-indigo-300 bg-indigo-50 p-4 dark:border-indigo-500/30 dark:bg-indigo-500/10">
+          <p className="text-sm font-semibold text-indigo-900 dark:text-indigo-100">Global system ranks — this page</p>
+          <p className="mt-1 text-xs text-indigo-800/75 dark:text-indigo-200/75">
+            Manually assigned platform-wide badges. The ranks API supports create, update, assign and revoke; it has no delete endpoint.
+          </p>
         </div>
-      )}
+        <Link href="/dashboard/meta-game" className="rounded-xl border border-purple-300 bg-purple-50 p-4 transition-colors hover:border-purple-400 dark:border-purple-500/30 dark:bg-purple-500/10">
+          <p className="text-sm font-semibold text-purple-900 dark:text-purple-100">Competitive game ratings</p>
+          <p className="mt-1 text-xs text-purple-800/75 dark:text-purple-200/75">Backend-calculated Ludo and Domino rating, tier, record, and leaderboard.</p>
+        </Link>
+        <Link href="/dashboard/progression" className="rounded-xl border border-emerald-300 bg-emerald-50 p-4 transition-colors hover:border-emerald-400 dark:border-emerald-500/30 dark:bg-emerald-500/10">
+          <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-100">Room progression levels</p>
+          <p className="mt-1 text-xs text-emerald-800/75 dark:text-emerald-200/75">Formula/policy-driven room levels and XP caps live under Progression.</p>
+        </Link>
+        <Link href="/dashboard/rooms" className="rounded-xl border border-amber-300 bg-amber-50 p-4 transition-colors hover:border-amber-400 dark:border-amber-500/30 dark:bg-amber-500/10">
+          <p className="text-sm font-semibold text-amber-900 dark:text-amber-100">Room roles & permissions</p>
+          <p className="mt-1 text-xs text-amber-800/75 dark:text-amber-200/75">Owner, moderator and membership authority belongs to Rooms—not progression or global ranks.</p>
+        </Link>
+      </div>
+
+      {isError && <QueryErrorNotice error={error} onRetry={() => refetch()} />}
 
       <div className="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="relative flex-1 max-w-sm">
@@ -194,7 +212,6 @@ export default function RanksPage() {
                         <div onClick={(e) => e.stopPropagation()}>
                           <ActionButtons
                             onEdit={() => openEdit(rank)}
-                            onDelete={() => setDeleteTarget(rank.id)}
                             canManage={canManage}
                           />
                         </div>
@@ -281,10 +298,7 @@ export default function RanksPage() {
 
             <div className="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
               {canManage && (
-                <>
-                  <Button variant="outline" onClick={() => { setSelectedRank(null); openEdit(selectedRank); }}>Edit</Button>
-                  <Button variant="danger" onClick={() => { setSelectedRank(null); setDeleteTarget(selectedRank.id); }}>Delete</Button>
-                </>
+                <Button variant="outline" onClick={() => { setSelectedRank(null); openEdit(selectedRank); }}>Edit</Button>
               )}
               <Button variant="ghost" onClick={() => setSelectedRank(null)}>Close</Button>
             </div>
@@ -295,15 +309,15 @@ export default function RanksPage() {
       {/* Create/Edit Modal */}
       <Modal isOpen={showModal} onClose={closeModal} title={editingRank ? (t('edit') || 'Edit Rank') : (t('create') || 'Create Rank')}>
         <div className="space-y-4">
-          <Input label="Code" placeholder="e.g., vip, moderator" value={form.code}
+          <Input label="Code" placeholder="e.g., SUPPORTER" value={form.code}
             onChange={(e) => setForm({ ...form, code: e.target.value })} disabled={!!editingRank} />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input label="Title (English)" placeholder="VIP" value={form.titleEn}
               onChange={(e) => setForm({ ...form, titleEn: e.target.value })} />
             <Input label="Title (Arabic)" placeholder="مستخدم VIP" value={form.titleAr}
               onChange={(e) => setForm({ ...form, titleAr: e.target.value })} />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input label="Description (English)" placeholder="VIP description" value={form.descriptionEn}
               onChange={(e) => setForm({ ...form, descriptionEn: e.target.value })} />
             <Input label="Description (Arabic)" placeholder="وصف VIP" value={form.descriptionAr}
@@ -321,21 +335,6 @@ export default function RanksPage() {
         </div>
       </Modal>
 
-      <ConfirmDialog
-        open={!!deleteTarget}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-        title={t('delete') || 'Delete Rank'}
-        message={t('deleteConfirm') || 'Are you sure you want to delete this rank?'}
-        confirmText={t('confirm')}
-        cancelText={t('cancel')}
-        variant="danger"
-        onConfirm={() => {
-          if (deleteTarget) {
-            queryClient.invalidateQueries({ queryKey: ['system-ranks'] });
-            setDeleteTarget(null);
-          }
-        }}
-      />
     </div>
   );
 }

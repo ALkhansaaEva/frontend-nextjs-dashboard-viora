@@ -1,14 +1,36 @@
 import apiClient from '@/lib/api/api-client';
-import { CreateReportSchema, type CreateReportRequest, UpdateReportStatusSchema, type UpdateReportStatusRequest } from '@/dto/reports/reports.dto';
-import type { Report, PaginatedResponse, ListParams } from '@/types';
+import {
+  CreateReportSchema,
+  type CreateReportRequest,
+  UpdateReportStatusSchema,
+  type UpdateReportStatusRequest,
+  ReportActionRequestSchema,
+  type ReportActionRequest,
+  AddEvidenceSchema,
+  type AddEvidenceRequest,
+} from '@/dto/reports/reports.dto';
+import type { Report } from '@/types';
+
+/** GET /reports returns `{ reports, total }` — offset/limit paging, no `page`. */
+export interface ReportsListResponse {
+  reports: Report[];
+  total: number;
+}
+
+export interface ReportsListParams {
+  status?: string;
+  category?: string;
+  limit?: number;
+  offset?: number;
+}
 
 export const reportsService = {
-  async getReports(params?: ListParams & { status?: string; category?: string }): Promise<PaginatedResponse<Report>> {
-    return apiClient.get<PaginatedResponse<Report>>('/reports', { params });
+  async getReports(params?: ReportsListParams): Promise<ReportsListResponse> {
+    return apiClient.get<ReportsListResponse>('/reports', { params });
   },
 
-  async getMyReports(params?: ListParams): Promise<PaginatedResponse<Report>> {
-    return apiClient.get<PaginatedResponse<Report>>('/reports/me', { params });
+  async getMyReports(params?: Pick<ReportsListParams, 'limit' | 'offset'>): Promise<ReportsListResponse> {
+    return apiClient.get<ReportsListResponse>('/reports/me', { params });
   },
 
   async getReport(id: string): Promise<Report> {
@@ -20,12 +42,14 @@ export const reportsService = {
     return apiClient.post<Report>('/reports', validated);
   },
 
-  async addEvidence(id: string, evidence: { url: string; type: string }): Promise<void> {
-    await apiClient.post(`/reports/${id}/evidence`, evidence);
+  async addEvidence(id: string, evidence: AddEvidenceRequest): Promise<void> {
+    const validated = AddEvidenceSchema.parse(evidence);
+    await apiClient.post(`/reports/${id}/evidence`, validated);
   },
 
-  async takeAction(id: string, action: { action: string; reason?: string; durationHours?: number }): Promise<void> {
-    await apiClient.post(`/reports/${id}/action`, action);
+  async takeAction(id: string, action: ReportActionRequest): Promise<void> {
+    const validated = ReportActionRequestSchema.parse(action);
+    await apiClient.post(`/reports/${id}/action`, validated);
   },
 
   async updateStatus(id: string, data: UpdateReportStatusRequest): Promise<void> {

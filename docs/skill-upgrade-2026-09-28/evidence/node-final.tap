@@ -1,0 +1,766 @@
+TAP version 13
+# Subtest: accepts a fully evidenced fixture and all governance records
+ok 1 - accepts a fully evidenced fixture and all governance records
+  ---
+  duration_ms: 58.016852
+  type: 'test'
+  ...
+# Subtest: blocks UNREVIEWED
+ok 2 - blocks UNREVIEWED
+  ---
+  duration_ms: 47.584891
+  type: 'test'
+  ...
+# Subtest: blocks IN_REVIEW
+ok 3 - blocks IN_REVIEW
+  ---
+  duration_ms: 31.119969
+  type: 'test'
+  ...
+# Subtest: blocks INVALID
+ok 4 - blocks INVALID
+  ---
+  duration_ms: 56.015177
+  type: 'test'
+  ...
+# Subtest: blocks REPAIR_PENDING
+ok 5 - blocks REPAIR_PENDING
+  ---
+  duration_ms: 54.564158
+  type: 'test'
+  ...
+# Subtest: blocks BLOCKED
+ok 6 - blocks BLOCKED
+  ---
+  duration_ms: 59.273476
+  type: 'test'
+  ...
+# Subtest: missing target record blocks
+ok 7 - missing target record blocks
+  ---
+  duration_ms: 82.319209
+  type: 'test'
+  ...
+# Subtest: unconfigured installation blocks
+ok 8 - unconfigured installation blocks
+  ---
+  duration_ms: 75.852617
+  type: 'test'
+  ...
+# Subtest: malformed registry blocks
+ok 9 - malformed registry blocks
+  ---
+  duration_ms: 33.550149
+  type: 'test'
+  ...
+# Subtest: source edits invalidate prior validation
+ok 10 - source edits invalidate prior validation
+  ---
+  duration_ms: 53.093018
+  type: 'test'
+  ...
+# Subtest: context mismatch invalidates records
+ok 11 - context mismatch invalidates records
+  ---
+  duration_ms: 70.718928
+  type: 'test'
+  ...
+# Subtest: evidence edits invalidate records
+ok 12 - evidence edits invalidate records
+  ---
+  duration_ms: 49.139126
+  type: 'test'
+  ...
+# Subtest: governance changes cannot be omitted by target
+ok 13 - governance changes cannot be omitted by target
+  ---
+  duration_ms: 31.610811
+  type: 'test'
+  ...
+# Subtest: missing governance record blocks
+ok 14 - missing governance record blocks
+  ---
+  duration_ms: 51.848736
+  type: 'test'
+  ...
+# Subtest: known-invalid status survives source edits and a new hash
+ok 15 - known-invalid status survives source edits and a new hash
+  ---
+  duration_ms: 47.533877
+  type: 'test'
+  ...
+# Subtest: a changed transitive dependency blocks
+ok 16 - a changed transitive dependency blocks
+  ---
+  duration_ms: 44.464763
+  type: 'test'
+  ...
+# Subtest: undeclared record for a declared dependency blocks
+ok 17 - undeclared record for a declared dependency blocks
+  ---
+  duration_ms: 73.306627
+  type: 'test'
+  ...
+# Subtest: a validated dependency cycle terminates
+ok 18 - a validated dependency cycle terminates
+  ---
+  duration_ms: 79.389052
+  type: 'test'
+  ...
+# Subtest: a cycle cannot hide an invalid member
+ok 19 - a cycle cannot hide an invalid member
+  ---
+  duration_ms: 27.419509
+  type: 'test'
+  ...
+# Subtest: cannot label FAIL validation as accepted
+ok 20 - cannot label FAIL validation as accepted
+  ---
+  duration_ms: 11.743577
+  type: 'test'
+  ...
+# Subtest: cannot label BLOCKED validation as accepted
+ok 21 - cannot label BLOCKED validation as accepted
+  ---
+  duration_ms: 22.774747
+  type: 'test'
+  ...
+# Subtest: cannot label NOT RUN validation as accepted
+ok 22 - cannot label NOT RUN validation as accepted
+  ---
+  duration_ms: 72.891494
+  type: 'test'
+  ...
+# Subtest: N/A needs a reason
+ok 23 - N/A needs a reason
+  ---
+  duration_ms: 58.394662
+  type: 'test'
+  ...
+# Subtest: all-N/A cannot count as validation
+ok 24 - all-N/A cannot count as validation
+  ---
+  duration_ms: 145.590782
+  type: 'test'
+  ...
+# Subtest: future review dates block
+ok 25 - future review dates block
+  ---
+  duration_ms: 55.861963
+  type: 'test'
+  ...
+# Subtest: empty evidence blocks
+ok 26 - empty evidence blocks
+  ---
+  duration_ms: 26.852414
+  type: 'test'
+  ...
+# Subtest: fingerprints are deterministic and files are not mutated
+ok 27 - fingerprints are deterministic and files are not mutated
+  ---
+  duration_ms: 20.050401
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "../outside"
+ok 28 - rejects unsafe path "../outside"
+  ---
+  duration_ms: 15.731221
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "/tmp/outside"
+ok 29 - rejects unsafe path "/tmp/outside"
+  ---
+  duration_ms: 12.053664
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "C:/outside"
+ok 30 - rejects unsafe path "C:/outside"
+  ---
+  duration_ms: 7.155904
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a/../outside"
+ok 31 - rejects unsafe path "a/../outside"
+  ---
+  duration_ms: 28.790581
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a\\\\b"
+ok 32 - rejects unsafe path "a\\\\b"
+  ---
+  duration_ms: 135.13467
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a//b"
+ok 33 - rejects unsafe path "a//b"
+  ---
+  duration_ms: 13.070892
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a/./b"
+ok 34 - rejects unsafe path "a/./b"
+  ---
+  duration_ms: 13.41627
+  type: 'test'
+  ...
+# Subtest: rejects unsafe path "a\\nfile"
+ok 35 - rejects unsafe path "a\\nfile"
+  ---
+  duration_ms: 11.867515
+  type: 'test'
+  ...
+# Subtest: rejects symlinks
+ok 36 - rejects symlinks
+  ---
+  duration_ms: 30.287835
+  type: 'test'
+  ...
+# Subtest: target names cannot escape local directories
+ok 37 - target names cannot escape local directories
+  ---
+  duration_ms: 1.711181
+  type: 'test'
+  ...
+# Subtest: plugin passes through read-only bootstrap without granting a skill approval
+ok 38 - plugin passes through read-only bootstrap without granting a skill approval
+  ---
+  duration_ms: 19.172737
+  type: 'test'
+  ...
+# Subtest: plugin accepts the audited local skill and blocks an unknown target
+ok 39 - plugin accepts the audited local skill and blocks an unknown target
+  ---
+  duration_ms: 17.611339
+  type: 'test'
+  ...
+# Subtest: plugin gates task delegation using the agent record
+ok 40 - plugin gates task delegation using the agent record
+  ---
+  duration_ms: 21.673388
+  type: 'test'
+  ...
+# Subtest: malformed tool arguments fail closed
+ok 41 - malformed tool arguments fail closed
+  ---
+  duration_ms: 33.602962
+  type: 'test'
+  ...
+# Subtest: duplicate status cannot silently override INVALID
+ok 42 - duplicate status cannot silently override INVALID
+  ---
+  duration_ms: 21.967341
+  type: 'test'
+  ...
+# Subtest: escaped duplicate JSON keys are rejected
+ok 43 - escaped duplicate JSON keys are rejected
+  ---
+  duration_ms: 21.2584
+  type: 'test'
+  ...
+# Subtest: repeated nested keys in separate objects and quoted punctuation are legitimate
+ok 44 - repeated nested keys in separate objects and quoted punctuation are legitimate
+  ---
+  duration_ms: 31.073896
+  type: 'test'
+  ...
+# Subtest: invalid calendar dates must not normalize into valid reviews
+ok 45 - invalid calendar dates must not normalize into valid reviews
+  ---
+  duration_ms: 29.08077
+  type: 'test'
+  ...
+# Subtest: leap-day and fractional UTC timestamps are valid
+ok 46 - leap-day and fractional UTC timestamps are valid
+  ---
+  duration_ms: 30.178017
+  type: 'test'
+  ...
+# Subtest: loaded OPENCODE overview is mandatory governance
+ok 47 - loaded OPENCODE overview is mandatory governance
+  ---
+  duration_ms: 0.119129
+  type: 'test'
+  ...
+# Subtest: repair: refreshed dependency must not revive its stale consumer
+ok 48 - repair: refreshed dependency must not revive its stale consumer
+  ---
+  duration_ms: 46.760188
+  type: 'test'
+  ...
+# Subtest: repair: refreshed governance must invalidate consumer snapshots
+ok 49 - repair: refreshed governance must invalidate consumer snapshots
+  ---
+  duration_ms: 17.712387
+  type: 'test'
+  ...
+# Subtest: repair: copied approval must not authenticate another worktree
+ok 50 - repair: copied approval must not authenticate another worktree
+  ---
+  duration_ms: 37.031589
+  type: 'test'
+  ...
+# Subtest: repair: schema 1 approval requires explicit re-audit, not promotion
+ok 51 - repair: schema 1 approval requires explicit re-audit, not promotion
+  ---
+  duration_ms: 11.891076
+  type: 'test'
+  ...
+# Subtest: repair: missing worktree identity fails closed
+ok 52 - repair: missing worktree identity fails closed
+  ---
+  duration_ms: 14.402938
+  type: 'test'
+  ...
+# Subtest: repair: absent review-time bindings fail closed
+ok 53 - repair: absent review-time bindings fail closed
+  ---
+  duration_ms: 25.066792
+  type: 'test'
+  ...
+# Subtest: repair: stale binding cannot be repaired by a target source hash alone
+ok 54 - repair: stale binding cannot be repaired by a target source hash alone
+  ---
+  duration_ms: 19.274897
+  type: 'test'
+  ...
+# Subtest: repair: added transitive dependency requires consumer review
+ok 55 - repair: added transitive dependency requires consumer review
+  ---
+  duration_ms: 29.469646
+  type: 'test'
+  ...
+# Subtest: repair: transitive refresh does not revive a grandparent consumer
+ok 56 - repair: transitive refresh does not revive a grandparent consumer
+  ---
+  duration_ms: 42.348393
+  type: 'test'
+  ...
+# Subtest: repair: consumer and dependency re-audit restores usable fixture
+ok 57 - repair: consumer and dependency re-audit restores usable fixture
+  ---
+  duration_ms: 37.400228
+  type: 'test'
+  ...
+# Subtest: repair: hash cache is scoped to one check
+ok 58 - repair: hash cache is scoped to one check
+  ---
+  duration_ms: 23.242688
+  type: 'test'
+  ...
+# Subtest: repair: extra undeclared snapshot key does not broaden scope silently
+ok 59 - repair: extra undeclared snapshot key does not broaden scope silently
+  ---
+  duration_ms: 17.176351
+  type: 'test'
+  ...
+# Subtest: repair: registry cannot serve as its own evidence
+ok 60 - repair: registry cannot serve as its own evidence
+  ---
+  duration_ms: 17.196079
+  type: 'test'
+  ...
+# Subtest: TODO check is read-only and never declares pending work complete
+ok 61 - TODO check is read-only and never declares pending work complete
+  ---
+  duration_ms: 5.888062
+  type: 'test'
+  ...
+# Subtest: bare DONE checkbox is an unverified completion claim
+ok 62 - bare DONE checkbox is an unverified completion claim
+  ---
+  duration_ms: 2.26299
+  type: 'test'
+  ...
+# Subtest: real captured behavioral run can substantiate a reviewed DONE claim
+ok 63 - real captured behavioral run can substantiate a reviewed DONE claim
+  ---
+  duration_ms: 99.15904
+  type: 'test'
+  ...
+# Subtest: runner does not mark a task DONE or create approval records
+ok 64 - runner does not mark a task DONE or create approval records
+  ---
+  duration_ms: 43.989207
+  type: 'test'
+  ...
+# Subtest: changed declared input invalidates historical completion: value.json
+ok 65 - changed declared input invalidates historical completion: value.json
+  ---
+  duration_ms: 148.399417
+  type: 'test'
+  ...
+# Subtest: changed declared input invalidates historical completion: check.mjs
+ok 66 - changed declared input invalidates historical completion: check.mjs
+  ---
+  duration_ms: 223.337186
+  type: 'test'
+  ...
+# Subtest: goal changes invalidate the bound completion contract
+ok 67 - goal changes invalidate the bound completion contract
+  ---
+  duration_ms: 193.919718
+  type: 'test'
+  ...
+# Subtest: acceptance changes invalidate a previously passed task
+ok 68 - acceptance changes invalidate a previously passed task
+  ---
+  duration_ms: 176.139134
+  type: 'test'
+  ...
+# Subtest: a changed check plan invalidates receipts
+ok 69 - a changed check plan invalidates receipts
+  ---
+  duration_ms: 224.967437
+  type: 'test'
+  ...
+# Subtest: receipt modification is detected before trusting its contents
+ok 70 - receipt modification is detected before trusting its contents
+  ---
+  duration_ms: 65.919971
+  type: 'test'
+  ...
+# Subtest: changed log content invalidates evidence
+ok 71 - changed log content invalidates evidence
+  ---
+  duration_ms: 324.041676
+  type: 'test'
+  ...
+# Subtest: missing logs are not a pass
+ok 72 - missing logs are not a pass
+  ---
+  duration_ms: 48.836958
+  type: 'test'
+  ...
+# Subtest: producer changes invalidate receipts
+ok 73 - producer changes invalidate receipts
+  ---
+  duration_ms: 49.543784
+  type: 'test'
+  ...
+# Subtest: static-only success does not prove a code feature
+ok 74 - static-only success does not prove a code feature
+  ---
+  duration_ms: 176.3459
+  type: 'test'
+  ...
+# Subtest: documentation tasks allow scoped static checks plus an explicit review
+ok 75 - documentation tasks allow scoped static checks plus an explicit review
+  ---
+  duration_ms: 73.596179
+  type: 'test'
+  ...
+# Subtest: wrong context cannot reuse execution evidence
+ok 76 - wrong context cannot reuse execution evidence
+  ---
+  duration_ms: 62.351843
+  type: 'test'
+  ...
+# Subtest: unverified predecessor blocks completion even with a successful local check
+ok 77 - unverified predecessor blocks completion even with a successful local check
+  ---
+  duration_ms: 66.184646
+  type: 'test'
+  ...
+# Subtest: expired completion reviews remain due, not silently forgotten
+ok 78 - expired completion reviews remain due, not silently forgotten
+  ---
+  duration_ms: 70.895963
+  type: 'test'
+  ...
+# Subtest: blocked TODO preserves its blocker and becomes due
+ok 79 - blocked TODO preserves its blocker and becomes due
+  ---
+  duration_ms: 2.000514
+  type: 'test'
+  ...
+# Subtest: future explicit next-review date does not suppress an overdue default interval
+ok 80 - future explicit next-review date does not suppress an overdue default interval
+  ---
+  duration_ms: 0.932223
+  type: 'test'
+  ...
+# Subtest: cancelled work is not automatically revived
+ok 81 - cancelled work is not automatically revived
+  ---
+  duration_ms: 3.284152
+  type: 'test'
+  ...
+# Subtest: invalid calendar dates are rejected
+ok 82 - invalid calendar dates are rejected
+  ---
+  duration_ms: 0.49963
+  type: 'test'
+  ...
+# Subtest: future review cannot substantiate a completion claim
+ok 83 - future review cannot substantiate a completion claim
+  ---
+  duration_ms: 71.125061
+  type: 'test'
+  ...
+# Subtest: chronology checks reject a receipt from after its claimed review
+ok 84 - chronology checks reject a receipt from after its claimed review
+  ---
+  duration_ms: 64.570728
+  type: 'test'
+  ...
+# Subtest: receipt job cannot substitute another argv for the reviewed plan
+ok 85 - receipt job cannot substitute another argv for the reviewed plan
+  ---
+  duration_ms: 59.947562
+  type: 'test'
+  ...
+# Subtest: all criteria need evidence; extra criterion with no check blocks preflight
+ok 86 - all criteria need evidence; extra criterion with no check blocks preflight
+  ---
+  duration_ms: 1.316675
+  type: 'test'
+  ...
+# Subtest: duplicate task ids fail closed
+ok 87 - duplicate task ids fail closed
+  ---
+  duration_ms: 0.941886
+  type: 'test'
+  ...
+# Subtest: unknown goal fails closed
+ok 88 - unknown goal fails closed
+  ---
+  duration_ms: 0.678492
+  type: 'test'
+  ...
+# Subtest: task dependency cycles fail closed
+ok 89 - task dependency cycles fail closed
+  ---
+  duration_ms: 0.61374
+  type: 'test'
+  ...
+# Subtest: wrong project identity fails closed
+ok 90 - wrong project identity fails closed
+  ---
+  duration_ms: 0.831203
+  type: 'test'
+  ...
+# Subtest: duplicate JSON keys cannot hide a task state
+ok 91 - duplicate JSON keys cannot hide a task state
+  ---
+  duration_ms: 0.712088
+  type: 'test'
+  ...
+# Subtest: contract is stable across checklist/reviewer metadata changes
+ok 92 - contract is stable across checklist/reviewer metadata changes
+  ---
+  duration_ms: 0.553691
+  type: 'test'
+  ...
+# Subtest: Mermaid uses safe IDs and a derived verification status, not injected titles
+ok 93 - Mermaid uses safe IDs and a derived verification status, not injected titles
+  ---
+  duration_ms: 1.249233
+  type: 'test'
+  ...
+# Subtest: snapshot comparison reports added, removed and modified paths
+ok 94 - snapshot comparison reports added, removed and modified paths
+  ---
+  duration_ms: 0.600169
+  type: 'test'
+  ...
+# Subtest: duplicate snapshot paths are rejected
+ok 95 - duplicate snapshot paths are rejected
+  ---
+  duration_ms: 0.147175
+  type: 'test'
+  ...
+# Subtest: empty task set is not a success claim
+ok 96 - empty task set is not a success claim
+  ---
+  duration_ms: 0.717781
+  type: 'test'
+  ...
+# Subtest: symlinked input cannot be read as task evidence
+ok 97 - symlinked input cannot be read as task evidence
+  ---
+  duration_ms: 1.110532
+  type: 'test'
+  ...
+# Subtest: path traversal is rejected before any execution
+ok 98 - path traversal is rejected before any execution
+  ---
+  duration_ms: 1.465481
+  type: 'test'
+  ...
+# Subtest: authorization is required and preflight does not write on rejection
+ok 99 - authorization is required and preflight does not write on rejection
+  ---
+  duration_ms: 0.83004
+  type: 'test'
+  ...
+# Subtest: nonzero check exit fails the run
+ok 100 - nonzero check exit fails the run
+  ---
+  duration_ms: 47.825155
+  type: 'test'
+  ...
+# Subtest: dependent checks are skipped after predecessor failure
+ok 101 - dependent checks are skipped after predecessor failure
+  ---
+  duration_ms: 46.832265
+  type: 'test'
+  ...
+# Subtest: jobs complete sequentially by dependency, not by fixed sleep
+ok 102 - jobs complete sequentially by dependency, not by fixed sleep
+  ---
+  duration_ms: 204.237045
+  type: 'test'
+  ...
+# Subtest: job timeout terminates the owned process group and never passes
+ok 103 - job timeout terminates the owned process group and never passes
+  ---
+  duration_ms: 130.881267
+  type: 'test'
+  ...
+# Subtest: output is bounded and exceeding the cap fails validation
+ok 104 - output is bounded and exceeding the cap fails validation
+  ---
+  duration_ms: 63.783818
+  type: 'test'
+  ...
+# Subtest: input mutation during execution invalidates an otherwise zero exit
+ok 105 - input mutation during execution invalidates an otherwise zero exit
+  ---
+  duration_ms: 80.067406
+  type: 'test'
+  ...
+# Subtest: missing absolute executable blocks before run files are created
+ok 106 - missing absolute executable blocks before run files are created
+  ---
+  duration_ms: 6.610316
+  type: 'test'
+  ...
+# Subtest: bare executable PATH guessing is rejected
+ok 107 - bare executable PATH guessing is rejected
+  ---
+  duration_ms: 0.698484
+  type: 'test'
+  ...
+# Subtest: job cycle is rejected without running commands
+ok 108 - job cycle is rejected without running commands
+  ---
+  duration_ms: 2.493255
+  type: 'test'
+  ...
+# Subtest: a run directory cannot be reused to replay an operation
+ok 109 - a run directory cannot be reused to replay an operation
+  ---
+  duration_ms: 69.323868
+  type: 'test'
+  ...
+# Subtest: logs and run state are private on disk
+ok 110 - logs and run state are private on disk
+  ---
+  duration_ms: 68.616716
+  type: 'test'
+  ...
+# Subtest: shell metacharacters stay literal argv and do not execute
+ok 111 - shell metacharacters stay literal argv and do not execute
+  ---
+  duration_ms: 109.033386
+  type: 'test'
+  ...
+# Subtest: bounded attach returns control without cancelling or replaying the job
+ok 112 - bounded attach returns control without cancelling or replaying the job
+  ---
+  duration_ms: 251.80129
+  type: 'test'
+  ...
+# Subtest: attach observes completion through state-change events
+ok 113 - attach observes completion through state-change events
+  ---
+  duration_ms: 120.876625
+  type: 'test'
+  ...
+# Subtest: terminal attach is read-only
+ok 114 - terminal attach is read-only
+  ---
+  duration_ms: 70.237407
+  type: 'test'
+  ...
+# Subtest: PID identity mismatch is LOST, never false success or a retry
+ok 115 - PID identity mismatch is LOST, never false success or a retry
+  ---
+  duration_ms: 46.339153
+  type: 'test'
+  ...
+# Subtest: attach rejects unsafe or unbounded waits
+ok 116 - attach rejects unsafe or unbounded waits
+  ---
+  duration_ms: 0.830234
+  type: 'test'
+  ...
+# Subtest: CLI evidence check works from outside and inside nested project directories
+ok 117 - CLI evidence check works from outside and inside nested project directories
+  ---
+  duration_ms: 152.562054
+  type: 'test'
+  ...
+# Subtest: CLI detects a false DONE claim with nonzero status
+ok 118 - CLI detects a false DONE claim with nonzero status
+  ---
+  duration_ms: 47.778271
+  type: 'test'
+  ...
+# Subtest: CLI attach never accepts execution authorization
+ok 119 - CLI attach never accepts execution authorization
+  ---
+  duration_ms: 50.21521
+  type: 'test'
+  ...
+# Subtest: unsupported plan controls are rejected rather than silently ignored
+ok 120 - unsupported plan controls are rejected rather than silently ignored
+  ---
+  duration_ms: 0.875617
+  type: 'test'
+  ...
+# Subtest: unsupported shell/job controls are rejected before execution
+ok 121 - unsupported shell/job controls are rejected before execution
+  ---
+  duration_ms: 0.563604
+  type: 'test'
+  ...
+# Subtest: ledger cannot be its own completion input
+ok 122 - ledger cannot be its own completion input
+  ---
+  duration_ms: 2.160987
+  type: 'test'
+  ...
+# Subtest: an unrelated behavioral job cannot turn static acceptance into behavioral proof
+ok 123 - an unrelated behavioral job cannot turn static acceptance into behavioral proof
+  ---
+  duration_ms: 88.750386
+  type: 'test'
+  ...
+# Subtest: attach rejects malformed process identity without adopting arbitrary paths
+ok 124 - attach rejects malformed process identity without adopting arbitrary paths
+  ---
+  duration_ms: 69.260175
+  type: 'test'
+  ...
+# Subtest: SIGTERM cancels the isolated supervisor and skips remaining jobs
+ok 125 - SIGTERM cancels the isolated supervisor and skips remaining jobs
+  ---
+  duration_ms: 169.078401
+  type: 'test'
+  ...
+# Subtest: audit inventory comparison reports real source changes with explicit root from another cwd
+ok 126 - audit inventory comparison reports real source changes with explicit root from another cwd
+  ---
+  duration_ms: 158.72399
+  type: 'test'
+  ...
+1..126
+# tests 126
+# suites 0
+# pass 126
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4453.853579

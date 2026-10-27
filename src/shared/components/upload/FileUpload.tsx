@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useCallback } from 'react';
-import { Upload, Loader2, X, Image } from 'lucide-react';
-import { Button } from '@/shared/components/ui/Button';
-import { useUpload } from '@/shared/hooks/useUpload';
-import type { UploadProfile } from '@/shared/config/upload';
+import { useCallback } from "react";
+import { Upload, Loader2, X, Image as ImageIcon } from "lucide-react";
+import { Button } from "@/shared/components/ui/Button";
+import { useUpload } from "@/shared/hooks/useUpload";
+import type { UploadProfile } from "@/shared/config/upload";
 
 interface FileUploadProps {
   profile: UploadProfile;
@@ -12,13 +12,13 @@ interface FileUploadProps {
   onChange: (url: string) => void;
   placeholder?: string;
   label?: string;
-  previewSize?: 'sm' | 'md' | 'lg';
+  previewSize?: "sm" | "md" | "lg";
 }
 
 const sizeMap = {
-  sm: 'w-8 h-8',
-  md: 'w-10 h-10',
-  lg: 'w-16 h-16',
+  sm: "w-8 h-8",
+  md: "w-10 h-10",
+  lg: "w-16 h-16",
 };
 
 export function FileUpload({
@@ -27,16 +27,20 @@ export function FileUpload({
   onChange,
   placeholder,
   label,
-  previewSize = 'md',
+  previewSize = "md",
 }: FileUploadProps) {
-  const { isUploading, error, inputRef, accepted, handleFile, trigger, reset } = useUpload(profile);
+  const { isUploading, error, inputRef, accepted, handleFile, trigger, reset } =
+    useUpload(profile);
 
-  const onFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = await handleFile(file);
-    if (url) onChange(url);
-  }, [handleFile, onChange]);
+  const onFileChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const url = await handleFile(file);
+      if (url) onChange(url);
+    },
+    [handleFile, onChange],
+  );
 
   return (
     <div>
@@ -62,14 +66,14 @@ export function FileUpload({
           onChange={onFileChange}
           className="hidden"
         />
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={trigger}
-            disabled={isUploading}
-            className="shrink-0"
-          >
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={trigger}
+          disabled={isUploading}
+          className="shrink-0"
+        >
           {isUploading ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
@@ -78,27 +82,33 @@ export function FileUpload({
         </Button>
       </div>
 
-      {error && (
-        <p className="mt-1 text-xs text-red-500">{error}</p>
-      )}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
 
       {value && (
         <div className="mt-2 flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-          <div className={`${sizeMap[previewSize]} shrink-0 rounded overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center`}>
+          <div
+            className={`${sizeMap[previewSize]} shrink-0 rounded overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center`}
+          >
             <img
               src={value}
               alt=""
               className="w-full h-full object-contain"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = '';
-                (e.target as HTMLImageElement).className = 'hidden';
+                (e.target as HTMLImageElement).src = "";
+                (e.target as HTMLImageElement).className = "hidden";
               }}
             />
-            <Image className="w-4 h-4 text-gray-400 hidden-img-fallback" />
+            <ImageIcon
+              aria-hidden="true"
+              className="w-4 h-4 text-gray-400 hidden-img-fallback"
+            />
           </div>
           <span className="text-xs text-gray-500 truncate flex-1">{value}</span>
           <button
-            onClick={() => { onChange(''); reset(); }}
+            onClick={() => {
+              onChange("");
+              reset();
+            }}
             className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded shrink-0"
           >
             <X className="w-3 h-3" />

@@ -1,12 +1,81 @@
-import apiClient from '@/lib/api/api-client';
-import { RoleResponseSchema, type RoleResponse } from '@/dto/admin/get-roles.response';
-import { AssignPermissionSchema } from '@/dto/admin/assign-permission.request';
-import type { Role, Permission, CreateRoleRequest, UpdateRoleRequest, CreatePermissionRequest, ListParams, PaginatedResponse, User, AdjustBalanceRequest } from '@/types';
+import apiClient from "@/lib/api/api-client";
+import {
+  RoleResponseSchema,
+  type RoleResponse,
+} from "@/dto/admin/get-roles.response";
+import { AssignPermissionSchema } from "@/dto/admin/assign-permission.request";
+import type {
+  Role,
+  Permission,
+  CreateRoleRequest,
+  UpdateRoleRequest,
+  CreatePermissionRequest,
+  ListParams,
+  PaginatedResponse,
+  User,
+  AdjustBalanceRequest,
+} from "@/types";
+
+interface BackendAdminUserRow {
+  id: string;
+  immutableUserId?: string;
+  immutable_user_id?: string;
+  email?: string;
+  nickname?: string | null;
+  global_nickname?: string | null;
+  title?: string;
+  status?: User["status"];
+  roles?: Role[];
+  createdAt?: string;
+  created_at?: string;
+  lastLogin?: string;
+  last_login?: string;
+  gameCurrency?: string | number;
+  game_currency?: string | number;
+  avatar?: string;
+  avatar_url?: string;
+  wallet?: { userId?: string; gameCurrency?: string | number } | null;
+}
+
+interface BackendRoleUserRow {
+  userId?: string;
+  id?: string;
+  immutableUserId?: string;
+  immutable_user_id?: string;
+  email?: string;
+  nickname?: string | null;
+  global_nickname?: string | null;
+  username?: string;
+  assignedAt?: string;
+  createdAt?: string;
+  created_at?: string;
+}
+
+export interface AdminInventoryItem {
+  id?: string;
+  itemId?: string;
+  name?: string;
+  quantity?: string | number;
+}
+
+export interface AdminPurchaseItem {
+  id?: string;
+  itemId?: string;
+  itemName?: string;
+  createdAt?: string;
+}
+
+export interface AdminLoadoutItem {
+  id?: string;
+  itemId?: string;
+  name?: string;
+  slot?: string;
+}
 
 function normalizeArrayResponse<T>(response: unknown): T[] {
   if (Array.isArray(response)) return response;
-  if (response && typeof response === 'object') {
-    const res = response as any;
+  if (response && typeof response === "object") {
+    const res = response as Record<string, unknown>;
     // Check common wrapper keys
     if (Array.isArray(res.data)) return res.data;
     if (Array.isArray(res.permissions)) return res.permissions;
@@ -25,18 +94,20 @@ export const adminService = {
   async getRoles(): Promise<Role[]> {
     let response: unknown;
     try {
-      response = await apiClient.get<RoleResponse[] | { data: RoleResponse[] }>('/admin/roles');
+      response = await apiClient.get<RoleResponse[] | { data: RoleResponse[] }>(
+        "/admin/roles",
+      );
       const roles = normalizeArrayResponse<RoleResponse>(response);
-      return roles.map(role => RoleResponseSchema.parse(role)) as Role[];
+      return roles.map((role) => RoleResponseSchema.parse(role)) as Role[];
     } catch (error) {
-      console.warn('Error parsing roles, returning raw data:', error);
+      console.warn("Error parsing roles, returning raw data:", error);
       return normalizeArrayResponse<Role>(response as unknown as Role[]);
     }
   },
 
   async getRole(code: string): Promise<Role> {
     const roles = await this.getRoles();
-    const role = roles.find(r => r.code === code);
+    const role = roles.find((r) => r.code === code);
     if (!role) {
       throw new Error(`Role not found: ${code}`);
     }
@@ -44,7 +115,7 @@ export const adminService = {
   },
 
   async createRole(data: CreateRoleRequest): Promise<Role> {
-    return apiClient.post<Role>('/admin/roles', data);
+    return apiClient.post<Role>("/admin/roles", data);
   },
 
   async deleteRole(code: string): Promise<void> {
@@ -55,108 +126,174 @@ export const adminService = {
     return apiClient.put(`/admin/roles/${code}`, data) as Promise<Role>;
   },
 
-  async setRoleAsDefault(code: string): Promise<{ status: string; roleCode: string }> {
-    return apiClient.post(`/admin/roles/${code}/set-default`, {}) as Promise<{ status: string; roleCode: string }>;
+  async setRoleAsDefault(
+    code: string,
+  ): Promise<{ status: string; roleCode: string }> {
+    return apiClient.post(`/admin/roles/${code}/set-default`, {}) as Promise<{
+      status: string;
+      roleCode: string;
+    }>;
   },
 
   async getRolePermissions(roleCode: string): Promise<string[]> {
-    const response = await apiClient.get<string[] | { data: string[] }>(`/admin/roles/${roleCode}/permissions`);
+    const response = await apiClient.get<string[] | { data: string[] }>(
+      `/admin/roles/${roleCode}/permissions`,
+    );
     return normalizeArrayResponse<string>(response);
   },
 
-  async assignPermissionToRole(roleCode: string, permissionCode: string): Promise<void> {
+  async assignPermissionToRole(
+    roleCode: string,
+    permissionCode: string,
+  ): Promise<void> {
     const validated = AssignPermissionSchema.parse({ permissionCode });
-    await apiClient.post(`/admin/roles/${roleCode}/permissions/assign`, validated);
+    await apiClient.post(
+      `/admin/roles/${roleCode}/permissions/assign`,
+      validated,
+    );
   },
 
-  async revokePermissionFromRole(roleCode: string, permissionCode: string): Promise<void> {
+  async revokePermissionFromRole(
+    roleCode: string,
+    permissionCode: string,
+  ): Promise<void> {
     const validated = AssignPermissionSchema.parse({ permissionCode });
-    await apiClient.post(`/admin/roles/${roleCode}/permissions/revoke`, validated);
+    await apiClient.post(
+      `/admin/roles/${roleCode}/permissions/revoke`,
+      validated,
+    );
   },
 
   async getPermissions(): Promise<Permission[]> {
-    const response = await apiClient.get<Permission[] | { data: Permission[] }>('/admin/permissions');
+    const response = await apiClient.get<Permission[] | { data: Permission[] }>(
+      "/admin/permissions",
+    );
     return normalizeArrayResponse<Permission>(response);
   },
 
   async createPermission(data: CreatePermissionRequest): Promise<Permission> {
-    return apiClient.post<Permission>('/admin/permissions', data);
+    return apiClient.post<Permission>("/admin/permissions", data);
   },
 
   // Backend has no DELETE endpoint for permissions; manage via enable/disable
-  async deletePermission(_id: string): Promise<void> {
-    console.warn('[AdminService] deletePermission is not supported by the backend (no DELETE /admin/permissions/:id)');
+  async deletePermission(id: string): Promise<void> {
+    void id;
+    console.warn(
+      "[AdminService] deletePermission is not supported by the backend (no DELETE /admin/permissions/:id)",
+    );
   },
 
   async getUsers(params?: ListParams): Promise<PaginatedResponse<User>> {
     const backendParams: Record<string, unknown> = {};
     if (params?.limit) backendParams.limit = params.limit;
-    if (params?.page) backendParams.offset = (params.page - 1) * (params.limit || 20);
+    if (params?.page)
+      backendParams.offset = (params.page - 1) * (params.limit || 20);
     if (params?.search) backendParams.search = params.search;
-    const response = await apiClient.get<{ users: User[]; total: number } | PaginatedResponse<User>>('/admin/users', { params: backendParams });
-    if (response && 'users' in response) {
+    const response = await apiClient.get<
+      { users: BackendAdminUserRow[]; total: number } | PaginatedResponse<User>
+    >("/admin/users", { params: backendParams });
+    if (response && "users" in response) {
       const limit = params?.limit || 20;
       const page = params?.page || 1;
       const total = response.total || 0;
-      const data = (response.users as any[]).map(u => ({
+      const data: User[] = response.users.map((u) => ({
         id: u.id,
-        immutableUserId: u.immutable_user_id || u.immutableUserId || '',
-        email: u.email || '',
-        nickname: u.nickname || u.global_nickname || u.email?.split('@')[0] || '',
+        immutableUserId: u.immutable_user_id || u.immutableUserId || "",
+        email: u.email || "",
+        nickname:
+          u.nickname || u.global_nickname || u.email?.split("@")[0] || "",
         title: u.title,
-        status: u.status || 'active',
+        status: u.status || "active",
         roles: u.roles || [],
-        createdAt: u.created_at || u.createdAt || u.createdAt || new Date().toISOString(),
+        createdAt:
+          u.created_at ||
+          u.createdAt ||
+          u.createdAt ||
+          new Date().toISOString(),
         lastLogin: u.last_login || u.lastLogin,
-        wallet: u.wallet || (u.gold !== undefined ? { gold: Number(u.gold), gems: Number(u.gems) } : undefined),
+        // GET /admin/users joins `w.game_currency` (raw SQL, snake_case) per
+        // row; GET /admin/users/:id returns the full Wallet entity instead
+        // (camelCase `gameCurrency`) — tolerate both. A LEFT JOIN miss (user
+        // has no wallet row yet) comes through as `null`/`undefined`, which
+        // must stay undefined here — NOT coerced to "0" — so the UI can tell
+        // "balance is genuinely zero" apart from "no wallet data".
+        wallet: u.wallet
+          ? {
+              userId: u.wallet.userId ?? u.id,
+              gameCurrency: String(u.wallet.gameCurrency),
+            }
+          : (u.game_currency ?? u.gameCurrency) != null
+            ? {
+                userId: u.id,
+                gameCurrency: String(u.game_currency ?? u.gameCurrency),
+              }
+            : undefined,
         avatar: u.avatar_url || u.avatar,
       }));
-      return { 
-        data, 
+      return {
+        data,
         total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit)
+        totalPages: Math.ceil(total / limit),
       };
     }
-    if (response && 'data' in response) {
+    if (response && "data" in response) {
       return response as PaginatedResponse<User>;
     }
-    return { data: normalizeArrayResponse<User>(response), total: 0, page: 1, limit: 20, totalPages: 0 };
+    return {
+      data: normalizeArrayResponse<User>(response),
+      total: 0,
+      page: 1,
+      limit: 20,
+      totalPages: 0,
+    };
   },
 
-  async getUsersByRole(roleCode: string, params?: ListParams): Promise<PaginatedResponse<User>> {
+  async getUsersByRole(
+    roleCode: string,
+    params?: ListParams,
+  ): Promise<PaginatedResponse<User>> {
     const backendParams: Record<string, unknown> = {};
     if (params?.limit) backendParams.limit = params.limit;
-    if (params?.page) backendParams.offset = (params.page - 1) * (params.limit || 20);
-    const response = await apiClient.get<{ users: { userId: string; immutableUserId: string; email: string; nickname: string | null; username: string; assignedAt: string }[]; total: number }>(
-      `/admin/roles/${roleCode}/users`,
-      { params: backendParams }
-    );
-    
-    if (response && 'users' in response) {
-      const users = response.users.map((u: any) => ({
+    if (params?.page)
+      backendParams.offset = (params.page - 1) * (params.limit || 20);
+    const response = await apiClient.get<{
+      users: BackendRoleUserRow[];
+      total: number;
+    }>(`/admin/roles/${roleCode}/users`, { params: backendParams });
+
+    if (response && "users" in response) {
+      const users: User[] = response.users.map((u) => ({
         id: u.userId || u.id,
-        immutableUserId: u.immutableUserId || u.immutable_user_id || '',
-        email: u.email || '',
-        nickname: u.nickname || u.global_nickname || (u.email || '').split('@')[0] || '',
+        immutableUserId: u.immutableUserId || u.immutable_user_id || "",
+        email: u.email || "",
+        nickname:
+          u.nickname ||
+          u.global_nickname ||
+          (u.email || "").split("@")[0] ||
+          "",
         title: undefined,
-        status: 'active' as const,
+        status: "active" as const,
         roles: [] as Role[],
-        createdAt: u.assignedAt || u.created_at || u.createdAt || new Date().toISOString(),
+        createdAt:
+          u.assignedAt ||
+          u.created_at ||
+          u.createdAt ||
+          new Date().toISOString(),
       })) as User[];
       const limit = params?.limit || 20;
       const page = params?.page || 1;
       const total = response.total || 0;
-      return { 
-        data: users, 
+      return {
+        data: users,
         total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit)
+        totalPages: Math.ceil(total / limit),
       };
     }
-    
+
     return { data: [], total: 0, page: 1, limit: 20, totalPages: 0 };
   },
 
@@ -164,8 +301,54 @@ export const adminService = {
     return apiClient.get<User>(`/admin/users/${id}`);
   },
 
+  /**
+   * GET /admin/users/:id actually returns `{ user, profile, wallet, roles }`
+   * (AdminService.getUserDetails) — nickname/email/status live under `.user`,
+   * not at the response root. This is the correctly-shaped accessor for
+   * "resolve a UUID to a human identity" call sites (Agents/Distributors);
+   * `getUserById` above is kept as-is for existing wallet-reading callers
+   * that already (coincidentally) work off the root `.wallet`.
+   */
+  async getUserIdentity(
+    id: string,
+  ): Promise<{
+    id: string;
+    immutableUserId: string;
+    nickname: string;
+    email: string;
+    status: string;
+  } | null> {
+    try {
+      const response = await apiClient.get<{
+        user?: {
+          id: string;
+          immutableUserId?: string;
+          immutable_user_id?: string;
+          nickname?: string;
+          global_nickname?: string;
+          email?: string;
+          status?: string;
+        };
+      }>(`/admin/users/${id}`);
+      const u = response?.user;
+      if (!u) return null;
+      return {
+        id: u.id,
+        immutableUserId: u.immutableUserId || u.immutable_user_id || "",
+        nickname:
+          u.nickname || u.global_nickname || u.email?.split("@")[0] || "",
+        email: u.email || "",
+        status: u.status || "active",
+      };
+    } catch {
+      return null;
+    }
+  },
+
   async getUserRoles(userId: string): Promise<string[]> {
-    const response = await apiClient.get<string[] | { data: string[] }>(`/admin/users/${userId}/roles`);
+    const response = await apiClient.get<string[] | { data: string[] }>(
+      `/admin/users/${userId}/roles`,
+    );
     return normalizeArrayResponse<string>(response);
   },
 
@@ -177,7 +360,10 @@ export const adminService = {
     await apiClient.post(`/admin/users/${userId}/roles/revoke`, { roleCode });
   },
 
-  async adjustUserBalance(userId: string, data: AdjustBalanceRequest): Promise<void> {
+  async adjustUserBalance(
+    userId: string,
+    data: AdjustBalanceRequest,
+  ): Promise<void> {
     await apiClient.post(`/admin/users/${userId}/balance`, data);
   },
 
@@ -185,32 +371,48 @@ export const adminService = {
     await apiClient.post(`/admin/refunds/${purchaseId}`, { reason });
   },
 
-  async getUserInventory(userId: string): Promise<unknown[]> {
-    const response = await apiClient.get<unknown[] | { data: unknown[] }>(`/admin/users/${userId}/inventory`);
+  async getUserInventory(userId: string): Promise<AdminInventoryItem[]> {
+    const response = await apiClient.get<
+      AdminInventoryItem[] | { data: AdminInventoryItem[] }
+    >(`/admin/users/${userId}/inventory`);
     if (Array.isArray(response)) return response;
-    return (response as { data: unknown[] }).data || [];
+    return response.data || [];
   },
 
-  async getUserPurchases(userId: string): Promise<unknown[]> {
-    const response = await apiClient.get<unknown[] | { data: unknown[] }>(`/admin/users/${userId}/purchases`);
+  async getUserPurchases(userId: string): Promise<AdminPurchaseItem[]> {
+    const response = await apiClient.get<
+      AdminPurchaseItem[] | { data: AdminPurchaseItem[] }
+    >(`/admin/users/${userId}/purchases`);
     if (Array.isArray(response)) return response;
-    return (response as { data: unknown[] }).data || [];
+    return response.data || [];
   },
 
-  async getUserLoadout(userId: string): Promise<unknown[]> {
-    const response = await apiClient.get<unknown[] | { data: unknown[] }>(`/admin/users/${userId}/loadout`);
+  async getUserLoadout(userId: string): Promise<AdminLoadoutItem[]> {
+    const response = await apiClient.get<
+      AdminLoadoutItem[] | { data: AdminLoadoutItem[] }
+    >(`/admin/users/${userId}/loadout`);
     if (Array.isArray(response)) return response;
-    return (response as { data: unknown[] }).data || [];
+    return response.data || [];
   },
 
-  async searchUsers(params: { search?: string; query?: string; email?: string; immutableUserId?: string; limit?: number; offset?: number }): Promise<PaginatedResponse<User>> {
+  async searchUsers(params: {
+    search?: string;
+    query?: string;
+    email?: string;
+    immutableUserId?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<PaginatedResponse<User>> {
     const backendParams: Record<string, unknown> = {};
     if (params?.query) backendParams.query = params.query;
     if (params?.email) backendParams.email = params.email;
-    if (params?.immutableUserId) backendParams.immutableUserId = params.immutableUserId;
+    if (params?.immutableUserId)
+      backendParams.immutableUserId = params.immutableUserId;
     if (params?.limit) backendParams.limit = params.limit;
     if (params?.offset !== undefined) backendParams.offset = params.offset;
-    return apiClient.get<PaginatedResponse<User>>('/admin/users/search', { params: backendParams });
+    return apiClient.get<PaginatedResponse<User>>("/admin/users/search", {
+      params: backendParams,
+    });
   },
 
   async updateUserStatus(userId: string, status: string): Promise<void> {
@@ -218,7 +420,9 @@ export const adminService = {
   },
 
   async getUserEffectivePermissions(userId: string): Promise<string[]> {
-    const response = await apiClient.get<string[] | { data: string[]; permissions?: string[] }>(`/admin/users/${userId}/permissions`);
+    const response = await apiClient.get<
+      string[] | { data: string[]; permissions?: string[] }
+    >(`/admin/users/${userId}/permissions`);
     if (Array.isArray(response)) return response;
     const r = response as { data: string[]; permissions?: string[] };
     if (r.permissions) return r.permissions;
@@ -226,25 +430,77 @@ export const adminService = {
     return [];
   },
 
-  async getUserPermissionOverrides(userId: string): Promise<Array<{ permissionCode: string; type: 'grant' | 'revoke'; reason?: string; createdAt: string; createdBy: string }>> {
-    const response = await apiClient.get<unknown[] | { data: unknown[]; overrides?: unknown[] }>(`/admin/users/${userId}/permissions/overrides`);
-    if (Array.isArray(response)) return response as Array<{ permissionCode: string; type: 'grant' | 'revoke'; reason?: string; createdAt: string; createdBy: string }>;
+  async getUserPermissionOverrides(
+    userId: string,
+  ): Promise<
+    Array<{
+      permissionCode: string;
+      type: "grant" | "revoke";
+      reason?: string;
+      createdAt: string;
+      createdBy: string;
+    }>
+  > {
+    const response = await apiClient.get<
+      unknown[] | { data: unknown[]; overrides?: unknown[] }
+    >(`/admin/users/${userId}/permissions/overrides`);
+    if (Array.isArray(response))
+      return response as Array<{
+        permissionCode: string;
+        type: "grant" | "revoke";
+        reason?: string;
+        createdAt: string;
+        createdBy: string;
+      }>;
     const r = response as { data: unknown[]; overrides?: unknown[] };
-    if (r.overrides) return r.overrides as Array<{ permissionCode: string; type: 'grant' | 'revoke'; reason?: string; createdAt: string; createdBy: string }>;
-    if (r.data) return r.data as Array<{ permissionCode: string; type: 'grant' | 'revoke'; reason?: string; createdAt: string; createdBy: string }>;
+    if (r.overrides)
+      return r.overrides as Array<{
+        permissionCode: string;
+        type: "grant" | "revoke";
+        reason?: string;
+        createdAt: string;
+        createdBy: string;
+      }>;
+    if (r.data)
+      return r.data as Array<{
+        permissionCode: string;
+        type: "grant" | "revoke";
+        reason?: string;
+        createdAt: string;
+        createdBy: string;
+      }>;
     return [];
   },
 
-  async grantPermissionOverride(userId: string, permissionCode: string, reason?: string): Promise<void> {
-    await apiClient.post(`/admin/users/${userId}/permissions/grant`, { permissionCode, reason });
+  async grantPermissionOverride(
+    userId: string,
+    permissionCode: string,
+    reason?: string,
+  ): Promise<void> {
+    await apiClient.post(`/admin/users/${userId}/permissions/grant`, {
+      permissionCode,
+      reason,
+    });
   },
 
-  async revokePermissionOverride(userId: string, permissionCode: string, reason?: string): Promise<void> {
-    await apiClient.post(`/admin/users/${userId}/permissions/revoke`, { permissionCode, reason });
+  async revokePermissionOverride(
+    userId: string,
+    permissionCode: string,
+    reason?: string,
+  ): Promise<void> {
+    await apiClient.post(`/admin/users/${userId}/permissions/revoke`, {
+      permissionCode,
+      reason,
+    });
   },
 
-  async removePermissionOverride(userId: string, permissionCode: string): Promise<void> {
-    await apiClient.delete(`/admin/users/${userId}/permissions/overrides/${permissionCode}`);
+  async removePermissionOverride(
+    userId: string,
+    permissionCode: string,
+  ): Promise<void> {
+    await apiClient.delete(
+      `/admin/users/${userId}/permissions/overrides/${permissionCode}`,
+    );
   },
 };
 

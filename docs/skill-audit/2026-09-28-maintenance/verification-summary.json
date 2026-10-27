@@ -1,0 +1,33 @@
+{
+  "date_utc": "2026-09-28T07:05:29.476253+00:00",
+  "input_archive_sha256": "1e4e5c1181a0ecac5629c532971dbdf52760e0c692a94e37e16b331cf4e1fa3c",
+  "input_original_files": 350,
+  "original_files_changed": 38,
+  "original_files_removed": 0,
+  "skills_reviewed": 43,
+  "skills_changed": 31,
+  "skills_preserved_unchanged": 12,
+  "agent_definitions_preserved": 59,
+  "command_wrappers_preserved": 43,
+  "new_skills_agents_tools": 0,
+  "node_tests": {
+    "run": 60,
+    "pass": 60,
+    "fail": 0,
+    "skip": 0
+  },
+  "python_tests": {
+    "run": 87,
+    "pass": 87,
+    "fail": 0,
+    "skip": 0,
+    "new_executable_cases": 14,
+    "new_source_contract_checks": 7
+  },
+  "syntax_checks": 16,
+  "frontmatter_documents": 145,
+  "unresolved_explicit_references": 0,
+  "registry": "UNCONFIGURED, empty; expected gate rejection exit 2",
+  "host_runtime_validation": "NOT_RUN",
+  "review_actor": "Primary assistant; no delegated agents or independent reviewers were claimed"
+}

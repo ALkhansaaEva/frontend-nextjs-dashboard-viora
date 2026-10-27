@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CreditCard, RefreshCw, Search, Coins, Gem, AlertCircle } from 'lucide-react';
+import { CreditCard, RefreshCw, Search, Coins, AlertCircle } from 'lucide-react';
 import { adminService } from '@/services/admin.service';
 import { Button } from '@/shared/components/ui/Button';
 import { Input } from '@/shared/components/ui/Input';
@@ -10,16 +10,18 @@ import { Modal } from '@/shared/components/ui/Modal';
 import { Badge } from '@/shared/components/ui/Badge';
 import { DataTable, type Column } from '@/shared/components/ui/DataTable';
 import { PageHeader } from '@/shared/components/ui/PageHeader';
+import { QueryErrorNotice } from '@/shared/components/ui/QueryState';
 import { PageSkeleton } from '@/components/skeletons';
 import { useLanguage } from '@/components/language-context';
+import { formatIntegerString } from '@/shared/lib/money';
 
 interface PurchaseRecord {
   id: string;
   userId: string;
   userNickname: string;
   itemName: string;
-  currency: 'gold' | 'gems';
-  amount: number;
+  currency: 'GAME_CURRENCY';
+  amount: string;
   status: string;
   createdAt: string;
 }
@@ -32,7 +34,7 @@ export default function PaymentsPage() {
   const [showRefund, setShowRefund] = useState(false);
   const [search, setSearch] = useState('');
 
-  const { data: purchases = [], isLoading } = useQuery({
+  const { data: purchases = [], isLoading, isError, error, refetch } = useQuery({
     queryKey: ['admin-purchases'],
     queryFn: async () => {
       const users = await adminService.getUsers({ limit: 50 });
@@ -64,9 +66,8 @@ export default function PaymentsPage() {
       key: 'amount', header: t('amount'),
       render: (p) => (
         <div className="flex items-center gap-1.5">
-          {p.currency === 'gems' ? <Gem className="w-4 h-4 text-purple-500" /> : <Coins className="w-4 h-4 text-yellow-500" />}
-          <span className="font-semibold">{p.amount}</span>
-          <span className="text-xs text-gray-400">{p.currency}</span>
+          <Coins className="w-4 h-4 text-emerald-500" />
+          <span className="font-semibold">{formatIntegerString(p.amount)}</span>
         </div>
       ),
     },
@@ -90,9 +91,27 @@ export default function PaymentsPage() {
 
   if (isLoading) return <PageSkeleton />;
 
+  if (isError) {
+    return (
+      <div className="space-y-6">
+        <PageHeader icon={<CreditCard className="w-6 h-6 text-cyan-500" />} title={t('payments') || 'Payment Operations'} />
+        <QueryErrorNotice error={error} onRetry={() => refetch()} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader icon={<CreditCard className="w-6 h-6 text-cyan-500" />} title={t('payments') || 'Payment Operations'} />
+
+      <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl flex items-start gap-2 text-sm text-amber-800 dark:text-amber-300">
+        <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+        <p>
+          <strong>Backend gap:</strong> there is no admin-wide purchases list endpoint — only <code>GET /admin/users/:id/purchases</code>
+          (per user). This page approximates one by fetching purchases for the first 50 users, which is not a real aggregate view and is
+          hidden from the Sidebar. Refunds still call the real <code>POST /admin/refunds/:purchaseId</code> endpoint.
+        </p>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-3 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="relative flex-1 max-w-sm">

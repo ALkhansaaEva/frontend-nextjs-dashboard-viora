@@ -1,61 +1,102 @@
 'use client';
 
 import { useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ChevronLeft, ChevronRight, MessageSquare, Clock, 
-  Search, Filter, ArrowRight, LifeBuoy, Plus
+import {
+  ChevronLeft, ChevronRight, MessageSquare, Clock,
+  Search, Filter, ArrowRight, Plus
 } from 'lucide-react';
 import { Card, CardContent } from '@/shared/components/ui/Card';
+import { Modal } from '@/shared/components/ui/Modal';
 import { Select } from '@/shared/components/ui/Select';
 import { Button } from '@/shared/components/ui/Button';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Input } from '@/shared/components/ui/Input';
+import { QueryErrorNotice } from '@/shared/components/ui/QueryState';
+import { useToast } from '@/store/toast.store';
 import { supportService } from '@/services';
 import { useLanguage } from '@/components/language-context';
+import { humanizeToken } from '@/shared/lib/labels';
 import { TableSkeleton } from '@/components/skeletons';
+import { TICKET_STATUSES, type TicketStatus } from '@/dto/support/support.dto';
+import TicketDetailDrawer, { ticketStatusVariant } from './TicketDetailDrawer';
 
-const statusColors: Record<string, 'warning' | 'info' | 'success' | 'default'> = {
-  open: 'warning',
-  in_progress: 'info',
-  resolved: 'success',
-  closed: 'default',
-};
+const LIST_LIMIT = 10;
 
-const priorityColors: Record<string, 'default' | 'warning' | 'danger' | 'info'> = {
-  low: 'default',
-  medium: 'warning',
-  high: 'danger',
-  urgent: 'info',
-};
+const statusOptions = [
+  { value: '', label: 'All Statuses' },
+  ...TICKET_STATUSES.map((status) => ({ value: status, label: humanizeToken(status) })),
+];
 
 export default function SupportPage() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
   const { t } = useLanguage();
+  const toast = useToast();
   const queryClient = useQueryClient();
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [search, setSearch] = useState('');
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['support', page, statusFilter],
-    queryFn: () => supportService.getTickets({ page, limit: 10, status: statusFilter || undefined }),
+  const [statusFilter, setStatusFilter] = useState<TicketStatus | ''>('');
+  const [offset, setOffset] = useState(0);
+  const [search, setSearch] = useState('');
+  const [openTicketId, setOpenTicketId] = useState<string | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['support', 'tickets', statusFilter, offset],
+    queryFn: () => supportService.getTickets({ status: statusFilter || undefined, limit: LIST_LIMIT, offset }),
     staleTime: 30000,
   });
 
-  const handlePageChange = (newPage: number) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('page', newPage.toString());
-    window.history.pushState({}, '', url);
-    queryClient.invalidateQueries({ queryKey: ['support'] });
-  };
+  const total = data?.total ?? 0;
+  const page = Math.floor(offset / LIST_LIMIT) + 1;
+  const totalPages = Math.max(1, Math.ceil(total / LIST_LIMIT));
 
-  const filteredTickets = (data?.data || []).filter((ticket: { subject: string }) => 
-    ticket.subject.toLowerCase().includes(search.toLowerCase())
-  ) || [];
+  // The backend exposes no search param, and the list is offset-paged, so this
+  // narrows the rows already loaded for the current page.
+  const query = search.trim().toLowerCase();
+  const tickets = (data?.tickets ?? []).filter((ticket) =>
+    !query ||
+    ticket.subject.toLowerCase().includes(query) ||
+    ticket.id.toLowerCase().includes(query) ||
+    (ticket.ticketNumber ?? '').toLowerCase().includes(query)
+  );
+
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [category, setCategory] = useState('');
+
+  const createMutation = useMutation({
+    mutationFn: () =>
+      supportService.createTicket({
+        subject: subject.trim(),
+        message: message.trim(),
+        category: category.trim() || undefined,
+      }),
+    onSuccess: () => {
+      setCreateOpen(false);
+      setSubject('');
+      setMessage('');
+      setCategory('');
+      setOffset(0);
+      void queryClient.invalidateQueries({ queryKey: ['support'] });
+      toast.success('Ticket created.');
+    },
+    onError: (err) => toast.error('Could not create the ticket.', err),
+  });
+
+  if (isError) {
+
+    return (
+
+      <div className="space-y-6">
+
+        <QueryErrorNotice error={error} onRetry={() => refetch()} />
+
+      </div>
+
+    );
+
+  }
+
 
   if (isLoading) {
     return (
@@ -79,11 +120,7 @@ export default function SupportPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-           <Button variant="outline" className="rounded-2xl border-primary/20 bg-primary/5 text-primary hover:bg-primary/10">
-              <LifeBuoy className="w-4 h-4 mr-2" />
-              Guidelines
-           </Button>
-           <Button className="rounded-2xl shadow-lg shadow-primary/20">
+           <Button className="rounded-2xl shadow-lg shadow-primary/20" onClick={() => setCreateOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />
               New Ticket
            </Button>
@@ -96,8 +133,8 @@ export default function SupportPage() {
           <div className="flex flex-col md:flex-row items-center gap-4">
              <div className="relative flex-1 group w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary transition-colors" />
-                <Input 
-                   placeholder="Search by ticket subject or ID..." 
+                <Input
+                   placeholder="Filter this page by subject, ticket number or ID..."
                    value={search}
                    onChange={e => setSearch(e.target.value)}
                    className="pl-11 bg-transparent border-none focus-visible:ring-1 focus-visible:ring-primary/20"
@@ -108,18 +145,10 @@ export default function SupportPage() {
                 <Select
                   value={statusFilter}
                   onChange={(e) => {
-                    setStatusFilter(e.target.value);
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('page', '1');
-                    window.history.pushState({}, '', url);
+                    setStatusFilter(e.target.value as TicketStatus | '');
+                    setOffset(0);
                   }}
-                  options={[
-                    { value: '', label: 'All Statuses' },
-                    { value: 'open', label: 'Open' },
-                    { value: 'in_progress', label: 'In Progress' },
-                    { value: 'resolved', label: 'Resolved' },
-                    { value: 'closed', label: 'Closed' },
-                  ]}
+                  options={statusOptions}
                   className="w-48 bg-transparent border-none"
                 />
              </div>
@@ -130,7 +159,7 @@ export default function SupportPage() {
       {/* Tickets Feed */}
       <div className="grid grid-cols-1 gap-4">
         <AnimatePresence mode="popLayout">
-          {filteredTickets.map((ticket, index) => (
+          {tickets.map((ticket, index) => (
             <motion.div
               key={ticket.id}
               initial={{ opacity: 0, y: 10 }}
@@ -138,10 +167,19 @@ export default function SupportPage() {
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ delay: index * 0.05 }}
               layout
-              onClick={() => router.push(`/dashboard/support/${ticket.id}`)}
-              className="cursor-pointer"
+              role="button"
+              tabIndex={0}
+              aria-label={`Open ticket: ${ticket.subject}`}
+              onClick={() => setOpenTicketId(ticket.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setOpenTicketId(ticket.id);
+                }
+              }}
+              className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-2xl"
             >
-              <Card 
+              <Card
                 className="group border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/50 hover:bg-gray-50 dark:hover:bg-gray-800/80 transition-all duration-300 overflow-hidden"
               >
                 <CardContent className="p-5 flex items-center justify-between gap-6">
@@ -155,7 +193,7 @@ export default function SupportPage() {
                       </h3>
                       <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400">
                         <span className="flex items-center gap-1 font-mono uppercase tracking-widest text-[10px]">
-                           ID: {ticket.id.slice(0, 8)}
+                           #{ticket.ticketNumber}
                         </span>
                         <span>•</span>
                         <span className="flex items-center gap-1">
@@ -167,11 +205,8 @@ export default function SupportPage() {
                   </div>
 
                   <div className="flex items-center gap-4 shrink-0">
-                    <Badge variant={priorityColors[ticket.priority || 'low'] || 'default'} className="px-3 py-1 capitalize">
-                      {ticket.priority || 'low'}
-                    </Badge>
-                    <Badge variant={statusColors[ticket.status] || 'default'} className="px-3 py-1 capitalize border-primary/10">
-                      {ticket.status.replace('_', ' ')}
+                    <Badge variant={ticketStatusVariant(ticket.status)} className="px-3 py-1 capitalize border-primary/10">
+                      {humanizeToken(ticket.status)}
                     </Badge>
                     <div className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 group-hover:bg-primary/10 group-hover:text-primary transition-all">
                        <ArrowRight className="w-5 h-5" />
@@ -183,37 +218,41 @@ export default function SupportPage() {
           ))}
         </AnimatePresence>
 
-        {filteredTickets.length === 0 && (
+        {tickets.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center opacity-40">
             <MessageSquare className="w-16 h-16 text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold">{t('noData')}</h3>
-            <p className="mt-2 text-sm">Communication channels are clear. No active tickets found.</p>
+            <h3 className="text-xl font-semibold">{query ? 'No match on this page' : t('noData')}</h3>
+            <p className="mt-2 text-sm">
+              {query
+                ? 'Clear the filter or turn the page to look through the rest of the queue.'
+                : 'Communication channels are clear. No active tickets found.'}
+            </p>
           </div>
         )}
       </div>
 
       {/* Pagination Container */}
-      {data && data.total > 10 && (
+      {total > LIST_LIMIT && (
         <div className="flex items-center justify-between px-2 pt-6">
            <div className="text-sm font-medium text-gray-500">
-              Reviewing page {data.page} of {data.totalPages}
+              Reviewing page {page} of {totalPages}
            </div>
            <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                disabled={data.page <= 1} 
-                onClick={() => handlePageChange(data.page - 1)}
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={offset === 0}
+                onClick={() => setOffset(o => Math.max(0, o - LIST_LIMIT))}
                 className="rounded-xl"
               >
                 <ChevronLeft className="w-4 h-4 mr-1" />
                 Previous
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                disabled={data.page >= data.totalPages} 
-                onClick={() => handlePageChange(data.page + 1)}
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={offset + LIST_LIMIT >= total}
+                onClick={() => setOffset(o => o + LIST_LIMIT)}
                 className="rounded-xl"
               >
                 More
@@ -222,6 +261,51 @@ export default function SupportPage() {
            </div>
         </div>
       )}
+
+      <TicketDetailDrawer ticketId={openTicketId} onClose={() => setOpenTicketId(null)} />
+
+      {/* Create Ticket — POST /support/tickets { subject, message, category? } */}
+      <Modal isOpen={createOpen} onClose={() => setCreateOpen(false)} title="New Ticket" size="md">
+        <div className="space-y-3">
+          <Input
+            label="Subject"
+            value={subject}
+            onChange={e => setSubject(e.target.value)}
+            placeholder="Short summary of the issue"
+          />
+          <div>
+            <label htmlFor="new-ticket-message" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+              Message
+            </label>
+            <textarea
+              id="new-ticket-message"
+              rows={5}
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              placeholder="Describe the problem in detail…"
+              className="w-full resize-y rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            />
+          </div>
+          <Input
+            label="Category (optional)"
+            value={category}
+            onChange={e => setCategory(e.target.value)}
+            placeholder="payments"
+          />
+          <div className="flex justify-end gap-2 pt-1">
+            <Button variant="outline" onClick={() => setCreateOpen(false)}>
+              {t('cancel')}
+            </Button>
+            <Button
+              isLoading={createMutation.isPending}
+              disabled={subject.trim().length < 3 || message.trim().length < 5}
+              onClick={() => createMutation.mutate()}
+            >
+              {t('create')}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

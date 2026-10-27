@@ -1,0 +1,16 @@
+test_agent_log_write_failure_reported (test_repairs.HookTests.test_agent_log_write_failure_reported) ... ok
+test_large_unrelated_asset_is_not_content_validated (test_repairs.HookTests.test_large_unrelated_asset_is_not_content_validated) ... ok
+test_maintenance_design_invalid_utf8_blocks_before_output (test_repairs.HookTests.test_maintenance_design_invalid_utf8_blocks_before_output) ... ok
+test_missing_command_blocks (test_repairs.HookTests.test_missing_command_blocks) ... ok
+test_repair_checkpoint_utf8_preserved (test_repairs.HookTests.test_repair_checkpoint_utf8_preserved) ... ok
+test_session_stop_retains_incomplete_state (test_repairs.HookTests.test_session_stop_retains_incomplete_state) ... ok
+test_backup_manifest_and_originals_retained (test_repairs.ModelTests.test_backup_manifest_and_originals_retained) ... ok
+test_nonstandard_config_constants_refused_preflight (test_repairs.ModelTests.test_nonstandard_config_constants_refused_preflight) ... ok
+test_revision_repeated_update_is_a_noop (test_repairs.ModelTests.test_revision_repeated_update_is_a_noop) ... ok
+test_maintenance_gate_keeps_required_unknowns_blocked (test_repairs.StructureTests.test_maintenance_gate_keeps_required_unknowns_blocked) ... ok
+test_repair_inventory_covers_executable_and_process_surfaces (test_repairs.StructureTests.test_repair_inventory_covers_executable_and_process_surfaces) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 8.068s
+
+OK

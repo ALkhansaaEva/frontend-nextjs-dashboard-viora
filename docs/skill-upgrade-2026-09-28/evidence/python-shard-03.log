@@ -1,0 +1,14 @@
+test_maintenance_design_read_error_propagates (test_repairs.HookTests.test_maintenance_design_read_error_propagates) ... ok
+test_maintenance_design_terminal_controls_block_before_output (test_repairs.HookTests.test_maintenance_design_terminal_controls_block_before_output) ... ok
+test_maintenance_design_utf8_and_no_marker_advisories_preserved (test_repairs.HookTests.test_maintenance_design_utf8_and_no_marker_advisories_preserved) ... ok
+test_malformed_envelope_blocks (test_repairs.HookTests.test_malformed_envelope_blocks) ... ok
+test_missing_command_blocks (test_repairs.HookTests.test_missing_command_blocks) ... ok
+test_no_staged_files (test_repairs.HookTests.test_no_staged_files) ... ok
+test_noncommit_command_does_not_execute (test_repairs.HookTests.test_noncommit_command_does_not_execute) ... ok
+test_nonstandard_json_constant_blocks (test_repairs.HookTests.test_nonstandard_json_constant_blocks) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 28.860s
+
+OK
+SHARD_RESULT={"ids": ["test_repairs.HookTests.test_maintenance_design_read_error_propagates", "test_repairs.HookTests.test_maintenance_design_terminal_controls_block_before_output", "test_repairs.HookTests.test_maintenance_design_utf8_and_no_marker_advisories_preserved", "test_repairs.HookTests.test_malformed_envelope_blocks", "test_repairs.HookTests.test_missing_command_blocks", "test_repairs.HookTests.test_no_staged_files", "test_repairs.HookTests.test_noncommit_command_does_not_execute", "test_repairs.HookTests.test_nonstandard_json_constant_blocks"], "run": 8, "failures": 0, "errors": 0, "skipped": 0, "success": true}

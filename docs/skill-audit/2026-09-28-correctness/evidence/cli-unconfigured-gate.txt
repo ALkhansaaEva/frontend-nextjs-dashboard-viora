@@ -1,0 +1,5 @@
+$ node .opencode/scripts/skill-audit.mjs check .opencode/skills/skill-audit-repair/SKILL.md
+
+BLOCKED: Audit registry missing, malformed, context UNCONFIGURED, or obsolete schema (version 2 required); perform a read-only bootstrap audit
+
+EXIT: 2

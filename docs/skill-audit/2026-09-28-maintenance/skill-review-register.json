@@ -1,0 +1,582 @@
+[
+  {
+    "name": "architecture-decision",
+    "path": ".opencode/skills/architecture-decision/SKILL.md",
+    "before_sha256": "2c0370893b191d0c6081e626be45a8664a19b6db13d35a466efdd6d89ca9d3c3",
+    "after_sha256": "2c0370893b191d0c6081e626be45a8664a19b6db13d35a466efdd6d89ca9d3c3",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "asset-audit",
+    "path": ".opencode/skills/asset-audit/SKILL.md",
+    "before_sha256": "786dae49b033de518866286ff1b1cabf09829b3796d309af02e040e8d2e77f7d",
+    "after_sha256": "3a7e935e0b152324d7ba15203602e90abc75390e33cde691e9303a7f9b241ae4",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M02"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "balance-check",
+    "path": ".opencode/skills/balance-check/SKILL.md",
+    "before_sha256": "5698b9aee687f536b7ad83ccd2657e06437454623ca79eeff4f6aee9e0f31a2e",
+    "after_sha256": "5698b9aee687f536b7ad83ccd2657e06437454623ca79eeff4f6aee9e0f31a2e",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "brainstorm",
+    "path": ".opencode/skills/brainstorm/SKILL.md",
+    "before_sha256": "ce2ce575d8dee989d8ea766dea3b497fe8ada9cc4f6fedf9b693fa4210ac759c",
+    "after_sha256": "4811433ccde575904c44534cc5ee06ada45da86e55d0e4343450c8a81de9ad86",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M22"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "bug-report",
+    "path": ".opencode/skills/bug-report/SKILL.md",
+    "before_sha256": "1b3ee55fa19780c291f2f535a053be3aa2089a3dddbed55280ec9c100210e2b1",
+    "after_sha256": "1b3ee55fa19780c291f2f535a053be3aa2089a3dddbed55280ec9c100210e2b1",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "changelog",
+    "path": ".opencode/skills/changelog/SKILL.md",
+    "before_sha256": "a6ac81374cdc0ac319de4515210ecf20c3a4a966a9519a7e6aaae148e8735482",
+    "after_sha256": "ba9ecbe6986aa2759139ebbe868b3ff39387023ab56f5febceb1048ca1a1db73",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M11"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "code-review",
+    "path": ".opencode/skills/code-review/SKILL.md",
+    "before_sha256": "addec5fe3a3e408f56eee800010d7249ab1dcf47f25e7d4cdbeba85aabc58e95",
+    "after_sha256": "dbee0fde2148b9d85ebc77ea3879026d47ebe7f9b5650e8d42c2669e59147a29",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M03"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "concurrency-analysis",
+    "path": ".opencode/skills/concurrency-analysis/SKILL.md",
+    "before_sha256": "0c12977203b3d9fa771948c80733fb1e81158fdadb0423720c533cb12b6ae853",
+    "after_sha256": "0c12977203b3d9fa771948c80733fb1e81158fdadb0423720c533cb12b6ae853",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "debugging-analysis",
+    "path": ".opencode/skills/debugging-analysis/SKILL.md",
+    "before_sha256": "1e347f99baa25023bf20347d8cfe348f105e3f12b020c742490e2414019cf502",
+    "after_sha256": "1e347f99baa25023bf20347d8cfe348f105e3f12b020c742490e2414019cf502",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "design-review",
+    "path": ".opencode/skills/design-review/SKILL.md",
+    "before_sha256": "890be8dc95e41e46c483147d14385811c00da8d5801f36649c9700c84fb25a17",
+    "after_sha256": "d5ea8e85e8d9fb954da7f4ac3c28bb670ee9f56370e9f9ac0cd1d004808682ec",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M04"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "design-system",
+    "path": ".opencode/skills/design-system/SKILL.md",
+    "before_sha256": "ad9c1f18cc7e8acdb3a7588538f1850ce73583823e3192e931fe31b47b268ae8",
+    "after_sha256": "4fb6c30ffe17fad179d3d4c432614fe650bb673bc953fce2adab0bf702503b2c",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M15"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "estimate",
+    "path": ".opencode/skills/estimate/SKILL.md",
+    "before_sha256": "76b0d98d3e575f29963831f2f79d13cad2c7b4495ff39380265ec80156ece006",
+    "after_sha256": "adc95979d51946e857040df784ac48279798a0e37f75cf9d9f558f02579556d5",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M18"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "framework-engineering",
+    "path": ".opencode/skills/framework-engineering/SKILL.md",
+    "before_sha256": "97cb002af395b546a84d1bf8f89dbefdaa464d8c2193b8e4a31f99743566f90e",
+    "after_sha256": "97cb002af395b546a84d1bf8f89dbefdaa464d8c2193b8e4a31f99743566f90e",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "gate-check",
+    "path": ".opencode/skills/gate-check/SKILL.md",
+    "before_sha256": "9318a307e53d26a2d1a45bef147f92f818ea7ae4fbe86d031d0153dd6a6df30c",
+    "after_sha256": "8ba78b84df8f1cde4370a2bb2ffe847be15f091d2086bcd910ac186f6d10a5c7",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M21"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "hotfix",
+    "path": ".opencode/skills/hotfix/SKILL.md",
+    "before_sha256": "bc635c9f6f86a06ca2a9aeb0562e75b4a4c3da91a58a0c08e6b0aafde84c1e2b",
+    "after_sha256": "e8e61dd868133ed2ab0ec490392e46d005e7d82588a31773f4db2f446220d174",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M13"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "launch-checklist",
+    "path": ".opencode/skills/launch-checklist/SKILL.md",
+    "before_sha256": "2aa9b89a57ed6e21bd30a5b2c778f12c96f470fb15a692e10ac75d0b5e64cee2",
+    "after_sha256": "fee94843d2d17ef6bd0de369a38d9cbadef8fd28521be6b31e165b255779a9bc",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M14"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "localize",
+    "path": ".opencode/skills/localize/SKILL.md",
+    "before_sha256": "f9214e423b0b4e8ca0ef60989d8ddb8f593fdd48c77e732e6818d8cff1ebfc4f",
+    "after_sha256": "fe9c232e11eb9f7ae235b03b546c8eb4edecbef19d4d140d54dbfd07b454f83e",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M05"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "map-systems",
+    "path": ".opencode/skills/map-systems/SKILL.md",
+    "before_sha256": "85a31705c4184c2924733fce1d831084bca370bf37338d7bd32c785cd0a8f589",
+    "after_sha256": "6de3d69995bd8928d17f112a0ba23801b04a1518212bd3e222b8ea73647946e7",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M15",
+      "M16"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "milestone-review",
+    "path": ".opencode/skills/milestone-review/SKILL.md",
+    "before_sha256": "cfbab54188650c3ce7b0e93632a754bd7d17d4419d77f2139a10ebb1c62e602a",
+    "after_sha256": "cfbab54188650c3ce7b0e93632a754bd7d17d4419d77f2139a10ebb1c62e602a",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "onboard",
+    "path": ".opencode/skills/onboard/SKILL.md",
+    "before_sha256": "39f011ef2ebf427f74197e48d4389c8872db467ba6b27edd30d3a3a4e05d7a2a",
+    "after_sha256": "39f011ef2ebf427f74197e48d4389c8872db467ba6b27edd30d3a3a4e05d7a2a",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "patch-notes",
+    "path": ".opencode/skills/patch-notes/SKILL.md",
+    "before_sha256": "5ebd5b076b6a60f758b8848fec5f4e263c17e9d9dc74515c1e5527e981aa5b36",
+    "after_sha256": "99262a414177273bb979f55e27c8b9c584aa542a0c0c08c08f5df60c0ecaea42",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M11"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "perf-profile",
+    "path": ".opencode/skills/perf-profile/SKILL.md",
+    "before_sha256": "fc93ffbd06599ed3eb03bf7d31baeb185bb43cfc11bcdb02c2b9a1d04f28cd05",
+    "after_sha256": "145d32c4ff64caf3c544c2c9eac635c46bd024317f92af9b353e847f5174b6cc",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M06"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "playtest-report",
+    "path": ".opencode/skills/playtest-report/SKILL.md",
+    "before_sha256": "17d98a878b3ecaea1f1269a2d6c9a3aa585a2adf19285dd295a04ada5309ed7f",
+    "after_sha256": "17d98a878b3ecaea1f1269a2d6c9a3aa585a2adf19285dd295a04ada5309ed7f",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "production-validation",
+    "path": ".opencode/skills/production-validation/SKILL.md",
+    "before_sha256": "868b3287238ec960fb34e1990c51448fc374bf3e583bc724c754ad749bcb6d57",
+    "after_sha256": "868b3287238ec960fb34e1990c51448fc374bf3e583bc724c754ad749bcb6d57",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "project-stage-detect",
+    "path": ".opencode/skills/project-stage-detect/SKILL.md",
+    "before_sha256": "6eb74d147d458cd1e02dfa7192fdd957d18bdafdaaf67d1f6e1a9c55babee095",
+    "after_sha256": "7f7fba725f6aa5f5facbf248c2493e8b8395add23c4c4a009cc062642e18cffb",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M17"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "prototype",
+    "path": ".opencode/skills/prototype/SKILL.md",
+    "before_sha256": "71dc38c108bce1740e18f9f875460323dbdf5242dfee93f35f334c755c7605a4",
+    "after_sha256": "b1d28537c25e88b84f95b836bce7288b19d6bd7295317f76585ed74a61208c12",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M07"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "release-checklist",
+    "path": ".opencode/skills/release-checklist/SKILL.md",
+    "before_sha256": "cbe4d334efa1a59f75943537d73e3de75d462a5b2cfbb3864445eb7a25ef3e39",
+    "after_sha256": "1000571c7f76045da3518575a02feec995fa9170e7d7130e5ca172c4ceb8f99a",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M14"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "repository-discovery",
+    "path": ".opencode/skills/repository-discovery/SKILL.md",
+    "before_sha256": "112e3e2f5e1bea2867d01820bf557296e72227d58300abf63dab22041666640e",
+    "after_sha256": "112e3e2f5e1bea2867d01820bf557296e72227d58300abf63dab22041666640e",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "retrospective",
+    "path": ".opencode/skills/retrospective/SKILL.md",
+    "before_sha256": "fa9de8f3d76250d2c9778c9db8aefe2ccb146a78031fafeff84104ed1f68f367",
+    "after_sha256": "7e40510a7f42ff3800e5fe86c0a46f5d5f40d3900b2157db34c4173a4faf34bd",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M18"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "reverse-document",
+    "path": ".opencode/skills/reverse-document/SKILL.md",
+    "before_sha256": "133839df766a6c16e3f71a43ce763b47422de5980f760fc88bfcd4076f2fd69a",
+    "after_sha256": "c73ee4a41ac7600fd127a2e693a640384183f5979bcd49d8d76d8ce61088ee31",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M19"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "scope-check",
+    "path": ".opencode/skills/scope-check/SKILL.md",
+    "before_sha256": "a8ee43a21bcc29ac40b71464f590fb633f1ad5befd6368b41f0722efa54ca666",
+    "after_sha256": "64a8afc26a303a09cd35b6a50b22bf2f0bfd5195f9d8e73e6ffeda1a38368c9c",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M08"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "setup-engine",
+    "path": ".opencode/skills/setup-engine/SKILL.md",
+    "before_sha256": "6f3f152a6041c515ffbba2edd6aeec4841339fc11ba3fdad73de0991d68c6a8c",
+    "after_sha256": "53f3197fc71e166bd23f31e8691c982f47f55f8b2d83d17832d55de97cd1ef6b",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M20"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "skill-audit-repair",
+    "path": ".opencode/skills/skill-audit-repair/SKILL.md",
+    "before_sha256": "b7e9845a725c1e3d572b16376f73bd9b8eeed73b3bb5ae095045698b2524424e",
+    "after_sha256": "b7e9845a725c1e3d572b16376f73bd9b8eeed73b3bb5ae095045698b2524424e",
+    "source_review": "SOURCE_REVIEWED_NO_TARGETED_REPAIR_IDENTIFIED",
+    "finding_ids": [],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "sprint-plan",
+    "path": ".opencode/skills/sprint-plan/SKILL.md",
+    "before_sha256": "7293ff5219645ab41c4f1e91893377fe58a7b078b7e356a47c58ba4592040c02",
+    "after_sha256": "3bfaa6d26216f424cbf9012b5f949c83187a51945cf9152f27cbd71b2e64ca3e",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M09"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "start",
+    "path": ".opencode/skills/start/SKILL.md",
+    "before_sha256": "7c8620fbe2e1ed99f9420be0120aa2eaecf35c04f0035733084bc8ed0ce48369",
+    "after_sha256": "f14fc4152438487f2954feb50a10663ebb86760e21872c8cc7d7f58f26fcd456",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M17"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "team-audio",
+    "path": ".opencode/skills/team-audio/SKILL.md",
+    "before_sha256": "260bf50925a080285dd847f2497c4335f014becadb521d53a8499fec6a0f642c",
+    "after_sha256": "95425bfa4658303f5903f58b318ebbcb0ec0ab4bc374f030da162d57c1d35f0b",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M12"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "team-combat",
+    "path": ".opencode/skills/team-combat/SKILL.md",
+    "before_sha256": "18625e28937ab457960e3daaec745b369f4237d080719fb399937e272f80294c",
+    "after_sha256": "6a987f9a00f7aa48249b417bb7dd52092c8f784613facadd39bfcb3f1e0c73f9",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M12"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "team-level",
+    "path": ".opencode/skills/team-level/SKILL.md",
+    "before_sha256": "834743d57e605f29484ea751626a6041f0d674b49f932fd8be738d2e097062fc",
+    "after_sha256": "9e6ec7c64f7f001021cbbedbc1e0cc4063a58ec4ccdbf77fb724a07df1cf82f3",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M12"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "team-narrative",
+    "path": ".opencode/skills/team-narrative/SKILL.md",
+    "before_sha256": "7bd2e1be4e2f3dfd36ac8482ab354b698204e4cbdcf45cc70d37025912219174",
+    "after_sha256": "fee27790147179759e0d32b38c2f52687c30e1d8cdbd8dfebfcfd5fd80dfe8d0",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M12"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "team-polish",
+    "path": ".opencode/skills/team-polish/SKILL.md",
+    "before_sha256": "421bb9248c309932031079a4322c44444ee850d1a122b1c05f602d47260e2efb",
+    "after_sha256": "1b27e53ca5f37407d9facadeef2854585d392af3102a1593fb06b3b7ab570436",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M12"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "team-release",
+    "path": ".opencode/skills/team-release/SKILL.md",
+    "before_sha256": "dd8ccc92195c4e8ecbbea7a3482ae5d8b87ba252f697a84ddff1b015a8225bde",
+    "after_sha256": "3432df0e9295c50f0aa9c74bcac1b52af05f0b8fd29c584f5e3ae61e388ef618",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M12",
+      "M13"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "team-ui",
+    "path": ".opencode/skills/team-ui/SKILL.md",
+    "before_sha256": "3aaf26005a235f608706f2743214c85174b585c904c1f612e8abef151b680c79",
+    "after_sha256": "a44183631c845fe354d444e3d9724b3e100b1786a818b923ba974078cc87f85c",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M12"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  },
+  {
+    "name": "tech-debt",
+    "path": ".opencode/skills/tech-debt/SKILL.md",
+    "before_sha256": "506b3525d34d3bba8fa88448b8a20f1f5776cd58913d164065ce55d9e7c9ed71",
+    "after_sha256": "6a478e6bf19b502b5ff0d7f3a79e0a729d709eaed2d90ef6f72682897ecf7f22",
+    "source_review": "SOURCE_CORRECTED_AND_REVIEWED",
+    "finding_ids": [
+      "M10"
+    ],
+    "scope": "Full SKILL.md body reviewed for logic, scope, assumptions, evidence and source-first governance; explicit references structurally checked.",
+    "dependency_review": "PARTIAL: governance and changed runtime consumers reviewed; full domain-agent/template/external closure requires project-specific review.",
+    "host_and_domain_runtime": "NOT_RUN",
+    "use_status": "BLOCKED_PENDING_INSTALLATION_AUDIT"
+  }
+]

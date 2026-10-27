@@ -1,0 +1,15 @@
+test_duplicate_model_field_preflight_changes_nothing (test_repairs.ModelTests.test_duplicate_model_field_preflight_changes_nothing) ... ok
+test_inherited_models_remain_inherited (test_repairs.ModelTests.test_inherited_models_remain_inherited) ... ok
+test_injected_mid_apply_failure_rolls_back (test_repairs.ModelTests.test_injected_mid_apply_failure_rolls_back) ... Update failed. Inspect retained originals and manifest: /tmp/tmphgq1av29/copy/.opencode/model-change-backups/20260928T114423Z-bc218967b42b4647a996c9cff2a2ec31
+ok
+test_invalid_config_preflight_changes_nothing (test_repairs.ModelTests.test_invalid_config_preflight_changes_nothing) ... ok
+test_nonstandard_config_constants_refused_preflight (test_repairs.ModelTests.test_nonstandard_config_constants_refused_preflight) ... ok
+test_rejects_shell_and_sed_metacharacters_without_changes (test_repairs.ModelTests.test_rejects_shell_and_sed_metacharacters_without_changes) ... ok
+test_repair_model_update_preserves_crlf (test_repairs.ModelTests.test_repair_model_update_preserves_crlf) ... ok
+test_revision_crlf_model_before_other_fields (test_repairs.ModelTests.test_revision_crlf_model_before_other_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 18.570s
+
+OK
+SHARD_RESULT={"ids": ["test_repairs.ModelTests.test_duplicate_model_field_preflight_changes_nothing", "test_repairs.ModelTests.test_inherited_models_remain_inherited", "test_repairs.ModelTests.test_injected_mid_apply_failure_rolls_back", "test_repairs.ModelTests.test_invalid_config_preflight_changes_nothing", "test_repairs.ModelTests.test_nonstandard_config_constants_refused_preflight", "test_repairs.ModelTests.test_rejects_shell_and_sed_metacharacters_without_changes", "test_repairs.ModelTests.test_repair_model_update_preserves_crlf", "test_repairs.ModelTests.test_revision_crlf_model_before_other_fields"], "run": 8, "failures": 0, "errors": 0, "skipped": 0, "success": true}

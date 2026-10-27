@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 const WalletSchema = z.object({
   userId: z.string(),
-  gold: z.number(),
-  gems: z.number(),
+  /** Backend `Wallet.gameCurrency` — numeric(30,0), transported as a string. */
+  gameCurrency: z.string(),
 });
 
 const RoleSchema = z.object({
@@ -14,6 +14,7 @@ const RoleSchema = z.object({
 
 export const UserResponseSchema = z.object({
   id: z.string().uuid(),
+  immutableUserId: z.string().regex(/^\d{1,13}$/).nullable().optional(),
   email: z.string().email(),
   nickname: z.string().optional(),
   avatar: z.string().optional(),
@@ -26,10 +27,12 @@ export const UserResponseSchema = z.object({
 export type UserResponse = z.infer<typeof UserResponseSchema>;
 
 export const AdjustBalanceSchema = z.object({
-  currency: z.enum(['gold', 'gems']),
-  amount: z.string(),
+  currency: z.enum(['GAME_CURRENCY']),
+  /** Positive integer string — backend `AdjustBalanceDto.amount` (@Matches /^[1-9][0-9]*$/). */
+  amount: z.string().regex(/^[1-9][0-9]*$/),
   action: z.enum(['add', 'deduct']),
   reason: z.string().min(3),
+  operationId: z.string().uuid().optional(),
 });
 
 export type AdjustBalanceRequest = z.infer<typeof AdjustBalanceSchema>;

@@ -1,0 +1,306 @@
+[
+  {
+    "id": "M01",
+    "area": "Shared governance",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Legacy capability names, repetitive approval and evidence assumptions were insufficiently explicit.",
+    "correction": "Added the exact requested loop and portable capability/evidence contract to the existing shared rule.",
+    "paths": [
+      ".opencode/rules/skill-integrity.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M02",
+    "area": "Asset audit",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Fixed format/naming requirements and code-search-only orphan classification could produce false findings.",
+    "correction": "Bound standards to actual import/platform rules; uncertain resource references remain candidates, not deletion authority.",
+    "paths": [
+      ".opencode/skills/asset-audit/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M03",
+    "area": "Code review",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Universal complexity/length thresholds and mandatory abstractions encouraged unjustified rewrites.",
+    "correction": "Made thresholds conditional on adopted standards and preserved valid framework-specific patterns.",
+    "paths": [
+      ".opencode/skills/code-review/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M04",
+    "area": "Design review",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "System-GDD headings were imposed on concept/pillar documents; absent systems index implied readiness.",
+    "correction": "Select the actual document template, distinguish reference consistency from runtime coupling, and require approval before a readiness recommendation.",
+    "paths": [
+      ".opencode/skills/design-review/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M05",
+    "area": "Localization",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "English was mandatory; positional placeholders were condemned; code search was treated as proof of orphan keys.",
+    "correction": "Discover source locale and grammar; preserve translation schema; unknown staleness and dynamic references remain unknown.",
+    "paths": [
+      ".opencode/skills/localize/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M06",
+    "area": "Performance",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Static inspection was forced into estimated budget passes, gains and one-hour quick wins.",
+    "correction": "Separate measured, modeled and unknown results; require comparable evidence for budget status and gains.",
+    "paths": [
+      ".opencode/skills/perf-profile/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M07",
+    "area": "Prototyping",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Every file was required to start with // and all error handling could be skipped.",
+    "correction": "Use language-valid markers, preserve shebangs/headers, mark non-comment formats in README, and retain essential validation/cleanup.",
+    "paths": [
+      ".opencode/skills/prototype/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M08",
+    "area": "Scope analysis",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Item-count percentages implied schedule safety; cuts or extra time were treated as authorization.",
+    "correction": "Separate approved scope from effort/risk; use explicit baseline and guard unknown/zero denominators.",
+    "paths": [
+      ".opencode/skills/scope-check/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M09",
+    "area": "Sprint planning",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "The advertised update subcommand lacked its own update procedure.",
+    "correction": "Added a bounded update branch preserving task IDs, completed work, approvals and sprint identity.",
+    "paths": [
+      ".opencode/skills/sprint-plan/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M10",
+    "area": "Technical debt",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "The report summed S/M/L/XL labels and divided uncalibrated categories.",
+    "correction": "Use size distributions or calibrated numeric units; require positive effort and separate marker candidates from confirmed issues.",
+    "paths": [
+      ".opencode/skills/tech-debt/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M11",
+    "area": "Release communication",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Historical releases could include HEAD; a refactor was translated into an unsupported hit-detection improvement.",
+    "correction": "Resolve base/target commits; preserve exact release evidence; do not invent player outcomes, triggers, performance gains or quotes.",
+    "paths": [
+      ".opencode/skills/changelog/SKILL.md",
+      ".opencode/skills/patch-notes/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M12",
+    "area": "Team orchestration",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Repeated all-agent delegation and parallel-write instructions conflicted with one-writer scope.",
+    "correction": "Reference shared governance, delegate only needed audited roles, sequence shared writes and retain actual narrative/input targets.",
+    "paths": [
+      ".opencode/skills/team-audio/SKILL.md",
+      ".opencode/skills/team-combat/SKILL.md",
+      ".opencode/skills/team-level/SKILL.md",
+      ".opencode/skills/team-narrative/SKILL.md",
+      ".opencode/skills/team-polish/SKILL.md",
+      ".opencode/skills/team-release/SKILL.md",
+      ".opencode/skills/team-ui/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M13",
+    "area": "Hotfix/release authorization",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Generic release-base commands, universal backports/SLAs and agent-generated deployment authorization were unsafe assumptions.",
+    "correction": "Resolve actual affected revision/policy; preserve work; distinguish recommendations from operator authorization and configured monitoring.",
+    "paths": [
+      ".opencode/skills/hotfix/SKILL.md",
+      ".opencode/skills/team-release/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M14",
+    "area": "Release/launch checklists",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Template platforms, infrastructure and timing values could become invented project requirements or sign-offs.",
+    "correction": "Added explicit applicability/evidence rules and kept missing required checks BLOCKED; no automatic deployment or new infrastructure.",
+    "paths": [
+      ".opencode/skills/launch-checklist/SKILL.md",
+      ".opencode/skills/release-checklist/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M15",
+    "area": "GDD resume",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "An existing GDD could be followed by unconditional skeleton creation; placeholders could be labeled complete.",
+    "correction": "Create skeletons only for new paths, preserve existing content, validate the name, and keep unresolved dependencies/status explicit.",
+    "paths": [
+      ".opencode/skills/design-system/SKILL.md",
+      ".opencode/skills/map-systems/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M16",
+    "area": "System mapping",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Optional support features were treated as mandatory; MVP included only foundation-layer dependencies.",
+    "correction": "Make support responsibilities proposals and include the full hard-dependency closure regardless of layer.",
+    "paths": [
+      ".opencode/skills/map-systems/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M17",
+    "area": "Stage/onboarding/template",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "File counts and template paths could imply coverage, completion or an empty project.",
+    "correction": "Discover actual roots and provenance; require real coverage evidence; corrected the existing report template as well as consumers.",
+    "paths": [
+      ".opencode/docs/templates/project-stage-report.md",
+      ".opencode/skills/project-stage-detect/SKILL.md",
+      ".opencode/skills/start/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M18",
+    "area": "Estimates/retrospectives",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Velocity, effort ratios, marker trends and unassigned owners could become invented metrics or commitments.",
+    "correction": "Separate velocity/completion, retain compatible units, unknowns and proposed/unassigned owners; do not force unsupported numeric ranges.",
+    "paths": [
+      ".opencode/skills/estimate/SKILL.md",
+      ".opencode/skills/retrospective/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M19",
+    "area": "Reverse documentation",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Template paths lacked the actual prefix; examples used a fixed date and could blur observed behavior with intent.",
+    "correction": "Corrected paths and provenance markers; preserve existing destinations and separate facts, intent, hypotheses and proposals.",
+    "paths": [
+      ".opencode/skills/reverse-document/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M20",
+    "area": "Engine setup",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Discovery came after writes; omitted version implied latest; refresh was absent from primary dispatch.",
+    "correction": "Move discovery before recommendations/writes, retain installed pins, dispatch refresh explicitly and treat examples as unverified proposals.",
+    "paths": [
+      ".opencode/skills/setup-engine/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M21",
+    "area": "Phase gates",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Not-major-revision and heading counts could act as approval; required unknowns were not a distinct blocking verdict.",
+    "correction": "Require current evidence and BLOCKED status for missing required checks; record user overrides separately from a passed gate.",
+    "paths": [
+      ".opencode/skills/gate-check/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M22",
+    "area": "Brainstorming",
+    "evidence_type": "SOURCE_LOGIC_CONTRADICTION_OR_CONCRETE_RISK",
+    "original_issue": "Mandatory full template filling could invent design answers and overstate market/motivation evidence.",
+    "correction": "Keep open questions and design hypotheses explicit, preserve existing work and reuse prior answers.",
+    "paths": [
+      ".opencode/skills/brainstorm/SKILL.md"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Manual source/diff review and applicable static source-contract checks; no LLM end-to-end execution"
+  },
+  {
+    "id": "M23",
+    "area": "Design-preview runtime",
+    "evidence_type": "REPRODUCED_EXECUTABLE_DEFECT",
+    "original_issue": "Reproduced escape-sequence output and an unbounded matching line; the old scan could hide read errors.",
+    "correction": "Reuse the safe reader, cap enumeration/input/output, reject controls/special files, preflight before preview/logging and preserve normal UTF-8/WIP output.",
+    "paths": [
+      ".opencode/docs/audit-runtime.md",
+      ".opencode/hooks/pre-compact.sh",
+      ".opencode/scripts/hook-checks.py",
+      "tests/skill-system/test_repairs.py"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Executable regression tests"
+  },
+  {
+    "id": "M24",
+    "area": "Regression fixture",
+    "evidence_type": "REPRODUCED_EXECUTABLE_DEFECT",
+    "original_issue": "Duplicate-model rejection depended on which agent glob returned and whether a model field already existed.",
+    "correction": "Use an explicit two-model fixture and assert its setup; retain the original rejection/no-partial-change expectations.",
+    "paths": [
+      "tests/skill-system/test_repairs.py"
+    ],
+    "status": "SOURCE_CORRECTED_AND_REVIEWED",
+    "validation": "Executable regression tests"
+  }
+]

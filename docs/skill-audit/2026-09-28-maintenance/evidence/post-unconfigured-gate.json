@@ -1,0 +1,1 @@
+{"command": ["node", ".opencode/scripts/skill-audit.mjs", "check", ".opencode/skills/skill-audit-repair/SKILL.md"], "exit_code": 2}

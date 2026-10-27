@@ -1,0 +1,588 @@
+[
+  {
+    "id": "AUD-01",
+    "title": "Unwired automatic hooks and foreign host event claims",
+    "classification": "VERIFIED DEFECT",
+    "severity": "high",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/docs/hooks-reference.md",
+        "original_lines": [
+          3,
+          3
+        ],
+        "quote": "Hooks are configured in `.opencode/settings.json` and fire automatically:",
+        "before_sha256": "53728ab023eb6dcbea36d2cb8468197e4c0202228c358ac475a3dd966bbbc42d",
+        "after_sha256": "f802a05528f0623d95e35f048624d33efba66675e87f77a3f980dacbb2fbfbd1"
+      },
+      {
+        "path": ".opencode/docs/hooks-reference/hook-input-schemas.md",
+        "original_lines": [
+          3,
+          3
+        ],
+        "quote": "This documents the JSON payloads each Claude Code hook receives on stdin for every event type.",
+        "before_sha256": "f712d3e66b2f91111b206fbb393b51021e32540d6ce30601254ffe25dd6c611a",
+        "after_sha256": "7c409038a39424b214f1b3e581e4e35da34259c2db8157a3ad3a5aefc865218c"
+      }
+    ],
+    "verification_evidence": "Original ZIP contains no .opencode/settings.json and no plugin directory. Official OpenCode plugin documentation specifies local JavaScript/TypeScript adapters and tool.execute.before, not the claimed configuration. See official sources below.",
+    "smallest_coherent_correction": "Added one local skill/task audit adapter; documented shell helpers as explicit helpers; relabeled uninstalled hook proposals and legacy input shapes. Did not automatically install Git hooks.",
+    "valid_behavior_preserved": "All eight helper filenames and useful manual operations remain. No pretend automatic session integration replaces them.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-02",
+    "title": "Instruction loading depended on nonstandard entry point/import assumptions",
+    "classification": "VERIFIED DEFECT",
+    "severity": "high",
+    "exact_original_locations": [
+      {
+        "path": "OPENCODE.md",
+        "original_lines": [
+          19,
+          19
+        ],
+        "quote": "@.opencode/docs/directory-structure.md",
+        "before_sha256": "b1b6327dfc99a50f275811c68c87d656bf3a02cdf338942240c697c0a4422ba9",
+        "after_sha256": "bb7bb4fbf8363e00b90079e942ace1177b84ab6722a94fab4acceb54780611cb"
+      }
+    ],
+    "verification_evidence": "Original archive lacks AGENTS.md and root opencode.json. Official rules/config documentation describes AGENTS.md and instructions paths; @ references are not automatically imported by that rules file mechanism.",
+    "smallest_coherent_correction": "Added AGENTS.md and an explicit root instructions list; retained OPENCODE.md as overview and its references as navigation, with the missing Unreal link restored.",
+    "valid_behavior_preserved": "Existing project overview, directory guidance and domain documents retain their roles.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-03",
+    "title": "Advertised slash workflows had no command definitions",
+    "classification": "VERIFIED DEFECT",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": "README.md",
+        "original_lines": [
+          100,
+          100
+        ],
+        "quote": "Type `/` in OpenCode to access all skills:",
+        "before_sha256": "5c1e84673ee172ec8bf4eb095611fc4409a5416d477effbd73d50462ebd2d010",
+        "after_sha256": "cb3fb89d6b8be8f7e840804253bfed367e8ad753e24dc12a8ad71c1ba2b5b96d"
+      }
+    ],
+    "verification_evidence": "Original ZIP has 37 SKILL.md files and no .opencode/commands directory. Official command documentation requires command configuration or Markdown command templates.",
+    "smallest_coherent_correction": "Added thin wrappers for all 43 current skills, keeping each workflow in its existing canonical SKILL.md. Audit wrapper is bootstrap-only, not a trust bypass.",
+    "valid_behavior_preserved": "All 37 original workflow names and skill paths remain; no duplicate workflow bodies were created.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-04",
+    "title": "Duplicate agent identity and conflicting modes",
+    "classification": "VERIFIED DEFECT",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/opencode.json",
+        "original_lines": [
+          17,
+          17
+        ],
+        "quote": "      \"mode\": \"all\",",
+        "before_sha256": "2ad824650c6bf4c9fcac010406ad4beaf146aac4223f3ffb43f7aa8b725ed0db",
+        "after_sha256": "d2274fa53013e891f6cadd09d33487775f62f65af0caebbf03cb67ab8c553c0c"
+      },
+      {
+        "path": ".opencode/agents/lead-programmer.md",
+        "original_lines": [
+          3,
+          3
+        ],
+        "quote": "mode: subagent",
+        "before_sha256": "202178fcef1c6cbbf763f02607545407d2b4459d39ddb3151e8f30aa32d33f24",
+        "after_sha256": "6b064a44e2d412383f776c3ca84e6cd954959286ea5e5ee16b6ce7bba4779319"
+      }
+    ],
+    "verification_evidence": "Original config duplicates 55 descriptions/model/mode fields while Markdown profiles declare subagent. These are competing sources of truth even when the host resolves a precedence order.",
+    "smallest_coherent_correction": "Made Markdown profiles the identity source; retained only relevant per-agent permission overlays in JSON. Kept original model choices but removed unsupported pricing assertions.",
+    "valid_behavior_preserved": "All original 55 agent identities, domain responsibilities and subagent intent remain.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-05",
+    "title": "Overbroad and misleading permission configuration",
+    "classification": "CONCRETE RISK",
+    "severity": "high",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/opencode.json",
+        "original_lines": [
+          7,
+          7
+        ],
+        "quote": "    \"tool\": {",
+        "before_sha256": "2ad824650c6bf4c9fcac010406ad4beaf146aac4223f3ffb43f7aa8b725ed0db",
+        "after_sha256": "d2274fa53013e891f6cadd09d33487775f62f65af0caebbf03cb67ab8c553c0c"
+      },
+      {
+        "path": ".opencode/docs/settings-local-template.md",
+        "original_lines": [
+          1,
+          1
+        ],
+        "quote": "# settings.local.json Template",
+        "before_sha256": "9c171879c5fb94d83f5b659aca2955e8f8ce15669c4fa82b3d1d019f3d2ebf29",
+        "after_sha256": "c4ad9d7801796526f1846e64a45991814b91e8fa8357b603a7dc1de01f489977"
+      }
+    ],
+    "verification_evidence": "Original generic tool allow map is not a demonstrated all-tool permission control; the legacy settings example uses another host convention. Official OpenCode permission/config docs support singular permission and per-tool actions.",
+    "smallest_coherent_correction": "Used conservative ask defaults for writes, shell, external paths and delegation; documented actual merge/metadata limits. Removed the foreign-host settings example.",
+    "valid_behavior_preserved": "Read-only discovery remains available; privileged actions still require host authorization. No sandbox guarantee is claimed.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-06",
+    "title": "Session shutdown destroyed unfinished recovery state",
+    "classification": "VERIFIED DEFECT",
+    "severity": "high",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/hooks/session-stop.sh",
+        "original_lines": [
+          24,
+          24
+        ],
+        "quote": "    rm \"$STATE_FILE\" 2>/dev/null",
+        "before_sha256": "e8bd8a0364f4a7952c9889b0f66f4e1a28b9be8229e739a34a61a770d63eaa9f",
+        "after_sha256": "431c07f3b415e2abaa10e82c16eaffc7014e604ba488f000970ca4ea326f2cb1"
+      }
+    ],
+    "verification_evidence": "Reproduced in an isolated original copy: helper exits 0 and deletes active.md containing INCOMPLETE work. Evidence: baseline-reproductions.json.",
+    "smallest_coherent_correction": "Removed only the deletion, retained snapshot logging, labeled recent Git activity accurately, and report detected log-path/write failures without deleting recovery state.",
+    "valid_behavior_preserved": "Existing session-log path and summary/archive purpose remain; active checkpoints survive both success and logging failure.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-07",
+    "title": "Commit validation inspected working files, not committed bytes",
+    "classification": "VERIFIED DEFECT",
+    "severity": "high",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/hooks/validate-commit.sh",
+        "original_lines": [
+          58,
+          58
+        ],
+        "quote": "        if [ -f \"$file\" ]; then",
+        "before_sha256": "f0da90b5a6adcac6b60913c6f1379a8074a99270becc87c03f9b3314a548ffb5",
+        "after_sha256": "c03e57fd46b235826c974ecb0198fce7b422fb4bc336db6cb9d18b794f95b956"
+      }
+    ],
+    "verification_evidence": "Reproduced invalid staged JSON plus valid working-tree JSON: original helper exits 0. Reverse fixtures verify the repaired check distinguishes the index correctly.",
+    "smallest_coherent_correction": "Kept helper name/input compatibility; moved strict shared parsing into one helper and read NUL-delimited staged blob contents with bounded applicable-file checks. Advisory patterns are not proof of defects.",
+    "valid_behavior_preserved": "Design-heading, gameplay-literal and owner-tag advisory intent remains, along with JSON validation. No commit is executed.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-08",
+    "title": "Model updater stopped after one edit and lacked recoverable multi-file handling",
+    "classification": "VERIFIED DEFECT",
+    "severity": "high",
+    "exact_original_locations": [
+      {
+        "path": "change_model.sh",
+        "original_lines": [
+          3,
+          3
+        ],
+        "quote": "set -e",
+        "before_sha256": "d7b3623687e4985da0f1c94a0671259bb82f344c53f5ae7f7f3ae5b1ee49fa81",
+        "after_sha256": "110c67f9d434f2545e29b4ec29f8cfd5b893a18c60ed6762da060f40618fe549"
+      },
+      {
+        "path": "change_model.sh",
+        "original_lines": [
+          64,
+          64
+        ],
+        "quote": "                ((updated_agents++))",
+        "before_sha256": "d7b3623687e4985da0f1c94a0671259bb82f344c53f5ae7f7f3ae5b1ee49fa81",
+        "after_sha256": "110c67f9d434f2545e29b4ec29f8cfd5b893a18c60ed6762da060f40618fe549"
+      }
+    ],
+    "verification_evidence": "Reproduced original script exit 1 with exactly one agent changed. Post-increment returns a failing shell status when incrementing zero under set -e. Evidence: baseline-reproductions.json.",
+    "smallest_coherent_correction": "Preserved the public script and model argument; added strict identifier/preflight, dry run, retained originals/manifest, per-file atomic replacement, rollback and concurrency-conflict handling.",
+    "valid_behavior_preserved": "Existing model fields are updated; inherited models and body examples remain unchanged. Actual provider availability is explicitly not tested; multi-file writes are not called atomic.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-09",
+    "title": "Agent log parsing permitted forged lines and hid errors",
+    "classification": "VERIFIED DEFECT",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/hooks/log-agent.sh",
+        "original_lines": [
+          12,
+          12
+        ],
+        "quote": "    AGENT_NAME=$(echo \"$INPUT\" | jq -r '.agent_name // \"unknown\"' 2>/dev/null)",
+        "before_sha256": "be4f31848eb2f09213078ca6ae718fb8e9a530b759021fafcde613c8a773deec",
+        "after_sha256": "925f470c15929708c574d6affda769fea3cfc745e60e12121cf63175d9eae905"
+      },
+      {
+        "path": ".opencode/hooks/log-agent.sh",
+        "original_lines": [
+          23,
+          23
+        ],
+        "quote": "echo \"$TIMESTAMP | Agent invoked: $AGENT_NAME\" >> \"$SESSION_LOG_DIR/agent-audit.log\" 2>/dev/null",
+        "before_sha256": "be4f31848eb2f09213078ca6ae718fb8e9a530b759021fafcde613c8a773deec",
+        "after_sha256": "925f470c15929708c574d6affda769fea3cfc745e60e12121cf63175d9eae905"
+      },
+      {
+        "path": ".opencode/hooks/log-agent.sh",
+        "original_lines": [
+          25,
+          25
+        ],
+        "quote": "exit 0",
+        "before_sha256": "be4f31848eb2f09213078ca6ae718fb8e9a530b759021fafcde613c8a773deec",
+        "after_sha256": "925f470c15929708c574d6affda769fea3cfc745e60e12121cf63175d9eae905"
+      }
+    ],
+    "verification_evidence": "Original jq decoding plus echo permits a newline in agent_name to create a forged log line; fallback grep is not a JSON parser and write errors are suppressed. Isolated reproduction appended to baseline evidence.",
+    "smallest_coherent_correction": "Strict JSON, bounded input, lowercase identifier validation, safe field allowlist, special/symlink target refusal and reported write failure. Reused the original log pathname and line format.",
+    "valid_behavior_preserved": "Agent invocation audit intent remains; prompts and unrelated payload fields are not logged.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-10",
+    "title": "Context heuristics asserted unverified project facts",
+    "classification": "VERIFIED DEFECT",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/hooks/session-start.sh",
+        "original_lines": [
+          44,
+          44
+        ],
+        "quote": "    echo \"Open bugs: $BUG_COUNT\"",
+        "before_sha256": "cf5e571e04ca3cb480f71f7e3d4b2f807972ddaaa9927543e5b105701e2761cb",
+        "after_sha256": "4a78cb789cef2513657231c28012ec3a731a06dea512523c9e41946c62eb8b61"
+      },
+      {
+        "path": ".opencode/hooks/session-start.sh",
+        "original_lines": [
+          22,
+          22
+        ],
+        "quote": "# Current sprint (find most recent sprint file)",
+        "before_sha256": "cf5e571e04ca3cb480f71f7e3d4b2f807972ddaaa9927543e5b105701e2761cb",
+        "after_sha256": "4a78cb789cef2513657231c28012ec3a731a06dea512523c9e41946c62eb8b61"
+      },
+      {
+        "path": ".opencode/hooks/detect-gaps.sh",
+        "original_lines": [
+          38,
+          38
+        ],
+        "quote": "  echo \"🚀 NEW PROJECT: No engine configured, no game concept, no source code.\"",
+        "before_sha256": "14a313671368fe0af703431cd72a918907584c703f3a9bda12f7369b74e74aaa",
+        "after_sha256": "4590520f640bed28bb7a6b43f54b8ae50ad9a03e5c8a3616dfbe8e07be83bcf6"
+      }
+    ],
+    "verification_evidence": "The original implementation counts all BUG files without reading status, selects sprint by file modification time, and declares no source based on a limited src scan. A fixture with app/main.dart demonstrates the latter limitation.",
+    "smallest_coherent_correction": "Relabeled counts/statuses as unverified, limited-path advisory signals; preserved the scan and routed real discovery through evidence-based inspection.",
+    "valid_behavior_preserved": "Useful context previews and gap suggestions remain without inventing active status or project type.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-11",
+    "title": "Compaction and status-line guarantees lacked implementations",
+    "classification": "VERIFIED DEFECT",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/hooks/pre-compact.sh",
+        "original_lines": [
+          3,
+          3
+        ],
+        "quote": "# This output appears in the conversation right before compaction, ensuring",
+        "before_sha256": "1de405a7822a739a2a3c83427125abf683782f92262a4f04a9312b9897f2e02d",
+        "after_sha256": "47ef840a897ea47293e5448e2318dc732abececb5d9fca1ef81d7113a62334f7"
+      },
+      {
+        "path": ".opencode/hooks/pre-compact.sh",
+        "original_lines": [
+          73,
+          73
+        ],
+        "quote": "echo \"Context compaction occurred at $(date).\" \\",
+        "before_sha256": "1de405a7822a739a2a3c83427125abf683782f92262a4f04a9312b9897f2e02d",
+        "after_sha256": "47ef840a897ea47293e5448e2318dc732abececb5d9fca1ef81d7113a62334f7"
+      },
+      {
+        "path": ".opencode/docs/context-management.md",
+        "original_lines": [
+          38,
+          38
+        ],
+        "quote": "- The status line displays it as a breadcrumb: `Combat System > Melee Combat > Hitboxes`",
+        "before_sha256": "b3196acd31173f4b9d8df3d4ea164221433c742c9d53f7002c5238beb6d1ae32",
+        "after_sha256": "7c0f605e4fd1fc4a69a58f44a5ce7ed18a95d2497c14aa507b057d2fd09e1907"
+      }
+    ],
+    "verification_evidence": "No status-line renderer or automatic hook wiring exists in the original inventory. Running a script does not establish that a host compaction occurred or retained all state.",
+    "smallest_coherent_correction": "Documented manual, potentially partial checkpoints; corrected log wording and recovery instructions; kept active state and version/context revalidation requirements.",
+    "valid_behavior_preserved": "Compact state structure and context recovery guidance remain; no invented automation is introduced.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-12",
+    "title": "Engine setup inferred knowledge and licensing from stale constants",
+    "classification": "VERIFIED DEFECT",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/skills/setup-engine/SKILL.md",
+        "original_lines": [
+          174,
+          174
+        ],
+        "quote": "- LLM knowledge cutoff: **May 2025**",
+        "before_sha256": "20c7fd524c5043f67de8d1c253c48c6da0d341ea8494617766dc4cfb82e02112",
+        "after_sha256": "6f3f152a6041c515ffbba2edd6aeec4841339fc11ba3fdad73de0991d68c6a8c"
+      },
+      {
+        "path": ".opencode/skills/setup-engine/SKILL.md",
+        "original_lines": [
+          48,
+          48
+        ],
+        "quote": "| **Cost** | Free, MIT license | Free under revenue threshold | Free under revenue threshold, 5% royalty | $99/year (Professional), $499/year (Studio) |",
+        "before_sha256": "20c7fd524c5043f67de8d1c253c48c6da0d341ea8494617766dc4cfb82e02112",
+        "after_sha256": "6f3f152a6041c515ffbba2edd6aeec4841339fc11ba3fdad73de0991d68c6a8c"
+      }
+    ],
+    "verification_evidence": "A multi-provider host does not establish a universal model training cutoff, and the repository provides no current verification for its fixed pricing/license table. These assertions cannot be used as project evidence.",
+    "smallest_coherent_correction": "Repaired only the knowledge-gap/verification and pricing guidance: use detected/pinned versions, actual official evidence and explicit unknowns; retain engine choice/setup workflow.",
+    "valid_behavior_preserved": "Original setup-engine skill name, engine comparison purpose, technical preferences and version-aware references remain.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-13",
+    "title": "Retained engine references could be mistaken for verified project truth",
+    "classification": "UNVERIFIED HYPOTHESIS / CONCRETE RISK",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": "docs/engine-reference/README.md",
+        "original_lines": [
+          9,
+          9
+        ],
+        "quote": "Opencode's training data has a knowledge cutoff (currently May 2025). Game engines",
+        "before_sha256": "1ecb162b9392fd08c78b9004c64ce590697fdeccd00ef5a0bbe08c31168f951f",
+        "after_sha256": "3bce281fc20e9ff2f6c7e7c30e23995e5610b386dc0f5f2e88f5330bdf7006a6"
+      },
+      {
+        "path": "docs/engine-reference/unity/PLUGINS.md",
+        "original_lines": [
+          202,
+          202
+        ],
+        "quote": "### ❌ UGUI (Canvas UI)",
+        "before_sha256": "529387a2c5968ef73765c64664d387aab69804c36501f44997ec58f31de307e9",
+        "after_sha256": "52bc507412d06861150d4ecef16ff1331d10b8dfcf0a7dd01fa63c427e3ea8c9"
+      },
+      {
+        "path": "docs/engine-reference/unreal/PLUGINS.md",
+        "original_lines": [
+          175,
+          175
+        ],
+        "quote": "### ❌ Old Replication Graph",
+        "before_sha256": "ec0fd20745bde437c9939f9f665f7cadbe27199d36846029034fcd30630f6db8",
+        "after_sha256": "e8329dac93b340a2c66eb77fa6b6c5cde2ded547b7901ef495b6fd78286a223b"
+      }
+    ],
+    "verification_evidence": "These are historical engine/version/API claims without a demonstrated current project or engine runtime. Individual API validity was not exhaustively established; no replacement facts are invented.",
+    "smallest_coherent_correction": "Quarantined all 55 engine-reference Markdown files at their point of use with UNVERIFIED labels; corrected the README trust/verification policy. Preserve original examples for later version-matched review.",
+    "valid_behavior_preserved": "All engine material remains available as untrusted reference data, not auto-approved guidance.",
+    "re_audit_status": "CONTAINED / UNVERIFIED: actual version-specific semantic/API review required before reliance"
+  },
+  {
+    "id": "AUD-14",
+    "title": "Collaboration boilerplate conflicted with scoped completion and existing approval",
+    "classification": "VERIFIED DEFECT",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/agents/lead-programmer.md",
+        "original_lines": [
+          44,
+          44
+        ],
+        "quote": "   - Explicitly ask: \"May I write this to [filepath(s)]?\"",
+        "before_sha256": "202178fcef1c6cbbf763f02607545407d2b4459d39ddb3151e8f30aa32d33f24",
+        "after_sha256": "6b064a44e2d412383f776c3ca84e6cd954959286ea5e5ee16b6ce7bba4779319"
+      },
+      {
+        "path": ".opencode/agents/lead-programmer.md",
+        "original_lines": [
+          48,
+          48
+        ],
+        "quote": "6. **Offer next steps:**",
+        "before_sha256": "202178fcef1c6cbbf763f02607545407d2b4459d39ddb3151e8f30aa32d33f24",
+        "after_sha256": "6b064a44e2d412383f776c3ca84e6cd954959286ea5e5ee16b6ce7bba4779319"
+      }
+    ],
+    "verification_evidence": "Repeated mandatory approval questions and optional test/refactor follow-ups conflict with the supplied authorized-repair request, required validation and stop-after-feature policy.",
+    "smallest_coherent_correction": "Targeted shared boilerplate edits: ask only unresolved questions, reuse exact granted authorization, validate before completion, record unrelated work without starting it. Added one canonical workflow reference.",
+    "valid_behavior_preserved": "Collaborative design, user ownership, domain boundaries and review responsibilities remain; no agent gains independent scope authority.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-15",
+    "title": "Documentation made unsupported install, pricing, count and compatibility claims",
+    "classification": "VERIFIED DEFECT / UNVERIFIED CLAIM",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": "README.md",
+        "original_lines": [
+          6,
+          6
+        ],
+        "quote": "    54 AI agents • 37 workflow skills • 100% Free (Big Pickle)",
+        "before_sha256": "5c1e84673ee172ec8bf4eb095611fc4409a5416d477effbd73d50462ebd2d010",
+        "after_sha256": "cb3fb89d6b8be8f7e840804253bfed367e8ad753e24dc12a8ad71c1ba2b5b96d"
+      },
+      {
+        "path": "README.md",
+        "original_lines": [
+          44,
+          44
+        ],
+        "quote": "npm install -g opencode",
+        "before_sha256": "5c1e84673ee172ec8bf4eb095611fc4409a5416d477effbd73d50462ebd2d010",
+        "after_sha256": "cb3fb89d6b8be8f7e840804253bfed367e8ad753e24dc12a8ad71c1ba2b5b96d"
+      },
+      {
+        "path": "README.md",
+        "original_lines": [
+          47,
+          47
+        ],
+        "quote": "opencode connect",
+        "before_sha256": "5c1e84673ee172ec8bf4eb095611fc4409a5416d477effbd73d50462ebd2d010",
+        "after_sha256": "cb3fb89d6b8be8f7e840804253bfed367e8ad753e24dc12a8ad71c1ba2b5b96d"
+      },
+      {
+        "path": "README.md",
+        "original_lines": [
+          50,
+          50
+        ],
+        "quote": "cp -r .opencode/* ~/.config/opencode/",
+        "before_sha256": "5c1e84673ee172ec8bf4eb095611fc4409a5416d477effbd73d50462ebd2d010",
+        "after_sha256": "cb3fb89d6b8be8f7e840804253bfed367e8ad753e24dc12a8ad71c1ba2b5b96d"
+      },
+      {
+        "path": "README.md",
+        "original_lines": [
+          26,
+          26
+        ],
+        "quote": "**100% Free** — Works with OpenCode's Big Pickle model (no API costs).",
+        "before_sha256": "5c1e84673ee172ec8bf4eb095611fc4409a5416d477effbd73d50462ebd2d010",
+        "after_sha256": "cb3fb89d6b8be8f7e840804253bfed367e8ad753e24dc12a8ad71c1ba2b5b96d"
+      }
+    ],
+    "verification_evidence": "Original inventory has 55 agents, not 54. Official docs identify opencode-ai and auth login. Recursive global copying risks overwriting existing configuration; no provider billing or live-host tests were supplied.",
+    "smallest_coherent_correction": "Corrected counts and setup references, removed unconditional free/full-support claims, documented project-local reviewed merges and actual validation limits.",
+    "valid_behavior_preserved": "Original README structure, studio hierarchy, credits, links and MIT license remain.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-16",
+    "title": "Required audit/repair lifecycle and invalid-dependency state were absent",
+    "classification": "VERIFIED GAP",
+    "severity": "high",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/agents/lead-programmer.md",
+        "original_lines": [
+          16,
+          16
+        ],
+        "quote": "#### Implementation Workflow",
+        "before_sha256": "202178fcef1c6cbbf763f02607545407d2b4459d39ddb3151e8f30aa32d33f24",
+        "after_sha256": "6b064a44e2d412383f776c3ca84e6cd954959286ea5e5ee16b6ce7bba4779319"
+      }
+    ],
+    "verification_evidence": "No original dedicated audit skill, registry, plugin, report template or regression suite appears in the complete baseline inventory; the user explicitly requested these capabilities.",
+    "smallest_coherent_correction": "Added one canonical integrity rule, dedicated skill/auditor, bounded bootstrap, evidence registry/checker and runtime adapter; declarations default to unreviewed and no self-approval records are shipped.",
+    "valid_behavior_preserved": "Existing workflows remain canonical and are gated rather than rebuilt; exact requested AUDIT BEFORE EXTENSION wording is retained.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-17",
+    "title": "Engineering scope, state and ownership safeguards needed explicit common governance",
+    "classification": "VERIFIED REQUIREMENT GAP",
+    "severity": "medium",
+    "exact_original_locations": [
+      {
+        "path": ".opencode/docs/coordination-rules.md",
+        "original_lines": [
+          1,
+          1
+        ],
+        "quote": "# Agent Coordination Rules",
+        "before_sha256": "4a271f923a4aa521dd8513261c4848b1a1920b66e3a7de416029714e86253f91",
+        "after_sha256": "ca771faef5f4baddd1b0f76f5315b6ee812ba0306ab5b9560aae005ebb711612"
+      }
+    ],
+    "verification_evidence": "The supplied 1,115-line upgrade brief explicitly requests discovery, feature scope lock, state/cache discipline, framework/backend/game modes, shared roles and completion gates beyond the original game-studio prompts.",
+    "smallest_coherent_correction": "Added a canonical lifecycle, five further focused engineering skills, three further complementary roles, and maps to existing specialists rather than creating duplicate agents for every requested label.",
+    "valid_behavior_preserved": "Game design/prototype workflows remain legitimate; production requirements are conditional on the authorized task, not an excuse to deploy or fabricate completion.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  },
+  {
+    "id": "AUD-18",
+    "title": "Two Unity reference links resolved to missing sibling paths",
+    "classification": "VERIFIED DEFECT",
+    "severity": "low",
+    "exact_original_locations": [
+      {
+        "path": "docs/engine-reference/unity/PLUGINS.md",
+        "original_lines": [
+          60,
+          60
+        ],
+        "quote": "- **Docs:** See [modules/input.md](../modules/input.md)",
+        "before_sha256": "529387a2c5968ef73765c64664d387aab69804c36501f44997ec58f31de307e9",
+        "after_sha256": "52bc507412d06861150d4ecef16ff1331d10b8dfcf0a7dd01fa63c427e3ea8c9"
+      },
+      {
+        "path": "docs/engine-reference/unity/PLUGINS.md",
+        "original_lines": [
+          69,
+          69
+        ],
+        "quote": "- **Docs:** See [modules/ui.md](../modules/ui.md)",
+        "before_sha256": "529387a2c5968ef73765c64664d387aab69804c36501f44997ec58f31de307e9",
+        "after_sha256": "52bc507412d06861150d4ecef16ff1331d10b8dfcf0a7dd01fa63c427e3ea8c9"
+      }
+    ],
+    "verification_evidence": "Final local-link resolution found ../modules/input.md and ../modules/ui.md missing; the actual files are unity/modules/input.md and unity/modules/ui.md.",
+    "smallest_coherent_correction": "Corrected only the two relative link destinations to modules/input.md and modules/ui.md, then repeated the link scan. The template release-notes (link) token is intentional, not an installed dependency.",
+    "valid_behavior_preserved": "Technical example content and the explicit UNVERIFIED status remain; fixing navigation does not approve engine API claims.",
+    "re_audit_status": "REPAIRED; local checks passed / host acceptance pending where applicable"
+  }
+]

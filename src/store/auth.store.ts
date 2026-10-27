@@ -34,12 +34,23 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  setAuth: (user: User, accessToken: string, refreshToken: string, roles: string[], permissions?: string[]) => void;
+  setAuth: (
+    user: User,
+    accessToken: string,
+    refreshToken: string,
+    roles: unknown[],
+    permissions?: unknown[],
+    expiresInSeconds?: number,
+  ) => void;
   setUser: (user: User) => void;
   setRoles: (roles: UserRole[]) => void;
   setPermissions: (permissions: string[]) => void;
   setGlobalCapabilities: (caps: GlobalCapabilities) => void;
   login: (email: string, password: string) => Promise<void>;
+  /** Passwordless email OTP sign-in; the verify endpoint returns a session. */
+  loginWithOtp: (email: string, token: string) => Promise<void>;
+  /** Establishes a session from an OAuth handoff id (Google sign-in). */
+  loginWithGoogleSession: (session: AuthLoginResponse) => Promise<void>;
   fetchPermissions: () => Promise<void>;
   initAuth: () => Promise<void>;
   refreshAuth: () => Promise<boolean>;
@@ -65,32 +76,111 @@ const initialState = {
   error: null as string | null,
 };
 
+function codeFrom(value: unknown): string {
+  if (typeof value === 'string') return value;
+  if (!value || typeof value !== 'object') return '';
+  const candidate = value as { code?: unknown; name?: unknown };
+  return typeof candidate.code === 'string'
+    ? candidate.code
+    : typeof candidate.name === 'string'
+      ? candidate.name
+      : '';
+}
+
+export function normalizeRoleCodes(values: unknown): UserRole[] {
+  if (!Array.isArray(values)) return [];
+  return [...new Set(values
+    .map(codeFrom)
+    .map((role) => role.trim().toLowerCase().replace(/[\s-]+/g, '_'))
+    .filter(Boolean)
+  )] as UserRole[];
+}
+
+export function normalizePermissionCodes(values: unknown): string[] {
+  if (!Array.isArray(values)) return [];
+  return [...new Set(values
+    .map(codeFrom)
+    .map((permission) => permission.trim().toLowerCase())
+    .filter(Boolean)
+  )];
+}
+
+export function jwtExpiryMs(token: string): number | null {
+  try {
+    const payloadPart = token.split('.')[1];
+    if (!payloadPart) return null;
+    const base64 = payloadPart.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+    const payload = JSON.parse(atob(padded)) as { exp?: unknown };
+    const exp = Number(payload.exp);
+    return Number.isFinite(exp) && exp > 0 ? exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
 let authInitPromise: Promise<void> | null = null;
+
+/**
+ * Every sign-in path (password, email OTP, later OAuth) returns the same
+ * `AuthLoginResponse`, so session establishment lives here instead of being
+ * copied per flow.
+ */
+async function applyLoginSession(
+  store: Pick<AuthState, 'setAuth' | 'fetchPermissions'>,
+  response: AuthLoginResponse,
+): Promise<void> {
+  const safeUser: User = {
+    id: response.user?.id ?? '',
+    immutableUserId: response.user?.id ?? '',
+    email: response.user?.email ?? '',
+    nickname: response.user?.email?.split('@')[0] ?? 'User',
+    status: 'active',
+    roles: [],
+    createdAt: new Date().toISOString(),
+  };
+  store.setAuth(
+    safeUser,
+    response.accessToken,
+    response.refreshToken,
+    response.roles ?? [],
+    response.permissions ?? [],
+    response.expiresIn,
+  );
+  try {
+    await store.fetchPermissions();
+  } catch {
+    // non-critical — proceed with login-time permissions
+  }
+}
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       ...initialState,
 
-      setAuth: (user, accessToken, refreshToken, roles, permissions = []) => {
-        const safeRoles = roles.filter((r): r is UserRole =>
-          ['admin', 'moderator', 'manager', 'user', 'super_admin', 'support'].includes(r),
-        ) as UserRole[];
+      setAuth: (
+        user,
+        accessToken,
+        refreshToken,
+        roles,
+        permissions = [],
+        expiresInSeconds,
+      ) => {
+        const safeRoles = normalizeRoleCodes(roles);
+        const safePermissions = normalizePermissionCodes(permissions);
         if (typeof window !== 'undefined') {
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('refreshToken', refreshToken);
           if (typeof accessToken === 'string') {
-            try {
-              const payload = JSON.parse(atob(accessToken.split('.')[1] ?? ''));
-              if (payload.exp) {
-                localStorage.setItem('tokenExpiry', (payload.exp * 1000).toString());
-              }
-            } catch { /* ignore */ }
-            const maxAge = 60 * 60 * 24 * 7;
-            document.cookie =
-              `accessToken=${encodeURIComponent(accessToken)};path=/;max-age=${maxAge};SameSite=Lax`;
-            document.cookie =
-              `refreshToken=${encodeURIComponent(refreshToken ?? '')};path=/;max-age=${maxAge};SameSite=Lax`;
+            const tokenExpiry = jwtExpiryMs(accessToken);
+            const fallbackExpiry =
+              Number.isFinite(expiresInSeconds) && Number(expiresInSeconds) > 0
+                ? Date.now() + Number(expiresInSeconds) * 1000
+                : null;
+            const expiry = tokenExpiry ?? fallbackExpiry;
+            if (expiry) localStorage.setItem('tokenExpiry', expiry.toString());
+            else localStorage.removeItem('tokenExpiry');
           }
         }
         set({
@@ -98,7 +188,7 @@ export const useAuthStore = create<AuthState>()(
           accessToken,
           refreshToken,
           roles: safeRoles,
-          permissions,
+          permissions: safePermissions,
           isAuthenticated: true,
           isLoading: false,
           error: null,
@@ -108,24 +198,35 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await authService.login({ email, password }) as AuthLoginResponse;
-          const { accessToken, refreshToken, roles, permissions: loginPerms } = response;
-          const safeUser: User = {
-            id: response.user?.id ?? '',
-            immutableUserId: response.user?.id ?? '',
-            email: response.user?.email ?? '',
-            nickname: response.user?.email?.split('@')[0] ?? 'User',
-            status: 'active',
-            roles: [],
-            createdAt: new Date().toISOString(),
-          };
-          const assignRoles = (roles ?? []) as UserRole[];
-          get().setAuth(safeUser, accessToken, refreshToken, assignRoles, loginPerms ?? []);
-          try {
-            await get().fetchPermissions();
-          } catch {
-            // non-critical — proceed with login-time permissions
-          }
+          await applyLoginSession(
+            get(),
+            await authService.login({ email, password }),
+          );
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : 'Login failed';
+          set({ isLoading: false, error: message });
+          throw err;
+        }
+      },
+
+      loginWithOtp: async (email: string, token: string) => {
+        set({ isLoading: true, error: null });
+        try {
+          await applyLoginSession(
+            get(),
+            await authService.verifyEmailOTP(email, token),
+          );
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : 'Login failed';
+          set({ isLoading: false, error: message });
+          throw err;
+        }
+      },
+
+      loginWithGoogleSession: async (session) => {
+        set({ isLoading: true, error: null });
+        try {
+          await applyLoginSession(get(), session);
         } catch (err: unknown) {
           const message = err instanceof Error ? err.message : 'Login failed';
           set({ isLoading: false, error: message });
@@ -135,19 +236,24 @@ export const useAuthStore = create<AuthState>()(
 
       setUser: (user) => set({ user }),
 
-      setRoles: (roles) => set({ roles }),
+      setRoles: (roles) => set({ roles: normalizeRoleCodes(roles) }),
 
-      setPermissions: (permissions) => set({ permissions }),
+      setPermissions: (permissions) =>
+        set({ permissions: normalizePermissionCodes(permissions) }),
 
       setGlobalCapabilities: (globalCapabilities) => set({ globalCapabilities }),
 
       fetchPermissions: async () => {
         try {
-          const data = await apiClient.get<any>('/users/me/permissions') as PermissionResponse;
-          const perms = data.permissions ?? [];
+          const data = await apiClient.get<PermissionResponse>(
+            '/users/me/permissions',
+          );
+          const perms = normalizePermissionCodes(data.permissions);
+          const resolvedRoles = normalizeRoleCodes(data.roles);
           const caps = data.globalCapabilities ?? null;
           set({
             permissions: perms,
+            roles: resolvedRoles.length > 0 ? resolvedRoles : get().roles,
             globalCapabilities: caps,
           });
         } catch {
@@ -162,11 +268,15 @@ export const useAuthStore = create<AuthState>()(
           if (!accessToken || !isAuthenticated) return;
           set({ isLoading: true });
           try {
-            const data = await apiClient.get<any>('/users/me/permissions');
-            const perms = (data as { permissions?: string[] }).permissions ?? [];
-            const caps = (data as { globalCapabilities?: GlobalCapabilities }).globalCapabilities;
+            const permissionData = await apiClient.get<PermissionResponse>(
+              '/users/me/permissions',
+            );
+            const perms = normalizePermissionCodes(permissionData.permissions);
+            const resolvedRoles = normalizeRoleCodes(permissionData.roles);
+            const caps = permissionData.globalCapabilities;
             set({
               permissions: perms,
+              roles: resolvedRoles.length > 0 ? resolvedRoles : get().roles,
               globalCapabilities: caps ?? null,
               isLoading: false,
             });
@@ -185,7 +295,11 @@ export const useAuthStore = create<AuthState>()(
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) return false;
         try {
-          const response = await authService.refreshToken(refreshToken);
+          // Use the API client's single-flight refresh coordinator. Calling
+          // authService.refreshToken here created a second independent refresh
+          // path that could race the request interceptor and consume the same
+          // rotating Supabase refresh token twice.
+          const response = await apiClient.refreshAuthSession();
           const { accessToken, refreshToken: newRefresh, expiresIn, user: authUser, roles } = response;
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('refreshToken', newRefresh);
@@ -201,8 +315,14 @@ export const useAuthStore = create<AuthState>()(
             roles: [],
             createdAt: new Date().toISOString(),
           };
-          const currentRoles = roles ?? [];
-          get().setAuth(safeUser, accessToken, newRefresh, currentRoles);
+          get().setAuth(
+            safeUser,
+            accessToken,
+            newRefresh,
+            roles ?? [],
+            [],
+            expiresIn,
+          );
           await get().initAuth();
           return true;
         } catch {
