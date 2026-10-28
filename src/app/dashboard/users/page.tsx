@@ -1,17 +1,16 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
 import { useUsers } from '@/hooks';
 import { useLanguage } from '@/components/language-context';
 import { TableSkeleton } from '@/components/skeletons';
 import { DataTable, type Column } from '@/shared/components/ui/DataTable';
 import { Badge } from '@/shared/components/ui/Badge';
 import { Button } from '@/shared/components/ui/Button';
-import { usersService } from '@/services';
-import type { UserResponse } from '@/dto/users/users.dto';
+import type { UserResponse, UserRoleSummary } from '@/dto/users/users.dto';
+import { UserAvatar } from '@/shared/components/ui/UserAvatar';
 
 const statusColors: Record<string, 'success' | 'warning' | 'danger'> = {
   active: 'success',
@@ -19,31 +18,10 @@ const statusColors: Record<string, 'success' | 'warning' | 'danger'> = {
   banned: 'danger',
 };
 
-function UserRolesCell({ userId }: { userId: string }) {
-  const { data: roles = [], isLoading } = useQuery<string[]>({
-    queryKey: ['user-roles', userId],
-    queryFn: () => usersService.getUserRoles(userId),
-    enabled: !!userId,
-    staleTime: 60000,
-  });
-
-  if (isLoading) {
-    return <span className="text-gray-400 text-sm">Loading...</span>;
-  }
-
-  if (roles.length === 0) {
-    return <Badge variant="default">No Role</Badge>;
-  }
-
-  return (
-    <div className="flex gap-1 flex-wrap">
-      {roles.map((role: string) => (
-        <Badge key={role} variant="info" className="text-xs">
-          {role}
-        </Badge>
-      ))}
-    </div>
-  );
+// The API returns role summaries ({code, name}) for the list and plain codes from
+// the legacy role endpoint; render either without ever passing an object to JSX.
+function roleLabel(role: UserRoleSummary): string {
+  return typeof role === 'string' ? role : role.name || role.code;
 }
 
 export default function UsersPage() {
@@ -60,11 +38,24 @@ export default function UsersPage() {
     search: search || undefined,
   });
 
+  // DataTable reports every keystroke; debounce so the list is not refetched per character.
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+  }, []);
+
   const handleSearch = useCallback((query: string) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('search', query);
-    url.searchParams.set('page', '1');
-    router.push(`${url.pathname}?${url.searchParams.toString()}`);
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      const url = new URL(window.location.href);
+      if (query) {
+        url.searchParams.set('search', query);
+      } else {
+        url.searchParams.delete('search');
+      }
+      url.searchParams.set('page', '1');
+      router.push(`${url.pathname}?${url.searchParams.toString()}`);
+    }, 300);
   }, [router]);
 
   const handlePageChange = useCallback((newPage: number) => {
@@ -87,9 +78,18 @@ export default function UsersPage() {
   }
 
   if (error) {
+    const status = (error as { statusCode?: number })?.statusCode;
+    const forbidden = status === 403;
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-        <p className="text-red-600 dark:text-red-400 mb-4">{t('error')}</p>
+        <p className="text-red-600 dark:text-red-400 mb-2">
+          {forbidden ? 'You do not have permission to view users.' : t('error')}
+        </p>
+        {forbidden && (
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            This page needs the <code className="font-mono">users.read</code> permission.
+          </p>
+        )}
         <Button onClick={() => refetch()}>
           {t('retry')}
         </Button>
@@ -101,15 +101,38 @@ export default function UsersPage() {
     {
       key: 'nickname',
       header: t('username'),
-      render: (user) => (
-        <span className="font-medium text-gray-900 dark:text-white">{user.nickname}</span>
-      ),
+      render: (user) => {
+        const name = user.nickname || user.email || 'Unknown user';
+        return (
+          <div className="flex items-center gap-3 min-w-0">
+            <UserAvatar src={user.avatar} name={name} />
+            <div className="min-w-0">
+              <p
+                className="font-medium text-gray-900 dark:text-white truncate max-w-[14rem]"
+                title={name}
+              >
+                {name}
+              </p>
+              {user.immutableUserId && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  #{user.immutableUserId}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      },
     },
     {
       key: 'email',
       header: t('email'),
       render: (user) => (
-        <span className="text-gray-600 dark:text-gray-400">{user.email}</span>
+        <span
+          className="block truncate max-w-[16rem] text-gray-600 dark:text-gray-400"
+          title={user.email}
+        >
+          {user.email}
+        </span>
       ),
     },
     {
@@ -124,9 +147,24 @@ export default function UsersPage() {
     {
       key: 'roles',
       header: t('roles'),
-      render: (user) => (
-        <UserRolesCell userId={user.immutableUserId || user.id} />
-      ),
+      render: (user) => {
+        const roles = user.roles ?? [];
+        if (roles.length === 0) {
+          return <Badge variant="default">No Role</Badge>;
+        }
+        return (
+          <div className="flex gap-1 flex-wrap">
+            {roles.map((role, index) => {
+              const label = roleLabel(role);
+              return (
+                <Badge key={`${label}-${index}`} variant="info" className="text-xs">
+                  {label}
+                </Badge>
+              );
+            })}
+          </div>
+        );
+      },
     },
     {
       key: 'createdAt',

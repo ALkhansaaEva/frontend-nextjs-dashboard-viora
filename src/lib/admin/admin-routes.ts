@@ -161,6 +161,10 @@ export const ADMIN_ROUTES: AdminRouteDefinition[] = [
     id: 'support', path: '/dashboard/support', title: 'Tickets', titleAr: 'التذاكر',
     section: 'safety', icon: LifeBuoy, requiredPermissions: ['support.execute'], showInNav: true, navOrder: 2,
   },
+  {
+    id: 'support-ticket', path: '/dashboard/support/:id', title: 'Ticket', titleAr: 'تذكرة',
+    section: 'safety', icon: LifeBuoy, requiredPermissions: ['support.execute'], showInNav: false, navOrder: 3,
+  },
 
   // ── Store ──────────────────────────────────────────────────────
   {

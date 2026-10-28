@@ -40,7 +40,7 @@ export interface RoomMember {
   id: string;
   roomId: string;
   userId: string;
-  role: 'owner' | 'moderator' | 'member' | 'speaker';
+  role: 'owner' | 'developer' | 'moderator' | 'member' | 'speaker';
   isMuted: boolean;
   joinedAt: string;
   user?: {
@@ -341,6 +341,27 @@ export const roomsService = {
 
   async removeRoomRole(roomId: string, targetUserId: string): Promise<void> {
     await apiClient.post(`/rooms/${roomId}/remove-role/${targetUserId}`);
+  },
+
+  /** Platform-assigned room role (owner/developer). Admin-only; audited. */
+  async assignPlatformRoomRole(
+    roomId: string,
+    targetUserId: string,
+    role: 'owner' | 'developer',
+  ): Promise<void> {
+    await apiClient.post(`/rooms/admin/rooms/${roomId}/roles/${targetUserId}`, {
+      role,
+    });
+  },
+
+  /** Revoke a DEVELOPER room role. Ownership transfers instead of revoking. */
+  async revokePlatformRoomRole(
+    roomId: string,
+    targetUserId: string,
+  ): Promise<void> {
+    await apiClient.delete(
+      `/rooms/admin/rooms/${roomId}/roles/${targetUserId}`,
+    );
   },
 
   /** Pending "waiting list" entries (immutableUserId players) for Room PK. */

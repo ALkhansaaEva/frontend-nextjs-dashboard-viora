@@ -41,4 +41,12 @@ describe('admin route registry', () => {
     expect(matchActiveNavRoute('/dashboard/users/user-1')?.id).toBe('users');
     expect(matchActiveNavRoute('/dashboard')?.id).toBe('dashboard-home');
   });
+
+  it('resolves a ticket detail URL to the guarded detail route', () => {
+    const route = matchAdminRoute('/dashboard/support/7f3c1a90-11b2-4c8d-9e44-abc123456789');
+    expect(route?.id).toBe('support-ticket');
+    expect(route?.requiredPermissions).toEqual(['support.execute']);
+    expect(route?.showInNav).toBe(false);
+    expect(matchActiveNavRoute('/dashboard/support/7f3c1a90-11b2-4c8d-9e44-abc123456789')?.id).toBe('support');
+  });
 });

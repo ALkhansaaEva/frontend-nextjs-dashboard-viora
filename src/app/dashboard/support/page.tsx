@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft, ChevronRight, MessageSquare, Clock,
   Search, Filter, ArrowRight, Plus
@@ -20,7 +20,7 @@ import { useLanguage } from '@/components/language-context';
 import { humanizeToken } from '@/shared/lib/labels';
 import { TableSkeleton } from '@/components/skeletons';
 import { TICKET_STATUSES, type TicketStatus } from '@/dto/support/support.dto';
-import TicketDetailDrawer, { ticketStatusVariant } from './TicketDetailDrawer';
+import { ticketStatusVariant } from './ticket-status';
 
 const LIST_LIMIT = 10;
 
@@ -37,7 +37,6 @@ export default function SupportPage() {
   const [statusFilter, setStatusFilter] = useState<TicketStatus | ''>('');
   const [offset, setOffset] = useState(0);
   const [search, setSearch] = useState('');
-  const [openTicketId, setOpenTicketId] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -158,65 +157,47 @@ export default function SupportPage() {
 
       {/* Tickets Feed */}
       <div className="grid grid-cols-1 gap-4">
-        <AnimatePresence mode="popLayout">
-          {tickets.map((ticket, index) => (
-            <motion.div
-              key={ticket.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ delay: index * 0.05 }}
-              layout
-              role="button"
-              tabIndex={0}
-              aria-label={`Open ticket: ${ticket.subject}`}
-              onClick={() => setOpenTicketId(ticket.id)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setOpenTicketId(ticket.id);
-                }
-              }}
-              className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-2xl"
-            >
-              <Card
-                className="group border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/50 hover:bg-gray-50 dark:hover:bg-gray-800/80 transition-all duration-300 overflow-hidden"
-              >
-                <CardContent className="p-5 flex items-center justify-between gap-6">
-                  <div className="flex items-center gap-5 min-w-0">
-                    <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                      <MessageSquare className="w-6 h-6" />
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-bold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors">
-                        {ticket.subject}
-                      </h3>
-                      <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        <span className="flex items-center gap-1 font-mono uppercase tracking-widest text-[10px]">
-                           #{ticket.ticketNumber}
-                        </span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1">
-                           <Clock className="w-3 h-3" />
-                           {new Date(ticket.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
+        {tickets.map((ticket) => (
+          <Link
+            key={ticket.id}
+            href={`/dashboard/support/${ticket.id}`}
+            aria-label={`Open ticket: ${ticket.subject}`}
+            className="group block rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+          >
+            <Card className="border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/50 hover:bg-gray-50 dark:hover:bg-gray-800/80 transition-all duration-300 overflow-hidden">
+              <CardContent className="p-4 sm:p-5 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-white sm:flex">
+                    <MessageSquare className="h-6 w-6" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="truncate font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors">
+                      {ticket.subject}
+                    </h3>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                      <span className="font-mono uppercase tracking-widest text-[10px]">
+                        #{ticket.ticketNumber ?? ticket.id.slice(0, 8)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {new Date(ticket.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-4 shrink-0">
-                    <Badge variant={ticketStatusVariant(ticket.status)} className="px-3 py-1 capitalize border-primary/10">
-                      {humanizeToken(ticket.status)}
-                    </Badge>
-                    <div className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 group-hover:bg-primary/10 group-hover:text-primary transition-all">
-                       <ArrowRight className="w-5 h-5" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+                <div className="flex shrink-0 items-center gap-3">
+                  <Badge variant={ticketStatusVariant(ticket.status)} className="px-3 py-1 capitalize">
+                    {humanizeToken(ticket.status)}
+                  </Badge>
+                  <span className="rounded-full bg-gray-50 p-2 transition-all group-hover:bg-primary/10 group-hover:text-primary dark:bg-gray-800">
+                    <ArrowRight className="h-5 w-5" />
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
 
         {tickets.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center opacity-40">
@@ -261,8 +242,6 @@ export default function SupportPage() {
            </div>
         </div>
       )}
-
-      <TicketDetailDrawer ticketId={openTicketId} onClose={() => setOpenTicketId(null)} />
 
       {/* Create Ticket — POST /support/tickets { subject, message, category? } */}
       <Modal isOpen={createOpen} onClose={() => setCreateOpen(false)} title="New Ticket" size="md">

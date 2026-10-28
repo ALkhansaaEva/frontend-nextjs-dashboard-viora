@@ -45,10 +45,25 @@ export interface ActivateProgressionPolicyResult {
   before: unknown;
 }
 
+/** GET /admin/progression-policy/limits — supported ceilings and compiled
+ * fallbacks. The fallbacks apply only while no active policy row exists. */
+export interface ProgressionPolicyLimits {
+  supportedMaxLevel: number;
+  defaults: Record<ProgressionPolicyType, number>;
+  roomMic: {
+    defaultSlots: number;
+    maxSlots: number;
+  };
+}
+
 export const progressionPolicyService = {
   /** GET admin/progression-policy?policyType= — requires admin.read. */
   async list(policyType: ProgressionPolicyType): Promise<ProgressionLevelPolicy[]> {
     return apiClient.get<ProgressionLevelPolicy[]>('/admin/progression-policy', { params: { policyType } });
+  },
+  /** GET admin/progression-policy/limits — requires admin.read. */
+  async getLimits(): Promise<ProgressionPolicyLimits> {
+    return apiClient.get<ProgressionPolicyLimits>('/admin/progression-policy/limits');
   },
   /** POST admin/progression-policy/draft — requires configs.write. */
   async createDraft(data: CreateProgressionPolicyDraftRequest): Promise<ProgressionLevelPolicy> {
@@ -94,10 +109,28 @@ export interface RoomLevelPolicyInput {
   reason: string;
 }
 
+/** One active room above its effective microphone capacity. `name` is the
+ * room's localized name map (null when the room has no stored name). */
+export interface RoomMicCapacityRow {
+  roomId: string;
+  name: Record<string, string> | null;
+  level: number;
+  capacity: number;
+  materializedSlots: number;
+  occupiedSlots: number;
+  surplusSlots: number;
+  occupiedOverCapacity: boolean;
+}
+
 export const roomLevelPolicyService = {
   /** GET admin/room-level-policy — requires admin.read. */
   async list(): Promise<RoomLevelConfigRow[]> {
     return apiClient.get<RoomLevelConfigRow[]>('/admin/room-level-policy');
+  },
+  /** GET admin/room-level-policy/mic-capacity — active rooms whose
+   * materialized slots or occupancy exceed their effective capacity. */
+  async micCapacity(): Promise<RoomMicCapacityRow[]> {
+    return apiClient.get<RoomMicCapacityRow[]>('/admin/room-level-policy/mic-capacity');
   },
   /** PUT admin/room-level-policy — requires configs.write. Full replace:
    * must contain exactly levels 1..activeMaxLevel, contiguous, with strictly

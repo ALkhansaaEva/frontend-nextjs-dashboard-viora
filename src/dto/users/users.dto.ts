@@ -11,6 +11,23 @@ const RoleSchema = z.object({
   code: z.string(),
   name: z.string().optional(),
 });
+export type RoleSummary = z.infer<typeof RoleSchema>;
+
+/**
+ * The user list returns role summaries (`{ code, name }`), while role detail
+ * endpoints return full role rows. Accept both shapes so neither can ever be
+ * rendered as a raw object.
+ */
+const UserRoleSummarySchema = z.union([
+  z.string(),
+  z.object({
+    id: z.string().optional(),
+    code: z.string(),
+    name: z.string().optional(),
+  }),
+]);
+
+export type UserRoleSummary = z.infer<typeof UserRoleSummarySchema>;
 
 export const UserResponseSchema = z.object({
   id: z.string().uuid(),
@@ -21,7 +38,7 @@ export const UserResponseSchema = z.object({
   status: z.enum(['active', 'suspended', 'banned']),
   createdAt: z.string(),
   wallet: WalletSchema.optional(),
-  roles: z.array(RoleSchema).optional(),
+  roles: z.array(UserRoleSummarySchema).optional(),
 });
 
 export type UserResponse = z.infer<typeof UserResponseSchema>;

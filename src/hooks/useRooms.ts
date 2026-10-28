@@ -186,3 +186,38 @@ export const useCancelRoomRound = () => {
   });
 };
 
+
+/**
+ * Platform-assigned room roles (OWNER/DEVELOPER). Admin-only; never offered to
+ * ordinary members as a self-service or room-level role change.
+ */
+export const useAssignPlatformRoomRole = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      roomId,
+      userId,
+      role,
+    }: {
+      roomId: string;
+      userId: string;
+      role: 'owner' | 'developer';
+    }) => roomsService.assignPlatformRoomRole(roomId, userId, role),
+    onSuccess: (_, { roomId }) => {
+      queryClient.invalidateQueries({ queryKey: ['room', roomId, true] });
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+    },
+  });
+};
+
+export const useRevokePlatformRoomRole = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ roomId, userId }: { roomId: string; userId: string }) =>
+      roomsService.revokePlatformRoomRole(roomId, userId),
+    onSuccess: (_, { roomId }) => {
+      queryClient.invalidateQueries({ queryKey: ['room', roomId, true] });
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+    },
+  });
+};

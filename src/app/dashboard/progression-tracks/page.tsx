@@ -57,6 +57,28 @@ function statusVariant(status: string): 'success' | 'default' | 'danger' {
   return 'danger';
 }
 
+/** Create and edit share one rule set: levels start at 1 and stay contiguous,
+ * XP is a non-negative integer string and strictly increases per level. */
+function thresholdValidationError(rows: ProgressionTrackThresholdInput[]): string | null {
+  if (rows.length === 0) return 'At least one threshold is required.';
+  let previous: bigint | null = null;
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index]!;
+    if (row.level !== index + 1) {
+      return `Thresholds must start at level 1 and be contiguous (expected L${index + 1}, found L${row.level}).`;
+    }
+    if (!/^[0-9]+$/.test(row.requiredXp)) {
+      return `Level ${row.level}: required XP must be a non-negative whole number.`;
+    }
+    const xp = BigInt(row.requiredXp);
+    if (previous !== null && xp <= previous) {
+      return `Level ${row.level}: required XP must be greater than level ${row.level - 1}.`;
+    }
+    previous = xp;
+  }
+  return null;
+}
+
 /* ───────────────────────── Create draft modal ───────────────────────── */
 
 function CreateTrackModal({ onClose }: { onClose: () => void }) {
@@ -87,17 +109,7 @@ function CreateTrackModal({ onClose }: { onClose: () => void }) {
   const updateThreshold = (level: number, patch: Partial<ProgressionTrackThresholdInput>) =>
     setThresholds((prev) => prev.map((row) => (row.level === level ? { ...row, ...patch } : row)));
 
-  const thresholdsValid = useMemo(() => {
-    let previous = BigInt(-1);
-    for (let index = 0; index < thresholds.length; index++) {
-      const row = thresholds[index];
-      if (!row || row.level !== index + 1) return false;
-      if (!/^[0-9]+$/.test(row.requiredXp)) return false;
-      if (BigInt(row.requiredXp) <= previous) return false;
-      previous = BigInt(row.requiredXp);
-    }
-    return thresholds.length > 0;
-  }, [thresholds]);
+  const thresholdsError = useMemo(() => thresholdValidationError(thresholds), [thresholds]);
 
   const createMutation = useMutation({
     mutationFn: () =>
@@ -178,13 +190,16 @@ function CreateTrackModal({ onClose }: { onClose: () => void }) {
             ))}
           </div>
         </div>
+        {thresholdsError && (
+          <p className="text-xs text-red-600 dark:text-red-400">{thresholdsError}</p>
+        )}
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>
           <Button
             size="sm"
-            disabled={!trackKey.trim() || !thresholdsValid || createMutation.isPending}
+            disabled={!trackKey.trim() || !!thresholdsError || createMutation.isPending}
             onClick={() => createMutation.mutate()}
           >
             Create draft
@@ -263,6 +278,11 @@ function TrackDetail({
 
   const updateDraftRow = (level: number, patch: Partial<ProgressionTrackThresholdInput>) =>
     setDraft((prev) => prev.map((row) => (row.level === level ? { ...row, ...patch } : row)));
+
+  const draftError = useMemo(
+    () => (editing ? thresholdValidationError(draft) : null),
+    [editing, draft],
+  );
 
   return (
     <Card padding="none">
@@ -388,23 +408,28 @@ function TrackDetail({
                 ))}
               </div>
               {editing && (
-                <div className="flex gap-2 border-t border-gray-200 pt-3 dark:border-gray-700">
-                  <Button
-                    size="sm"
-                    disabled={saveMutation.isPending}
-                    onClick={() => saveMutation.mutate()}
-                  >
-                    Save draft
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setEditing(false);
-                    }}
-                  >
-                    Cancel
-                  </Button>
+                <div className="space-y-2 border-t border-gray-200 pt-3 dark:border-gray-700">
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      disabled={!!draftError || saveMutation.isPending}
+                      onClick={() => saveMutation.mutate()}
+                    >
+                      Save draft
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setEditing(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                  {draftError && (
+                    <p className="text-xs text-red-600 dark:text-red-400">{draftError}</p>
+                  )}
                 </div>
               )}
               {history && history.length > 1 && (

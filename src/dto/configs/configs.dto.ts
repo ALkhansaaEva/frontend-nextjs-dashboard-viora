@@ -22,3 +22,19 @@ export const SystemConfigSchema = z.object({
 
 
 export type SystemConfig = z.infer<typeof SystemConfigSchema>;
+
+/** GET /configs/schema — the writable key allowlist. Bounds are inclusive on
+ * the backend; `defaultValue` is the compiled fallback, not a stored row. */
+export const ConfigSchemaEntrySchema = z.object({
+  key: z.string(),
+  kind: z.enum(['integer', 'boolean', 'integer_array', 'string_array']),
+  min: z.number().nullable(),
+  max: z.number().nullable(),
+  live: z.boolean(),
+  note: z.string().nullable(),
+  defaultValue: z.unknown(),
+});
+
+export type ConfigSchemaEntry = z.infer<typeof ConfigSchemaEntrySchema>;
+
+export const ConfigSchemaSchema = z.array(ConfigSchemaEntrySchema);

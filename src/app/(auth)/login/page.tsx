@@ -1,14 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, LogIn, KeyRound, ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
 import { Input } from '@/shared/components/ui/Input';
 import { useAuthStore } from '@/store';
 import { authService } from '@/services';
-
-type Mode = 'password' | 'otp' | 'forgot' | 'reset';
+import {
+  authIntentFromSearch,
+  validateNewPassword,
+  type LoginMode as Mode,
+} from './login-flow';
 
 const OAUTH_PROVIDERS = [
   { id: 'google', label: 'Google', url: () => authService.getGoogleOAuthUrl() },
@@ -37,7 +40,12 @@ export default function LoginPage() {
   const [notice, setNotice] = useState('');
   const [devCode, setDevCode] = useState('');
   const [email, setEmail] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
+
+  // Recovery/sign-in emails link here with an intent flag instead of a code.
+  useEffect(() => {
+    const intent = authIntentFromSearch(window.location.search);
+    if (intent) setMode(intent);
+  }, []);
 
   const disabled = busy || storeLoading;
 
@@ -91,7 +99,6 @@ export default function LoginPage() {
     setError('');
     try {
       await authService.requestEmailOTP(email.trim());
-      setOtpSent(true);
       setNotice('If that address belongs to an account, a sign-in code has been sent.');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Could not request a code');
@@ -107,13 +114,34 @@ export default function LoginPage() {
     setBusy(true);
     try {
       const response = await authService.forgotPassword(value);
-      setNotice(response.message || 'If that email is registered, a reset email has been sent.');
+      setNotice(response.message || 'If that email is registered, a password reset code has been sent.');
       setEmail(value);
       // The backend returns a recovery code only while dev autoconfirm is on.
       if (response._dev_recovery_code) setDevCode(response._dev_recovery_code);
       setMode('reset');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Could not request a reset');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function requestNewRecoveryCode() {
+    const value = email.trim();
+    if (!value) {
+      setError('Enter your email address first.');
+      return;
+    }
+    setBusy(true);
+    setError('');
+    try {
+      const response = await authService.forgotPassword(value);
+      setNotice(
+        response.message || 'If that email is registered, a new code has been sent.',
+      );
+      if (response._dev_recovery_code) setDevCode(response._dev_recovery_code);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Could not request a new code');
     } finally {
       setBusy(false);
     }
@@ -126,8 +154,10 @@ export default function LoginPage() {
     const value = String(form.get('email') ?? '').trim();
     const token = String(form.get('token') ?? '').trim();
     const newPassword = String(form.get('newPassword') ?? '');
-    if (newPassword.length < 6) {
-      setError('Password must be at least 6 characters.');
+    const confirmation = String(form.get('confirmPassword') ?? '');
+    const invalid = validateNewPassword(newPassword, confirmation);
+    if (invalid) {
+      setError(invalid);
       return;
     }
     setBusy(true);
@@ -235,20 +265,18 @@ export default function LoginPage() {
                   <Input id="otp-email" name="email" type="email" autoComplete="email" placeholder="admin@example.com" className="pl-10" value={email} onChange={(event) => setEmail(event.target.value)} required />
                 </div>
               </div>
-              {otpSent && (
-                <div>
-                  <label htmlFor="otp-token" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">One-time code</label>
-                  <div className="relative">
-                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <Input id="otp-token" name="token" inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className="pl-10" maxLength={6} required />
-                  </div>
+              <div>
+                <label htmlFor="otp-token" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">One-time code</label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input id="otp-token" name="token" inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className="pl-10" maxLength={6} required />
                 </div>
-              )}
+              </div>
               <div className="flex gap-3">
                 <Button type="button" variant="outline" className="flex-1" disabled={disabled} onClick={() => void requestOtp()}>
                   Send code
                 </Button>
-                <Button type="submit" className="flex-1" disabled={disabled || !otpSent}>
+                <Button type="submit" className="flex-1" disabled={disabled}>
                   Sign In
                 </Button>
               </div>
@@ -278,13 +306,23 @@ export default function LoginPage() {
 
           {mode === 'reset' && (
             <form onSubmit={submitReset} className="space-y-4 sm:space-y-6">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Open the recovery email and enter the 6-digit code it contains. The code
+                expires 1 hour after it was sent and works once.
+              </p>
               <div>
                 <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                <Input id="reset-email" name="email" type="email" autoComplete="email" className="pl-1" defaultValue={email} required />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input id="reset-email" name="email" type="email" autoComplete="email" placeholder="admin@example.com" className="pl-10" value={email} onChange={(event) => setEmail(event.target.value)} required />
+                </div>
               </div>
               <div>
-                <label htmlFor="reset-token" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recovery token</label>
-                <Input id="reset-token" name="token" autoComplete="one-time-code" placeholder="From the reset email" required />
+                <label htmlFor="reset-token" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recovery code</label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input id="reset-token" name="token" inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className="pl-10" maxLength={6} required />
+                </div>
               </div>
               <div>
                 <label htmlFor="reset-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New password</label>
@@ -293,12 +331,24 @@ export default function LoginPage() {
                   <Input id="reset-password" name="newPassword" type="password" autoComplete="new-password" className="pl-10" minLength={6} required />
                 </div>
               </div>
+              <div>
+                <label htmlFor="reset-confirm" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm new password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input id="reset-confirm" name="confirmPassword" type="password" autoComplete="new-password" className="pl-10" minLength={6} required />
+                </div>
+              </div>
               <Button type="submit" className="w-full" disabled={disabled}>
                 Update password
               </Button>
-              <button type="button" className="flex items-center gap-1 text-sm text-blue-600 hover:underline dark:text-blue-400" onClick={() => go('password')}>
-                <ArrowLeft className="w-4 h-4" /> Back to sign in
-              </button>
+              <div className="flex items-center justify-between text-sm">
+                <button type="button" className="text-blue-600 hover:underline dark:text-blue-400" onClick={() => void requestNewRecoveryCode()}>
+                  Request a new code
+                </button>
+                <button type="button" className="flex items-center gap-1 text-blue-600 hover:underline dark:text-blue-400" onClick={() => go('password')}>
+                  <ArrowLeft className="w-4 h-4" /> Back to sign in
+                </button>
+              </div>
             </form>
           )}
 

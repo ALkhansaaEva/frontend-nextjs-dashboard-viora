@@ -19,10 +19,13 @@ import {
   useHasAnyPermission,
   useRoomRoundJoinRequests,
   useCreateRoomRound,
+  useAssignPlatformRoomRole,
+  useRevokePlatformRoomRole,
   type UpdateRoomInput,
 } from '@/hooks';
 import type { RoomRoundDto } from '@/services/rooms.service';
 import { useLanguage } from '@/components/language-context';
+import { useToast } from '@/store/toast.store';
 import { TableSkeleton } from '@/components/skeletons';
 import { DataTable, type Column } from '@/shared/components/ui/DataTable';
 import { Badge } from '@/shared/components/ui/Badge';
@@ -510,6 +513,42 @@ export default function RoomsPage() {
   const muteMutation = useMuteUser();
   const unmuteMutation = useUnmuteUser();
   const deleteMutation = useDeleteRoom();
+  const assignPlatformRoleMutation = useAssignPlatformRoomRole();
+  const revokePlatformRoleMutation = useRevokePlatformRoomRole();
+  const toast = useToast();
+
+  // Platform-assigned roles are granted only from this admin surface.
+  const assignPlatformRole = useCallback(
+    (userId: string) => {
+      if (!selectedRoomId) return;
+      assignPlatformRoleMutation.mutate(
+        { roomId: selectedRoomId, userId, role: 'developer' },
+        {
+          onSuccess: () =>
+            toast.success('Developer role granted.', 'Audited platform action.'),
+          onError: (err) =>
+            toast.error('Could not grant the developer role.', err),
+        },
+      );
+    },
+    [assignPlatformRoleMutation, selectedRoomId, toast],
+  );
+
+  const revokePlatformRole = useCallback(
+    (userId: string) => {
+      if (!selectedRoomId) return;
+      revokePlatformRoleMutation.mutate(
+        { roomId: selectedRoomId, userId },
+        {
+          onSuccess: () =>
+            toast.success('Developer role revoked.', 'Audited platform action.'),
+          onError: (err) =>
+            toast.error('Could not revoke the developer role.', err),
+        },
+      );
+    },
+    [revokePlatformRoleMutation, selectedRoomId, toast],
+  );
 
   const filteredRooms = useMemo(() => {
     if (!data?.data) return [];
@@ -977,9 +1016,11 @@ export default function RoomsPage() {
                             variant={
                               member.role === 'owner'
                                 ? 'success'
-                                : member.role === 'moderator'
-                                  ? 'info'
-                                  : 'default'
+                                : member.role === 'developer'
+                                  ? 'warning'
+                                  : member.role === 'moderator'
+                                    ? 'info'
+                                    : 'default'
                             }
                           >
                             {member.role}
@@ -995,32 +1036,55 @@ export default function RoomsPage() {
                     </div>
                     {member.role !== 'owner' && canManageRooms && (
                       <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            openModerationAction(member.isMuted ? 'unmute' : 'mute', member.userId)
-                          }
-                          disabled={muteMutation.isPending || unmuteMutation.isPending}
-                        >
-                          {member.isMuted ? 'Unmute' : 'Mute'}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => openModerationAction('kick', member.userId)}
-                          disabled={kickMutation.isPending}
-                        >
-                          Kick
-                        </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => openModerationAction('ban', member.userId)}
-                          disabled={banMutation.isPending}
-                        >
-                          Ban
-                        </Button>
+                        {member.role === 'developer' ? (
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() =>
+                              revokePlatformRole(member.userId)
+                            }
+                            disabled={revokePlatformRoleMutation.isPending}
+                          >
+                            Revoke developer
+                          </Button>
+                        ) : (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => assignPlatformRole(member.userId)}
+                              disabled={assignPlatformRoleMutation.isPending}
+                            >
+                              Make developer
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                openModerationAction(member.isMuted ? 'unmute' : 'mute', member.userId)
+                              }
+                              disabled={muteMutation.isPending || unmuteMutation.isPending}
+                            >
+                              {member.isMuted ? 'Unmute' : 'Mute'}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openModerationAction('kick', member.userId)}
+                              disabled={kickMutation.isPending}
+                            >
+                              Kick
+                            </Button>
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              onClick={() => openModerationAction('ban', member.userId)}
+                              disabled={banMutation.isPending}
+                            >
+                              Ban
+                            </Button>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>

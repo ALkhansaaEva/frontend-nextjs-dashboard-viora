@@ -29,4 +29,47 @@ describe('configsService contract', () => {
       rolloutPercent: 25,
     });
   });
+
+  it('parses the writable config schema from /configs/schema', async () => {
+    const schema = [
+      {
+        key: 'room.maxMembers',
+        kind: 'integer',
+        min: 2,
+        max: 200,
+        live: true,
+        note: null,
+        defaultValue: 10,
+      },
+      {
+        key: 'room.creation.enabled',
+        kind: 'boolean',
+        min: null,
+        max: null,
+        live: true,
+        note: null,
+        defaultValue: true,
+      },
+    ];
+    vi.mocked(apiClient.get).mockResolvedValue(schema);
+
+    await expect(configsService.getSchema()).resolves.toEqual(schema);
+    expect(apiClient.get).toHaveBeenCalledWith('/configs/schema');
+  });
+
+  it('rejects schema entries with an unknown value kind', async () => {
+    vi.mocked(apiClient.get).mockResolvedValue([
+      {
+        key: 'room.maxMembers',
+        kind: 'float',
+        min: null,
+        max: null,
+        live: true,
+        note: null,
+        defaultValue: 1,
+      },
+    ]);
+
+    await expect(configsService.getSchema()).rejects.toThrow();
+  });
 });

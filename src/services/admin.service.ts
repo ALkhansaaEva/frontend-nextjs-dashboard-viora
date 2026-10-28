@@ -51,25 +51,79 @@ interface BackendRoleUserRow {
   created_at?: string;
 }
 
-export interface AdminInventoryItem {
-  id?: string;
-  itemId?: string;
-  name?: string;
-  quantity?: string | number;
-}
-
-export interface AdminPurchaseItem {
-  id?: string;
-  itemId?: string;
-  itemName?: string;
-  createdAt?: string;
-}
-
-export interface AdminLoadoutItem {
-  id?: string;
-  itemId?: string;
-  name?: string;
+interface CatalogItemRef {
+  code?: string;
+  type?: string;
   slot?: string;
+  rarity?: string;
+  title?: { en?: string; ar?: string } | null;
+  assets?: Array<{ url?: string } | null> | null;
+}
+
+/** Fields resolved once from the catalog entry nested in the payload. */
+export interface AdminCatalogFields {
+  name?: string;
+  iconUrl?: string;
+  itemType?: string;
+  slot?: string;
+  rarity?: string;
+  itemId?: string;
+}
+
+export type AdminInventoryItem = AdminCatalogFields & {
+  id?: string;
+  quantity?: string | number;
+  status?: string;
+  isEquipped?: boolean;
+  acquiredAt?: string;
+};
+
+export type AdminPurchaseItem = AdminCatalogFields & {
+  id?: string;
+  createdAt?: string;
+  status?: string;
+  amount?: string | number;
+  currencyType?: string;
+  totalGameCurrencyAmount?: string | number;
+  quantity?: string | number;
+  itemName?: string;
+};
+
+export type AdminLoadoutItem = AdminCatalogFields & {
+  id?: string;
+  isEquipped?: boolean;
+};
+
+function catalogFields(raw: unknown): AdminCatalogFields {
+  const row = (raw ?? {}) as {
+    item?: CatalogItemRef | null;
+    bundle?: CatalogItemRef | null;
+    itemId?: string;
+    bundleId?: string;
+  };
+  const entry = row.item ?? row.bundle;
+  return {
+    name: entry?.title?.en || entry?.title?.ar || entry?.code,
+    iconUrl: entry?.assets?.find((asset) => asset?.url)?.url,
+    itemType: entry?.type,
+    slot: entry?.slot,
+    rarity: entry?.rarity,
+    itemId: row.itemId ?? row.bundleId,
+  };
+}
+
+/**
+ * Inventory/purchases are wrapped in `{data}`; the loadout endpoint returns a
+ * single bare row. Do not fall back to "first array property" here — a loadout
+ * row contains an `assets` array and would be mistaken for a list.
+ */
+function catalogRows<T>(response: unknown): T[] {
+  if (Array.isArray(response)) return response as T[];
+  const res = (response ?? {}) as Record<string, unknown>;
+  if (Array.isArray(res.data)) return res.data as T[];
+  if (Array.isArray(res.items)) return res.items as T[];
+  if (res.id || res.itemId || res.item) return [res as T];
+  return [];
 }
 
 function normalizeArrayResponse<T>(response: unknown): T[] {
@@ -372,27 +426,33 @@ export const adminService = {
   },
 
   async getUserInventory(userId: string): Promise<AdminInventoryItem[]> {
-    const response = await apiClient.get<
-      AdminInventoryItem[] | { data: AdminInventoryItem[] }
-    >(`/admin/users/${userId}/inventory`);
-    if (Array.isArray(response)) return response;
-    return response.data || [];
+    const response = await apiClient.get<unknown>(
+      `/admin/users/${userId}/inventory`,
+    );
+    return catalogRows<AdminInventoryItem>(response).map((row) => ({
+      ...row,
+      ...catalogFields(row),
+    }));
   },
 
   async getUserPurchases(userId: string): Promise<AdminPurchaseItem[]> {
-    const response = await apiClient.get<
-      AdminPurchaseItem[] | { data: AdminPurchaseItem[] }
-    >(`/admin/users/${userId}/purchases`);
-    if (Array.isArray(response)) return response;
-    return response.data || [];
+    const response = await apiClient.get<unknown>(
+      `/admin/users/${userId}/purchases`,
+    );
+    return catalogRows<AdminPurchaseItem>(response).map((row) => ({
+      ...row,
+      ...catalogFields(row),
+    }));
   },
 
   async getUserLoadout(userId: string): Promise<AdminLoadoutItem[]> {
-    const response = await apiClient.get<
-      AdminLoadoutItem[] | { data: AdminLoadoutItem[] }
-    >(`/admin/users/${userId}/loadout`);
-    if (Array.isArray(response)) return response;
-    return response.data || [];
+    const response = await apiClient.get<unknown>(
+      `/admin/users/${userId}/loadout`,
+    );
+    return catalogRows<AdminLoadoutItem>(response).map((row) => ({
+      ...row,
+      ...catalogFields(row),
+    }));
   },
 
   async searchUsers(params: {

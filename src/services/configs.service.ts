@@ -1,6 +1,8 @@
 import apiClient from '@/lib/api/api-client';
 import {
+  ConfigSchemaSchema,
   FeatureFlagSchema,
+  type ConfigSchemaEntry,
   type FeatureFlag,
   SystemConfigSchema,
   type SystemConfig,
@@ -10,6 +12,13 @@ export const configsService = {
   async getConfigs(): Promise<SystemConfig> {
     const response = await apiClient.get<SystemConfig>('/configs');
     return SystemConfigSchema.parse(response);
+  },
+
+  /** GET /configs/schema — writable allowlist with kinds, bounds, live flags
+   * and compiled defaults. Unknown keys are rejected by POST /configs. */
+  async getSchema(): Promise<ConfigSchemaEntry[]> {
+    const response = await apiClient.get<unknown>('/configs/schema');
+    return ConfigSchemaSchema.parse(response);
   },
 
   async getAllRawConfigs(): Promise<Record<string, unknown>> {

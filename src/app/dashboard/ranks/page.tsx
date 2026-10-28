@@ -11,12 +11,13 @@ import { Modal } from '@/shared/components/ui/Modal';
 import { Input } from '@/shared/components/ui/Input';
 import { FileUpload } from '@/shared/components/upload/FileUpload';
 import { PageHeader } from '@/shared/components/ui/PageHeader';
-import { QueryErrorNotice } from '@/shared/components/ui/QueryState';
+import { QueryErrorNotice, asApiError } from '@/shared/components/ui/QueryState';
 import { EmptyState } from '@/shared/components/ui/EmptyState';
 import { ActionButtons } from '@/shared/components/ui/ActionButtons';
 import { ranksService } from '@/services';
 import { useLanguage } from '@/components/language-context';
 import { useHasPermission } from '@/hooks';
+import { useToast } from '@/store/toast.store';
 
 interface SystemRank {
   id: string;
@@ -29,8 +30,20 @@ interface SystemRank {
   createdAt?: string;
 }
 
+/** Visual style buckets — position in the priority-sorted list, never the raw
+ * priority number (priority is an ordering value, not a tier index). */
+const TIERS = [
+  { gradient: 'from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600', color: 'text-gray-400 dark:text-gray-500' },
+  { gradient: 'from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30', color: 'text-amber-500' },
+  { gradient: 'from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/30', color: 'text-indigo-500' },
+  { gradient: 'from-rose-50 to-rose-100 dark:from-rose-900/30 dark:to-rose-800/30', color: 'text-rose-500' },
+  { gradient: 'from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/30', color: 'text-emerald-500' },
+  { gradient: 'from-yellow-50 to-amber-100 dark:from-yellow-900/30 dark:to-amber-800/30', color: 'text-yellow-500' },
+] as const;
+
 export default function RanksPage() {
   const { t } = useLanguage();
+  const toast = useToast();
   const queryClient = useQueryClient();
   const hasPermission = useHasPermission();
   const canManage =
@@ -49,26 +62,53 @@ export default function RanksPage() {
     queryFn: () => ranksService.getSystemRanks(),
   });
 
+  const sortedRanks = useMemo(
+    () => [...ranks].sort((a, b) => b.priority - a.priority),
+    [ranks],
+  );
+
+  const tierById = useMemo(() => {
+    const buckets = new Map<string, number>();
+    sortedRanks.forEach((rank, index) => {
+      // Highest priority (index 0) gets the highest style bucket, matching the
+      // old high-priority = trophy direction without reading the raw value.
+      const bucket =
+        sortedRanks.length <= 1
+          ? TIERS.length - 1
+          : TIERS.length - 1 - Math.floor((index * TIERS.length) / sortedRanks.length);
+      buckets.set(rank.id, Math.max(0, Math.min(bucket, TIERS.length - 1)));
+    });
+    return buckets;
+  }, [sortedRanks]);
+
   const filteredRanks = useMemo(() => {
-    if (!searchQuery) return ranks;
+    if (!searchQuery) return sortedRanks;
     const q = searchQuery.toLowerCase();
-    return ranks.filter(r =>
+    return sortedRanks.filter(r =>
       r.code.toLowerCase().includes(q) ||
       r.titleI18n?.en?.toLowerCase().includes(q) ||
       r.titleI18n?.ar?.includes(q)
     );
-  }, [ranks, searchQuery]);
+  }, [sortedRanks, searchQuery]);
 
   const createMutation = useMutation({
     mutationFn: (data: { code: string; titleI18n: Record<string, string>; descriptionI18n: Record<string, string>; priority: number; badgeIconUrl?: string }) =>
       ranksService.createSystemRank(data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'], refetchType: 'all' }); closeModal(); },
+    onError: (err: unknown) =>
+      toast.error(asApiError(err).message ?? 'Failed to create rank.'),
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: { titleI18n: Record<string, string>; descriptionI18n: Record<string, string>; badgeIconUrl?: string; priority: number } }) =>
       ranksService.updateSystemRank(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['system-ranks'], refetchType: 'all' }); closeModal(); },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['system-ranks'], refetchType: 'all' });
+      setSelectedRank(null);
+      closeModal();
+    },
+    onError: (err: unknown) =>
+      toast.error(asApiError(err).message ?? 'Failed to update rank.'),
   });
 
   const openCreate = () => {
@@ -168,25 +208,17 @@ export default function RanksPage() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {filteredRanks.map((rank) => {
-          const tier = Math.min(rank.priority, 5);
-          const TIERS = [
-            { gradient: 'from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600', color: 'text-gray-400 dark:text-gray-500' },
-            { gradient: 'from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30', color: 'text-amber-500' },
-            { gradient: 'from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/30', color: 'text-indigo-500' },
-            { gradient: 'from-rose-50 to-rose-100 dark:from-rose-900/30 dark:to-rose-800/30', color: 'text-rose-500' },
-            { gradient: 'from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/30', color: 'text-emerald-500' },
-            { gradient: 'from-yellow-50 to-amber-100 dark:from-yellow-900/30 dark:to-amber-800/30', color: 'text-yellow-500' },
-          ];
-          const t = TIERS[tier] ?? TIERS[0]!;
+          const tier = tierById.get(rank.id) ?? 0;
+          const tierStyle = TIERS[tier] ?? TIERS[0]!;
           return (
             <div key={rank.id} className="cursor-pointer" onClick={() => setSelectedRank(rank)}>
               <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden group h-full">
-                <div className={`aspect-square bg-gradient-to-br ${t.gradient} flex items-center justify-center relative`}>
+                <div className={`aspect-square bg-gradient-to-br ${tierStyle.gradient} flex items-center justify-center relative`}>
                   {rank.badgeIconUrl ? (
                     <img src={rank.badgeIconUrl} alt="" className="w-full h-full object-contain p-4 transition-transform duration-200 group-hover:scale-110"
                       onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
                   ) : (
-                    <Crown className={`w-16 h-16 ${t.color}`} />
+                    <Crown className={`w-16 h-16 ${tierStyle.color}`} />
                   )}
                   <div className="absolute top-2 left-2">
                     <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-white/70 dark:bg-gray-800/70 text-gray-500 dark:text-gray-400">
@@ -202,7 +234,7 @@ export default function RanksPage() {
                   )}
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-1">
-                      {tier >= 3 ? <Trophy className={`w-3 h-3 ${t.color}`} /> : tier >= 1 ? <Award className="w-3 h-3 text-gray-400" /> : null}
+                      {tier >= 3 ? <Trophy className={`w-3 h-3 ${tierStyle.color}`} /> : tier >= 1 ? <Award className="w-3 h-3 text-gray-400" /> : null}
                     </div>
                     <div className="flex items-center gap-2">
                       {rank.titleI18n?.ar && (
@@ -224,7 +256,7 @@ export default function RanksPage() {
           );
         })}
         {filteredRanks.length === 0 && !error && (
-          <EmptyState message={searchQuery ? 'No ranks match your search' : 'No ranks found'} icon={<Inbox className="w-10 h-10" />} />
+          <EmptyState className="col-span-full" message={searchQuery ? 'No ranks match your search' : 'No ranks found'} icon={<Inbox className="w-10 h-10" />} />
         )}
       </div>
 
@@ -325,7 +357,7 @@ export default function RanksPage() {
           </div>
           <FileUpload profile="store" label="Badge Icon" placeholder="icon URL or upload" value={form.badgeIconUrl}
             onChange={(v) => setForm({ ...form, badgeIconUrl: v })} />
-          <Input label="Priority" type="number" placeholder="0" value={form.priority}
+          <Input label="Priority" type="number" min={0} max={1000} placeholder="0" value={form.priority}
             onChange={(e) => setForm({ ...form, priority: parseInt(e.target.value) || 0 })} />
           <div className="flex gap-2 pt-4">
             <Button onClick={handleSubmit} disabled={!form.code || createMutation.isPending || updateMutation.isPending}>

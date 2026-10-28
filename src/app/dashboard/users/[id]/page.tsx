@@ -18,6 +18,28 @@ import { PageSkeleton } from '@/components/skeletons';
 import { useHasPermission } from '@/hooks';
 import { formatIntegerString } from '@/shared/lib/money';
 
+/** Catalog icon with a neutral fallback, so a missing asset never shows a broken image. */
+function ItemThumb({ iconUrl }: { iconUrl?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!iconUrl || failed) {
+    return (
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-gray-200 dark:bg-gray-700 text-gray-500">
+        <Package className="h-4 w-4" aria-hidden="true" />
+      </span>
+    );
+  }
+  return (
+    <img
+      src={iconUrl}
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="h-8 w-8 shrink-0 rounded object-cover"
+    />
+  );
+}
+
 const statusColors: Record<string, 'success' | 'warning' | 'danger'> = {
   active: 'success',
   suspended: 'warning',
@@ -359,9 +381,21 @@ export default function UserDetailPage() {
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto">
                 {inventory.slice(0, 30).map((item, idx) => (
-                  <div key={item.id || idx} className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
-                    <p className="text-xs font-medium text-gray-900 dark:text-white truncate">{item.name || item.itemId || `Item #${idx + 1}`}</p>
-                    {item.quantity && <p className="text-xs text-gray-500">x{item.quantity}</p>}
+                  <div key={item.id || idx} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <ItemThumb iconUrl={item.iconUrl} />
+                    <div className="min-w-0 text-left">
+                      <p className="text-xs font-medium text-gray-900 dark:text-white truncate" title={item.name || item.itemId}>
+                        {item.name || 'Unknown item'}
+                      </p>
+                      <p className="text-[10px] text-gray-500 truncate">
+                        {[
+                          item.quantity ? `x${item.quantity}` : null,
+                          item.itemType,
+                          item.rarity,
+                          item.status,
+                        ].filter(Boolean).join(' · ') || item.itemId}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -380,8 +414,22 @@ export default function UserDetailPage() {
             <CardContent>
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {purchases.slice(0, 20).map((purchase, idx) => (
-                  <div key={purchase.id || idx} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm">
-                    <span className="text-gray-900 dark:text-white font-medium truncate">{purchase.itemName || purchase.itemId || `Purchase #${idx + 1}`}</span>
+                  <div key={purchase.id || idx} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm">
+                    <ItemThumb iconUrl={purchase.iconUrl} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-gray-900 dark:text-white font-medium truncate" title={purchase.name || purchase.itemName || purchase.itemId}>
+                        {purchase.name || purchase.itemName || 'Unknown item'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {[
+                          purchase.quantity ? `x${purchase.quantity}` : null,
+                          purchase.amount != null
+                            ? `${purchase.amount} ${purchase.currencyType || ''}`.trim()
+                            : null,
+                          purchase.status,
+                        ].filter(Boolean).join(' · ')}
+                      </p>
+                    </div>
                     <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
                       {purchase.createdAt ? new Date(purchase.createdAt).toLocaleDateString() : ''}
                     </span>
@@ -403,11 +451,16 @@ export default function UserDetailPage() {
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {loadout.map((item, idx) => (
-                  <div key={item.slot || item.id || idx} className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
-                    <p className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                      {item.name || item.itemId || item.slot || `Slot #${idx + 1}`}
-                    </p>
-                    {item.slot && <p className="text-[10px] text-gray-400 uppercase">{item.slot}</p>}
+                  <div key={item.slot || item.id || idx} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <ItemThumb iconUrl={item.iconUrl} />
+                    <div className="min-w-0 text-left">
+                      <p className="text-xs font-medium text-gray-900 dark:text-white truncate" title={item.name || item.itemId}>
+                        {item.name || 'Unknown item'}
+                      </p>
+                      <p className="text-[10px] text-gray-400 uppercase truncate">
+                        {[item.slot, item.rarity].filter(Boolean).join(' · ') || item.itemId}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>

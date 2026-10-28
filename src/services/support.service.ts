@@ -23,15 +23,27 @@ export interface TicketListResponse {
   total: number;
 }
 
+/** A ticket participant as the backend resolves it (no email, no provider data). */
+export interface TicketParticipant {
+  id: string;
+  immutableUserId?: string | null;
+  username: string;
+  avatarUrl?: string | null;
+  level?: number;
+}
+
 /**
  * A ticket_messages row as `getTicketById` actually returns it (TicketMessage
  * entity): the body is `message` and the author is `senderUserId`.
- * Shared type in `@/types` carries the same shape.
+ * `sender` is resolved by the backend so staff without `users.read` can render it.
  */
-export type TicketMessageRecord = TicketMessage;
+export type TicketMessageRecord = TicketMessage & {
+  sender?: TicketParticipant | null;
+};
 
 /** Verbatim `getTicketById` return: the ticket row plus its `messages` array. */
 export type TicketDetail = Omit<SupportTicket, 'messages'> & {
+  requester?: TicketParticipant | null;
   messages: TicketMessageRecord[];
 };
 
