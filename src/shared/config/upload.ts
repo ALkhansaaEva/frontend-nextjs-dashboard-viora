@@ -85,6 +85,16 @@ export const UPLOAD_CONFIG = {
     fileKind: 'animated_webp' as const,
     filePurpose: 'animation' as const,
   },
+  /** Dedicated SVGA animation upload: backend `animations` category (20 MB),
+   * validated server-side by the `PKG` protobuf header — never by extension. */
+  svga: {
+    accept: '.svga',
+    acceptMime: ['application/octet-stream'],
+    maxSize: 20 * 1024 * 1024,
+    bucket: 'uploads',
+    fileKind: 'animation' as const,
+    filePurpose: 'svga' as const,
+  },
   /** Backend `audio` category: wav / ogg / m4a / mp3, 50 MB. */
   giftSound: {
     accept: '.wav,.ogg,.m4a,.mp3',

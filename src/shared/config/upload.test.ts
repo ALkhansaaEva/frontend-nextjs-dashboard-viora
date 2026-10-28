@@ -22,3 +22,21 @@ describe('gift animation upload profile', () => {
     expect(profile.acceptMime).toContain('application/octet-stream');
   });
 });
+
+describe('svga library upload profile', () => {
+  const profile = UPLOAD_CONFIG.svga;
+
+  it('accepts only .svga', () => {
+    expect(profile.accept).toBe('.svga');
+  });
+
+  it('keeps the backend animations-category size ceiling (20 MB)', () => {
+    expect(profile.maxSize).toBe(20 * 1024 * 1024);
+  });
+
+  it('uploads into the shared public bucket as an animation', () => {
+    expect(profile.bucket).toBe('uploads');
+    expect(profile.fileKind).toBe('animation');
+    expect(profile.acceptMime).toContain('application/octet-stream');
+  });
+});

@@ -20,7 +20,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
   LayoutDashboard, Users, Shield, Settings, ShoppingBag, User, Lock, Wallet,
   Bell, Trophy, Gift, FileText, Skull, Mic, LifeBuoy, Crown, CreditCard,
-  Landmark, Gamepad2, Sparkles, Workflow, UserCog, CalendarClock, ShieldAlert, Activity, Tag, Archive, Medal,
+  Landmark, Gamepad2, Sparkles, Workflow, UserCog, CalendarClock, ShieldAlert, Activity, Tag, Archive, Medal, FileImage,
 } from 'lucide-react';
 
 export type PermissionMatchMode = 'any' | 'all';
@@ -114,6 +114,13 @@ export const ADMIN_ROUTES: AdminRouteDefinition[] = [
     // health.controller.ts. health/reset-circuits (POST: admin.write) is gated
     // inside the page behind an explicit confirmation modal.
     requiredPermissions: ['admin.read'], showInNav: true, navOrder: 3,
+  },
+  {
+    id: 'media', path: '/dashboard/media', title: 'Media Library', titleAr: 'مكتبة الوسائط',
+    section: 'access', icon: FileImage,
+    // /media reads use media.read; uploads/replace/delete additionally require
+    // media.write and are gated on the buttons inside the page.
+    requiredPermissions: ['media.read', 'media.write'], showInNav: true, navOrder: 4,
   },
 
   // ── Users ───────────────────────────────────────────────────────
