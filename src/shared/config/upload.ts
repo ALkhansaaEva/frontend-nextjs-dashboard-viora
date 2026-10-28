@@ -95,6 +95,15 @@ export const UPLOAD_CONFIG = {
     fileKind: 'animation' as const,
     filePurpose: 'svga' as const,
   },
+  /** SVGA assets attached to STORE items (bucket `store`, purpose `full`). */
+  storeAnimation: {
+    accept: '.svga',
+    acceptMime: ['application/octet-stream'],
+    maxSize: 20 * 1024 * 1024,
+    bucket: 'store',
+    fileKind: 'animation' as const,
+    filePurpose: 'full' as const,
+  },
   /** Backend `audio` category: wav / ogg / m4a / mp3, 50 MB. */
   giftSound: {
     accept: '.wav,.ogg,.m4a,.mp3',

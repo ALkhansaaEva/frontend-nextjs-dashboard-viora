@@ -27,6 +27,7 @@ export const defaultAssetData: StoreAssetData = {
 const ASSET_KINDS = [
   { value: 'image', label: '🖼️ Image' },
   { value: 'animated_webp', label: '🎞️ Animated WebP' },
+  { value: 'svga', label: '🎬 SVGA' },
   { value: 'lottie', label: '🎨 Lottie' },
   { value: 'rive', label: '🧩 Rive' },
   { value: 'audio', label: '🔊 Audio' },
@@ -119,9 +120,9 @@ export function AssetForm({ assets, onChange, pendingAsset, onPendingChange }: A
           </div>
 
           <FileUpload
-            profile="store"
+            profile={pendingAsset.kind === 'svga' ? 'storeAnimation' : 'store'}
             label="Asset URL *"
-            placeholder="https://cdn.viora.com/assets/item.png"
+            placeholder={pendingAsset.kind === 'svga' ? 'Upload a .svga animation' : 'https://cdn.viora.com/assets/item.png'}
             value={pendingAsset.url}
             onChange={(v) => onPendingChange({ ...pendingAsset, url: v })}
           />

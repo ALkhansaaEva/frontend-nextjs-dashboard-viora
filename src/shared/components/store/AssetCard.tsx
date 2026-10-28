@@ -41,8 +41,9 @@ const ASSET_PLATFORMS = [
   { value: 'web', label: 'Web' },
 ];
 
-function getUploadProfile(kind: string): 'store' | 'achievement' | 'gift' {
+function getUploadProfile(kind: string): 'store' | 'storeAnimation' | 'achievement' | 'gift' {
   if (kind === 'audio') return 'gift';
+  if (kind === 'svga') return 'storeAnimation';
   return 'store';
 }
 

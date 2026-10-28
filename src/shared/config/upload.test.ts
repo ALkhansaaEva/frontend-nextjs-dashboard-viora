@@ -40,3 +40,21 @@ describe('svga library upload profile', () => {
     expect(profile.acceptMime).toContain('application/octet-stream');
   });
 });
+
+describe('store item svga upload profile', () => {
+  const profile = UPLOAD_CONFIG.storeAnimation;
+
+  it('accepts only .svga into the store bucket', () => {
+    expect(profile.accept).toBe('.svga');
+    expect(profile.bucket).toBe('store');
+  });
+
+  it('keeps the backend animations-category size ceiling (20 MB)', () => {
+    expect(profile.maxSize).toBe(20 * 1024 * 1024);
+  });
+
+  it('is an animation asset, not an image', () => {
+    expect(profile.fileKind).toBe('animation');
+    expect(profile.filePurpose).toBe('full');
+  });
+});
