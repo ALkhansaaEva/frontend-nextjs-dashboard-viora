@@ -24,7 +24,7 @@ const rarityBarColors: Record<string, string> = {
   legendary: 'bg-amber-400 dark:bg-amber-600'
 };
 
-/** Mirrors @/dto/store ITEM_TYPES; `slot` has no backend enum and is not here. */
+/** `slot` values come from the backend STORE_ITEM_SLOTS vocabulary. */
 
 interface StoreItemCardProps {
   item: StoreItem;

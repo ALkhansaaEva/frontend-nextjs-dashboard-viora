@@ -81,6 +81,11 @@ export function MediaPreview({
   // stuck on the placeholder.
   const [failedFor, setFailedFor] = useState<string | null>(null);
   const isFailed = Boolean(resolved) && failedFor === resolved;
+  // The catalog still contains 68-byte 1×1 PNGs used as placeholders during QA
+  // seeding. They load successfully, so `onError` never fires and the card shows
+  // an empty square; treat a 1×1 raster as "no usable artwork" instead.
+  const [blankFor, setBlankFor] = useState<string | null>(null);
+  const isBlank = Boolean(resolved) && blankFor === resolved;
 
   const ext = resolved ? extensionOf(resolved) : '';
 
@@ -100,7 +105,7 @@ export function MediaPreview({
   );
 
   if (!resolved) return placeholder;
-  if (isFailed) return placeholder;
+  if (isFailed || isBlank) return placeholder;
 
   if (VIDEO_EXT.has(ext)) {
     return (
@@ -144,6 +149,15 @@ export function MediaPreview({
       alt={alt}
       loading="lazy"
       onError={() => setFailedFor(resolved)}
+      onLoad={(event) => {
+        // SVG is excluded: an intrinsic size of 0 is legal there (viewBox-only
+        // files) and would be misread as a blank placeholder.
+        if (ext === 'svg') return;
+        const image = event.currentTarget;
+        if (image.naturalWidth <= 1 && image.naturalHeight <= 1) {
+          setBlankFor(resolved);
+        }
+      }}
       className={className}
     />
   );

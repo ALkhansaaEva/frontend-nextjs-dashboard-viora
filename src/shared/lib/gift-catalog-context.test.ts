@@ -119,7 +119,7 @@ describe('gift catalog context separation', () => {
     expect(payload.metadata).toEqual({ note: 'keep', nested: { k: 1 } });
   });
 
-  it('sends an emptied media field as an empty string so the update clears the column', () => {
+  it('sends an emptied media field as null so the DTO accepts it and the update clears the column', () => {
     const payload = buildGiftCatalogUpdateRequest({
       ...baseForm,
       iconMediaId: '',
@@ -129,10 +129,11 @@ describe('gift catalog context separation', () => {
       metadataJson: '',
     });
 
-    expect(payload.iconMediaId).toBe('');
-    expect(payload.previewMediaId).toBe('');
-    expect(payload.animationMediaId).toBe('');
-    expect(payload.soundMediaId).toBe('');
+    // `""` fails @IsUUID() on the DTO, so a save with a blank icon 400s.
+    expect(payload.iconMediaId).toBeNull();
+    expect(payload.previewMediaId).toBeNull();
+    expect(payload.animationMediaId).toBeNull();
+    expect(payload.soundMediaId).toBeNull();
     expect(payload.metadata).toBeNull();
   });
 

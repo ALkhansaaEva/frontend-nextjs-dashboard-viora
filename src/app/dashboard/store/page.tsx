@@ -21,9 +21,9 @@ import type { StoreItem } from '@/services/store.service';
 import { ItemBadgePicker } from '@/shared/components/rewards/ItemBadgePicker';
 import type { PaginatedResponse } from '@/types';
 import type { CreateStoreItemRequest, CreateStoreBundleRequest } from '@/dto/store';
-import { ITEM_TYPES } from '@/dto/store';
 import { CreateItemForm, CreateBundleForm, StoreItemCard, StoreItemTable, BundleCard, ItemDetailContent } from '@/shared/components/store';
-import { storeItemTypeLabel } from '@/shared/lib/store-item-types';
+import { EmptyState } from '@/shared/components/ui/EmptyState';
+import { storeItemSlotLabel, STORE_ITEM_SLOTS } from '@/shared/lib/store-item-types';
 import { MediaPreview } from '@/shared/components/media/MediaPreview';
 import { storeItemImageUrl } from '@/shared/lib/media-url';
 import { humanizeToken } from '@/shared/lib/labels';
@@ -184,15 +184,8 @@ export default function StorePage() {
     setActiveFilters(0);
   };
 
-  const isLoading = itemsLoading || bundlesLoading;
-  if (isLoading && items.length === 0) return <TableSkeleton rows={8} />;
-  if (itemsIsError || bundlesIsError) {
-    return (
-      <div className="space-y-6">
-        <QueryErrorNotice error={itemsError ?? bundlesError} onRetry={() => { itemsRefetch(); bundlesRefetch(); }} />
-      </div>
-    );
-  }
+  // No page-wide early return: a slow/failed bundles request must not blank the
+  // items tab (and vice versa). Each tab owns its own loading/error/empty state.
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -323,7 +316,7 @@ export default function StorePage() {
             onChange={(e) => handleFilterChange('slot', e.target.value)} 
             options={[
               { value: '', label: t('allSlots') || 'All Slots' },
-              ...ITEM_TYPES.map(type => ({ value: type, label: storeItemTypeLabel(type) }))
+              ...STORE_ITEM_SLOTS.map(slot => ({ value: slot, label: storeItemSlotLabel(slot) }))
             ]} 
             className="w-48" 
           />
@@ -337,7 +330,16 @@ export default function StorePage() {
 
       {activeTab === 'items' && (
         <div className="space-y-4">
-          {viewMode === 'grid' ? (
+          {itemsIsError ? (
+            <QueryErrorNotice error={itemsError} onRetry={() => { void itemsRefetch(); }} />
+          ) : itemsLoading && items.length === 0 ? (
+            <TableSkeleton rows={8} />
+          ) : items.length === 0 ? (
+            <EmptyState
+              icon={<Package className="w-10 h-10" />}
+              message={search || activeFilters > 0 ? 'No store items match these filters.' : 'No store items yet.'}
+            />
+          ) : viewMode === 'grid' ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {items.map((item) => (
                 <StoreItemCard
@@ -362,11 +364,22 @@ export default function StorePage() {
       )}
 
       {activeTab === 'bundles' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {bundles.map((bundle) => (
-            <BundleCard key={bundle.id} bundle={bundle} isRTL={isRTL} onView={(b) => setBundleDetailId(b.id)} />
-          ))}
-        </div>
+        bundlesIsError ? (
+          <QueryErrorNotice error={bundlesError} onRetry={() => { void bundlesRefetch(); }} />
+        ) : bundlesLoading && bundles.length === 0 ? (
+          <TableSkeleton rows={4} />
+        ) : bundles.length === 0 ? (
+          <EmptyState
+            icon={<ShoppingCart className="w-10 h-10" />}
+            message="No bundles yet."
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {bundles.map((bundle) => (
+              <BundleCard key={bundle.id} bundle={bundle} isRTL={isRTL} onView={(b) => setBundleDetailId(b.id)} />
+            ))}
+          </div>
+        )
       )}
 
       <Modal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} title={selectedItem?.title?.en || 'Item Details'} size="lg">

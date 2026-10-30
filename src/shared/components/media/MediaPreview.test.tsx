@@ -87,9 +87,13 @@ describe('MediaPreview', () => {
     },
   );
 
-  it('plays svga on a canvas instead of faking a still frame', () => {
+  it('mounts the svga player container instead of faking a still frame', () => {
     const { container } = renderPreview(CDN('anim.svga'));
-    expect(container.querySelector('canvas')).not.toBeNull();
+    // The player owns its <canvas>: it only creates one when handed a
+    // container element, so the React node is the container, not the canvas.
+    expect(
+      container.querySelector('[aria-label="SVGA animation preview"]'),
+    ).not.toBeNull();
     expect(container.querySelector('img')).toBeNull();
   });
 

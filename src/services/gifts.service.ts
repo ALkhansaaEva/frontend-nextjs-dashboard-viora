@@ -82,11 +82,11 @@ export interface CreateGiftRequest {
   /** `CreateGiftCatalogItemDto.description` — optional single string. */
   description?: string;
 /** `iconMediaId` — media_files uuid, or a legacy absolute URL. */
-  iconMediaId?: string;
-  previewMediaId?: string;
-  animationMediaId?: string;
-  soundMediaId?: string;
-  stickerMediaId?: string;
+  iconMediaId?: string | null;
+  previewMediaId?: string | null;
+  animationMediaId?: string | null;
+  soundMediaId?: string | null;
+  stickerMediaId?: string | null;
   allowedGameTypes?: Array<'ludo' | 'domino'>;
 
   /** Positive integer string — backend `CreateGiftCatalogItemDto.priceGameCurrency`, required. */
@@ -106,12 +106,12 @@ export interface CreateGiftRequest {
   displayPriority?: number;
   isActive?: boolean;
   isLimitedTime?: boolean;
-  startsAt?: string;
-  endsAt?: string;
-  countryCode?: string;
-  roomId?: string;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  countryCode?: string | null;
+  roomId?: string | null;
   vipLevelRequired?: number;
-  eventId?: string;
+  eventId?: string | null;
   metadata?: Record<string, unknown> | null;
 }
 
@@ -143,9 +143,9 @@ export interface UpdateGiftRequest {
   displayPriority?: number;
   isActive?: boolean;
   isLimitedTime?: boolean;
-  startsAt?: string;
-  endsAt?: string;
-  countryCode?: string;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  countryCode?: string | null;
   roomId?: string | null;
   vipLevelRequired?: number | null;
   eventId?: string | null;

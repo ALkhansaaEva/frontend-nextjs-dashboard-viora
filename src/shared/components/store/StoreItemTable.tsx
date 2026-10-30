@@ -5,7 +5,7 @@ import { Card } from '@/shared/components/ui/Card';
 import { Badge } from '@/shared/components/ui/Badge';
 import { formatIntegerString } from '@/shared/lib/money';
 import type { StoreItem } from '@/services/store.service';
-import { storeItemTypeLabel } from '@/shared/lib/store-item-types';
+import { storeItemTypeLabel, storeItemSlotLabel } from '@/shared/lib/store-item-types';
 import { MediaPreview } from '@/shared/components/media/MediaPreview';
 
 const rarityColors: Record<string, string> = {
@@ -15,9 +15,8 @@ const rarityColors: Record<string, string> = {
   legendary: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300'
 };
 
-// Matches the backend `StoreItem.type` entity enum (see @/dto/store's
-// ITEM_TYPES) — `slot` is deliberately NOT looked up here, it has no
-// backend enum and is rendered as the free-text value the operator entered.
+// `slot` is a closed backend vocabulary (STORE_ITEM_SLOTS), rendered through
+// its label map with a raw-value fallback for pre-enum rows.
 
 interface StoreItemTableProps {
   items: StoreItem[];
@@ -72,7 +71,7 @@ export function StoreItemTable({ items, isRTL, onRowClick }: StoreItemTableProps
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{storeItemTypeLabel(item.type)}</td>
-                <td className="px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-400">{item.slot}</td>
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400" title={item.slot}>{storeItemSlotLabel(item.slot)}</td>
                 <td className="px-4 py-3">
                   <span className="text-sm capitalize text-gray-600 dark:text-gray-400">{item.scope}</span>
                 </td>

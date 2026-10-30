@@ -70,19 +70,29 @@ export const GIFT_CONTEXT_PRESENTATION = {
  * so an emptied field is actually removed from the stored row.
  */
 type WritableFields = Omit<CreateGiftRequest, 'code' | 'roomId'> & {
-  roomId?: string;
-  previewMediaId: string;
-  animationMediaId: string;
-  soundMediaId: string;
-  stickerMediaId: string;
+  roomId?: string | null;
+  previewMediaId: string | null;
+  animationMediaId: string | null;
+  soundMediaId: string | null;
+  stickerMediaId: string | null;
   metadata?: Record<string, unknown> | null;
   description: string;
-  iconMediaId: string;
-  countryCode: string;
-  eventId: string;
-  startsAt: string;
-  endsAt: string;
+  iconMediaId: string | null;
+  countryCode: string | null;
+  eventId: string | null;
+  startsAt: string | null;
+  endsAt: string | null;
 };
+
+/**
+ * Optional string fields are sent as `null` when blank. Sending `""` makes
+ * class-validator's `@IsUUID()` / `@IsDate()` reject the whole request — a
+ * gift with no icon (the common case) could never be created or saved.
+ */
+function blankToNull(value: string): string | null {
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
 
 /**
  * Parses the form's `metadata` text. Returns `null` for an empty box so an
@@ -118,11 +128,11 @@ function buildWritableFields(form: GiftCatalogFormData): WritableFields {
     contextType: form.contextType,
     name: form.name,
     description: form.description,
-    iconMediaId: form.iconMediaId,
-    previewMediaId: form.previewMediaId,
-    animationMediaId: form.animationMediaId,
-    soundMediaId: form.soundMediaId,
-    stickerMediaId: form.stickerMediaId,
+    iconMediaId: blankToNull(form.iconMediaId),
+    previewMediaId: blankToNull(form.previewMediaId),
+    animationMediaId: blankToNull(form.animationMediaId),
+    soundMediaId: blankToNull(form.soundMediaId),
+    stickerMediaId: blankToNull(form.stickerMediaId),
     metadata: readMetadata(form) ?? null,
     allowedGameTypes: form.allowedGameTypes,
     priceGameCurrency: form.priceGameCurrency,
@@ -141,12 +151,12 @@ function buildWritableFields(form: GiftCatalogFormData): WritableFields {
     displayPriority: form.displayPriority,
     isActive: form.isActive,
     isLimitedTime: form.isLimitedTime,
-    startsAt: form.startsAt,
-    endsAt: form.endsAt,
-    countryCode: form.countryCode,
-    roomId: form.roomId,
+    startsAt: blankToNull(form.startsAt),
+    endsAt: blankToNull(form.endsAt),
+    countryCode: blankToNull(form.countryCode),
+    roomId: blankToNull(form.roomId),
     vipLevelRequired: form.vipLevelRequired,
-    eventId: form.eventId,
+    eventId: blankToNull(form.eventId),
   };
 }
 

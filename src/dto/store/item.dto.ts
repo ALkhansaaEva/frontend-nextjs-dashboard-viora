@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { STORE_ITEM_SLOTS } from '@/shared/lib/store-item-types';
 
 /**
  * Mirrors the backend canonical creation-time item types exactly
@@ -19,7 +20,7 @@ export const RARITIES = ['common', 'rare', 'epic', 'legendary'] as const;
 export const SCOPES = ['profile', 'room', 'game'] as const;
 export const GAME_TYPES = ['ludo', 'domino'] as const;
 
-export const ASSET_TYPES = ['image', 'animated_webp', 'lottie', 'rive', 'audio', 'spritesheet', 'svg'] as const;
+export const ASSET_TYPES = ['image', 'animated_webp', 'svga', 'lottie', 'rive', 'audio', 'spritesheet', 'svg'] as const;
 export const ASSET_SUBTYPES = ['thumb', 'preview', 'full', 'sfx_roll', 'sfx_move', 'sfx_win', 'sfx_land', 'sfx_capture', 'sfx_click', 'sfx_ambient'] as const;
 export const ASSET_LANGUAGES = ['en', 'ar', 'all'] as const;
 export const ASSET_ROLES = ['primary', 'secondary', 'thumbnail', 'preview', 'full'] as const;
@@ -42,10 +43,9 @@ export type Asset = z.infer<typeof AssetSchema>;
 export const CreateStoreItemSchema = z.object({
   code: z.string().min(1),
   type: z.string().min(1),
-  // No backend enum exists for `slot` (free-text @IsString() on
-  // CreateItemDto, no documented value set anywhere) — kept as free text,
-  // not the Type options, so the two fields stop looking like duplicates.
-  slot: z.string().min(1),
+  // Closed vocabulary enforced by the backend (`@IsIn(STORE_ITEM_SLOTS)`).
+  // The dashboard mirrors the same list from `store-item-types`.
+  slot: z.enum(STORE_ITEM_SLOTS),
   scope: z.enum(SCOPES),
   gameType: z.string().optional(),
   rarity: z.enum(RARITIES),

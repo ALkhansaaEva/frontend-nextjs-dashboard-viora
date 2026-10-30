@@ -8,13 +8,13 @@ import { Button } from '@/shared/components/ui/Button';
 import { AssetForm, StoreAssetData, defaultAssetData } from './AssetForm';
 import { ITEM_TYPES, RARITIES, SCOPES, GAME_TYPES } from '@/dto/store';
 import { cn } from '@/shared/lib/utils';
-import { storeItemTypeLabel } from '@/shared/lib/store-item-types';
+import { storeItemTypeLabel, storeItemSlotLabel, STORE_ITEM_SLOTS, type StoreItemSlot } from '@/shared/lib/store-item-types';
 
 
 export type NewStoreItemData = {
   code: string;
   type: string;
-  slot: string;
+  slot: StoreItemSlot;
   scope: 'profile' | 'room' | 'game';
   gameType: string;
   titleEn: string;
@@ -79,7 +79,7 @@ const defaultItem: NewStoreItemData = {
 export interface StoreItemFormSubmission {
     code: string;
     type: string;
-    slot: string;
+    slot: StoreItemSlot;
     scope: 'profile' | 'room' | 'game';
     gameType?: string;
     title: { en: string; ar: string };
@@ -148,7 +148,10 @@ export function CreateItemForm({ onSubmit, isPending, initialData, onCancel }: C
     return {
       code: initialData.code,
       type: initialData.type,
-      slot: initialData.slot,
+      // A legacy spelling must still render as the selected option so an
+      // operator sees the stored value; the backend rejects it on save until
+      // a valid slot is chosen (migration 2947 normalises the known row).
+      slot: initialData.slot as StoreItemSlot,
       scope: initialData.scope,
       gameType: initialData.gameType || '',
       titleEn: initialData.title.en,
@@ -285,6 +288,23 @@ const isValid =
     isDirty &&
     (isEditing || hasAnyAsset);
 
+  // The slot is a closed backend vocabulary (STORE_ITEM_SLOTS / @IsIn). Keep a
+  // legacy value that predates the enum selectable so editing an old row still
+  // shows what is actually stored instead of silently blanking it.
+  const slotOptions = STORE_ITEM_SLOTS.map((slot) => ({
+    value: slot,
+    label: storeItemSlotLabel(slot),
+  }));
+  if (
+    newItem.slot &&
+    !(STORE_ITEM_SLOTS as readonly string[]).includes(newItem.slot)
+  ) {
+    slotOptions.unshift({
+      value: newItem.slot,
+      label: `${newItem.slot} (legacy value)`,
+    });
+  }
+
   return (
     <div className="space-y-5 max-h-[75vh] overflow-y-auto pr-1">
       <SectionCard icon={Package} title="Basic Information">
@@ -311,11 +331,9 @@ const isValid =
           <Select label="Type *" value={newItem.type}
             onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
             options={ITEM_TYPES.map(t => ({ value: t, label: storeItemTypeLabel(t) }))} />
-          {/* Backend has no `slot` enum (free-text @IsString() on CreateItemDto,
-              no documented value set) — a free-text input, not a copy of Type's options. */}
-          <Input label="Slot * (free text — no backend enum)" value={newItem.slot}
-            onChange={(e) => setNewItem({ ...newItem, slot: e.target.value })}
-            placeholder="e.g. dice, cover, avatar_frame" />
+          <Select label="Slot *" value={newItem.slot}
+            onChange={(e) => setNewItem({ ...newItem, slot: e.target.value as StoreItemSlot })}
+            options={slotOptions} />
           <Select label="Scope *" value={newItem.scope}
             onChange={(e) => setNewItem({ ...newItem, scope: e.target.value as NewStoreItemData['scope'] })}
             options={SCOPES.map(s => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} />

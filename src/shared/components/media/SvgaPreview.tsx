@@ -38,7 +38,7 @@ interface SvgaParser {
  * header on upload, and the player only decodes frames; nothing is executed.
  */
 export function SvgaPreview({ url, className, onError }: SvgaPreviewProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef(onError);
   errorRef.current = onError;
 
@@ -50,12 +50,15 @@ export function SvgaPreview({ url, className, onError }: SvgaPreviewProps) {
       .then((module) => {
         const SVGA = (module as { default?: unknown }).default ?? module;
         const { Player, Parser } = SVGA as {
-          Player: new (canvas: HTMLCanvasElement) => SvgaPlayer;
+          // The library only creates (and sizes) its own drawing canvas when
+          // given a container element. Handing it a <canvas> skips `_init` and
+          // the animation renders into nothing — hence the wrapper div.
+          Player: new (container: HTMLDivElement) => SvgaPlayer;
           Parser: new () => SvgaParser;
         };
-        if (cancelled || !canvasRef.current) return;
+        if (cancelled || !containerRef.current) return;
 
-        player = new Player(canvasRef.current);
+        player = new Player(containerRef.current);
         player.loops = 0;
         player.clearsAfterStop = false;
         player.setContentMode('AspectFit');
@@ -86,12 +89,12 @@ export function SvgaPreview({ url, className, onError }: SvgaPreviewProps) {
   }, [url]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={128}
-      height={128}
+    <div
+      ref={containerRef}
+      role="img"
       aria-label="SVGA animation preview"
       className={className}
+      style={{ width: '100%', height: '100%', overflow: 'hidden' }}
     />
   );
 }

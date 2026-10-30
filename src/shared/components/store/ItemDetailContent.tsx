@@ -5,7 +5,7 @@ import { Badge } from '@/shared/components/ui/Badge';
 import { Button } from '@/shared/components/ui/Button';
 import { formatIntegerString } from '@/shared/lib/money';
 import type { StoreItem } from '@/services/store.service';
-import { storeItemTypeLabel } from '@/shared/lib/store-item-types';
+import { storeItemTypeLabel, storeItemSlotLabel } from '@/shared/lib/store-item-types';
 import { MediaPreview } from '@/shared/components/media/MediaPreview';
 
 // Matches the backend canonical item types (see @/dto/store's ITEM_TYPES).
@@ -94,7 +94,7 @@ export function ItemDetailContent({
         </div>
         <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
           <p className="text-xs text-gray-500 mb-1">Slot</p>
-          <p className="font-medium">{storeItemTypeLabel(item.slot)}</p>
+          <p className="font-medium">{storeItemSlotLabel(item.slot)}</p>
         </div>
         <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
           <p className="text-xs text-gray-500 mb-1">Scope</p>

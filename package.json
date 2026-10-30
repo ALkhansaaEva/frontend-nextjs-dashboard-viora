@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:vps": "next build && node deploy/build-vps.cjs",
+    "build:vps": "NEXT_PUBLIC_API_URL=https://evaka.store/v1 next build && node deploy/build-vps.cjs",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
